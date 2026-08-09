@@ -132,6 +132,66 @@ def check_file_documentation() -> list[str]:
     return warnings
 
 
+def check_workbench_structure() -> list[str]:
+    """Ensure Workbench/ does not contain temporary scripts or debug outputs."""
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    errors = []
+    if not workbench.exists():
+        return ['Workbench directory not found']
+
+    for ext in ('.py', '.ps1', '.sh', '.log'):
+        matches = [p for p in workbench.rglob(f'*{ext}') if p.is_file()]
+        if matches:
+            for p in matches[:3]:
+                errors.append(f'Workbench contains temporary file: {p.relative_to(root)}')
+            if len(matches) > 3:
+                errors.append(f'  ({len(matches) - 3} more temporary files with {ext})')
+    return errors
+
+
+def check_git_config() -> list[str]:
+    """Ensure .gitignore and .gitattributes cover required patterns."""
+    root = SKILLS_DIR.parent.parent
+    errors = []
+
+    gitignore = root / '.gitignore'
+    if not gitignore.exists():
+        errors.append('.gitignore not found')
+    else:
+        content = gitignore.read_text(encoding='utf-8')
+        required_patterns = [
+            'Workbench/此刻便是春天.html',
+            '__pycache__/',
+            'temp/',
+            '.trae-html-share-packages/',
+        ]
+        for pattern in required_patterns:
+            if pattern not in content:
+                errors.append(f'.gitignore missing required pattern: {pattern}')
+
+    gitattributes = root / '.gitattributes'
+    if not gitattributes.exists():
+        errors.append('.gitattributes not found')
+    else:
+        content = gitattributes.read_text(encoding='utf-8')
+        required_patterns = ['*.pdf', '*.doc', '*.docx', '*.png']
+        for pattern in required_patterns:
+            if pattern not in content:
+                errors.append(f'.gitattributes missing required pattern: {pattern}')
+
+    return errors
+
+
+def check_temp_directory_exists() -> list[str]:
+    """Warn if the temp/ directory is missing."""
+    root = SKILLS_DIR.parent.parent
+    temp_dir = root / 'temp'
+    if not temp_dir.exists():
+        return ['temp/ directory not found; create it for intermediate files']
+    return []
+
+
 def validate(html: str) -> list[str]:
     """Run all validation checks and return a list of errors."""
     errors = []
@@ -139,6 +199,9 @@ def validate(html: str) -> list[str]:
     errors.extend(check_no_old_classes(html))
     errors.extend(check_reading_content(html))
     errors.extend(check_workspace_integrity(html))
+    errors.extend(check_workbench_structure())
+    errors.extend(check_git_config())
+    errors.extend(check_temp_directory_exists())
     return errors
 
 
@@ -162,7 +225,7 @@ def main() -> int:
             print(f'  - {err}')
         return 1
 
-    print('Validation passed: JS syntax OK, no old classes, reading content intact.')
+    print('Validation passed.')
     return 0
 
 
