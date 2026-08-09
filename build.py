@@ -40,6 +40,24 @@ MODULES_DIR = DATA_DIR / 'modules'
 TRANSFORMERS_DIR = ROOT / 'transformers'
 SKILLS_DIR = ROOT / '.trae' / 'skills'
 
+# Paths that must never be removed by cleanup operations, even if a cleanup
+# pattern accidentally matches them.
+PROTECTED_PATHS = {
+    ROOT / '.trae',
+    ROOT / '.git',
+    ROOT / 'temp',
+    ROOT / 'transformers',
+    ROOT / 'Workbench',
+    ROOT / 'build.py',
+    ROOT / '文件说明.md',
+    ROOT / '项目约束总览.md',
+}
+
+# Directory names that are known temporary artifacts. They may live inside
+# protected roots (e.g. __pycache__ under .trae/skills) and are allowed to be
+# cleaned up even though their parent directories are protected.
+TEMP_DIR_NAMES = {'__pycache__', '.trae-html-share-packages'}
+
 if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
 if str(TRANSFORMERS_DIR) not in sys.path:
@@ -334,8 +352,44 @@ def run_validate() -> None:
         raise SystemExit(result.returncode)
 
 
+def _is_protected(path: Path) -> bool:
+    """Return True if path is a protected root path or a protected subdirectory.
+
+    Protected paths guard core files and directories against wholesale
+    deletion. Directories inside a protected root are also protected so that
+    a buggy cleanup pattern cannot wipe out core subdirectories such as
+    .trae/skills or Workbench/data. Known temporary directories (e.g.
+    __pycache__) are still allowed to be cleaned.
+    """
+    resolved = path.resolve()
+    for protected in PROTECTED_PATHS:
+        try:
+            protected_resolved = protected.resolve()
+        except OSError:
+            continue
+
+        # Exact match: the protected root itself.
+        if resolved == protected_resolved:
+            return True
+
+        # Directory inside a protected root.
+        if path.is_dir():
+            try:
+                relative = resolved.relative_to(protected_resolved)
+            except ValueError:
+                continue
+            if relative.parts and not any(
+                part in TEMP_DIR_NAMES for part in relative.parts
+            ):
+                return True
+
+    return False
+
+
 def _remove_path(path: Path) -> None:
-    """Remove a file or directory tree."""
+    """Remove a file or directory tree, refusing protected paths."""
+    if _is_protected(path):
+        raise PermissionError(f'Refuse to remove protected path: {path}')
     if path.is_file():
         path.unlink()
     elif path.is_dir():
