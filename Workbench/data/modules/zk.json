@@ -1,0 +1,9 @@
+{
+  "id": "zk",
+  "name": "自考学习",
+  "icon": "📚",
+  "iconBg": "zk-cool",
+  "editable": true,
+  "categories": [],
+  "_note": "该模块目前仍由工作台 HTML 内嵌数据驱动，待后续迁移到此 JSON。"
+}

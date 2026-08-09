@@ -1,0 +1,102 @@
+{
+  "meta": {
+    "name": "此刻便是春天",
+    "version": "1.0",
+    "description": "个人学习与任务管理工作台"
+  },
+  "activeTheme": "light",
+  "themes": {
+    "light": {
+      "name": "明亮春景",
+      "tokens": {
+        "bg": "#F0F9FF",
+        "surface": "#ffffff",
+        "sidebar": "#F5FBFF",
+        "bg2": "#f1f5f9",
+        "ink": "#2D2A32",
+        "muted": "#64748B",
+        "light": "#94A3B8",
+        "rule": "#E0F2FE",
+        "rule-strong": "#BAE6FD",
+        "accent-purple": "#A78BFA",
+        "purple-soft": "#EDE9FE",
+        "purple-text": "#7C3AED",
+        "accent-blue": "#38BDF8",
+        "blue-soft": "#E0F2FE",
+        "blue-text": "#0369A1",
+        "accent-coral": "#F472B6",
+        "coral-soft": "#FCE7F3",
+        "coral-text": "#DB2777",
+        "accent-green": "#34D399",
+        "green-soft": "#D1FAE5",
+        "green-text": "#047857",
+        "accent-cyan": "#22D3EE",
+        "accent-yellow": "#FBBF24",
+        "accent-orange": "#FB923C",
+        "notice-bg": "#fffbeb",
+        "notice-border": "#fde68a",
+        "notice-text": "#92400e",
+        "reading-warm": "#FEF3C7",
+        "zk-cool": "#E0F2FE",
+        "tasks-soft": "#FCE7F3",
+        "workspace-study": "#FFE4EC"
+      }
+    },
+    "dark": {
+      "name": "暗色夜读",
+      "tokens": {
+        "bg": "#0f172a",
+        "surface": "#1e293b",
+        "sidebar": "#1e293b",
+        "bg2": "#1e293b",
+        "ink": "#f8fafc",
+        "muted": "#94a3b8",
+        "light": "#64748b",
+        "rule": "#334155",
+        "rule-strong": "#475569",
+        "accent-purple": "#a78bfa",
+        "purple-soft": "#4c1d95",
+        "purple-text": "#c4b5fd",
+        "accent-blue": "#38bdf8",
+        "blue-soft": "#0c4a6e",
+        "blue-text": "#7dd3fc",
+        "accent-coral": "#f472b6",
+        "coral-soft": "#831843",
+        "coral-text": "#fbcfe8",
+        "accent-green": "#34d399",
+        "green-soft": "#064e3b",
+        "green-text": "#34d399",
+        "accent-cyan": "#22d3ee",
+        "accent-yellow": "#fbbf24",
+        "accent-orange": "#fb923c",
+        "notice-bg": "#451a03",
+        "notice-border": "#92400e",
+        "notice-text": "#fcd34d",
+        "reading-warm": "#451a03",
+        "zk-cool": "#0c4a6e",
+        "tasks-soft": "#4c1d57",
+        "workspace-study": "#831843"
+      }
+    }
+  },
+  "modules": [
+    {
+      "id": "zk",
+      "file": "zk.json",
+      "enabled": true,
+      "description": "自考学习模块（待迁移）"
+    },
+    {
+      "id": "tasks",
+      "file": "tasks.json",
+      "enabled": true,
+      "description": "日常任务模块（待迁移）"
+    },
+    {
+      "id": "read",
+      "file": "reading.json",
+      "enabled": true,
+      "description": "阅读资料模块"
+    }
+  ]
+}

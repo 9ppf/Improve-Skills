@@ -1,0 +1,9 @@
+{
+  "id": "tasks",
+  "name": "任务",
+  "icon": "✅",
+  "iconBg": "tasks-soft",
+  "editable": true,
+  "categories": [],
+  "_note": "该模块目前仍由工作台 HTML 内嵌数据驱动，待后续迁移到此 JSON。"
+}
