@@ -7,8 +7,7 @@ Current scope:
   - Load enabled module JSON files from data/modules/.
   - Enrich the reading module via transformers/reading.py.
   - Replace theme tokens in module metadata.
-  - Inject the reading module into the workbench HTML.
-  - Preserve all other modules (tasks, etc.) exactly as they are.
+  - Render the workbench HTML from templates/workbench.html.
   - Backup the old workbench and validate the result.
 
 Cleanup rules:
@@ -38,6 +37,8 @@ WORKBENCH = ROOT / 'Workbench' / '此刻便是春天.html'
 DATA_DIR = ROOT / 'Workbench' / 'data'
 MODULES_DIR = DATA_DIR / 'modules'
 TRANSFORMERS_DIR = ROOT / 'transformers'
+TEMPLATES_DIR = ROOT / 'templates'
+TEMPLATE = TEMPLATES_DIR / 'workbench.html'
 SKILLS_DIR = ROOT / '.trae' / 'skills'
 
 # Paths that must never be removed by cleanup operations, even if a cleanup
@@ -139,107 +140,12 @@ def backup_workbench() -> Path:
     return backup
 
 
-def _fix_static_colors(html: str) -> str:
-    """Replace hardcoded colors with theme-aware CSS variables."""
-    html = html.replace(
-        '.qt-tag-medium { background: #E0F2FE; color: var(--blue-text); }',
-        '.qt-tag-medium { background: var(--blue-soft); color: var(--blue-text); }'
-    )
-    html = html.replace(
-        '.qt-tag-low { background: #D1FAE5; color: #047857; }',
-        '.qt-tag-low { background: var(--green-soft); color: var(--green-text); }'
-    )
-    html = html.replace(
-        '.reading-topic {\n      background: #f1f5f9;',
-        '.reading-topic {\n      background: var(--bg2);'
-    )
-    html = html.replace(
-        '.reading-notice {\n      background: #fffbeb; border: 1px solid #fde68a;\n      border-radius: 12px; padding: 1rem 1.25rem;\n      margin-bottom: 1.5rem; color: #92400e; font-size: 0.9rem;\n    }',
-        '.reading-notice {\n      background: var(--notice-bg); border: 1px solid var(--notice-border);\n      border-radius: 12px; padding: 1rem 1.25rem;\n      margin-bottom: 1.5rem; color: var(--notice-text); font-size: 0.9rem;\n    }'
-    )
-    return html
-
-
-def _build_theme_css() -> str:
-    """Return CSS for the theme toggle button and topbar actions."""
-    return '''\n    .topbar-actions { display: flex; align-items: center; gap: 8px; }\n    .theme-toggle {\n      display: flex; align-items: center; justify-content: center;\n      width: 34px; height: 34px; border-radius: var(--radius-sm);\n      background: transparent; border: 1px solid var(--rule);\n      color: var(--ink); font-size: 1rem; cursor: pointer;\n      transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease);\n    }\n    .theme-toggle:hover { background: var(--bg2); border-color: var(--rule-strong); }\n'''
-
-
 def _build_theme_script(config: dict) -> str:
     """Build the inline JS that applies and toggles themes."""
     themes = config.get('themes', {})
     default_theme = config.get('activeTheme', 'light')
     themes_js = json.dumps(themes, ensure_ascii=False)
     return f'''\n<script>\n(function() {{\n  const WORKBENCH_THEMES = {themes_js};\n  const DEFAULT_THEME = '{default_theme}';\n\n  function applyWorkbenchTheme(name) {{\n    const theme = WORKBENCH_THEMES[name] || WORKBENCH_THEMES[DEFAULT_THEME];\n    const root = document.documentElement;\n    Object.entries(theme.tokens).forEach(function(entry) {{\n      root.style.setProperty('--' + entry[0], entry[1]);\n    }});\n    try {{ localStorage.setItem('workbench-theme', name); }} catch (e) {{}}\n    const btn = document.getElementById('theme-toggle');\n    if (btn) btn.textContent = (name === 'dark') ? '☀️' : '🌙';\n  }}\n\n  function toggleWorkbenchTheme() {{\n    const current = localStorage.getItem('workbench-theme') || DEFAULT_THEME;\n    applyWorkbenchTheme(current === 'dark' ? 'light' : 'dark');\n  }}\n\n  const saved = localStorage.getItem('workbench-theme') || DEFAULT_THEME;\n  applyWorkbenchTheme(saved);\n\n  window.toggleWorkbenchTheme = toggleWorkbenchTheme;\n  window.applyWorkbenchTheme = applyWorkbenchTheme;\n}})();\n</script>'''
-
-
-def _inject_theme_system(html: str, config: dict) -> str:
-    """Inject theme toggle button, CSS, and switching JS into the HTML (idempotent)."""
-    # Add theme toggle CSS if not already present.
-    if '.theme-toggle' not in html:
-        menu_toggle_rule = '.menu-toggle { display: none; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--ink); }'
-        if menu_toggle_rule in html:
-            html = html.replace(menu_toggle_rule, menu_toggle_rule + _build_theme_css())
-        else:
-            print('  [warn] could not find .menu-toggle rule for theme CSS')
-
-    # Add theme toggle button if not already present.
-    if 'id="theme-toggle"' not in html:
-        old_topbar = '''  <div class="topbar">\n    <div class="brand"><span class="brand-icon">🌸</span><span>此刻便是春天</span></div>\n    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>\n  </div>'''
-        new_topbar = '''  <div class="topbar">\n    <div class="brand"><span class="brand-icon">🌸</span><span>此刻便是春天</span></div>\n    <div class="topbar-actions">\n      <button class="theme-toggle" id="theme-toggle" onclick="toggleWorkbenchTheme()" title="切换主题">🌙</button>\n      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>\n    </div>\n  </div>'''
-        if old_topbar in html:
-            html = html.replace(old_topbar, new_topbar)
-        else:
-            print('  [warn] could not find topbar marker for theme button')
-
-    # Inject/refresh theme JS before closing head tag.
-    script = _build_theme_script(config)
-    if 'WORKBENCH_THEMES' in html:
-        # Replace existing theme script to keep it in sync with config.
-        html = re.sub(
-            r'\n+<script>\n\(function\(\) \{.*?const DEFAULT_THEME = [^;]+;.*?window\.applyWorkbenchTheme = applyWorkbenchTheme;\n\}\)\(\);\n</script>',
-            script,
-            html,
-            flags=re.DOTALL,
-        )
-    else:
-        html = html.replace('</head>', script + '\n</head>')
-    return html
-
-
-def _remove_reading_module(html: str) -> str:
-    """Remove all readingHtml constants and the reading workspace from HTML."""
-    # Remove all readingHtml<year> constants.
-    html = re.sub(
-        r'\n?\s*const readingHtml\d{4} = `.*?`;',
-        '',
-        html,
-        flags=re.DOTALL,
-    )
-
-    # Remove the reading workspace block using brace counting.
-    start_marker = "\n      {\n        id: 'read', name: '阅读资料'"
-    start = html.find(start_marker)
-    if start != -1:
-        brace_start = start + len(start_marker) - len("\n      {")
-        depth = 1
-        pos = brace_start + 1
-        while pos < len(html) and depth > 0:
-            if html[pos] == '{':
-                depth += 1
-            elif html[pos] == '}':
-                depth -= 1
-            pos += 1
-
-        end = pos
-        while end < len(html) and html[end] in ' \t':
-            end += 1
-        if end < len(html) and html[end] == ',':
-            end += 1
-
-        html = html[:start] + html[end:]
-
-    return html
 
 
 def _extract_year(name: str) -> int | None:
@@ -294,51 +200,6 @@ def _build_reading_workspace(data: dict) -> tuple[str, str]:
 
     constants_joined = '\n\n'.join(constants)
     return constants_joined + '\n', workspace_js
-
-
-def _inject_reading_module(html: str, data: dict) -> str:
-    """Inject reading constants and workspace into the workbench HTML."""
-    constants_js, workspace_js = _build_reading_workspace(data)
-
-    html = re.sub(
-        r'\b(const workspaces = \[)',
-        constants_js + r'\1',
-        html,
-        count=1,
-    )
-
-    marker_match = re.search(r"\n(    let currentWorkspaceId = '[^']+';)", html)
-    if not marker_match:
-        raise ValueError('Could not find marker for workspaces array end')
-
-    idx = marker_match.start(1)
-    brace_idx = html.rfind('];', 0, idx)
-    if brace_idx == -1:
-        raise ValueError('Could not find ]; before marker')
-
-    line_start = html.rfind('\n', 0, brace_idx) + 1
-    prev_newline = html.rfind('\n', 0, line_start - 1)
-    prev_line = html[prev_newline + 1:line_start].rstrip()
-    if not prev_line.endswith(','):
-        html = (
-            html[:prev_newline + 1]
-            + prev_line + ',\n'
-            + html[line_start:]
-        )
-        marker_match = re.search(r"\n(    let currentWorkspaceId = '[^']+';)", html)
-        if not marker_match:
-            raise ValueError('Could not find marker for workspaces array end')
-        idx = marker_match.start(1)
-        brace_idx = html.rfind('];', 0, idx)
-        line_start = html.rfind('\n', 0, brace_idx) + 1
-
-    html = (
-        html[:line_start]
-        + workspace_js + ',\n'
-        + html[line_start:]
-    )
-
-    return html
 
 
 def run_validate() -> None:
@@ -481,6 +342,15 @@ def cleanup_artifacts(dry_run: bool = False) -> dict[str, list[Path]]:
     return results
 
 
+def _render_template(template: str, context: dict[str, str]) -> str:
+    """Replace {{ key }} placeholders in template with values from context."""
+    html = template
+    for key, value in context.items():
+        placeholder = '{{ ' + key + ' }}'
+        html = html.replace(placeholder, value)
+    return html
+
+
 def build() -> Path:
     """Run the full build process."""
     print('Loading workbench config...')
@@ -505,23 +375,26 @@ def build() -> Path:
     backup = backup_workbench()
     print(f'  backup: {backup}')
 
-    print('Reading workbench...')
-    html = WORKBENCH.read_text(encoding='utf-8')
+    print('Loading template...')
+    if not TEMPLATE.exists():
+        raise FileNotFoundError(f'Template not found: {TEMPLATE}')
+    template = TEMPLATE.read_text(encoding='utf-8')
 
-    print('Fixing static colors...')
-    html = _fix_static_colors(html)
-
-    print('Injecting theme system...')
-    html = _inject_theme_system(html, config)
-
-    print('Removing old reading module...')
-    html = _remove_reading_module(html)
-
+    print('Rendering reading module...')
+    reading_constants = ''
+    workspaces_array = ''
     if 'read' in enriched_modules:
-        print('Injecting new reading module...')
-        html = _inject_reading_module(html, enriched_modules['read'])
+        reading_constants, workspaces_array = _build_reading_workspace(enriched_modules['read'])
     else:
         print('  [skip] reading module not enabled or missing')
+
+    print('Rendering workbench...')
+    context = {
+        'theme_script': _build_theme_script(config),
+        'reading_constants': reading_constants,
+        'workspaces_array': workspaces_array,
+    }
+    html = _render_template(template, context)
 
     print('Writing workbench...')
     WORKBENCH.write_text(html, encoding='utf-8')

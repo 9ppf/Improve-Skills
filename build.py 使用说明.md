@@ -4,7 +4,7 @@
 
 ## 这是做什么的
 
-`build.py` 是「此刻便是春天」工作台的构建脚本。它读取 `Workbench/data/` 下的 JSON 配置和模块数据，把阅读模块、主题系统等内容注入到 `Workbench/此刻便是春天.html` 中，同时清理临时产物并执行校验。
+`build.py` 是「此刻便是春天」工作台的构建脚本。它读取 `Workbench/data/` 下的 JSON 配置和模块数据，基于 `templates/workbench.html` 模板渲染生成 `Workbench/此刻便是春天.html`，同时清理临时产物并执行校验。
 
 运行一次构建后，`此刻便是春天.html` 就是最新版本的工作台页面。
 

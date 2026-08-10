@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>此刻便是春天</title>
+  <style>
+    :root {
+      --bg: #F0F9FF;
+      --surface: rgba(255,255,255,0.9);
+      --sidebar: #F5FBFF;
+      --ink: #2D2A32;
+      --muted: #64748B;
+      --light: #94A3B8;
+      --rule: #E0F2FE;
+      --rule-strong: #BAE6FD;
+
+      --accent-purple: #A78BFA;
+      --purple-soft: #EDE9FE;
+      --purple-text: #7C3AED;
+      --accent-blue: #38BDF8;
+      --blue-soft: #E0F2FE;
+      --blue-text: #0369A1;
+      --accent-coral: #F472B6;
+      --coral-soft: #FCE7F3;
+      --coral-text: #DB2777;
+      --accent-green: #34D399;
+      --accent-cyan: #22D3EE;
+      --accent-yellow: #FBBF24;
+      --accent-orange: #FB923C;
+
+      --brand: var(--accent-blue);
+      --brand-soft: var(--blue-soft);
+      --brand-text: var(--blue-text);
+      --danger: var(--coral-text);
+      --success: var(--accent-green);
+
+      --radius-sm: 10px;
+      --radius: 14px;
+      --shadow-sm: 0 2px 6px rgba(45,42,50,0.05);
+      --shadow: 0 4px 14px rgba(45,42,50,0.08);
+      --ease: cubic-bezier(0.25, 1, 0.5, 1);
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 12px;
+      --space-lg: 16px;
+      --font-sans: "SF Pro Text", "PingFang SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { font-size: 15px; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+    body {
+      margin: 0; font-family: var(--font-sans);
+      background: var(--bg); color: var(--ink);
+      height: 100vh; overflow: hidden;
+    }
+    .app { display: flex; height: 100vh; }
+
+    /* Topbar */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 54px; background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 18px; z-index: 100;
+    }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1rem; }
+    .brand-icon { font-size: 1.1rem; }
+    .menu-toggle { display: none; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--ink); }
+    .topbar-actions { display: flex; align-items: center; gap: 8px; }
+    .theme-toggle {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: var(--radius-sm);
+      background: transparent; border: 1px solid var(--rule);
+      color: var(--ink); font-size: 1rem; cursor: pointer;
+      transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease);
+    }
+    .theme-toggle:hover { background: var(--bg2); border-color: var(--rule-strong); }
+
+
+
+    /* Sidebar */
+    .sidebar {
+      width: 300px; background: var(--sidebar);
+      border-right: 1px solid var(--rule);
+      display: flex; flex-direction: column;
+      padding-top: 54px; flex-shrink: 0; overflow: hidden;
+    }
+    .sidebar-scroll { flex: 1; overflow-y: auto; padding: var(--space-sm) 0; }
+    .sidebar-scroll::-webkit-scrollbar { width: 5px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 999px; }
+
+    /* Search */
+    .search {
+      margin: 0 var(--space-md) var(--space-sm);
+      position: relative;
+    }
+    .search input {
+      width: 100%; padding: 9px 11px 9px 34px;
+      border: 2px solid var(--rule); border-radius: var(--radius);
+      background: var(--surface); font-size: 0.88rem;
+      color: var(--ink); outline: none;
+      transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+    .search input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 4px rgba(56,249,215,0.12); }
+    .search-icon {
+      position: absolute; left: 11px; top: 50%;
+      transform: translateY(-50%); color: var(--light);
+      font-size: 0.9rem; pointer-events: none;
+    }
+
+    /* Tree */
+    .tree { padding: 0 var(--space-sm); }
+    .tree-node { user-select: none; }
+    .tree-children { padding-left: 18px; }
+    .tree-node.collapsed > .tree-children { display: none; }
+
+    /* Tree row */
+    .tree-row {
+      display: flex; align-items: center;
+      border-radius: var(--radius-sm);
+      margin-bottom: 4px;
+      transition: background-color 0.15s var(--ease);
+    }
+    .tree-row:hover { background: rgba(56,189,248,0.07); }
+    .tree-row:focus-within { background: rgba(56,189,248,0.1); }
+    .tree-row.header:hover { background: rgba(56,189,248,0.09); }
+
+    .row-main {
+      flex: 1; min-width: 0;
+      display: flex; align-items: center;
+      gap: 8px; padding: 8px 10px;
+      cursor: pointer; border-radius: var(--radius-sm);
+      outline: none;
+    }
+    .row-main:focus-visible { box-shadow: inset 0 0 0 2px var(--accent-blue); }
+
+    .tree-chevron {
+      font-size: 0.65rem; color: var(--light);
+      width: 14px; text-align: center;
+      transition: transform 0.2s var(--ease);
+      flex-shrink: 0;
+    }
+    .tree-node.collapsed > .tree-row .tree-chevron { transform: rotate(-90deg); }
+
+    .tree-icon {
+      width: 26px; height: 26px; border-radius: 8px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 14px; line-height: 1;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: transform 0.15s var(--ease), background-color 0.15s ease;
+    }
+    .tree-icon:hover { transform: scale(1.12); }
+
+    .tree-label {
+      flex: 1; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tree-row.header .tree-label { font-weight: 600; font-size: 0.92rem; }
+    .tree-row.leaf .tree-label { font-size: 0.88rem; }
+
+    .tree-count {
+      font-size: 0.68rem; font-weight: 700;
+      color: var(--muted); background: var(--surface);
+      padding: 2px 7px; border-radius: 999px;
+      border: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+
+    /* Row actions */
+    .row-actions {
+      display: flex; align-items: center; gap: 4px;
+      padding-right: 8px;
+      max-width: 0; opacity: 0; overflow: hidden;
+      visibility: hidden;
+      transition: visibility 0s linear 0.18s, max-width 0.18s var(--ease), opacity 0.18s var(--ease);
+    }
+    .tree-row:hover .row-actions,
+    .tree-row:focus-within .row-actions {
+      visibility: visible; opacity: 1; max-width: 72px;
+      transition-delay: 0s;
+    }
+
+    .btn-icon {
+      width: 26px; height: 26px; border: none; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 13px; line-height: 1;
+      cursor: pointer; background: transparent; color: var(--muted);
+      transition: all 0.15s var(--ease);
+      outline: none;
+    }
+    .btn-icon:focus-visible { box-shadow: 0 0 0 2px var(--accent-blue); }
+    .btn-icon:hover { transform: scale(1.08); }
+    .btn-edit:hover { background: var(--blue-soft); color: var(--blue-text); }
+    .btn-delete:hover { background: var(--coral-soft); color: var(--coral-text); }
+
+    @media (hover: none) and (pointer: coarse) {
+      .row-actions { visibility: visible; opacity: 1; max-width: 72px; }
+    }
+
+    /* Leaf */
+    .leaf-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      flex-shrink: 0; background: var(--light);
+      transition: transform 0.2s var(--ease), background 0.2s ease;
+    }
+    .tree-row.leaf.active { background: var(--brand-soft); }
+    .tree-row.leaf.active .leaf-dot { background: var(--brand); transform: scale(1.2); }
+    .tree-row.leaf.active .tree-label { color: var(--brand-text); font-weight: 600; }
+    .leaf-dot.public { background: var(--accent-cyan); }
+    .leaf-dot.core { background: var(--accent-purple); }
+    .leaf-dot.practice { background: var(--accent-coral); }
+    .leaf-dot.task { background: var(--accent-green); }
+
+    .leaf-meta {
+      display: flex; align-items: center; gap: 6px;
+      flex-shrink: 0;
+    }
+    .leaf-code {
+      font-size: 0.68rem; color: var(--light);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .leaf-progress {
+      width: 26px; height: 3px;
+      background: var(--rule); border-radius: 999px;
+      overflow: hidden;
+    }
+    .leaf-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 999px;
+    }
+
+    /* Empty hint */
+    .tree-empty {
+      padding: 6px 8px 6px 28px;
+      font-size: 0.8rem; color: var(--light);
+      font-style: italic;
+    }
+
+    /* Sidebar footer */
+    .sidebar-footer {
+      padding: var(--space-sm) var(--space-md);
+      border-top: 1px solid var(--rule);
+      display: flex; gap: var(--space-sm);
+      background: var(--surface);
+    }
+    .btn {
+      flex: 1; display: inline-flex;
+      align-items: center; justify-content: center;
+      gap: 4px; padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem; font-weight: 700;
+      cursor: pointer; border: none;
+      transition: all 0.15s var(--ease);
+      color: #fff;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      outline: none;
+    }
+    .btn:focus-visible { box-shadow: 0 0 0 3px rgba(56,189,248,0.35); }
+    .btn:active { transform: translateY(2px); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-ghost {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    }
+    .btn-ghost:hover { filter: brightness(1.05); }
+    .btn-subtle {
+      background: var(--surface);
+      color: var(--blue-text);
+      border: 1px solid var(--rule);
+    }
+    .btn-subtle:hover { background: var(--blue-soft); }
+
+    /* Main */
+    .main { flex: 1; padding: 74px 28px 28px; overflow-y: auto; background: var(--bg); }
+    .empty-state { max-width: 520px; margin: 80px auto; text-align: center; color: var(--muted); }
+    .empty-state h2 { color: var(--ink); margin-bottom: 10px; font-size: 1.2rem; }
+    .plan-card {
+      background: var(--surface); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 24px 28px;
+      max-width: 800px; margin: 0 auto;
+    }
+    .plan-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 16px;
+      margin-bottom: 20px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .plan-title { font-size: 1.35rem; font-weight: 700; margin: 0 0 5px; }
+    .plan-meta { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 0.88rem; }
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700;
+      color: #fff;
+    }
+    .badge-core { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); }
+    .badge-public { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green)); }
+    .badge-practice { background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow)); }
+    .badge-task { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); }
+    .progress-block { margin-bottom: 20px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; }
+    .progress-bar { height: 8px; background: var(--rule); border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan)); border-radius: 999px; transition: width 0.4s var(--ease); }
+    .section-title { font-size: 0.95rem; font-weight: 700; margin: 20px 0 10px; color: var(--ink); }
+    .plan-list { list-style: none; padding: 0; margin: 0; }
+    .plan-list li { padding: 10px 12px; background: var(--bg); border-radius: 8px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .plan-list li::before { content: ''; width: 5px; height: 5px; background: var(--accent-blue); border-radius: 50%; flex-shrink: 0; }
+    .plan-list li.done::before { background: var(--accent-green); }
+    .plan-list li.done { color: var(--muted); text-decoration: line-through; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 16px; }
+    .info-cell { background: var(--bg); padding: 12px; border-radius: 8px; }
+    .info-cell label { display: block; font-size: 0.72rem; color: var(--muted); margin-bottom: 3px; }
+    .info-cell value { display: block; font-size: 1rem; font-weight: 700; }
+
+    /* Tabs */
+    .plan-tabs {
+      display: flex; gap: 6px; margin-bottom: 20px;
+      border-bottom: 1px solid var(--rule); padding-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .plan-tab {
+      padding: 7px 14px; border-radius: 999px;
+      font-size: 0.82rem; font-weight: 700;
+      color: var(--muted); background: transparent;
+      border: 1px solid transparent; cursor: pointer;
+      transition: all 0.15s var(--ease);
+      outline: none;
+    }
+    .plan-tab:hover { background: var(--bg); color: var(--ink); }
+    .plan-tab.active {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      color: #fff; box-shadow: 0 3px 10px rgba(56,189,248,0.25);
+    }
+    .plan-tab:focus-visible { box-shadow: 0 0 0 2px var(--accent-blue); }
+
+    /* Question type analysis */
+    .qt-toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+    }
+    .qt-toolbar h3 { margin: 0; font-size: 0.95rem; }
+    .qt-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--rule); border-radius: var(--radius-sm);
+    }
+    .qt-table {
+      width: 100%; border-collapse: collapse; font-size: 0.88rem;
+    }
+    .qt-table th, .qt-table td {
+      padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--rule);
+      white-space: nowrap;
+    }
+    .qt-table th {
+      background: var(--bg); font-weight: 700; color: var(--ink);
+      position: sticky; top: 0;
+    }
+    .qt-table tbody tr:hover { background: rgba(56,189,248,0.05); }
+    .qt-table tbody tr:last-child td { border-bottom: none; }
+    .qt-table .col-strategy { white-space: normal; min-width: 220px; max-width: 360px; }
+    .qt-tag {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700;
+    }
+    .qt-tag-low { background: var(--green-soft); color: var(--green-text); }
+    .qt-tag-medium { background: var(--blue-soft); color: var(--blue-text); }
+    .qt-tag-high { background: var(--coral-soft); color: var(--coral-text); }
+    .qt-actions { display: flex; gap: 6px; }
+    .qt-empty {
+      padding: 28px; text-align: center; color: var(--muted);
+      background: var(--bg); border-radius: var(--radius-sm);
+    }
+    .qt-summary {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;
+    }
+    .qt-summary-item {
+      background: var(--bg); padding: 10px 14px; border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+    }
+    .qt-summary-item strong { color: var(--ink); margin-right: 4px; }
+
+    /* Papers source */
+    .papers-block { margin-top: 20px; }
+    .papers-block h4 {
+      font-size: 0.9rem; font-weight: 700; margin: 0 0 10px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .papers-list {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; gap: 8px;
+    }
+    .paper-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 12px; background: var(--bg);
+      border-radius: var(--radius-sm); font-size: 0.84rem;
+    }
+    .paper-year {
+      flex-shrink: 0; font-weight: 700; color: var(--brand-text);
+      background: var(--brand-soft); padding: 2px 8px; border-radius: 999px;
+    }
+    .paper-info { color: var(--muted); line-height: 1.45; }
+    .paper-info code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--ink); background: var(--surface);
+      padding: 1px 5px; border-radius: 4px; font-size: 0.78rem;
+    }
+
+    /* Reading content */
+    .reading-content { line-height: 1.8; color: var(--ink); }
+    .reading-notice {
+      background: var(--notice-bg); border: 1px solid var(--notice-border);
+      border-radius: 12px; padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem; color: var(--notice-text); font-size: 0.9rem;
+    }
+    .reading-section { margin-bottom: 1rem; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+    .reading-section-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px; cursor: pointer;
+      background: var(--bg); user-select: none;
+      transition: background-color 0.15s var(--ease);
+    }
+    .reading-section-header:hover { background: rgba(56,189,248,0.07); }
+    .reading-section-title { flex: 1; font-weight: 700; }
+    .reading-section-chevron { font-size: 0.7rem; color: var(--light); transition: transform 0.2s var(--ease); flex-shrink: 0; }
+    .reading-section.collapsed .reading-section-chevron { transform: rotate(-90deg); }
+    .reading-section-body { padding: 16px; border-top: 1px solid var(--rule); }
+    .reading-section.collapsed .reading-section-body { display: none; }
+
+    .reading-topic {
+      background: var(--bg2); border-left: 4px solid var(--accent-purple);
+      padding: 1rem 1.25rem; border-radius: 0 12px 12px 0;
+      margin-bottom: 1.25rem; font-size: 0.92rem;
+    }
+    .reading-topic p { margin: 0 0 0.5rem; }
+    .reading-topic p:last-child { margin-bottom: 0; }
+    .reading-topic .req { color: var(--muted); margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed var(--rule); }
+
+    .reading-card { counter-reset: essay; }
+
+    .reading-essay {
+      margin-top: 1.75rem;
+      padding: 1.75rem 1.5rem 1.5rem;
+      background: var(--bg2);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      position: relative;
+    }
+    .reading-essay:first-of-type { margin-top: 0.75rem; }
+    .reading-essay::before {
+      counter-increment: essay;
+      content: "范文 " counter(essay);
+      position: absolute;
+      top: -10px;
+      left: 18px;
+      padding: 0.2rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+      background: var(--accent-blue);
+      box-shadow: 0 2px 6px rgba(56,189,248,0.25);
+      letter-spacing: 0.02em;
+    }
+    .reading-essay:nth-child(even of .reading-essay)::before {
+      background: var(--accent-purple);
+      box-shadow: 0 2px 6px rgba(167,139,250,0.25);
+    }
+    .reading-essay-title { font-size: 1.1rem; font-weight: 700; text-align: center; margin-bottom: 0.85rem; color: var(--ink); }
+    .reading-essay-body { line-height: 1.95; text-align: justify; }
+    .reading-essay-body p { text-indent: 2em; margin-bottom: 0.5rem; }
+    .reading-essay-meta { text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: 0.85rem; font-style: italic; }
+
+    .reading-sources { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+    .reading-sources h4 { font-size: 0.95rem; margin-bottom: 0.75rem; }
+    .reading-sources ol { padding-left: 1.2rem; font-size: 0.82rem; color: var(--muted); }
+    .reading-sources li { margin-bottom: 0.5rem; }
+    .reading-sources a { color: var(--accent-blue); word-break: break-all; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      .sidebar { position: fixed; left: 0; top: 54px; bottom: 0; z-index: 90; transform: translateX(-100%); transition: transform 0.25s ease; box-shadow: 4px 0 16px rgba(0,0,0,0.08); padding-top: 0; }
+      .sidebar.open { transform: translateX(0); }
+      .main { padding: 70px 16px 20px; }
+      .plan-card { padding: 18px; }
+      .plan-header { flex-direction: column; gap: 10px; }
+      .btn { font-size: 0.72rem; padding: 8px 6px; }
+      .qt-table .col-strategy { min-width: 160px; max-width: 220px; }
+      .reading-essay { padding: 1.5rem 1rem 1.25rem; }
+      .reading-essay::before { left: 12px; font-size: 0.68rem; }
+      .reading-essay-title { font-size: 1rem; }
+    }
+  </style>
+{{ theme_script }}
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span class="brand-icon">🌸</span><span>此刻便是春天</span></div>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleWorkbenchTheme()" title="切换主题">🌙</button>
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-scroll">
+        <div class="search">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="搜索科目或任务..." oninput="filterItems()">
+        </div>
+
+        <div class="tree" id="tree"></div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-subtle" onclick="addWorkspace()">+ 工作区</button>
+        <button class="btn btn-ghost" onclick="addCategory()">+ 分类</button>
+        <button class="btn btn-primary" onclick="addItem()">+ 任务</button>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="empty-state">
+        <h2>选择一个项目查看计划</h2>
+        <p>悬停或聚焦左侧行，可显示编辑/删除。</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+{{ reading_constants }}
+const workspaces = [
+{{ workspaces_array }}
+    ];
+
+    let currentWorkspaceId = 'read';
+    let searchQuery = '';
+    let activeItemId = null;
+    let activeTab = 'plan';
+    const collapsed = new Set();
+
+    workspaces.forEach(ws => {
+      ws.categories.forEach(cat => {
+        cat.items.forEach((item, idx) => {
+          item.id = item.id || (item.code ? `code_${item.code}` : `${ws.id}_${cat.name}_${idx}_${Date.now()}`);
+        });
+      });
+    });
+
+    function getCurrentWorkspace() {
+      return workspaces.find(w => w.id === currentWorkspaceId) || workspaces[0];
+    }
+
+    function wsKey(ws) { return `ws-${ws.id}`; }
+    function catKey(ws, cat) { return `cat-${ws.id}-${cat.name}`; }
+
+    function matchesSearch(item) {
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      return item.name.toLowerCase().includes(q) ||
+        (item.code && item.code.toLowerCase().includes(q));
+    }
+
+    
+    function renderReadingContent(item) {
+      const html = item.readingHtml || '<div class="reading-content"><p>暂无内容</p></div>';
+      return html;
+    }
+
+    function toggleReadingSection(id) {
+      const section = document.querySelector('.reading-section[data-section="' + id + '"]');
+      if (section) section.classList.toggle('collapsed');
+    }
+
+function renderTree() {
+      const tree = document.getElementById('tree');
+      tree.innerHTML = workspaces.map(ws => {
+        const wsCollapsed = collapsed.has(wsKey(ws)) && !searchQuery;
+        const visibleTotal = ws.categories.reduce((sum, cat) => sum + cat.items.filter(matchesSearch).length, 0);
+        if (searchQuery && visibleTotal === 0) return '';
+
+        const categoriesHtml = ws.categories.map(cat => {
+          const visibleItems = cat.items.filter(matchesSearch);
+          if (searchQuery && visibleItems.length === 0) return '';
+
+          const catCollapsed = collapsed.has(catKey(ws, cat)) && !searchQuery;
+
+          const itemsHtml = visibleItems.length === 0
+            ? '<div class="tree-empty">暂无项目</div>'
+            : visibleItems.map(item => {
+                const total = item.total !== undefined ? item.total : (item.chapters || 1);
+                const done = item.done !== undefined ? item.done : 0;
+                const percent = Math.min(100, Math.round((done / total) * 100)) || 0;
+                const isActive = item.id === activeItemId;
+                return `
+                  <div class="tree-node tree-leaf">
+                    <div class="tree-row leaf ${isActive ? 'active' : ''}">
+                      <div class="row-main"
+                           data-id="${item.id}" tabindex="0"
+                           onclick="selectItem('${item.id}')"
+                           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectItem('${item.id}')}">
+                        <span class="leaf-dot ${item.type || 'task'}"></span>
+                        <span class="tree-label">${item.name}</span>
+                        <span class="leaf-meta">
+                          ${item.code ? `<span class="leaf-code">${item.code}</span>` : ''}
+                          <span class="leaf-progress"><span class="leaf-progress-fill" style="width:${percent}%"></span></span>
+                        </span>
+                      </div>
+                      <div class="row-actions">
+                        <button class="btn-icon btn-edit" title="编辑" onclick="event.stopPropagation();editItem('${item.id}')">✏️</button>
+                        <button class="btn-icon btn-delete" title="删除" onclick="event.stopPropagation();deleteItem('${item.id}')">🗑️</button>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('');
+
+          return `
+            <div class="tree-node ${catCollapsed ? 'collapsed' : ''}">
+              <div class="tree-row header">
+                <div class="row-main" onclick="toggleCategory('${ws.id}','${escapeJs(cat.name)}')" tabindex="0">
+                  <span class="tree-chevron">▾</span>
+                  <span class="tree-icon" style="background:${cat.iconBg || 'var(--rule)'}" onclick="event.stopPropagation();editCategory('${ws.id}','${escapeJs(cat.name)}')" title="点击更换图标">${cat.icon}</span>
+                  <span class="tree-label">${cat.name}</span>
+                  <span class="tree-count">${visibleItems.length}</span>
+                </div>
+                <div class="row-actions">
+                  <button class="btn-icon btn-edit" title="编辑分类" onclick="event.stopPropagation();editCategory('${ws.id}','${escapeJs(cat.name)}')">✏️</button>
+                  <button class="btn-icon btn-delete" title="删除分类" onclick="event.stopPropagation();deleteCategory('${ws.id}','${escapeJs(cat.name)}')">🗑️</button>
+                </div>
+              </div>
+              <div class="tree-children">${itemsHtml}</div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="tree-node ${wsCollapsed ? 'collapsed' : ''}">
+            <div class="tree-row header">
+              <div class="row-main" onclick="toggleWorkspaceNode('${ws.id}')" tabindex="0">
+                <span class="tree-chevron">▾</span>
+                <span class="tree-icon" style="background:${ws.iconBg || 'var(--rule)'}" onclick="event.stopPropagation();editWorkspace('${ws.id}')" title="点击更换图标">${ws.icon}</span>
+                <span class="tree-label">${ws.name}</span>
+                <span class="tree-count">${visibleTotal}</span>
+              </div>
+              <div class="row-actions">
+                <button class="btn-icon btn-edit" title="编辑工作区" onclick="event.stopPropagation();editWorkspace('${ws.id}')">✏️</button>
+                <button class="btn-icon btn-delete" title="删除工作区" onclick="event.stopPropagation();deleteWorkspace('${ws.id}')">🗑️</button>
+              </div>
+            </div>
+            <div class="tree-children">${categoriesHtml}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeJs(str) {
+      return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    function toggleWorkspaceNode(id) {
+      const key = `ws-${id}`;
+      if (collapsed.has(key)) {
+        collapsed.delete(key);
+        currentWorkspaceId = id;
+        activeItemId = null;
+        document.getElementById('main').innerHTML = `
+          <div class="empty-state"><h2>选择一个项目查看计划</h2><p>悬停或聚焦左侧行，可显示编辑/删除。</p></div>
+        `;
+      } else {
+        collapsed.add(key);
+      }
+      renderTree();
+    }
+
+    function toggleCategory(wsId, catName) {
+      const key = `cat-${wsId}-${catName}`;
+      if (collapsed.has(key)) collapsed.delete(key);
+      else collapsed.add(key);
+      renderTree();
+    }
+
+    function collapseAll() {
+      workspaces.forEach(ws => {
+        collapsed.add(wsKey(ws));
+        ws.categories.forEach(cat => collapsed.add(catKey(ws, cat)));
+      });
+      renderTree();
+    }
+
+    function expandAll() {
+      collapsed.clear();
+      renderTree();
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    function findWorkspace(id) {
+      return workspaces.find(w => w.id === id);
+    }
+
+    function findItemWithCategory(id) {
+      for (const ws of workspaces) {
+        for (const cat of ws.categories) {
+          for (const item of cat.items) {
+            if (item.id === id) return { ws, cat, item };
+          }
+        }
+      }
+      return null;
+    }
+
+    function getTypeLabel(type) {
+      if (type === 'reading') return '<span class=\"badge badge-public\">阅读资料</span>';
+      if (type === 'public') return '<span class="badge badge-public">公共基础课</span>';
+      if (type === 'core') return '<span class="badge badge-core">专业核心课</span>';
+      if (type === 'practice') return '<span class="badge badge-practice">毕业考核</span>';
+      return '<span class="badge badge-task">任务</span>';
+    }
+
+    function selectItem(id) {
+      const result = findItemWithCategory(id);
+      if (!result) return;
+      activeItemId = id;
+      activeTab = isReadingItem(result.item) ? 'content' : 'plan';
+
+      document.querySelectorAll('.tree-row.leaf').forEach(el => el.classList.remove('active'));
+      const activeEl = document.querySelector(`.tree-row.leaf .row-main[data-id="${CSS.escape(id)}"]`)?.closest('.tree-row.leaf');
+      if (activeEl) activeEl.classList.add('active');
+
+      renderItemView();
+
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    }
+
+    function isExamItem(item) {
+      return item && (item.type === 'core' || item.type === 'public' || item.type === 'practice');
+    }
+
+    function isReadingItem(item) {
+      return item && item.type === 'reading';
+    }
+
+    function getItemMetaFields(item) {
+      const targetDate = item.targetDate || item.exam || '待定';
+      return [
+        item.code ? `<span>代码：${item.code}</span>` : '',
+        item.credits ? `<span>学分：${item.credits}</span>` : '',
+        targetDate ? `<span>目标日期：${targetDate}</span>` : ''
+      ].filter(Boolean).join('');
+    }
+
+    function renderTabs(item) {
+      if (!isExamItem(item) && !isReadingItem(item)) return '';
+      const tabs = [{ key: 'plan', label: '计划' }];
+      if (isExamItem(item)) tabs.push({ key: 'questionTypes', label: '题型分析' });
+      if (isReadingItem(item)) tabs.push({ key: 'content', label: '内容' });
+      return `
+        <div class="plan-tabs">
+          ${tabs.map(t => `
+            <button class="plan-tab ${activeTab === t.key ? 'active' : ''}"
+                    onclick="switchTab('${t.key}')">${t.label}</button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function switchTab(tab) {
+      if (!activeItemId) return;
+      activeTab = tab;
+      renderItemView();
+    }
+
+    function renderItemView() {
+      const result = findItemWithCategory(activeItemId);
+      if (!result) return;
+      const { item } = result;
+
+      const headerHtml = `
+        <div class="plan-header">
+          <div>
+            <h2 class="plan-title">${item.name}</h2>
+            <div class="plan-meta">${getItemMetaFields(item)}</div>
+          </div>
+          ${getTypeLabel(item.type)}
+        </div>
+      `;
+
+      let contentHtml = '';
+      if (activeTab === 'plan' || (!isExamItem(item) && !isReadingItem(item))) {
+        contentHtml = renderPlanTab(item);
+      } else if (activeTab === 'questionTypes') {
+        contentHtml = renderQuestionTypes(item);
+      } else if (activeTab === 'content' && isReadingItem(item)) {
+        contentHtml = renderReadingContent(item);
+      }
+
+      document.getElementById('main').innerHTML = `
+        <div class="plan-card">
+          ${headerHtml}
+          ${renderTabs(item)}
+          ${contentHtml}
+        </div>
+      `;
+    }
+
+    function renderPlanTab(item) {
+      const total = item.total !== undefined ? item.total : (item.chapters || 1);
+      const done = item.done !== undefined ? item.done : 0;
+      const percent = Math.min(100, Math.round((done / total) * 100)) || 0;
+      const tasks = item.tasks || [];
+      const tasksHtml = tasks.map((t, i) => `<li class="${i < done ? 'done' : ''}">${t}</li>`).join('');
+      const targetDate = item.targetDate || item.exam || '待定';
+      const status = item.status || item.stage || '未开始';
+      const currentStep = item.current || '未开始';
+
+      return `
+        <div class="progress-block">
+          <div class="progress-label">
+            <span>当前阶段：${status}</span>
+            <span>${done}/${total} 步 · ${percent}%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%"></div></div>
+        </div>
+        <div class="info-grid">
+          <div class="info-cell"><label>当前进度</label><value>${currentStep}</value></div>
+          <div class="info-cell"><label>已完成</label><value>${done}</value></div>
+          <div class="info-cell"><label>剩余</label><value>${total - done}</value></div>
+          <div class="info-cell"><label>目标日期</label><value>${targetDate}</value></div>
+        </div>
+        <h3 class="section-title">阶段任务</h3>
+        <ul class="plan-list">${tasksHtml || '<li style="background:transparent;padding-left:0;">暂无任务，点击底部“+ 任务”添加</li>'}</ul>
+        <h3 class="section-title">安排与策略</h3>
+        <p>${item.review || item.notes || '暂无备注'}</p>
+      `;
+    }
+
+    function ensureExamMeta(item) {
+      if (!item.examMeta) item.examMeta = {};
+      if (!item.examMeta.questionTypes) item.examMeta.questionTypes = [];
+      return item.examMeta.questionTypes;
+    }
+
+    function getDifficultyLabel(difficulty) {
+      const map = { low: '低', medium: '中', high: '高' };
+      return map[difficulty] || '中';
+    }
+
+    function getDifficultyClass(difficulty) {
+      const map = { low: 'qt-tag-low', medium: 'qt-tag-medium', high: 'qt-tag-high' };
+      return map[difficulty] || 'qt-tag-medium';
+    }
+
+    function renderQuestionTypes(item) {
+      const questionTypes = ensureExamMeta(item);
+      const totalScore = questionTypes.reduce((sum, q) => sum + (q.count || 0) * (q.score || 0), 0);
+      const totalCount = questionTypes.reduce((sum, q) => sum + (q.count || 0), 0);
+
+      const rowsHtml = questionTypes.length === 0
+        ? `<tr><td colspan="6"><div class="qt-empty">暂无题型数据，点击右上角添加。</div></td></tr>`
+        : questionTypes.map((q, idx) => `
+            <tr>
+              <td>${q.name}</td>
+              <td>${q.count}</td>
+              <td>${q.score}</td>
+              <td>${q.count * q.score}</td>
+              <td><span class="qt-tag ${getDifficultyClass(q.difficulty)}">${getDifficultyLabel(q.difficulty)}</span></td>
+              <td class="col-strategy">${q.strategy || '-'}</td>
+              <td>
+                <div class="qt-actions">
+                  <button class="btn-icon btn-edit" title="编辑" onclick="editQuestionType('${CSS.escape(item.id)}', ${idx})">✏️</button>
+                  <button class="btn-icon btn-delete" title="删除" onclick="deleteQuestionType('${CSS.escape(item.id)}', ${idx})">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+
+      const summaryHtml = questionTypes.length === 0 ? '' : `
+        <div class="qt-summary">
+          <div class="qt-summary-item"><strong>题型数：</strong>${questionTypes.length}</div>
+          <div class="qt-summary-item"><strong>总题量：</strong>${totalCount}</div>
+          <div class="qt-summary-item"><strong>卷面总分：</strong>${totalScore}</div>
+        </div>
+      `;
+
+      const papers = item.examMeta && item.examMeta.papers ? item.examMeta.papers : [];
+      const papersHtml = papers.length === 0 ? '' : `
+        <div class="papers-block">
+          <h4>📚 真题来源</h4>
+          <ul class="papers-list">
+            ${papers.map(p => `
+              <li class="paper-item">
+                <span class="paper-year">${p.year}</span>
+                <span class="paper-info"><code>${p.file}</code><br>${p.note}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+
+      return `
+        <div class="qt-toolbar">
+          <h3 class="section-title" style="margin:0">题型列表</h3>
+          <button class="btn btn-primary" style="flex:0 0 auto; padding:8px 16px;" onclick="addQuestionType('${CSS.escape(item.id)}')">+ 添加题型</button>
+        </div>
+        <div class="qt-table-wrap">
+          <table class="qt-table">
+            <thead>
+              <tr>
+                <th>题型</th>
+                <th>题量</th>
+                <th>分值</th>
+                <th>小计</th>
+                <th>难度</th>
+                <th class="col-strategy">策略</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+        ${summaryHtml}
+        ${papersHtml}
+      `;
+    }
+
+    function addQuestionType(itemId) {
+      const result = findItemWithCategory(itemId);
+      if (!result) return;
+      const { item } = result;
+
+      const name = prompt('题型名称：');
+      if (!name || !name.trim()) return;
+      const count = Math.max(0, parseInt(prompt('题量：', '1') || '1', 10) || 0);
+      const score = parseFloat(prompt('单题分值：', '1') || '1') || 0;
+      const difficultyInput = prompt('难度（low/medium/high）：', 'medium') || 'medium';
+      const difficulty = ['low', 'medium', 'high'].includes(difficultyInput) ? difficultyInput : 'medium';
+      const strategy = prompt('解题策略：', '') || '';
+
+      ensureExamMeta(item).push({ name: name.trim(), count, score, difficulty, strategy });
+      renderItemView();
+    }
+
+    function editQuestionType(itemId, idx) {
+      const result = findItemWithCategory(itemId);
+      if (!result) return;
+      const { item } = result;
+      const questionTypes = ensureExamMeta(item);
+      const q = questionTypes[idx];
+      if (!q) return;
+
+      const name = prompt('题型名称：', q.name);
+      if (!name || !name.trim()) return;
+      const count = Math.max(0, parseInt(prompt('题量：', String(q.count || 0)) || '0', 10) || 0);
+      const score = parseFloat(prompt('单题分值：', String(q.score || 0)) || '0') || 0;
+      const difficultyInput = prompt('难度（low/medium/high）：', q.difficulty || 'medium') || 'medium';
+      const difficulty = ['low', 'medium', 'high'].includes(difficultyInput) ? difficultyInput : 'medium';
+      const strategy = prompt('解题策略：', q.strategy || '') || '';
+
+      questionTypes[idx] = { name: name.trim(), count, score, difficulty, strategy };
+      renderItemView();
+    }
+
+    function deleteQuestionType(itemId, idx) {
+      const result = findItemWithCategory(itemId);
+      if (!result) return;
+      const { item } = result;
+      const questionTypes = ensureExamMeta(item);
+      if (!questionTypes[idx]) return;
+      if (!confirm(`确定删除题型「${questionTypes[idx].name}」吗？`)) return;
+      questionTypes.splice(idx, 1);
+      renderItemView();
+    }
+
+    function filterItems() {
+      searchQuery = document.getElementById('search-input').value.trim();
+      if (searchQuery) {
+        workspaces.forEach(ws => collapsed.delete(wsKey(ws)));
+        workspaces.forEach(ws => ws.categories.forEach(cat => collapsed.delete(catKey(ws, cat))));
+      }
+      renderTree();
+    }
+
+    // Workspace CRUD
+    function addWorkspace() {
+      const name = prompt('新工作区名称：');
+      if (!name || !name.trim()) return;
+      const id = 'ws_' + Date.now();
+      const icon = prompt('工作区图标（emoji，国风可爱）：', '🏮') || '🏮';
+      const iconBg = prompt('图标底色（如 #FFE4EC）：', '#FFE4EC') || '#FFE4EC';
+      workspaces.push({ id, name: name.trim(), icon, iconBg, categories: [] });
+      collapsed.delete(wsKey(workspaces[workspaces.length - 1]));
+      currentWorkspaceId = id;
+      renderTree();
+    }
+
+    function editWorkspace(id) {
+      const ws = findWorkspace(id);
+      if (!ws) return;
+      const name = prompt('工作区名称：', ws.name);
+      if (!name || !name.trim()) return;
+      const icon = prompt('工作区图标（emoji，国风可爱）：', ws.icon) || ws.icon;
+      const iconBg = prompt('图标底色：', ws.iconBg) || ws.iconBg;
+      ws.name = name.trim();
+      ws.icon = icon;
+      ws.iconBg = iconBg;
+      renderTree();
+    }
+
+    function deleteWorkspace(id) {
+      const ws = findWorkspace(id);
+      if (!ws) return;
+      if (workspaces.length <= 1) { alert('至少保留一个工作区'); return; }
+      if (!confirm(`确定删除工作区「${ws.name}」吗？`)) return;
+      workspaces.splice(workspaces.indexOf(ws), 1);
+      if (currentWorkspaceId === id) currentWorkspaceId = workspaces[0].id;
+      if (activeItemId) {
+        const stillExists = findItemWithCategory(activeItemId);
+        if (!stillExists) {
+          activeItemId = null;
+          document.getElementById('main').innerHTML = `
+            <div class="empty-state"><h2>选择一个项目查看计划</h2><p>悬停或聚焦左侧行，可显示编辑/删除。</p></div>
+          `;
+        }
+      }
+      renderTree();
+    }
+
+    // Category CRUD
+    function addCategory() {
+      const ws = getCurrentWorkspace();
+      const name = prompt('新分类名称：');
+      if (!name || !name.trim()) return;
+      const icon = prompt('分类图标（emoji，国风可爱）：', '🌸') || '🌸';
+      const iconBg = prompt('图标底色（如 #FCE7F3）：', '#FCE7F3') || '#FCE7F3';
+      ws.categories.push({ name: name.trim(), icon, iconBg, items: [] });
+      collapsed.delete(catKey(ws, ws.categories[ws.categories.length - 1]));
+      renderTree();
+    }
+
+    function editCategory(wsId, oldName) {
+      const ws = findWorkspace(wsId);
+      const cat = ws.categories.find(c => c.name === oldName);
+      if (!cat) return;
+      const newName = prompt('分类名称：', cat.name);
+      if (!newName || !newName.trim()) return;
+      const newIcon = prompt('分类图标（emoji）：', cat.icon) || cat.icon;
+      const newIconBg = prompt('图标底色：', cat.iconBg) || cat.iconBg;
+      cat.name = newName.trim();
+      cat.icon = newIcon;
+      cat.iconBg = newIconBg;
+      renderTree();
+    }
+
+    function deleteCategory(wsId, name) {
+      const ws = findWorkspace(wsId);
+      const cat = ws.categories.find(c => c.name === name);
+      if (!cat) return;
+      if (cat.items.length > 0) {
+        if (!confirm(`「${name}」下还有 ${cat.items.length} 个项目，确定删除整个分类吗？`)) return;
+      } else {
+        if (!confirm(`确定删除分类「${name}」吗？`)) return;
+      }
+      const deletedIds = new Set(cat.items.map(i => i.id));
+      ws.categories = ws.categories.filter(c => c.name !== name);
+      if (activeItemId && deletedIds.has(activeItemId)) {
+        activeItemId = null;
+        document.getElementById('main').innerHTML = `
+          <div class="empty-state"><h2>选择一个项目查看计划</h2><p>悬停或聚焦左侧行，可显示编辑/删除。</p></div>
+        `;
+      }
+      renderTree();
+    }
+
+    // Item CRUD
+    function addItem() {
+      const ws = getCurrentWorkspace();
+      if (ws.categories.length === 0) {
+        alert('请先添加一个分类');
+        return;
+      }
+      const catOptions = ws.categories.map((c, i) => `${i + 1}. ${c.name}`).join('\n');
+      const catInput = prompt('添加到哪个分类？（输入名称或编号）\n' + catOptions);
+      if (!catInput || !catInput.trim()) return;
+      const trimmed = catInput.trim();
+      const cat = ws.categories.find(c => c.name === trimmed) || ws.categories[Number(trimmed) - 1];
+      if (!cat) { alert('分类不存在'); return; }
+
+      const name = prompt('任务 / 科目名称：');
+      if (!name || !name.trim()) return;
+
+      const isExam = confirm('这是否为自考科目？\n· 是 → 会询问课程代码、学分等字段\n· 否 → 按普通任务创建');
+      const baseId = `${ws.id}_${cat.name}_${cat.items.length}_${Date.now()}`;
+
+      if (isExam) {
+        const code = prompt('课程代码：') || '';
+        const credits = parseFloat(prompt('学分：') || '0') || 0;
+        const exam = prompt('考试时间：', '2027年4月') || '待定';
+        cat.items.push({
+          id: code ? `code_${code}` : baseId,
+          code, name: name.trim(), credits, type: 'core',
+          exam, targetDate: exam,
+          status: '未开始', stage: '未开始',
+          total: 10, chapters: 10, done: 0,
+          current: '未开始',
+          tasks: ['制定学习计划','准备教材资料','完成第1章学习'],
+          review: '按阶段推进，考前集中复习',
+          examMeta: { questionTypes: [] }
+        });
+      } else {
+        const targetDate = prompt('目标日期（可选）：', '待定') || '待定';
+        const total = Math.max(1, parseInt(prompt('计划拆分为几步？（默认3步）', '3') || '3', 10) || 3);
+        cat.items.push({
+          id: baseId, name: name.trim(), type: 'task',
+          targetDate, status: '未开始', stage: '未开始',
+          total, chapters: total, done: 0,
+          current: '未开始',
+          tasks: ['制定第一步计划'],
+          notes: '按阶段推进'
+        });
+      }
+
+      collapsed.delete(catKey(ws, cat));
+      renderTree();
+      setTimeout(() => {
+        const newId = cat.items[cat.items.length - 1].id;
+        const newEl = document.querySelector(`.tree-row.leaf .row-main[data-id="${CSS.escape(newId)}"]`);
+        if (newEl) {
+          newEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          selectItem(newId);
+        }
+      }, 50);
+    }
+
+    function editItem(id) {
+      const result = findItemWithCategory(id);
+      if (!result) return;
+      const { item } = result;
+
+      const newName = prompt('名称：', item.name);
+      if (!newName || !newName.trim()) return;
+      item.name = newName.trim();
+
+      if (item.code !== undefined) {
+        const newCode = prompt('课程代码：', item.code || '');
+        if (newCode !== null) item.code = newCode;
+      }
+      if (item.credits !== undefined) {
+        const newCredits = prompt('学分：', item.credits || '0');
+        if (newCredits !== null) item.credits = parseFloat(newCredits) || 0;
+      }
+
+      const newDate = prompt('目标日期：', item.targetDate || item.exam || '待定');
+      if (newDate !== null) { item.targetDate = newDate; item.exam = newDate; }
+
+      const newStatus = prompt('当前阶段：', item.status || item.stage || '未开始');
+      if (newStatus !== null) { item.status = newStatus; item.stage = newStatus; }
+
+      const newCurrent = prompt('当前进度：', item.current || '未开始');
+      if (newCurrent !== null) item.current = newCurrent;
+
+      const newTasks = prompt('阶段任务（用逗号分隔）：', (item.tasks || []).join('，'));
+      if (newTasks !== null) item.tasks = newTasks ? newTasks.split(/[,，]/).map(s => s.trim()).filter(Boolean) : [];
+
+      const newReview = prompt('安排与策略：', item.review || item.notes || '');
+      if (newReview !== null) { item.review = newReview; item.notes = newReview; }
+
+      renderTree();
+      if (activeItemId === id) selectItem(id);
+    }
+
+    function deleteItem(id) {
+      const result = findItemWithCategory(id);
+      if (!result) return;
+      const { item, cat } = result;
+      if (!confirm(`确定删除「${item.name}」吗？`)) return;
+      cat.items = cat.items.filter(i => i.id !== id);
+      if (activeItemId === id) {
+        activeItemId = null;
+        document.getElementById('main').innerHTML = `
+          <div class="empty-state"><h2>选择一个项目查看计划</h2><p>悬停或聚焦左侧行，可显示编辑/删除。</p></div>
+        `;
+      }
+      renderTree();
+    }
+
+    renderTree();
+  </script>
+</body>
+</html>
