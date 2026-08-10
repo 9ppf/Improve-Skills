@@ -4,7 +4,7 @@
 
 ## 这是做什么的
 
-`build.py` 是「此刻便是春天」工作台的构建脚本。它读取 `Workbench/data/` 下的 JSON 配置和模块数据，基于 `templates/workbench.html` 模板渲染生成 `Workbench/此刻便是春天.html`，同时清理临时产物并执行校验。
+`build.py` 是「此刻便是春天」工作台的构建脚本。它读取 `Workbench/data/` 下的 JSON 配置和模块数据，编译 `styles/main.scss` 生成 CSS，再基于 `templates/workbench.html` 模板渲染生成 `Workbench/此刻便是春天.html`，同时清理临时产物并执行校验。
 
 运行一次构建后，`此刻便是春天.html` 就是最新版本的工作台页面。
 
@@ -48,11 +48,12 @@ python build.py --dry-run
 4. **运行转换器**：每个模块可以对应 `transformers/{模块id}.py` 进行内容 enrich
 5. **应用主题 token**：把 JSON 中的颜色 token 替换为实际色值
 6. **备份旧 HTML**：生成带时间戳的 `.bak-YYYYMMDD_HHMMSS` 备份
-7. **注入主题系统**：向 HTML 注入主题切换按钮、CSS 和 JS
-8. **注入阅读模块**：先移除旧阅读模块，再注入新的阅读模块数据
-9. **校验 JS 语法**：检查生成后的 HTML 中 JS 是否合法
-10. **完整校验**：运行 `validate_workbench.py` 做进一步检查
-11. **后清理**：删除构建和校验过程中新产生的临时产物
+7. **编译 SCSS 样式**：把 `styles/main.scss` 编译为 CSS 并注入模板
+8. **注入主题系统**：向 HTML 注入主题切换按钮、CSS 和 JS
+9. **注入阅读模块**：先移除旧阅读模块，再注入新的阅读模块数据
+10. **校验 JS 语法**：检查生成后的 HTML 中 JS 是否合法
+11. **完整校验**：运行 `validate_workbench.py` 做进一步检查
+12. **后清理**：删除构建和校验过程中新产生的临时产物
 
 ---
 
@@ -64,6 +65,8 @@ python build.py --dry-run
 | `Workbench/data/modules/` | 各模块的 JSON 数据文件 |
 | `transformers/` | 模块转换器，文件名与模块 id 对应，如 `read.py` |
 | `.trae/skills/` | Skill 脚本，包含 `reading_integration.py` 和 `validate_workbench.py` |
+| `styles/` | SCSS 样式源码，`main.scss` 为编译入口 |
+| `templates/` | HTML 模板目录，`workbench.html` 为渲染骨架 |
 | `Workbench/此刻便是春天.html` | 构建产物，工作台主入口 |
 | `Workbench/此刻便是春天.html.bak-*` | 自动备份，最多保留 3 份 |
 
@@ -87,6 +90,31 @@ python build.py --dry-run
 - `enabled`：false 时跳过该模块
 
 新增模块时，只需要添加注册项、准备 JSON 数据、可选写转换器，不需要修改 `此刻便是春天.html`。
+
+---
+
+## 自定义样式（SASS）
+
+工作台的视觉样式已从 HTML 模板迁移到 `styles/` 目录，使用 SCSS 编写。
+
+- 入口文件：`styles/main.scss`
+- 可定制变量：`styles/_variables.scss`（颜色、间距、圆角、阴影、字体等）
+- 模块划分：
+  - `_root.scss`：CSS 自定义属性 `:root`
+  - `_base.scss`：基础 reset 与页面级样式
+  - `_layout.scss`：顶部栏、侧边栏、主体布局
+  - `_tree.scss`：树形目录与行内操作
+  - `_components.scss`：按钮、卡片、标签页、表格等
+  - `_reading.scss`：阅读资料内容样式
+  - `_responsive.scss`：响应式与移动端适配
+
+修改 SCSS 后，重新运行 `python build.py` 即可把编译后的 CSS 注入到生成的 HTML 中。
+
+依赖：构建脚本使用 Python 的 `libsass` 包编译 SCSS。如果未安装，运行：
+
+```bash
+pip install libsass
+```
 
 ---
 

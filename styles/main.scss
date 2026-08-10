@@ -1,0 +1,12 @@
+// Entry point for the workbench stylesheet.
+// Compile with: sass styles/main.scss
+// In the build pipeline this is compiled automatically by build.py.
+
+@import "variables";
+@import "root";
+@import "base";
+@import "tree";
+@import "components";
+@import "layout";
+@import "reading";
+@import "responsive";

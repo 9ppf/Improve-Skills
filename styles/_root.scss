@@ -1,0 +1,53 @@
+@import "variables";
+
+:root {
+  --bg: #{$bg};
+  --surface: #{$surface};
+  --sidebar: #{$sidebar};
+  --bg2: #{$bg2};
+  --ink: #{$ink};
+  --muted: #{$muted};
+  --light: #{$light};
+  --rule: #{$rule};
+  --rule-strong: #{$rule-strong};
+
+  --accent-purple: #{$accent-purple};
+  --purple-soft: #{$purple-soft};
+  --purple-text: #{$purple-text};
+  --accent-blue: #{$accent-blue};
+  --blue-soft: #{$blue-soft};
+  --blue-text: #{$blue-text};
+  --accent-coral: #{$accent-coral};
+  --coral-soft: #{$coral-soft};
+  --coral-text: #{$coral-text};
+  --accent-green: #{$accent-green};
+  --green-soft: #{$green-soft};
+  --green-text: #{$green-text};
+  --accent-cyan: #{$accent-cyan};
+  --accent-yellow: #{$accent-yellow};
+  --accent-orange: #{$accent-orange};
+
+  --notice-bg: #{$notice-bg};
+  --notice-border: #{$notice-border};
+  --notice-text: #{$notice-text};
+  --reading-warm: #{$reading-warm};
+
+  --brand: var(--accent-blue);
+  --brand-soft: var(--blue-soft);
+  --brand-text: var(--blue-text);
+  --danger: var(--coral-text);
+  --success: var(--accent-green);
+
+  --radius-sm: #{$radius-sm};
+  --radius: #{$radius};
+  --shadow-sm: #{$shadow-sm};
+  --shadow: #{$shadow};
+  --ease: #{$ease};
+
+  --space-xs: #{$space-xs};
+  --space-sm: #{$space-sm};
+  --space-md: #{$space-md};
+  --space-lg: #{$space-lg};
+
+  --font-sans: #{$font-sans};
+}

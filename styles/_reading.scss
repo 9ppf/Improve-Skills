@@ -1,0 +1,160 @@
+@import "variables";
+
+/* Reading content */
+.reading-content {
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.reading-notice {
+  background: var(--notice-bg);
+  border: 1px solid var(--notice-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  color: var(--notice-text);
+  font-size: 0.9rem;
+}
+
+.reading-section {
+  margin-bottom: 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.reading-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  background: var(--bg);
+  user-select: none;
+  transition: background-color 0.15s var(--ease);
+}
+
+.reading-section-header:hover { background: rgba(56, 189, 248, 0.07); }
+
+.reading-section-title { flex: 1; font-weight: 700; }
+
+.reading-section-chevron {
+  font-size: 0.7rem;
+  color: var(--light);
+  transition: transform 0.2s var(--ease);
+  flex-shrink: 0;
+}
+
+.reading-section.collapsed .reading-section-chevron { transform: rotate(-90deg); }
+
+.reading-section-body {
+  padding: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.reading-section.collapsed .reading-section-body { display: none; }
+
+.reading-topic {
+  background: var(--bg2);
+  border-left: 4px solid var(--accent-purple);
+  padding: 1rem 1.25rem;
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 1.25rem;
+  font-size: 0.92rem;
+}
+
+.reading-topic p { margin: 0 0 0.5rem; }
+.reading-topic p:last-child { margin-bottom: 0; }
+
+.reading-topic .req {
+  color: var(--muted);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--rule);
+}
+
+.reading-card { counter-reset: essay; }
+
+.reading-essay {
+  margin-top: 1.75rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+.reading-essay:first-of-type { margin-top: 0.75rem; }
+
+.reading-essay::before {
+  counter-increment: essay;
+  content: "范文 " counter(essay);
+  position: absolute;
+  top: -10px;
+  left: 18px;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent-blue);
+  box-shadow: 0 2px 6px rgba(56, 189, 248, 0.25);
+  letter-spacing: 0.02em;
+}
+
+.reading-essay:nth-child(even of .reading-essay)::before {
+  background: var(--accent-purple);
+  box-shadow: 0 2px 6px rgba(167, 139, 250, 0.25);
+}
+
+.reading-essay-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.85rem;
+  color: var(--ink);
+}
+
+.reading-essay-body {
+  line-height: 1.95;
+  text-align: justify;
+}
+
+.reading-essay-body p {
+  text-indent: 2em;
+  margin-bottom: 0.5rem;
+}
+
+.reading-essay-meta {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.85rem;
+  font-style: italic;
+}
+
+.reading-sources {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.reading-sources h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.reading-sources ol {
+  padding-left: 1.2rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.reading-sources li { margin-bottom: 0.5rem; }
+
+.reading-sources a {
+  color: var(--accent-blue);
+  word-break: break-all;
+}

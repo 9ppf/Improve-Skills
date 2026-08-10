@@ -7,6 +7,7 @@ Current scope:
   - Load enabled module JSON files from data/modules/.
   - Enrich the reading module via transformers/reading.py.
   - Replace theme tokens in module metadata.
+  - Compile styles/main.scss into CSS and inject it into the HTML template.
   - Render the workbench HTML from templates/workbench.html.
   - Backup the old workbench and validate the result.
 
@@ -39,7 +40,17 @@ MODULES_DIR = DATA_DIR / 'modules'
 TRANSFORMERS_DIR = ROOT / 'transformers'
 TEMPLATES_DIR = ROOT / 'templates'
 TEMPLATE = TEMPLATES_DIR / 'workbench.html'
+STYLES_DIR = ROOT / 'styles'
+MAIN_SCSS = STYLES_DIR / 'main.scss'
 SKILLS_DIR = ROOT / '.trae' / 'skills'
+
+try:
+    import sass
+except ImportError as exc:
+    raise ImportError(
+        'SASS compilation requires the "libsass" package. '
+        'Install it with: pip install libsass'
+    ) from exc
 
 # Paths that must never be removed by cleanup operations, even if a cleanup
 # pattern accidentally matches them.
@@ -49,6 +60,8 @@ PROTECTED_PATHS = {
     ROOT / 'temp',
     ROOT / 'transformers',
     ROOT / 'Workbench',
+    ROOT / 'templates',
+    ROOT / 'styles',
     ROOT / 'build.py',
     ROOT / '文件说明.md',
     ROOT / '项目约束总览.md',
@@ -146,6 +159,13 @@ def _build_theme_script(config: dict) -> str:
     default_theme = config.get('activeTheme', 'light')
     themes_js = json.dumps(themes, ensure_ascii=False)
     return f'''\n<script>\n(function() {{\n  const WORKBENCH_THEMES = {themes_js};\n  const DEFAULT_THEME = '{default_theme}';\n\n  function applyWorkbenchTheme(name) {{\n    const theme = WORKBENCH_THEMES[name] || WORKBENCH_THEMES[DEFAULT_THEME];\n    const root = document.documentElement;\n    Object.entries(theme.tokens).forEach(function(entry) {{\n      root.style.setProperty('--' + entry[0], entry[1]);\n    }});\n    try {{ localStorage.setItem('workbench-theme', name); }} catch (e) {{}}\n    const btn = document.getElementById('theme-toggle');\n    if (btn) btn.textContent = (name === 'dark') ? '☀️' : '🌙';\n  }}\n\n  function toggleWorkbenchTheme() {{\n    const current = localStorage.getItem('workbench-theme') || DEFAULT_THEME;\n    applyWorkbenchTheme(current === 'dark' ? 'light' : 'dark');\n  }}\n\n  const saved = localStorage.getItem('workbench-theme') || DEFAULT_THEME;\n  applyWorkbenchTheme(saved);\n\n  window.toggleWorkbenchTheme = toggleWorkbenchTheme;\n  window.applyWorkbenchTheme = applyWorkbenchTheme;\n}})();\n</script>'''
+
+
+def _compile_styles() -> str:
+    """Compile styles/main.scss into CSS for inline injection."""
+    if not MAIN_SCSS.exists():
+        raise FileNotFoundError(f'SCSS entry not found: {MAIN_SCSS}')
+    return sass.compile(filename=str(MAIN_SCSS), output_style='compressed')
 
 
 def _extract_year(name: str) -> int | None:
@@ -294,7 +314,7 @@ def _cleanup_old_backups(directory: Path, pattern: str, keep: int = 3) -> list[P
 def _cleanup_empty_root_dirs() -> list[Path]:
     """Remove empty directories directly under ROOT (excluding core folders)."""
     removed = []
-    keep = {'build.py', '.trae', '.git', 'temp', 'transformers', 'Workbench', '文件说明.md'}
+    keep = {'build.py', '.trae', '.git', 'temp', 'transformers', 'templates', 'styles', 'Workbench', '文件说明.md'}
     for item in ROOT.iterdir():
         if item.is_dir() and item.name not in keep:
             try:
@@ -331,7 +351,7 @@ def cleanup_artifacts(dry_run: bool = False) -> dict[str, list[Path]]:
             elif name == 'share-packages':
                 targets = [p for p in [ROOT / '.trae-html-share-packages'] if p.exists()]
             elif name == 'empty-root-dirs':
-                keep = {'build.py', '.trae', '.git', 'temp', 'transformers', 'Workbench', '文件说明.md'}
+                keep = {'build.py', '.trae', '.git', 'temp', 'transformers', 'templates', 'styles', 'Workbench', '文件说明.md'}
                 targets = [p for p in ROOT.iterdir() if p.is_dir() and p.name not in keep and not list(p.rglob('*'))]
             elif name == 'workbench-backups':
                 targets = sorted((ROOT / 'Workbench').glob('此刻便是春天.html.bak-*'), key=lambda p: p.stat().st_mtime, reverse=True)[3:]
@@ -388,8 +408,12 @@ def build() -> Path:
     else:
         print('  [skip] reading module not enabled or missing')
 
+    print('Compiling styles...')
+    styles_css = _compile_styles()
+
     print('Rendering workbench...')
     context = {
+        'styles': styles_css,
         'theme_script': _build_theme_script(config),
         'reading_constants': reading_constants,
         'workspaces_array': workspaces_array,
