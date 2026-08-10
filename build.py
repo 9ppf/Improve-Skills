@@ -307,11 +307,11 @@ def _inject_reading_module(html: str, data: dict) -> str:
         count=1,
     )
 
-    marker = "    let currentWorkspaceId = 'zk';"
-    if marker not in html:
+    marker_match = re.search(r"\n(    let currentWorkspaceId = '[^']+';)", html)
+    if not marker_match:
         raise ValueError('Could not find marker for workspaces array end')
 
-    idx = html.index(marker)
+    idx = marker_match.start(1)
     brace_idx = html.rfind('];', 0, idx)
     if brace_idx == -1:
         raise ValueError('Could not find ]; before marker')
@@ -325,7 +325,10 @@ def _inject_reading_module(html: str, data: dict) -> str:
             + prev_line + ',\n'
             + html[line_start:]
         )
-        idx = html.index(marker)
+        marker_match = re.search(r"\n(    let currentWorkspaceId = '[^']+';)", html)
+        if not marker_match:
+            raise ValueError('Could not find marker for workspaces array end')
+        idx = marker_match.start(1)
         brace_idx = html.rfind('];', 0, idx)
         line_start = html.rfind('\n', 0, brace_idx) + 1
 
