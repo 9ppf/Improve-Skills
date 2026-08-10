@@ -81,12 +81,6 @@
   },
   "modules": [
     {
-      "id": "zk",
-      "file": "zk.json",
-      "enabled": false,
-      "description": "自考学习模块（已禁用）"
-    },
-    {
       "id": "tasks",
       "file": "tasks.json",
       "enabled": false,

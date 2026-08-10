@@ -33,9 +33,6 @@ FRAMEWORK_CLASS_WHITELIST = {
 # They may use generic class names safely and are excluded from the global scan.
 GENERIC_CLASS_GLOBAL_WHITELIST = {
     'Workbench/工作台迁移方案/工作台迁移方案.html',
-    'Workbench/自考学习/2025年10月真题字符校准报告.html',
-    'Workbench/自考学习/离散数学符号表.html',
-    'Workbench/自考学习/备考科目/02324离散数学/真题输出/02324-离散数学-真题题型归类.html',
 }
 
 # Ensure the skills directory is on the path so we can import the core module.
