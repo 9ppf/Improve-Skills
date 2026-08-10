@@ -32,7 +32,7 @@ FRAMEWORK_CLASS_WHITELIST = {
 # Standalone HTML files that are not integrated into the workbench framework.
 # They may use generic class names safely and are excluded from the global scan.
 GENERIC_CLASS_GLOBAL_WHITELIST = {
-    'Workbench/工作台迁移方案/工作台迁移方案.html',
+    'Workbench/工作台迁移方案/工作台迁移方案-说明.html',
 }
 
 # Ensure the skills directory is on the path so we can import the core module.
@@ -79,7 +79,7 @@ def check_no_old_classes(html: str) -> list[str]:
 def check_generic_class_prefixes(html: str) -> list[str]:
     """Ensure dangerous generic class names do not leak into module content.
 
-    Module content classes should carry a module prefix (e.g. reading-*, zk-*).
+    Module content classes should carry a module prefix (e.g. reading-*).
     Generic names like 'card' or 'essay' are reserved for the workbench
     framework or must be prefixed to avoid CSS collisions.
     """
@@ -252,12 +252,7 @@ def check_naming_conventions() -> list[str]:
         return warnings
 
     exempt = {'此刻便是春天.html'}
-    # Historical files that predate this convention.
-    historical = {
-        '2025年10月真题字符校准报告.html',
-        '离散数学符号表.html',
-        '工作台迁移方案.html',
-    }
+
 
     for item in workbench.rglob('*.html'):
         if item.name in exempt:
@@ -266,13 +261,7 @@ def check_naming_conventions() -> list[str]:
         rel_parts = item.relative_to(workbench).parts
         if rel_parts and rel_parts[0] == 'read':
             continue
-        if item.name in historical:
-            warnings.append(
-                f'{item.relative_to(root)} does not follow naming convention '
-                f'(historical file, consider renaming)'
-            )
-            continue
-        # Allow names like 02324-离散数学-真题题型归类.html
+        # Allow names like reading-summary.html
         if '-' not in item.stem:
             warnings.append(
                 f'{item.relative_to(root)} does not follow naming convention '

@@ -8,7 +8,7 @@ Current scope:
   - Enrich the reading module via transformers/reading.py.
   - Replace theme tokens in module metadata.
   - Inject the reading module into the workbench HTML.
-  - Preserve all other modules (自考学习, tasks, etc.) exactly as they are.
+  - Preserve all other modules (tasks, etc.) exactly as they are.
   - Backup the old workbench and validate the result.
 
 Cleanup rules:
@@ -430,17 +430,6 @@ def _cleanup_old_backups(directory: Path, pattern: str, keep: int = 3) -> list[P
     return removed
 
 
-def _cleanup_ocr_texts() -> list[Path]:
-    """Remove OCR intermediate text files from the discrete math output folder."""
-    removed = []
-    txt_dir = ROOT / 'Workbench' / '自考学习' / '备考科目' / '02324离散数学' / '真题输出'
-    if txt_dir.exists():
-        for txt in txt_dir.glob('*.txt'):
-            _remove_path(txt)
-            removed.append(txt)
-    return removed
-
-
 def _cleanup_empty_root_dirs() -> list[Path]:
     """Remove empty directories directly under ROOT (excluding core folders)."""
     removed = []
@@ -468,13 +457,8 @@ def cleanup_artifacts(dry_run: bool = False) -> dict[str, list[Path]]:
     actions = [
         ('pycache', _cleanup_pycache, [ROOT]),
         ('share-packages', _cleanup_share_packages, []),
-        ('ocr-texts', _cleanup_ocr_texts, []),
         ('empty-root-dirs', _cleanup_empty_root_dirs, []),
         ('workbench-backups', _cleanup_old_backups, [ROOT / 'Workbench', '此刻便是春天.html.bak-*']),
-        ('discrete-math-backups', _cleanup_old_backups, [
-            ROOT / 'Workbench' / '自考学习' / '备考科目' / '02324离散数学',
-            '真题输出_备份_*'
-        ]),
     ]
 
     for name, func, args in actions:
@@ -485,15 +469,11 @@ def cleanup_artifacts(dry_run: bool = False) -> dict[str, list[Path]]:
                 targets = [p for p in ROOT.rglob('__pycache__') if p.is_dir()]
             elif name == 'share-packages':
                 targets = [p for p in [ROOT / '.trae-html-share-packages'] if p.exists()]
-            elif name == 'ocr-texts':
-                targets = [p for p in (ROOT / 'Workbench' / '自考学习' / '备考科目' / '02324离散数学' / '真题输出').glob('*.txt')] if (ROOT / 'Workbench' / '自考学习' / '备考科目' / '02324离散数学' / '真题输出').exists() else []
             elif name == 'empty-root-dirs':
                 keep = {'build.py', '.trae', '.git', 'temp', 'transformers', 'Workbench', '文件说明.md'}
                 targets = [p for p in ROOT.iterdir() if p.is_dir() and p.name not in keep and not list(p.rglob('*'))]
             elif name == 'workbench-backups':
                 targets = sorted((ROOT / 'Workbench').glob('此刻便是春天.html.bak-*'), key=lambda p: p.stat().st_mtime, reverse=True)[3:]
-            elif name == 'discrete-math-backups':
-                targets = sorted((ROOT / 'Workbench' / '自考学习' / '备考科目' / '02324离散数学').glob('真题输出_备份_*'), key=lambda p: p.stat().st_mtime, reverse=True)[3:]
             results[name] = targets
         else:
             results[name] = func(*args)

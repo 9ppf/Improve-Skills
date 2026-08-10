@@ -76,8 +76,7 @@ python build.py --dry-run
 ```json
 {
   "modules": [
-    { "id": "zk", "file": "zk.json", "enabled": true },
-    { "id": "tasks", "file": "tasks.json", "enabled": true },
+    { "id": "tasks", "file": "tasks.json", "enabled": false },
     { "id": "read", "file": "reading.json", "enabled": true }
   ]
 }
@@ -134,10 +133,8 @@ python build.py --dry-run
 
 - `__pycache__/` 目录：Python 运行产生的缓存
 - `.trae-html-share-packages/`：Trae 自动生成的 HTML 分享包
-- `Workbench/自考学习/备考科目/02324离散数学/真题输出/*.txt`：OCR 中间文本
 - 根目录下来源不明的空目录
 - 超出最近 3 份的旧 HTML 备份
-- 超出最近 3 份的离散数学旧备份目录
 
 ### 关于临时产物再生
 

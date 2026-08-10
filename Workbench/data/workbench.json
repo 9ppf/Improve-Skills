@@ -36,10 +36,7 @@
         "notice-bg": "#fffbeb",
         "notice-border": "#fde68a",
         "notice-text": "#92400e",
-        "reading-warm": "#FEF3C7",
-        "zk-cool": "#E0F2FE",
-        "tasks-soft": "#FCE7F3",
-        "workspace-study": "#FFE4EC"
+        "reading-warm": "#FEF3C7"
       }
     },
     "dark": {
@@ -72,10 +69,7 @@
         "notice-bg": "#451a03",
         "notice-border": "#92400e",
         "notice-text": "#fcd34d",
-        "reading-warm": "#451a03",
-        "zk-cool": "#0c4a6e",
-        "tasks-soft": "#4c1d57",
-        "workspace-study": "#831843"
+        "reading-warm": "#451a03"
       }
     }
   },
