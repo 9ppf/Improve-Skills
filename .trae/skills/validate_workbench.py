@@ -217,7 +217,7 @@ def check_file_documentation() -> list[str]:
         ignored_wb = {'此刻便是春天.html'}
         ignored_dirs = {'data', 'read'}
         # Directories that hold bulk materials documented as a group
-        # (e.g. "13000 英语（专升本）历年真题/*.pdf").
+        # (e.g. "read/历年真题/*.pdf").
         bulk_dirs = {'历年真题'}
         for item in workbench.rglob('*'):
             if item.is_dir():
