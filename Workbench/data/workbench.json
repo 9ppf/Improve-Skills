@@ -83,14 +83,14 @@
     {
       "id": "zk",
       "file": "zk.json",
-      "enabled": true,
-      "description": "自考学习模块（待迁移）"
+      "enabled": false,
+      "description": "自考学习模块（已禁用）"
     },
     {
       "id": "tasks",
       "file": "tasks.json",
-      "enabled": true,
-      "description": "日常任务模块（待迁移）"
+      "enabled": false,
+      "description": "日常任务模块（已禁用）"
     },
     {
       "id": "read",
