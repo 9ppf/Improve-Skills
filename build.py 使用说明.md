@@ -36,6 +36,27 @@ python build.py --dry-run
 
 不构建、不删除，只列出当前会被清理的文件。用于确认清理范围。
 
+### 本地预览与热重载
+
+```bash
+python dev_server.py
+```
+
+启动本地 HTTP 服务器（默认 `http://localhost:8000`），并监听 `styles/`、`templates/`、`Workbench/data/`、`transformers/` 等源码目录。文件保存后自动重新运行 `build.py`，刷新浏览器即可看到最新效果。
+
+常用选项：
+
+```bash
+python dev_server.py --port 8080      # 使用 8080 端口
+python dev_server.py --no-build       # 跳过初始构建
+```
+
+依赖：`watchdog`。如果未安装，运行：
+
+```bash
+pip install watchdog
+```
+
 ### 清理前确认
 
 ```bash
