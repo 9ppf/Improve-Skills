@@ -42,6 +42,7 @@ TEMPLATES_DIR = ROOT / 'templates'
 TEMPLATE = TEMPLATES_DIR / 'workbench.html'
 STYLES_DIR = ROOT / 'styles'
 MAIN_SCSS = STYLES_DIR / 'main.scss'
+VARIABLES_SCSS = STYLES_DIR / '_variables.scss'
 SKILLS_DIR = ROOT / '.trae' / 'skills'
 
 try:
@@ -52,25 +53,77 @@ except ImportError as exc:
         'Install it with: pip install libsass'
     ) from exc
 
-# Paths that must never be removed by cleanup operations, even if a cleanup
-# pattern accidentally matches them.
-PROTECTED_PATHS = {
-    ROOT / '.trae',
-    ROOT / '.git',
-    ROOT / 'temp',
-    ROOT / 'transformers',
-    ROOT / 'Workbench',
-    ROOT / 'templates',
-    ROOT / 'styles',
-    ROOT / 'build.py',
-    ROOT / '文件说明.md',
-    ROOT / '项目约束总览.md',
+# ---------------------------------------------------------------------------
+# Cleanup configuration
+# ---------------------------------------------------------------------------
+# Centralized cleanup rules. Use glob-friendly patterns so the rules stay
+# stable when tool versions change directory names.
+CLEANUP_CONFIG = {
+    # Paths that must never be removed, even if a pattern matches them.
+    'protected_paths': {
+        ROOT / '.trae',
+        ROOT / '.git',
+        ROOT / 'temp',
+        ROOT / 'transformers',
+        ROOT / 'Workbench',
+        ROOT / 'templates',
+        ROOT / 'styles',
+        ROOT / 'build.py',
+        ROOT / '文件说明.md',
+        ROOT / '项目约束总览.md',
+    },
+    # Directory names that are temporary artifacts. They may live inside
+    # protected roots (e.g. __pycache__ under .trae/skills) and are still
+    # allowed to be cleaned.
+    'temp_dir_patterns': {'__pycache__', '.trae-html-share-*'},
+    # Empty directories directly under ROOT that should be kept.
+    'empty_root_keep': {
+        'build.py', '.trae', '.git', 'temp', 'transformers',
+        'templates', 'styles', 'Workbench', '文件说明.md',
+    },
+    # Backup retention rules.
+    'backup_rules': [
+        {
+            'directory': ROOT / 'Workbench',
+            'pattern': '此刻便是春天.html.bak-*',
+            'keep': 3,
+        },
+    ],
 }
 
-# Directory names that are known temporary artifacts. They may live inside
-# protected roots (e.g. __pycache__ under .trae/skills) and are allowed to be
-# cleaned up even though their parent directories are protected.
-TEMP_DIR_NAMES = {'__pycache__', '.trae-html-share-packages'}
+
+# ---------------------------------------------------------------------------
+# Theme configuration
+# ---------------------------------------------------------------------------
+# Base tokens are loaded from styles/_variables.scss so that SASS remains the
+# single source of truth for the default (light) theme. workbench.json then
+# only needs to declare the *differences* for alternate themes (e.g. dark).
+TOKEN_OVERRIDES: dict[str, str] = {}
+
+
+def _load_base_tokens_from_scss() -> dict[str, str]:
+    """Parse simple color variables from styles/_variables.scss.
+
+    Only scalar color values (hex, rgb, rgba, hsl, hsla) are treated as theme
+    tokens. Variables that reference other variables (e.g. $brand: $accent-blue)
+    are skipped because they are already expressed as CSS aliases in _root.scss.
+    """
+    if not VARIABLES_SCSS.exists():
+        raise FileNotFoundError(f'SCSS variables file not found: {VARIABLES_SCSS}')
+
+    text = VARIABLES_SCSS.read_text(encoding='utf-8')
+    tokens: dict[str, str] = {}
+    # Match lines like: $bg: #F0F9FF;  or  $bg: #F0F9FF !default;
+    for match in re.finditer(r'^\s*\$(\w[-\w]*):\s*([^;!]+)(?:\s*!default)?;', text, re.MULTILINE):
+        name = match.group(1)
+        value = match.group(2).strip()
+        # Ignore derived aliases that reference other variables.
+        if value.startswith('$'):
+            continue
+        # Keep only color-like values.
+        if re.match(r'^(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\()', value):
+            tokens[name] = value
+    return tokens
 
 if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
@@ -89,12 +142,23 @@ def load_workbench_config() -> dict:
 
 
 def get_active_tokens(config: dict) -> dict:
-    """Return the token map for the active theme."""
+    """Return the merged token map for the active theme.
+
+    SASS variables in styles/_variables.scss are the single source of truth for
+    the default (light) theme. workbench.json themes only declare overrides for
+    alternate themes (e.g. dark). This function merges base tokens with the
+    active theme's overrides so module data always receives complete color
+    values.
+    """
     active = config.get('activeTheme', 'light')
     themes = config.get('themes', {})
     if active not in themes:
         raise ValueError(f'Active theme not found: {active}')
-    return themes[active].get('tokens', {})
+
+    base_tokens = _load_base_tokens_from_scss()
+    overrides = themes[active].get('tokens', {})
+    merged = {**base_tokens, **overrides}
+    return merged
 
 
 def load_modules(config: dict) -> list[dict]:
@@ -154,11 +218,52 @@ def backup_workbench() -> Path:
 
 
 def _build_theme_script(config: dict) -> str:
-    """Build the inline JS that applies and toggles themes."""
+    """Build the inline JS that applies and toggles themes.
+
+    Base tokens are loaded from styles/_variables.scss and merged with each
+    theme's overrides so that workbench.json only needs to declare differences
+    for alternate themes.
+    """
     themes = config.get('themes', {})
     default_theme = config.get('activeTheme', 'light')
-    themes_js = json.dumps(themes, ensure_ascii=False)
-    return f'''\n<script>\n(function() {{\n  const WORKBENCH_THEMES = {themes_js};\n  const DEFAULT_THEME = '{default_theme}';\n\n  function applyWorkbenchTheme(name) {{\n    const theme = WORKBENCH_THEMES[name] || WORKBENCH_THEMES[DEFAULT_THEME];\n    const root = document.documentElement;\n    Object.entries(theme.tokens).forEach(function(entry) {{\n      root.style.setProperty('--' + entry[0], entry[1]);\n    }});\n    try {{ localStorage.setItem('workbench-theme', name); }} catch (e) {{}}\n    const btn = document.getElementById('theme-toggle');\n    if (btn) btn.textContent = (name === 'dark') ? '☀️' : '🌙';\n  }}\n\n  function toggleWorkbenchTheme() {{\n    const current = localStorage.getItem('workbench-theme') || DEFAULT_THEME;\n    applyWorkbenchTheme(current === 'dark' ? 'light' : 'dark');\n  }}\n\n  const saved = localStorage.getItem('workbench-theme') || DEFAULT_THEME;\n  applyWorkbenchTheme(saved);\n\n  window.toggleWorkbenchTheme = toggleWorkbenchTheme;\n  window.applyWorkbenchTheme = applyWorkbenchTheme;\n}})();\n</script>'''
+    base_tokens = _load_base_tokens_from_scss()
+
+    merged_themes = {}
+    for name, theme in themes.items():
+        merged_themes[name] = {
+            **theme,
+            'tokens': {**base_tokens, **theme.get('tokens', {})},
+        }
+
+    themes_js = json.dumps(merged_themes, ensure_ascii=False)
+    return f'''<script>
+(function() {{
+  const WORKBENCH_THEMES = {themes_js};
+  const DEFAULT_THEME = '{default_theme}';
+
+  function applyWorkbenchTheme(name) {{
+    const theme = WORKBENCH_THEMES[name] || WORKBENCH_THEMES[DEFAULT_THEME];
+    const root = document.documentElement;
+    Object.entries(theme.tokens).forEach(function(entry) {{
+      root.style.setProperty('--' + entry[0], entry[1]);
+    }});
+    try {{ localStorage.setItem('workbench-theme', name); }} catch (e) {{}}
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = (name === 'dark') ? '☀️' : '🌙';
+  }}
+
+  function toggleWorkbenchTheme() {{
+    const current = localStorage.getItem('workbench-theme') || DEFAULT_THEME;
+    applyWorkbenchTheme(current === 'dark' ? 'light' : 'dark');
+  }}
+
+  const saved = localStorage.getItem('workbench-theme') || DEFAULT_THEME;
+  applyWorkbenchTheme(saved);
+
+  window.toggleWorkbenchTheme = toggleWorkbenchTheme;
+  window.applyWorkbenchTheme = applyWorkbenchTheme;
+}})();
+</script>'''
 
 
 def _compile_styles() -> str:
@@ -242,11 +347,14 @@ def _is_protected(path: Path) -> bool:
     Protected paths guard core files and directories against wholesale
     deletion. Directories inside a protected root are also protected so that
     a buggy cleanup pattern cannot wipe out core subdirectories such as
-    .trae/skills or Workbench/data. Known temporary directories (e.g.
-    __pycache__) are still allowed to be cleaned.
+    .trae/skills or Workbench/data. Known temporary directories matching
+    temp_dir_patterns are still allowed to be cleaned.
     """
     resolved = path.resolve()
-    for protected in PROTECTED_PATHS:
+    protected_paths = CLEANUP_CONFIG['protected_paths']
+    temp_patterns = CLEANUP_CONFIG['temp_dir_patterns']
+
+    for protected in protected_paths:
         try:
             protected_resolved = protected.resolve()
         except OSError:
@@ -263,7 +371,8 @@ def _is_protected(path: Path) -> bool:
             except ValueError:
                 continue
             if relative.parts and not any(
-                part in TEMP_DIR_NAMES for part in relative.parts
+                any(part.startswith(pat.rstrip('*')) or part == pat for pat in temp_patterns)
+                for part in relative.parts
             ):
                 return True
 
@@ -281,23 +390,25 @@ def _remove_path(path: Path) -> None:
         shutil.rmtree(path)
 
 
-def _cleanup_pycache(root: Path) -> list[Path]:
-    """Recursively remove all __pycache__ directories under root."""
-    removed = []
-    for pycache in root.rglob('__pycache__'):
-        if pycache.is_dir():
-            _remove_path(pycache)
-            removed.append(pycache)
-    return removed
+def _match_dir_name(name: str, patterns: set[str]) -> bool:
+    """Return True if a directory name matches any glob-like pattern."""
+    for pat in patterns:
+        if pat.endswith('*'):
+            if name.startswith(pat[:-1]):
+                return True
+        elif name == pat:
+            return True
+    return False
 
 
-def _cleanup_share_packages() -> list[Path]:
-    """Remove Trae-generated HTML share packages."""
+def _cleanup_temp_dirs(root: Path) -> list[Path]:
+    """Recursively remove directories matching temp_dir_patterns under root."""
     removed = []
-    share_dir = ROOT / '.trae-html-share-packages'
-    if share_dir.exists():
-        _remove_path(share_dir)
-        removed.append(share_dir)
+    patterns = CLEANUP_CONFIG['temp_dir_patterns']
+    for item in root.rglob('*'):
+        if item.is_dir() and _match_dir_name(item.name, patterns):
+            _remove_path(item)
+            removed.append(item)
     return removed
 
 
@@ -314,7 +425,7 @@ def _cleanup_old_backups(directory: Path, pattern: str, keep: int = 3) -> list[P
 def _cleanup_empty_root_dirs() -> list[Path]:
     """Remove empty directories directly under ROOT (excluding core folders)."""
     removed = []
-    keep = {'build.py', '.trae', '.git', 'temp', 'transformers', 'templates', 'styles', 'Workbench', '文件说明.md'}
+    keep = CLEANUP_CONFIG['empty_root_keep']
     for item in ROOT.iterdir():
         if item.is_dir() and item.name not in keep:
             try:
@@ -336,25 +447,43 @@ def cleanup_artifacts(dry_run: bool = False) -> dict[str, list[Path]]:
     results: dict[str, list[Path]] = {}
 
     actions = [
-        ('pycache', _cleanup_pycache, [ROOT]),
-        ('share-packages', _cleanup_share_packages, []),
+        ('temp-dirs', _cleanup_temp_dirs, [ROOT]),
         ('empty-root-dirs', _cleanup_empty_root_dirs, []),
-        ('workbench-backups', _cleanup_old_backups, [ROOT / 'Workbench', '此刻便是春天.html.bak-*']),
     ]
+    for rule in CLEANUP_CONFIG['backup_rules']:
+        actions.append((
+            f"backups-{rule['directory'].name}",
+            _cleanup_old_backups,
+            [rule['directory'], rule['pattern'], rule['keep']],
+        ))
+
+    temp_patterns = CLEANUP_CONFIG['temp_dir_patterns']
+    empty_keep = CLEANUP_CONFIG['empty_root_keep']
 
     for name, func, args in actions:
         if dry_run:
             # For dry-run, collect targets without deleting.
             targets: list[Path] = []
-            if name == 'pycache':
-                targets = [p for p in ROOT.rglob('__pycache__') if p.is_dir()]
-            elif name == 'share-packages':
-                targets = [p for p in [ROOT / '.trae-html-share-packages'] if p.exists()]
+            if name == 'temp-dirs':
+                targets = [
+                    p for p in ROOT.rglob('*')
+                    if p.is_dir() and _match_dir_name(p.name, temp_patterns)
+                ]
             elif name == 'empty-root-dirs':
-                keep = {'build.py', '.trae', '.git', 'temp', 'transformers', 'templates', 'styles', 'Workbench', '文件说明.md'}
-                targets = [p for p in ROOT.iterdir() if p.is_dir() and p.name not in keep and not list(p.rglob('*'))]
-            elif name == 'workbench-backups':
-                targets = sorted((ROOT / 'Workbench').glob('此刻便是春天.html.bak-*'), key=lambda p: p.stat().st_mtime, reverse=True)[3:]
+                targets = [
+                    p for p in ROOT.iterdir()
+                    if p.is_dir() and p.name not in empty_keep and not list(p.rglob('*'))
+                ]
+            elif name.startswith('backups-'):
+                rule = next(
+                    r for r in CLEANUP_CONFIG['backup_rules']
+                    if f"backups-{r['directory'].name}" == name
+                )
+                targets = sorted(
+                    rule['directory'].glob(rule['pattern']),
+                    key=lambda p: p.stat().st_mtime,
+                    reverse=True,
+                )[rule['keep']:]
             results[name] = targets
         else:
             results[name] = func(*args)
@@ -448,10 +577,40 @@ def _report_cleaned(cleaned: dict[str, list[Path]], dry_run: bool) -> int:
     return total
 
 
+def _confirm_cleanup(cleaned: dict[str, list[Path]]) -> bool:
+    """Print the cleanup list and ask the user for confirmation."""
+    total = sum(len(paths) for paths in cleaned.values())
+    if total == 0:
+        print('Nothing to clean.')
+        return True
+
+    print(f'About to remove {total} artifact(s):')
+    for category, paths in cleaned.items():
+        if not paths:
+            continue
+        print(f'  [{category}]')
+        for p in paths:
+            print(f'    - {p.relative_to(ROOT)}')
+
+    while True:
+        try:
+            answer = input('Proceed with cleanup? [y/N]: ').strip().lower()
+        except EOFError:
+            print('Non-interactive environment; use --dry-run to preview.')
+            return False
+        if answer in ('y', 'yes'):
+            return True
+        if answer in ('n', 'no', ''):
+            print('Cleanup cancelled.')
+            return False
+        print('Please answer y or n.')
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description='Build the 此刻便是春天 workbench.')
     parser.add_argument('--skip-validate', action='store_true', help='Skip running validate_workbench.py')
     parser.add_argument('--dry-run', action='store_true', help='Report artifacts to clean without building or deleting')
+    parser.add_argument('--confirm', action='store_true', help='Confirm before removing artifacts')
     args = parser.parse_args()
 
     if args.dry_run:
@@ -460,7 +619,11 @@ def main() -> int:
         return 0
 
     print('Pre-build cleanup...')
-    _report_cleaned(cleanup_artifacts(dry_run=False), dry_run=False)
+    pre_cleaned = cleanup_artifacts(dry_run=args.confirm)
+    if args.confirm and not _confirm_cleanup(pre_cleaned):
+        return 0
+    if not args.confirm:
+        _report_cleaned(pre_cleaned, dry_run=False)
 
     build()
 
@@ -470,7 +633,11 @@ def main() -> int:
         print('Validation passed.')
 
     print('Post-build cleanup...')
-    _report_cleaned(cleanup_artifacts(dry_run=False), dry_run=False)
+    post_cleaned = cleanup_artifacts(dry_run=args.confirm)
+    if args.confirm and not _confirm_cleanup(post_cleaned):
+        return 0
+    if not args.confirm:
+        _report_cleaned(post_cleaned, dry_run=False)
 
     if not args.skip_validate:
         print('Build and validation passed.')

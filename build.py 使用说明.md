@@ -36,6 +36,14 @@ python build.py --dry-run
 
 不构建、不删除，只列出当前会被清理的文件。用于确认清理范围。
 
+### 清理前确认
+
+```bash
+python build.py --confirm
+```
+
+每次清理前会先打印待删除的文件清单，输入 `y` 才会继续。适合手动整理或不确定清理范围时使用。默认行为仍不询问，保证自动化构建不受影响。
+
 ---
 
 ## 构建流程
@@ -122,17 +130,26 @@ pip install libsass
 
 ### 主题定义
 
-`workbench.json` 中的 `themes` 定义多组主题，每个主题包含一组 CSS 变量名和色值：
+`workbench.json` 中的 `themes` 定义多组主题。基础（明亮）主题的颜色值来自 `styles/_variables.scss`，`workbench.json` 中 `light.tokens` 保持为空即可。暗色或其他主题只需声明与基础主题有差异的 token：
 
 ```json
 {
   "activeTheme": "light",
   "themes": {
-    "light": { "tokens": { "bg": "#ffffff", "ink": "#1f2937" } },
-    "dark": { "tokens": { "bg": "#111827", "ink": "#f9fafb" } }
+    "light": { "name": "明亮春景", "tokens": {} },
+    "dark": {
+      "name": "暗色夜读",
+      "tokens": {
+        "bg": "#0f172a",
+        "surface": "#1e293b",
+        "ink": "#f8fafc"
+      }
+    }
   }
 }
 ```
+
+构建时，`build.py` 会自动从 `_variables.scss` 读取基础 token，再与当前主题的覆盖 token 合并，保证模块数据和运行时 JS 都能拿到完整的颜色值。
 
 ### 切换主题
 
@@ -145,6 +162,15 @@ pip install libsass
 ---
 
 ## 清理规则
+
+清理规则集中在 `build.py` 顶部的 `CLEANUP_CONFIG` 字典中，避免硬编码路径 scattered 在代码各处：
+
+- `protected_paths`：受保护的核心路径，清理时绝不会删除
+- `temp_dir_patterns`：临时目录通配模式，例如 `__pycache__`、`.trae-html-share-*`
+- `empty_root_keep`：根目录下保留的目录名，其余空目录会被清理
+- `backup_rules`：备份保留规则，包括目录、通配模式、保留份数
+
+修改这些配置后，无需改动清理函数逻辑即可生效。
 
 ### 规则一：构建前后各清理一次
 
