@@ -15,6 +15,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+# 确保上层 .trae/skills 目录可作为 import 路径
 SKILLS_DIR = Path(__file__).resolve().parent.parent
 if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
@@ -32,6 +33,7 @@ from reading_integration import (
 def _run_build() -> int:
     """Run the canonical build so the final HTML matches the standard pipeline."""
     print('\n[integrate] running canonical build.py...')
+    # 调用标准构建脚本 build.py，确保输出与正式构建流程一致
     result = subprocess.run(
         [sys.executable, str(ROOT / 'build.py')],
         cwd=ROOT,
@@ -57,6 +59,7 @@ def main() -> int:
 
     html = WORKBENCH.read_text(encoding='utf-8')
     source_html = source_path.read_text(encoding='utf-8')
+    # 将单一年份的阅读内容注入 workbench
     html = inject_year(html, year, source_html)
     WORKBENCH.write_text(html, encoding='utf-8')
     print(f'Integrated {year} into {WORKBENCH}')

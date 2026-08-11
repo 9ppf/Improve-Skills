@@ -16,12 +16,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-# Resolve project root from .trae/skills/reading_integration.py
+# 从 .trae/skills/reading_integration.py 向上回退两级得到项目根目录
 ROOT = Path(__file__).resolve().parents[2]
 WORKBENCH = ROOT / 'Workbench' / '此刻便是春天.html'
 READ_DIR = ROOT / 'Workbench' / 'read'
 
-# Maps old standalone-page class names to workbench-scoped class names.
+# 独立页面 class 名到 workbench 作用域 class 名的映射
 CLASS_REPLACEMENTS = {
     'class="topic"': 'class="reading-topic"',
     'class="essay"': 'class="reading-essay"',
@@ -32,7 +32,7 @@ CLASS_REPLACEMENTS = {
     'class="sources"': 'class="reading-sources"',
 }
 
-# Old class names that must not appear inside reading content after integration.
+# 集成后不允许再出现的旧 class 名集合
 OLD_CLASSES = {'topic', 'essay', 'essay-title', 'essay-body', 'essay-meta',
                'card', 'sources'}
 
@@ -44,6 +44,7 @@ def js_escape_for_template(s: str) -> str:
 
 def extract_article(html: str) -> str:
     """Extract inner HTML of <article class="page">."""
+    # 提取 <article class="page"> 与 </article> 之间的内容（支持换行）
     m = re.search(r'<article class="page">(.*?)</article>', html, re.S)
     if not m:
         raise ValueError('Could not find <article class="page">')
@@ -59,6 +60,7 @@ def transform_body_classes(html: str) -> str:
 
 def transform_sections(html: str) -> str:
     """Wrap each <section> into a collapsible reading-section."""
+    # 匹配 <section id="..."><h2>...<span class="badge">...</span>标题名</h2>正文</section>
     pattern = re.compile(
         r'<section id="([^"]+)">\s*<h2>.*?<span class="badge">([^<]+)</span>([^<]+)</h2>(.*?)</section>',
         re.S,
@@ -103,7 +105,9 @@ def transform_hero(html: str) -> str:
 
 def remove_toc_and_back_to_top(html: str) -> str:
     """Remove TOC and back-to-top anchor; they are redundant in the workbench view."""
+    # 移除目录导航
     html = re.sub(r'<nav class="toc">.*?</nav>', '', html, flags=re.S)
+    # 移除返回顶部按钮
     html = re.sub(r'<a href="#top" class="back-to-top"[^>]*>.*?</a>', '', html, flags=re.S)
     return html
 
@@ -122,7 +126,7 @@ def build_reading_html(source_html: str) -> str:
     article = remove_toc_and_back_to_top(article)
     article = transform_sections(article)
     article = transform_footer(article)
-    # Catch any remaining old classes (e.g. footer sources outside sections).
+    # 最后再处理一次 class 作用域，捕获章节外部残留的旧 class
     article = transform_body_classes(article)
     wrapped = f'<div class="reading-content">\n{article}\n</div>'
     return js_escape_for_template(wrapped)
@@ -148,9 +152,8 @@ def _reading_item_js(year: int, sections_count: int) -> str:
               }}'''
 
 
-# Markers injected by templates/workbench.html. Manual integration scripts use
-# these markers to locate and replace reading content without relying on fragile
-# regex matches against JS function signatures.
+# 由 templates/workbench.html 注入的标记；手动集成脚本通过它们定位内容，
+# 避免对 JS 函数签名做脆弱的正则匹配。
 CONSTANTS_BEGIN = '// <!-- reading-constants-begin -->'
 CONSTANTS_END = '// <!-- reading-constants-end -->'
 WORKSPACES_BEGIN = '// <!-- workspaces-array-begin -->'
@@ -172,7 +175,7 @@ def bootstrap_workbench(html: str) -> str:
     if has_reading_workspace(html):
         return html
 
-    # Make sure the marker-based workspaces array exists.
+    # 确保 workspaces-array 标记存在，否则无法安全插入
     if WORKSPACES_BEGIN not in html or WORKSPACES_END not in html:
         raise ValueError(
             'Workbench template is missing workspaces-array markers; '
@@ -191,7 +194,7 @@ def bootstrap_workbench(html: str) -> str:
       }'''
 
     end_idx = html.index(WORKSPACES_END)
-    # Insert before the end marker, with a trailing comma if needed.
+    # 在结束标记前插入新 workspace，并补充逗号以维持 JS 数组语法
     html = html[:end_idx] + new_workspace + ',\n' + html[end_idx:]
     return html
 
@@ -213,7 +216,7 @@ def remove_existing_year(html: str, year: int) -> str:
     Removal uses the marker-delimited regions injected by the template, so it
     no longer relies on fragile regex matches against JS function signatures.
     """
-    # Remove constant inside the reading-constants region.
+    # 删除 reading-constants 区域内的对应年份常量
     constants_begin = html.find(CONSTANTS_BEGIN)
     constants_end = html.find(CONSTANTS_END)
     if constants_begin != -1 and constants_end != -1:
@@ -225,7 +228,7 @@ def remove_existing_year(html: str, year: int) -> str:
         region = pattern.sub('\n', region)
         html = html[:constants_begin] + region + html[constants_end:]
 
-    # Remove item inside the workspaces-array region.
+    # 删除 workspaces-array 区域内的对应年份条目
     workspaces_begin = html.find(WORKSPACES_BEGIN)
     workspaces_end = html.find(WORKSPACES_END)
     if workspaces_begin != -1 and workspaces_end != -1:
@@ -302,10 +305,10 @@ def inject_year(html: str, year: int, source_html: str,
     """Build and insert (or replace) a single year's reading content."""
     html = bootstrap_workbench(html)
 
-    # Determine the final year list after this insertion.
+    # 计算本次插入后应包含的全部年份集合
     target_years = _all_reading_years(html) | {year}
 
-    # Remove all years so we can rebuild cleanly without ordering issues.
+    # 先移除所有目标年份，避免重复或顺序错乱
     for y in target_years:
         html = remove_existing_year(html, y)
 
@@ -325,7 +328,7 @@ def integrate_years(html: str, years: list[int], read_dir: Path = READ_DIR) -> s
 
     target_years = (_all_reading_years(html) | set(years))
 
-    # Remove all target years so we can rebuild cleanly.
+    # 移除所有目标年份后重新构建，确保顺序与唯一性
     for y in target_years:
         html = remove_existing_year(html, y)
 
@@ -346,11 +349,13 @@ def backup_workbench(path: Path = WORKBENCH) -> Path:
 
 def validate_js(html: str) -> None:
     """Run node --check on the embedded JS. Raise on syntax errors."""
+    # 提取所有 <script> 标签内的 JS 代码
     scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL)
     js = '\n'.join(scripts)
     tmp = Path(__file__).with_name('workbench_check.js')
     tmp.write_text(js, encoding='utf-8')
     try:
+        # 调用 node --check 做 JS 语法校验
         result = subprocess.run(['node', '--check', str(tmp)], capture_output=True, text=True)
     finally:
         tmp.unlink(missing_ok=True)

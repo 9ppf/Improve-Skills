@@ -10,7 +10,7 @@ import re
 import sys
 from pathlib import Path
 
-# Ensure the shared skills module is importable.
+# 确保上级目录下的 .trae/skills 可作为 import 路径
 SKILLS_DIR = Path(__file__).resolve().parent.parent / '.trae' / 'skills'
 if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
@@ -24,18 +24,22 @@ from reading_integration import (
 
 def _year_from_name(name: str) -> int | None:
     """Extract the 4-digit year from an item name like '2026年高考语文...'."""
+    # 从名称中匹配“4位数字 + 年”，如 2026年
     m = re.search(r'(\d{4})年', name)
     return int(m.group(1)) if m else None
 
 
 def _transform_content(content_source: str, item_name: str = '') -> tuple[str, int]:
     """Return (escaped_html_fragment, section_count) for a reading item."""
+    # 阅读源文件位于 Workbench/read/ 下
     source_path = WORKBENCH.parent / content_source
     if not source_path.exists():
         raise FileNotFoundError(f'Reading content source not found: {source_path}')
 
     source_html = source_path.read_text(encoding='utf-8')
+    # 统计原文中的 <section id="..."> 数量，作为章节数
     section_count = count_sections(source_html)
+    # 转换为 workbench 可用的转义 HTML 片段
     transformed = build_reading_html(source_html)
 
     print(f'  [reading] transformed {content_source} -> {section_count} sections ({len(transformed)} chars)')
@@ -45,11 +49,13 @@ def _transform_content(content_source: str, item_name: str = '') -> tuple[str, i
 def enrich_item(item: dict) -> dict:
     """Return a copy of the item with runtime fields added."""
     enriched = dict(item)
+    # 读取并移除仅用于构建的 contentSource 字段
     content_source = enriched.pop('contentSource')
     enriched['readingHtml'], section_count = _transform_content(
         content_source, enriched.get('name', '')
     )
     enriched['chapters'] = section_count
+    # 若未指定完成进度，默认 0
     enriched.setdefault('done', 0)
     return enriched
 
@@ -59,6 +65,7 @@ def enrich_module(data: dict) -> dict:
     enriched = dict(data)
     enriched_categories = []
 
+    # 遍历分类和条目，逐个丰富阅读数据
     for category in data.get('categories', []):
         enriched_category = dict(category)
         enriched_items = []

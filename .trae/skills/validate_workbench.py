@@ -13,15 +13,13 @@ import re
 import sys
 from pathlib import Path
 
-# Generic class names that should never appear in module content unless they
-# belong to the workbench framework itself. See FRAMEWORK_CLASS_WHITELIST.
+# 通用 class 黑名单：模块内容中不应直接使用这些过于宽泛的类名
 GENERIC_CLASS_BLACKLIST = {
     'card', 'essay', 'container', 'wrapper', 'box', 'list', 'item', 'title',
     'text', 'button', 'header', 'footer', 'section', 'nav', 'main', 'content',
 }
 
-# Class names used by the workbench framework itself. These are allowed even
-# if they look generic.
+# 框架自身使用的 class 白名单：即使命中黑名单也允许存在
 FRAMEWORK_CLASS_WHITELIST = {
     'topbar', 'brand', 'brand-icon', 'topbar-actions', 'theme-toggle', 'menu-toggle',
     'app', 'sidebar', 'sidebar-scroll', 'search', 'search-icon', 'tree',
@@ -29,13 +27,12 @@ FRAMEWORK_CLASS_WHITELIST = {
     'btn-edit', 'btn-delete', 'main', 'empty-state', 'content', 'header',
 }
 
-# Standalone HTML files that are not integrated into the workbench framework.
-# They may use generic class names safely and are excluded from the global scan.
+# 不参与全局扫描的独立 HTML 文件白名单
 GENERIC_CLASS_GLOBAL_WHITELIST = {
     'Workbench/工作台迁移方案/工作台迁移方案-说明.html',
 }
 
-# Ensure the skills directory is on the path so we can import the core module.
+# 确保 skills 目录自身在 sys.path 中，方便导入核心模块
 SKILLS_DIR = Path(__file__).resolve().parent
 if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
@@ -102,9 +99,7 @@ def check_dynamic_classes_in_js(html: str) -> list[str]:
     scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL)
     js = '\n'.join(scripts)
 
-    # Scan string literals that contain HTML markup. Instead of looking at the
-    # whole literal (which also contains JS template expressions like ${item}),
-    # extract only class="..." / class='...' attribute values and check those.
+    # 扫描可能包含 HTML 标记的字符串字面量，只检查其中的 class 属性值
     html_literal_pattern = re.compile(r"['\"`]([^'\"`\n]{0,500})['\"`]")
     class_attr_pattern = re.compile(r'class\s*=\s*["\']([^"\']+)["\']')
     for match in html_literal_pattern.finditer(js):
@@ -135,6 +130,7 @@ def check_generic_class_prefixes_global() -> list[str]:
 
     for item in workbench.rglob('*.html'):
         rel = str(item.relative_to(root)).replace('\\', '/')
+        # 跳过已构建入口与阅读源文件
         if rel == 'Workbench/此刻便是春天.html':
             continue
         if rel.startswith('Workbench/read/'):
@@ -176,6 +172,7 @@ def check_reading_content(html: str) -> list[str]:
         expected_essays = count_essays(source_html)
 
         transformed = build_reading_html(source_html)
+        # 转换后统计 reading-section 与 reading-essay 数量，与源文件对比
         actual_sections = len(re.findall(r'<div class="reading-section(?:\s+[^"]+)?"', transformed))
         actual_essays = len(re.findall(r'<div class="reading-essay">', transformed))
 
@@ -235,30 +232,29 @@ def check_file_documentation() -> list[str]:
     ignored_root = {'.git', '__pycache__', '.trae-html-share-packages'}
     warnings = []
 
-    # Root-level items
+    # 检查根级条目是否被文档提及
     for item in root.iterdir():
         if item.name in ignored_root:
             continue
         if item.name not in doc_content:
             warnings.append(f'{item.name} is not documented in 文件说明.md')
 
-    # Workbench top-level modules and files only.
+    # 仅检查 Workbench 顶层模块与文件
     workbench = root / 'Workbench'
     if workbench.exists():
         ignored_wb = {'此刻便是春天.html'}
         ignored_dirs = {'data', 'read'}
         for item in workbench.iterdir():
             rel = item.relative_to(root)
-            # Skip the main entry, generated output and raw source groups.
+            # 跳过主入口、生成输出与原始源文件分组
             if item.name in ignored_wb or item.name in ignored_dirs:
                 continue
-            # Top-level modules are documented by their folder name.
+            # 顶层模块按文件夹名检查文档
             if item.is_dir():
                 if item.name not in doc_content:
                     warnings.append(f'{rel} is not documented in 文件说明.md')
                 continue
-            # Top-level files inside Workbench (not inside a module) must be
-            # documented individually.
+            # 顶层文件需要单独在文档中说明
             if item.suffix.lower() in {'.html', '.json', '.pdf', '.doc', '.docx'}:
                 if str(rel) not in doc_content and item.name not in doc_content:
                     warnings.append(f'{rel} is not documented in 文件说明.md')
@@ -284,11 +280,11 @@ def check_naming_conventions() -> list[str]:
     for item in workbench.rglob('*.html'):
         if item.name in exempt:
             continue
-        # Raw reading sources are named by year by design.
+        # 阅读源文件按年份命名，属于设计例外
         rel_parts = item.relative_to(workbench).parts
         if rel_parts and rel_parts[0] == 'read':
             continue
-        # Allow names like reading-summary.html
+        # 文件名中应包含“-”以符合 {子模块}-{任务}.html 约定
         if '-' not in item.stem:
             warnings.append(
                 f'{item.relative_to(root)} does not follow naming convention '
@@ -381,6 +377,7 @@ def main() -> int:
     html = WORKBENCH.read_text(encoding='utf-8')
     errors = validate(html)
 
+    # 文档、命名与全局 class 检查作为警告而非致命错误
     doc_warnings = check_file_documentation()
     naming_warnings = check_naming_conventions()
     generic_global_warnings = check_generic_class_prefixes_global()

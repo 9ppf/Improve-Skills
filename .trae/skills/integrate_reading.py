@@ -25,6 +25,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+# 确保当前脚本所在目录可作为 import 路径
 SKILLS_DIR = Path(__file__).resolve().parent
 if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
@@ -40,6 +41,7 @@ from reading_integration import (
 
 
 def _all_years() -> list[int]:
+    """返回 read/ 目录下所有 2xxx 年份文件，按降序排列。"""
     return sorted(
         (int(p.stem) for p in READ_DIR.glob('2*.html') if p.stem.isdigit()),
         reverse=True,
@@ -49,6 +51,7 @@ def _all_years() -> list[int]:
 def _run_build() -> int:
     """Run the canonical build so the final HTML matches the standard pipeline."""
     print('\n[integrate] running canonical build.py...')
+    # 调用标准构建脚本 build.py，确保输出与正式构建流程一致
     result = subprocess.run(
         [sys.executable, str(ROOT / 'build.py')],
         cwd=ROOT,
@@ -78,6 +81,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    # 根据参数决定集成全部年份还是指定年份
     if args.rebuild:
         years = _all_years()
     else:
@@ -87,6 +91,7 @@ def main() -> int:
         print('No years specified. Use --rebuild or pass one or more years.')
         return 1
 
+    # 检查所有请求的源文件是否都存在
     missing = [y for y in years if not (READ_DIR / f'{y}.html').exists()]
     if missing:
         print(f'Source files not found for years: {missing}')

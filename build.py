@@ -33,6 +33,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+# 项目根目录与关键路径定义
 ROOT = Path(__file__).resolve().parent
 WORKBENCH = ROOT / 'Workbench' / '此刻便是春天.html'
 DATA_DIR = ROOT / 'Workbench' / 'data'
@@ -48,6 +49,7 @@ SKILLS_DIR = ROOT / '.trae' / 'skills'
 try:
     import sass
 except ImportError as exc:
+    # libsass 未安装时给出明确提示，避免后续编译失败信息晦涩
     raise ImportError(
         'SASS compilation requires the "libsass" package. '
         'Install it with: pip install libsass'
@@ -59,7 +61,7 @@ except ImportError as exc:
 # Centralized cleanup rules. Use glob-friendly patterns so the rules stay
 # stable when tool versions change directory names.
 CLEANUP_CONFIG = {
-    # Paths that must never be removed, even if a pattern matches them.
+    # 即使清理规则匹配到这些路径，也绝不允许删除核心目录/文件
     'protected_paths': {
         ROOT / '.trae',
         ROOT / '.git',
@@ -72,16 +74,14 @@ CLEANUP_CONFIG = {
         ROOT / '文件说明.md',
         ROOT / '项目约束总览.md',
     },
-    # Directory names that are temporary artifacts. They may live inside
-    # protected roots (e.g. __pycache__ under .trae/skills) and are still
-    # allowed to be cleaned.
+    # 临时目录名通配规则；即使位于受保护根目录下也可清理
     'temp_dir_patterns': {'__pycache__', '.trae-html-share-*'},
-    # Empty directories directly under ROOT that should be kept.
+    # 根目录下允许保留的空目录白名单
     'empty_root_keep': {
         'build.py', '.trae', '.git', 'temp', 'transformers',
         'templates', 'styles', 'Workbench', '文件说明.md',
     },
-    # Backup retention rules.
+    # 备份保留规则：保留最近 keep 个备份
     'backup_rules': [
         {
             'directory': ROOT / 'Workbench',
@@ -100,10 +100,7 @@ CLEANUP_CONFIG = {
 # only needs to declare the *differences* for alternate themes (e.g. dark).
 TOKEN_OVERRIDES: dict[str, str] = {}
 
-# Theme token whitelist. Only these variable names are extracted from
-# styles/_variables.scss and exposed to module JSON / runtime JS. Keeping an
-# explicit whitelist prevents accidental token leakage if _variables.scss later
-# contains derived aliases, maps, or helper variables.
+# 主题变量白名单：仅从这些 SCSS 变量中提取默认值并暴露给模块 JSON / 运行时 JS
 THEME_TOKEN_NAMES = {
     'bg', 'surface', 'sidebar', 'bg2', 'ink', 'muted', 'light',
     'rule', 'rule-strong',
@@ -116,9 +113,7 @@ THEME_TOKEN_NAMES = {
     'reading-warm',
 }
 
-# JSON fields whose string values may be theme token names and should be
-# replaced with actual colors during build. This prevents apply_tokens from
-# accidentally replacing ordinary text such as item names or review content.
+# JSON 中字符串值可能被主题 token 名占用的字段；仅在白名单字段中执行替换
 TOKEN_FIELDS = {
     'bg', 'surface', 'sidebar', 'bg2', 'ink', 'muted', 'light',
     'rule', 'rule-strong', 'iconBg',
@@ -145,19 +140,20 @@ def _load_base_tokens_from_scss() -> dict[str, str]:
 
     text = VARIABLES_SCSS.read_text(encoding='utf-8')
     tokens: dict[str, str] = {}
-    # Match lines like: $bg: #F0F9FF;  or  $bg: #F0F9FF !default;
+    # 匹配形如 $bg: #F0F9FF; 或 $bg: #F0F9FF !default; 的变量定义
     for match in re.finditer(r'^\s*\$(\w[-\w]*):\s*([^;!]+)(?:\s*!default)?;', text, re.MULTILINE):
         name = match.group(1)
         if name not in THEME_TOKEN_NAMES:
             continue
         value = match.group(2).strip()
-        # Ignore derived aliases that reference other variables.
+        # 跳过引用其他变量的派生别名
         if value.startswith('$'):
             continue
-        # Keep only color-like values.
+        # 仅保留形似颜色的值
         if re.match(r'^(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\()', value):
             tokens[name] = value
 
+    # 校验白名单中的 token 是否全部存在且有效
     missing = THEME_TOKEN_NAMES - set(tokens)
     if missing:
         raise ValueError(
@@ -166,6 +162,7 @@ def _load_base_tokens_from_scss() -> dict[str, str]:
         )
     return tokens
 
+# 确保 skills 与 transformers 目录可被 import
 if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
 if str(TRANSFORMERS_DIR) not in sys.path:
@@ -196,6 +193,7 @@ def get_active_tokens(config: dict) -> dict:
     if active not in themes:
         raise ValueError(f'Active theme not found: {active}')
 
+    # 基础 token 与当前主题覆盖值合并，覆盖值优先级更高
     base_tokens = _load_base_tokens_from_scss()
     overrides = themes[active].get('tokens', {})
     merged = {**base_tokens, **overrides}
@@ -206,6 +204,7 @@ def load_modules(config: dict) -> list[dict]:
     """Load all enabled module data files."""
     modules = []
     for reg in config.get('modules', []):
+        # 跳过显式禁用的模块
         if not reg.get('enabled', True):
             print(f'  [skip] disabled module: {reg.get("id")}')
             continue
@@ -232,6 +231,7 @@ def apply_tokens(obj, tokens: dict, field_name: str = ''):
         return {k: apply_tokens(v, tokens, k) for k, v in obj.items()}
     if isinstance(obj, list):
         return [apply_tokens(v, tokens, field_name) for v in obj]
+    # 仅当字段在白名单且字符串恰好等于某个 token 名时才替换
     if isinstance(obj, str) and field_name in TOKEN_FIELDS and obj in tokens:
         return tokens[obj]
     return obj
@@ -245,6 +245,7 @@ def enrich_module(data: dict) -> dict:
         return data
 
     try:
+        # 动态导入 transformers/<module_id>.py
         module = importlib.import_module(module_id)
         enrich = getattr(module, 'enrich_module', None)
         if enrich:
@@ -274,6 +275,7 @@ def _build_theme_script(config: dict) -> str:
     default_theme = config.get('activeTheme', 'light')
     base_tokens = _load_base_tokens_from_scss()
 
+    # 为每个主题合并基础 token，保证运行时拿到完整颜色映射
     merged_themes = {}
     for name, theme in themes.items():
         merged_themes[name] = {
@@ -316,10 +318,12 @@ def _compile_styles() -> str:
     """Compile styles/main.scss into CSS for inline injection."""
     if not MAIN_SCSS.exists():
         raise FileNotFoundError(f'SCSS entry not found: {MAIN_SCSS}')
+    # 使用 libsass 压缩输出，便于内联到 HTML
     return sass.compile(filename=str(MAIN_SCSS), output_style='compressed')
 
 
 def _extract_year(name: str) -> int | None:
+    # 从“2026年高考语文...”中提取 4 位年份
     m = re.search(r'(\d{4})年', name)
     return int(m.group(1)) if m else None
 
@@ -340,6 +344,7 @@ def _build_reading_workspace(data: dict) -> tuple[str, str]:
             if year is None:
                 raise ValueError(f'Cannot extract year from reading item: {item["name"]}')
 
+            # 每个年份对应一个 JS 常量，存放转义后的阅读 HTML
             constants.append(f'    const readingHtml{year} = `{item["readingHtml"]}`;')
 
             cat_items.append(
@@ -376,6 +381,7 @@ def _build_reading_workspace(data: dict) -> tuple[str, str]:
 def run_validate() -> None:
     """Run the workbench validation script."""
     validate_script = SKILLS_DIR / 'validate_workbench.py'
+    # 调用外部校验脚本 validate_workbench.py
     result = subprocess.run(
         [sys.executable, str(validate_script)],
         capture_output=True,
@@ -406,16 +412,17 @@ def _is_protected(path: Path) -> bool:
         except OSError:
             continue
 
-        # Exact match: the protected root itself.
+        # 精确匹配：受保护的根路径本身
         if resolved == protected_resolved:
             return True
 
-        # Directory inside a protected root.
+        # 受保护根目录下的子目录
         if path.is_dir():
             try:
                 relative = resolved.relative_to(protected_resolved)
             except ValueError:
                 continue
+            # 若路径中包含已知临时目录名，则允许清理；否则视为受保护
             if relative.parts and not any(
                 any(part.startswith(pat.rstrip('*')) or part == pat for pat in temp_patterns)
                 for part in relative.parts
@@ -440,6 +447,7 @@ def _match_dir_name(name: str, patterns: set[str]) -> bool:
     """Return True if a directory name matches any glob-like pattern."""
     for pat in patterns:
         if pat.endswith('*'):
+            # 前缀通配：如 .trae-html-share-*
             if name.startswith(pat[:-1]):
                 return True
         elif name == pat:
@@ -461,6 +469,7 @@ def _cleanup_temp_dirs(root: Path) -> list[Path]:
 def _cleanup_old_backups(directory: Path, pattern: str, keep: int = 3) -> list[Path]:
     """Keep the most recent backup files matching pattern, remove the rest."""
     removed = []
+    # 按修改时间倒序，保留前 keep 个
     backups = sorted(directory.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
     for old in backups[keep:]:
         _remove_path(old)
@@ -475,7 +484,7 @@ def _cleanup_empty_root_dirs() -> list[Path]:
     for item in ROOT.iterdir():
         if item.is_dir() and item.name not in keep:
             try:
-                # list any content recursively
+                # 递归检查是否没有任何内容
                 contents = list(item.rglob('*'))
                 if not contents:
                     _remove_path(item)
@@ -508,7 +517,7 @@ def cleanup_artifacts(dry_run: bool = False) -> dict[str, list[Path]]:
 
     for name, func, args in actions:
         if dry_run:
-            # For dry-run, collect targets without deleting.
+            # 仅预览：收集目标但不删除
             targets: list[Path] = []
             if name == 'temp-dirs':
                 targets = [
