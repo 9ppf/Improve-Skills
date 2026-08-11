@@ -146,99 +146,38 @@ def _reading_item_js(year: int, sections_count: int) -> str:
               }}'''
 
 
+# Markers injected by templates/workbench.html. Manual integration scripts use
+# these markers to locate and replace reading content without relying on fragile
+# regex matches against JS function signatures.
+CONSTANTS_BEGIN = '// <!-- reading-constants-begin -->'
+CONSTANTS_END = '// <!-- reading-constants-end -->'
+WORKSPACES_BEGIN = '// <!-- workspaces-array-begin -->'
+WORKSPACES_END = '// <!-- workspaces-array-end -->'
+
+
 def has_reading_workspace(html: str) -> bool:
     """Return True if the workbench already contains the 'read' workspace."""
     return "id: 'read'" in html
 
 
 def bootstrap_workbench(html: str) -> str:
-    """Add the reading workspace and required JS functions if they are missing.
+    """Ensure the workbench contains a 'read' workspace.
 
-    This is idempotent: calling it on an already-bootstrapped workbench is safe.
+    The workbench template now ships with all reading-related JS helpers
+    (isReadingItem, renderReadingContent, toggleReadingSection, etc.), so this
+    function only needs to add the workspace data when it is missing.
     """
-    # Add reading type label
-    if "type === 'reading'" not in html:
-        html = re.sub(
-            r"(function getTypeLabel\(type\) \{\n)(\s*if \(type === 'public'\) return)",
-            r"\1      if (type === 'reading') return '<span class=\"badge badge-public\">阅读资料</span>';\n\2",
-            html,
-            count=1,
+    if has_reading_workspace(html):
+        return html
+
+    # Make sure the marker-based workspaces array exists.
+    if WORKSPACES_BEGIN not in html or WORKSPACES_END not in html:
+        raise ValueError(
+            'Workbench template is missing workspaces-array markers; '
+            'please regenerate it from templates/workbench.html.'
         )
 
-    # Add reading content tab
-    if "isReadingItem(item)) tabs.push" not in html:
-        html = re.sub(
-            r"(function renderTabs\(item\) \{\n\s*)if \(!isExamItem\(item\)\) return '';\n\s*const tabs = \[\n\s*\{ key: 'plan', label: '计划' \},\n\s*\{ key: 'questionTypes', label: '题型分析' \}\n\s*\];",
-            r"\1if (!isExamItem(item) && !isReadingItem(item)) return '';\n      const tabs = [{ key: 'plan', label: '计划' }];\n      if (isExamItem(item)) tabs.push({ key: 'questionTypes', label: '题型分析' });\n      if (isReadingItem(item)) tabs.push({ key: 'content', label: '内容' });",
-            html,
-            count=1,
-        )
-
-    # Add isReadingItem helper
-    if "function isReadingItem" not in html:
-        html = re.sub(
-            r"(function isExamItem\(item\) \{\n\s*return item && \(item.type === 'core' \|\| item.type === 'public' \|\| item.type === 'practice'\);\n\}\n)",
-            r"\1\n    function isReadingItem(item) {\n      return item && item.type === 'reading';\n    }\n",
-            html,
-            count=1,
-        )
-
-    # Add reading content branch in renderItemView
-    if "activeTab === 'content' && isReadingItem(item)" not in html:
-        html = re.sub(
-            r"(if \(activeTab === 'plan' \|\| !isExamItem\(item\)\) \{\n\s*contentHtml = renderPlanTab\(item\);\n\s*\} else if \(activeTab === 'questionTypes'\) \{\n\s*contentHtml = renderQuestionTypes\(item\);\n\s*\})(\n\s*document\.getElementById\('main'\)",
-            r"\1\n      } else if (activeTab === 'content' && isReadingItem(item)) {\n        contentHtml = renderReadingContent(item);\n      }\2",
-            html,
-            count=1,
-        )
-    # Guard the plan branch so reading items don't fall through to plan
-    html = re.sub(
-        r"if \(activeTab === 'plan' \|\| !isExamItem\(item\)\) \{\n\s*contentHtml = renderPlanTab\(item\);",
-        r"if (activeTab === 'plan' || (!isExamItem(item) && !isReadingItem(item))) {\n        contentHtml = renderPlanTab(item);",
-        html,
-        count=1,
-    )
-
-    # Update selectItem to default reading items to content tab
-    if "isReadingItem(result.item) ? 'content'" not in html:
-        html = re.sub(
-            r"(activeItemId = id;\n\s*activeTab =) isReadingItem\(item\) \? 'content' : 'plan';",
-            r"\1 isReadingItem(result.item) ? 'content' : 'plan';",
-            html,
-            count=1,
-        )
-    if "isReadingItem(result.item) ? 'content'" not in html:
-        html = re.sub(
-            r"(activeItemId = id;\n\s*activeTab = 'plan';)",
-            r"activeItemId = id;\n      activeTab = isReadingItem(result.item) ? 'content' : 'plan';",
-            html,
-            count=1,
-        )
-
-    # Add renderReadingContent and toggleReadingSection
-    if "function renderReadingContent" not in html:
-        reading_functions = '''
-    function renderReadingContent(item) {
-      const html = item.readingHtml || '<div class="reading-content"><p>暂无内容</p></div>';
-      return html;
-    }
-
-    function toggleReadingSection(id) {
-      const section = document.querySelector('.reading-section[data-section="' + id + '"]');
-      if (section) section.classList.toggle('collapsed');
-    }
-
-'''
-        html = re.sub(
-            r'(function renderTree\(\) \{)',
-            reading_functions + r'\1',
-            html,
-            count=1,
-        )
-
-    # Add reading workspace if missing
-    if not has_reading_workspace(html):
-        new_workspace = '''      {
+    new_workspace = '''      {
         id: 'read', name: '阅读资料', icon: '📚', iconBg: '#FEF3C7',
         categories: [
           {
@@ -248,51 +187,54 @@ def bootstrap_workbench(html: str) -> str:
           }
         ]
       }'''
-        marker = "    let currentWorkspaceId = 'zk';"
-        if marker not in html:
-            raise ValueError('Could not find marker for workspaces array end')
-        idx = html.index(marker)
-        brace_idx = html.rfind('];', 0, idx)
-        if brace_idx == -1:
-            raise ValueError('Could not find ]; before marker')
-        line_start = html.rfind('\n', 0, brace_idx) + 1
-        prev_newline = html.rfind('\n', 0, line_start - 1)
-        prev_line = html[prev_newline + 1:line_start].rstrip()
-        if not prev_line.endswith(','):
-            html = (
-                html[:prev_newline + 1]
-                + prev_line + ',\n'
-                + html[line_start:]
-            )
-            idx = html.index(marker)
-            line_start = html.rfind('];', 0, idx) + 1
-            line_start = html.rfind('\n', 0, line_start) + 1
-        html = (
-            html[:line_start]
-            + new_workspace
-            + ',\n'
-            + html[line_start:]
-        )
 
+    end_idx = html.index(WORKSPACES_END)
+    # Insert before the end marker, with a trailing comma if needed.
+    html = html[:end_idx] + new_workspace + ',\n' + html[end_idx:]
     return html
 
 
-def remove_existing_year(html: str, year: int) -> str:
-    """Remove a previously integrated year (constant + item) from the workbench."""
-    # Remove constant
-    start = html.find(f'    const readingHtml{year} = `')
-    if start != -1:
-        close = html.find('`;', start + len(f'    const readingHtml{year} = `'))
-        if close != -1:
-            html = html[:start] + html[close + 2:]
+def _replace_between(html: str, begin_marker: str, end_marker: str,
+                      new_content: str) -> str:
+    """Replace the content between two markers, keeping the markers intact."""
+    begin_idx = html.find(begin_marker)
+    end_idx = html.find(end_marker)
+    if begin_idx == -1 or end_idx == -1 or end_idx <= begin_idx:
+        raise ValueError(f'Markers {begin_marker!r} / {end_marker!r} not found or malformed')
+    after_begin = begin_idx + len(begin_marker)
+    return html[:after_begin] + '\n' + new_content + html[end_idx:]
 
-    # Remove item block
-    html = re.sub(
-        rf"\n\s*\{{\s*code: '', name: '{year}年高考语文作文题目与优秀范文汇编'.*?readingHtml: readingHtml{year}\s*\}}",
-        '',
-        html,
-        flags=re.S,
-    )
+
+def remove_existing_year(html: str, year: int) -> str:
+    """Remove a previously integrated year (constant + item) from the workbench.
+
+    Removal uses the marker-delimited regions injected by the template, so it
+    no longer relies on fragile regex matches against JS function signatures.
+    """
+    # Remove constant inside the reading-constants region.
+    constants_begin = html.find(CONSTANTS_BEGIN)
+    constants_end = html.find(CONSTANTS_END)
+    if constants_begin != -1 and constants_end != -1:
+        region = html[constants_begin:constants_end]
+        pattern = re.compile(
+            rf"\s*const readingHtml{year} = `[^`]*`;\s*",
+            re.S,
+        )
+        region = pattern.sub('\n', region)
+        html = html[:constants_begin] + region + html[constants_end:]
+
+    # Remove item inside the workspaces-array region.
+    workspaces_begin = html.find(WORKSPACES_BEGIN)
+    workspaces_end = html.find(WORKSPACES_END)
+    if workspaces_begin != -1 and workspaces_end != -1:
+        region = html[workspaces_begin:workspaces_end]
+        pattern = re.compile(
+            rf"\s*\{{\s*code: '', name: '{year}年高考语文作文题目与优秀范文汇编'.*?readingHtml: readingHtml{year}\s*\}},?",
+            re.S,
+        )
+        region = pattern.sub('\n', region)
+        html = html[:workspaces_begin] + region + html[workspaces_end:]
+
     return html
 
 
@@ -313,36 +255,37 @@ def _collect_year_data(years: list[int], read_dir: Path) -> list[tuple[int, str,
 
 
 def _inject_constants(html: str, year_data: list[tuple[int, str, int]]) -> str:
-    """Insert readingHtml<year> constants before `const workspaces = [`."""
+    """Insert readingHtml<year> constants into the marked region."""
     constants_js = ''.join(
         f'    const readingHtml{year} = `{reading_html}`;\n\n'
         for year, reading_html, _ in year_data
     )
-    return re.sub(
-        r'\b(const workspaces = \[)',
-        constants_js + r'\1',
-        html,
-        count=1,
-    )
+    return _replace_between(html, CONSTANTS_BEGIN, CONSTANTS_END, constants_js)
 
 
-def _rebuild_reading_items(html: str, year_data: list[tuple[int, str, int]]) -> str:
-    """Replace the items array of the 高考语文 reading category."""
+def _build_reading_workspace(year_data: list[tuple[int, str, int]]) -> str:
+    """Build the full JS object literal for the read workspace."""
     items_js = ',\n'.join(
         _reading_item_js(year, sections_count)
         for year, _, sections_count in year_data
     )
-    pattern = re.compile(
-        r"(name: '高考语文', icon: '📝', iconBg: '#E0F2FE',\n\s*items: \[)(.*?)(\])",
-        re.S,
-    )
+    return f'''      {{
+        id: 'read', name: '阅读资料', icon: '📚', iconBg: '#FEF3C7',
+        categories: [
+          {{
+            name: '高考语文', icon: '📝', iconBg: '#E0F2FE',
+            items: [
+{items_js}
+            ]
+          }}
+        ]
+      }}'''
 
-    def repl(m):
-        if items_js:
-            return m.group(1) + '\n' + items_js + '\n' + m.group(2).rstrip() + m.group(3)
-        return m.group(1) + m.group(3)
 
-    return pattern.sub(repl, html, count=1)
+def _rebuild_reading_items(html: str, year_data: list[tuple[int, str, int]]) -> str:
+    """Replace the entire workspaces array region with the reading workspace."""
+    workspace_js = _build_reading_workspace(year_data)
+    return _replace_between(html, WORKSPACES_BEGIN, WORKSPACES_END, workspace_js)
 
 
 def _all_reading_years(html: str) -> set[int]:

@@ -100,13 +100,45 @@ CLEANUP_CONFIG = {
 # only needs to declare the *differences* for alternate themes (e.g. dark).
 TOKEN_OVERRIDES: dict[str, str] = {}
 
+# Theme token whitelist. Only these variable names are extracted from
+# styles/_variables.scss and exposed to module JSON / runtime JS. Keeping an
+# explicit whitelist prevents accidental token leakage if _variables.scss later
+# contains derived aliases, maps, or helper variables.
+THEME_TOKEN_NAMES = {
+    'bg', 'surface', 'sidebar', 'bg2', 'ink', 'muted', 'light',
+    'rule', 'rule-strong',
+    'accent-purple', 'purple-soft', 'purple-text',
+    'accent-blue', 'blue-soft', 'blue-text',
+    'accent-coral', 'coral-soft', 'coral-text',
+    'accent-green', 'green-soft', 'green-text',
+    'accent-cyan', 'accent-yellow', 'accent-orange',
+    'notice-bg', 'notice-border', 'notice-text',
+    'reading-warm',
+}
+
+# JSON fields whose string values may be theme token names and should be
+# replaced with actual colors during build. This prevents apply_tokens from
+# accidentally replacing ordinary text such as item names or review content.
+TOKEN_FIELDS = {
+    'bg', 'surface', 'sidebar', 'bg2', 'ink', 'muted', 'light',
+    'rule', 'rule-strong', 'iconBg',
+    'accent-purple', 'purple-soft', 'purple-text',
+    'accent-blue', 'blue-soft', 'blue-text',
+    'accent-coral', 'coral-soft', 'coral-text',
+    'accent-green', 'green-soft', 'green-text',
+    'accent-cyan', 'accent-yellow', 'accent-orange',
+    'notice-bg', 'notice-border', 'notice-text',
+    'reading-warm',
+}
+
 
 def _load_base_tokens_from_scss() -> dict[str, str]:
     """Parse simple color variables from styles/_variables.scss.
 
-    Only scalar color values (hex, rgb, rgba, hsl, hsla) are treated as theme
-    tokens. Variables that reference other variables (e.g. $brand: $accent-blue)
-    are skipped because they are already expressed as CSS aliases in _root.scss.
+    Only variables whose names appear in THEME_TOKEN_NAMES and whose values are
+    scalar colors (hex, rgb, rgba, hsl, hsla) are treated as theme tokens.
+    Variables that reference other variables (e.g. $brand: $accent-blue) are
+    skipped because they are already expressed as CSS aliases in _root.scss.
     """
     if not VARIABLES_SCSS.exists():
         raise FileNotFoundError(f'SCSS variables file not found: {VARIABLES_SCSS}')
@@ -116,6 +148,8 @@ def _load_base_tokens_from_scss() -> dict[str, str]:
     # Match lines like: $bg: #F0F9FF;  or  $bg: #F0F9FF !default;
     for match in re.finditer(r'^\s*\$(\w[-\w]*):\s*([^;!]+)(?:\s*!default)?;', text, re.MULTILINE):
         name = match.group(1)
+        if name not in THEME_TOKEN_NAMES:
+            continue
         value = match.group(2).strip()
         # Ignore derived aliases that reference other variables.
         if value.startswith('$'):
@@ -123,6 +157,13 @@ def _load_base_tokens_from_scss() -> dict[str, str]:
         # Keep only color-like values.
         if re.match(r'^(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\()', value):
             tokens[name] = value
+
+    missing = THEME_TOKEN_NAMES - set(tokens)
+    if missing:
+        raise ValueError(
+            f'The following theme tokens are declared in THEME_TOKEN_NAMES '
+            f'but missing or invalid in {VARIABLES_SCSS}: {sorted(missing)}'
+        )
     return tokens
 
 if str(SKILLS_DIR) not in sys.path:
@@ -180,13 +221,18 @@ def load_modules(config: dict) -> list[dict]:
     return modules
 
 
-def apply_tokens(obj, tokens: dict):
-    """Recursively replace token names with actual color values."""
+def apply_tokens(obj, tokens: dict, field_name: str = ''):
+    """Recursively replace token names with actual color values.
+
+    Replacement only happens for field names listed in TOKEN_FIELDS. This
+    avoids accidentally replacing ordinary text (e.g. item names, review
+    content) that happens to match a token name.
+    """
     if isinstance(obj, dict):
-        return {k: apply_tokens(v, tokens) for k, v in obj.items()}
+        return {k: apply_tokens(v, tokens, k) for k, v in obj.items()}
     if isinstance(obj, list):
-        return [apply_tokens(v, tokens) for v in obj]
-    if isinstance(obj, str) and obj in tokens:
+        return [apply_tokens(v, tokens, field_name) for v in obj]
+    if isinstance(obj, str) and field_name in TOKEN_FIELDS and obj in tokens:
         return tokens[obj]
     return obj
 
