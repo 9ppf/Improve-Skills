@@ -16,8 +16,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-WORKBENCH = Path(r'E:\TraeWorkToDo\Workbench\此刻便是春天.html')
-READ_DIR = Path(r'E:\TraeWorkToDo\Workbench\read')
+# Resolve project root from .trae/skills/reading_integration.py
+ROOT = Path(__file__).resolve().parents[2]
+WORKBENCH = ROOT / 'Workbench' / '此刻便是春天.html'
+READ_DIR = ROOT / 'Workbench' / 'read'
 
 # Maps old standalone-page class names to workbench-scoped class names.
 CLASS_REPLACEMENTS = {

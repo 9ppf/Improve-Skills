@@ -92,6 +92,33 @@ def check_generic_class_prefixes(html: str) -> list[str]:
     return errors
 
 
+def check_dynamic_classes_in_js(html: str) -> list[str]:
+    """Scan embedded JS for string literals that contain blacklisted class names.
+
+    This catches dynamically generated class names such as those in template
+    literals or className assignments, which static HTML scans miss.
+    """
+    errors = []
+    scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL)
+    js = '\n'.join(scripts)
+
+    # Scan string literals that contain HTML markup. Instead of looking at the
+    # whole literal (which also contains JS template expressions like ${item}),
+    # extract only class="..." / class='...' attribute values and check those.
+    html_literal_pattern = re.compile(r"['\"`]([^'\"`\n]{0,500})['\"`]")
+    class_attr_pattern = re.compile(r'class\s*=\s*["\']([^"\']+)["\']')
+    for match in html_literal_pattern.finditer(js):
+        text = match.group(1)
+        if '<' not in text and 'class' not in text:
+            continue
+        for cls_attr in class_attr_pattern.findall(text):
+            for cls in cls_attr.split():
+                if cls in GENERIC_CLASS_BLACKLIST and cls not in FRAMEWORK_CLASS_WHITELIST:
+                    snippet = js[max(0, match.start() - 40):match.end() + 40].replace('\n', ' ')
+                    errors.append(f'Generic class found in JS: .{cls} in ...{snippet}...')
+    return errors
+
+
 def check_generic_class_prefixes_global() -> list[str]:
     """Scan all Workbench HTML sources for generic class names.
 
@@ -193,7 +220,12 @@ def check_workspace_integrity(html: str) -> list[str]:
 
 
 def check_file_documentation() -> list[str]:
-    """Warn if root-level files or Workbench deliverables are missing from 文件说明.md."""
+    """Warn if root-level files or top-level Workbench modules are missing from 文件说明.md.
+
+    Deeply nested materials (e.g. individual PDFs inside a subject folder) are
+    documented as a group rather than checked one by one, keeping the scan fast
+    and stable as the project grows.
+    """
     root = SKILLS_DIR.parent.parent
     doc_path = root / '文件说明.md'
     if not doc_path.exists():
@@ -210,31 +242,26 @@ def check_file_documentation() -> list[str]:
         if item.name not in doc_content:
             warnings.append(f'{item.name} is not documented in 文件说明.md')
 
-    # Workbench deliverables (HTML/JSON/PDF/DOC/DOCX) - shallow scan of
-    # top-level subject folders is usually enough for documentation purposes.
+    # Workbench top-level modules and files only.
     workbench = root / 'Workbench'
     if workbench.exists():
         ignored_wb = {'此刻便是春天.html'}
         ignored_dirs = {'data', 'read'}
-        # Directories that hold bulk materials documented as a group
-        # (e.g. "read/历年真题/*.pdf").
-        bulk_dirs = {'历年真题'}
-        for item in workbench.rglob('*'):
-            if item.is_dir():
-                continue
-            if item.suffix.lower() not in {'.html', '.json', '.pdf', '.doc', '.docx'}:
-                continue
+        for item in workbench.iterdir():
             rel = item.relative_to(root)
-            rel_parts = item.relative_to(workbench).parts
-            # Skip the main entry and raw reading sources which are documented as groups.
-            if item.name in ignored_wb or rel_parts[0] in ignored_dirs:
+            # Skip the main entry, generated output and raw source groups.
+            if item.name in ignored_wb or item.name in ignored_dirs:
                 continue
-            # Skip bulk material folders documented as a group.
-            if any(bd in part for part in rel_parts for bd in bulk_dirs):
-                if '历年真题/*.pdf' in doc_content or '历年真题/*' in doc_content:
-                    continue
-            if str(rel) not in doc_content and item.name not in doc_content:
-                warnings.append(f'{rel} is not documented in 文件说明.md')
+            # Top-level modules are documented by their folder name.
+            if item.is_dir():
+                if item.name not in doc_content:
+                    warnings.append(f'{rel} is not documented in 文件说明.md')
+                continue
+            # Top-level files inside Workbench (not inside a module) must be
+            # documented individually.
+            if item.suffix.lower() in {'.html', '.json', '.pdf', '.doc', '.docx'}:
+                if str(rel) not in doc_content and item.name not in doc_content:
+                    warnings.append(f'{rel} is not documented in 文件说明.md')
 
     return warnings
 
@@ -337,6 +364,7 @@ def validate(html: str) -> list[str]:
     errors.extend(check_js_syntax(html))
     errors.extend(check_no_old_classes(html))
     errors.extend(check_generic_class_prefixes(html))
+    errors.extend(check_dynamic_classes_in_js(html))
     errors.extend(check_reading_content(html))
     errors.extend(check_workspace_integrity(html))
     errors.extend(check_workbench_structure())

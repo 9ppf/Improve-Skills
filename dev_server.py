@@ -2,16 +2,18 @@
 # -*- coding: utf-8 -*-
 """Development server with hot reload for the 此刻便是春天 workbench.
 
-Watches the source directories and rebuilds the workbench automatically when
-files change. Serves the generated HTML on a local HTTP port so you can preview
-in a browser and refresh manually after each rebuild.
+Watches the project source tree and rebuilds the workbench automatically when
+source files change. Serves the generated HTML on a local HTTP port so you can
+preview in a browser and refresh manually after each rebuild.
 
 Usage:
     python dev_server.py
     python dev_server.py --port 8080
+    python dev_server.py --no-build
 """
 
 import argparse
+import socket
 import subprocess
 import sys
 import time
@@ -24,17 +26,40 @@ ROOT = Path(__file__).resolve().parent
 WORKBENCH = ROOT / 'Workbench' / '此刻便是春天.html'
 DEFAULT_PORT = 8000
 
-# Directories/files whose changes should trigger a rebuild.
-WATCH_PATHS = [
-    ROOT / 'styles',
-    ROOT / 'templates',
-    ROOT / 'Workbench' / 'data',
-    ROOT / 'transformers',
-    ROOT / '.trae' / 'skills' / 'reading_integration.py',
-]
+# Source patterns that should trigger a rebuild. The observer watches the
+# entire project root and relies on IGNORE_PATTERNS to skip noise.
+WATCH_PATTERNS = {
+    '*.html', '*.scss', '*.css', '*.js', '*.json', '*.py', '*.md',
+}
 
-# Changes inside these patterns are ignored.
-IGNORE_PATTERNS = {'__pycache__', '.git', '.trae-html-share-packages'}
+# Directories and file patterns that should never trigger a rebuild.
+IGNORE_PATTERNS = {
+    '__pycache__', '.git', '.gitignore', '.gitattributes',
+    '.trae-html-share-packages', '.trae-html-share-*',
+    'temp', '*.tmp', '*.bak-*', '*.log',
+}
+
+
+def _should_ignore(path: Path) -> bool:
+    """Return True if changes to path should not trigger a rebuild."""
+    if path.is_dir():
+        return True
+
+    # Ignore build output and backups.
+    if path.name == '此刻便是春天.html' and path.parent.name == 'Workbench':
+        return True
+    if path.name.startswith('此刻便是春天.html.bak-'):
+        return True
+
+    # Ignore anything inside an ignored directory.
+    if any(part in IGNORE_PATTERNS for part in path.parts):
+        return True
+
+    # Only watch known source extensions.
+    if path.suffix.lower() not in {'.html', '.scss', '.css', '.js', '.json', '.py', '.md'}:
+        return True
+
+    return False
 
 
 class RebuildHandler(FileSystemEventHandler):
@@ -45,27 +70,19 @@ class RebuildHandler(FileSystemEventHandler):
         self.last_build = 0
 
     def on_modified(self, event):
-        if self._should_ignore(event):
+        if _should_ignore(Path(event.src_path)):
             return
         self._rebuild()
 
     def on_created(self, event):
-        if self._should_ignore(event):
+        if _should_ignore(Path(event.src_path)):
             return
         self._rebuild()
 
     def on_moved(self, event):
-        if self._should_ignore(event):
+        if _should_ignore(Path(event.dest_path)):
             return
         self._rebuild()
-
-    def _should_ignore(self, event) -> bool:
-        if event.is_directory:
-            return True
-        src = Path(event.src_path)
-        if any(part in IGNORE_PATTERNS for part in src.parts):
-            return True
-        return False
 
     def _rebuild(self):
         now = time.time()
@@ -74,14 +91,25 @@ class RebuildHandler(FileSystemEventHandler):
         self.last_build = now
 
         print('\n[watch] source change detected, rebuilding...')
-        result = subprocess.run(
-            [sys.executable, str(ROOT / 'build.py'), '--skip-validate'],
-            cwd=ROOT,
-        )
+        try:
+            result = subprocess.run(
+                [sys.executable, str(ROOT / 'build.py'), '--skip-validate'],
+                cwd=ROOT,
+            )
+        except Exception as exc:
+            print(f'[watch] rebuild crashed: {exc}')
+            return
+
         if result.returncode == 0:
             print('[watch] rebuild complete — refresh your browser to see changes')
         else:
             print('[watch] rebuild failed — fix the error above and save again')
+
+
+def _port_in_use(port: int) -> bool:
+    """Return True if the given TCP port is already in use."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        return sock.connect_ex(('localhost', port)) == 0
 
 
 def _start_http_server(port: int) -> subprocess.Popen:
@@ -102,16 +130,17 @@ def main() -> int:
         print('[dev] running initial build...')
         result = subprocess.run([sys.executable, str(ROOT / 'build.py')], cwd=ROOT)
         if result.returncode != 0:
-            print('[dev] initial build failed', file=sys.stderr)
-            return result.returncode
+            print('[dev] initial build failed; server will still start, save a source file to retry', file=sys.stderr)
+        else:
+            print('[dev] initial build complete')
+
+    if _port_in_use(args.port):
+        print(f'[dev] error: port {args.port} is already in use; try --port {args.port + 1}', file=sys.stderr)
+        return 1
 
     handler = RebuildHandler()
     observer = Observer()
-    for path in WATCH_PATHS:
-        if path.exists():
-            observer.schedule(handler, str(path), recursive=True)
-        else:
-            print(f'[dev] warning: watch path does not exist: {path}')
+    observer.schedule(handler, str(ROOT), recursive=True)
     observer.start()
 
     server = _start_http_server(args.port)

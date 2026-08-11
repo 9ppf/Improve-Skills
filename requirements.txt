@@ -1,0 +1,5 @@
+# Python dependencies for the 此刻便是春天 workbench build toolchain.
+# Install with: pip install -r requirements.txt
+
+libsass==0.23.0    # Compiles styles/main.scss into CSS during build
+watchdog==6.0.0    # File watcher for dev_server.py hot reload

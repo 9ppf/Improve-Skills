@@ -5,11 +5,13 @@
 Usage:
     python integrate_reading_year.py 2018
 
-This script is a thin wrapper around the shared `reading_integration` module,
-which is the single source of truth for transformation rules and workbench
-injection logic.
+Note:
+    This script performs a quick manual injection and then reruns `build.py` so
+    the final workbench matches the canonical build pipeline. For normal
+    updates, prefer `python build.py` directly.
 """
 
+import subprocess
 import sys
 from pathlib import Path
 
@@ -18,6 +20,7 @@ if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
 
 from reading_integration import (
+    ROOT,
     WORKBENCH,
     READ_DIR,
     inject_year,
@@ -26,16 +29,28 @@ from reading_integration import (
 )
 
 
-def main():
+def _run_build() -> int:
+    """Run the canonical build so the final HTML matches the standard pipeline."""
+    print('\n[integrate] running canonical build.py...')
+    result = subprocess.run(
+        [sys.executable, str(ROOT / 'build.py')],
+        cwd=ROOT,
+    )
+    if result.returncode != 0:
+        print('[integrate] build.py failed', file=sys.stderr)
+    return result.returncode
+
+
+def main() -> int:
     if len(sys.argv) != 2:
         print(f'Usage: python {Path(__file__).name} <year>')
-        sys.exit(1)
+        return 1
 
     year = int(sys.argv[1])
     source_path = READ_DIR / f'{year}.html'
     if not source_path.exists():
         print(f'Source file not found: {source_path}')
-        sys.exit(1)
+        return 1
 
     backup = backup_workbench()
     print(f'Backup created: {backup}')
@@ -49,6 +64,8 @@ def main():
     validate_js(html)
     print('JS syntax check passed.')
 
+    return _run_build()
+
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

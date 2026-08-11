@@ -2,6 +2,13 @@
 # -*- coding: utf-8 -*-
 """CLI entry point for integrating reading content into the workbench.
 
+Note:
+    This script is kept for quick manual updates. The canonical build path is
+    `python build.py`, which reads `Workbench/data/modules/reading.json` and
+    regenerates the workbench from the template. After this script updates the
+    HTML, it reruns `build.py` so the final output always matches the standard
+    build pipeline.
+
 Examples:
     # Rebuild all years found in read/
     python integrate_reading.py --rebuild
@@ -14,6 +21,7 @@ Examples:
 """
 
 import argparse
+import subprocess
 import sys
 from pathlib import Path
 
@@ -22,6 +30,7 @@ if str(SKILLS_DIR) not in sys.path:
     sys.path.insert(0, str(SKILLS_DIR))
 
 from reading_integration import (
+    ROOT,
     WORKBENCH,
     READ_DIR,
     integrate_years,
@@ -37,6 +46,18 @@ def _all_years() -> list[int]:
     )
 
 
+def _run_build() -> int:
+    """Run the canonical build so the final HTML matches the standard pipeline."""
+    print('\n[integrate] running canonical build.py...')
+    result = subprocess.run(
+        [sys.executable, str(ROOT / 'build.py')],
+        cwd=ROOT,
+    )
+    if result.returncode != 0:
+        print('[integrate] build.py failed', file=sys.stderr)
+    return result.returncode
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description='Integrate read/YYYY.html files into the workbench.'
@@ -50,6 +71,10 @@ def main() -> int:
     parser.add_argument(
         '--validate', action='store_true',
         help='Run JS syntax check after integration',
+    )
+    parser.add_argument(
+        '--no-rebuild', action='store_true',
+        help='Skip the final canonical build (not recommended)',
     )
     args = parser.parse_args()
 
@@ -78,6 +103,9 @@ def main() -> int:
     if args.validate:
         validate_js(html)
         print('JS syntax check passed.')
+
+    if not args.no_rebuild:
+        return _run_build()
 
     return 0
 
