@@ -32,6 +32,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 # 项目根目录与关键路径定义
 ROOT = Path(__file__).resolve().parent
@@ -168,7 +169,7 @@ if str(SKILLS_DIR) not in sys.path:
 if str(TRANSFORMERS_DIR) not in sys.path:
     sys.path.insert(0, str(TRANSFORMERS_DIR))
 
-from reading_integration import validate_js
+from reading_integration import validate_js, build_reading_html, count_sections
 
 
 def load_workbench_config() -> dict:
@@ -322,16 +323,23 @@ def _compile_styles() -> str:
     return sass.compile(filename=str(MAIN_SCSS), output_style='compressed')
 
 
-def _extract_year(name: str) -> int | None:
+def _extract_year(name: str) -> Optional[int]:
     # 从“2026年高考语文...”中提取 4 位年份
     m = re.search(r'(\d{4})年', name)
     return int(m.group(1)) if m else None
 
 
-def _build_reading_workspace(data: dict) -> tuple[str, str]:
-    """Build (constants_js, workspace_js) for the reading module."""
+def _build_module_workspace(data: dict) -> tuple[str, str]:
+    """Build (constants_js, workspace_js) for any module.
+
+    For reading items with a contentSource, the source HTML is transformed and
+    injected as a JS constant. For all other items, fields are serialized
+    directly so the runtime can render them (e.g. via contentUrl iframe).
+    """
+    module_id = data.get('id', 'module')
     constants = []
-    items = []
+    categories = []
+    const_index = 0
 
     for category in data.get('categories', []):
         cat_name = category.get('name', '')
@@ -340,24 +348,52 @@ def _build_reading_workspace(data: dict) -> tuple[str, str]:
         cat_items = []
 
         for item in category.get('items', []):
-            year = _extract_year(item['name'])
-            if year is None:
-                raise ValueError(f'Cannot extract year from reading item: {item["name"]}')
+            enriched = dict(item)
 
-            # 每个年份对应一个 JS 常量，存放转义后的阅读 HTML
-            constants.append(f'    const readingHtml{year} = `{item["readingHtml"]}`;')
+            # reading 类型：内联转换后的 HTML
+            if enriched.get('type') == 'reading':
+                # 若 transformer 已提供 HTML 字符串则直接使用；否则从 contentSource 读取
+                if 'readingHtml' in enriched and isinstance(enriched['readingHtml'], str):
+                    transformed = enriched['readingHtml']
+                    section_count = enriched.get('chapters', count_sections(transformed))
+                elif 'contentSource' in enriched:
+                    content_source = enriched.pop('contentSource')
+                    source_path = WORKBENCH.parent / content_source
+                    if not source_path.exists():
+                        raise FileNotFoundError(f'Reading content source not found: {source_path}')
+                    source_html = source_path.read_text(encoding='utf-8')
+                    section_count = count_sections(source_html)
+                    transformed = build_reading_html(source_html)
+                else:
+                    raise ValueError(f'Reading item must have readingHtml or contentSource: {enriched.get("name")}')
 
-            cat_items.append(
-                f'''              {{
-                code: '{item.get("code", "")}', name: '{item["name"]}', credits: {item.get("credits", 0)},
-                type: '{item["type"]}', exam: '{item.get("exam", "")}', stage: '{item.get("stage", "")}', chapters: {item["chapters"]}, done: {item.get("done", 0)},
-                current: '{item.get("current", "")}', tasks: {json.dumps(item.get("tasks", []), ensure_ascii=False)}, review: '{item.get("review", "")}',
-                readingHtml: readingHtml{year}
-              }}'''
-            )
+                # 优先按条目名称中的 4 位年份命名常量，保持与验证脚本兼容
+                year_match = re.search(r'(\d{4})年', enriched.get('name', ''))
+                const_name = f'readingHtml{year_match.group(1)}' if year_match else f'readingHtml{module_id}_{const_index}'
+                if not year_match:
+                    const_index += 1
+                constants.append(f'    const {const_name} = `{transformed}`;')
+                enriched['readingHtml'] = const_name
+                enriched['chapters'] = section_count
+                enriched.setdefault('done', 0)
 
-        items_joined = ',\n'.join(cat_items)
-        items.append(
+            # 序列化 item 对象，保留 contentUrl 等运行时字段
+            fields = []
+            for k, v in enriched.items():
+                if isinstance(v, str):
+                    fields.append(f"{k}: '{v.replace(chr(39), chr(92)+chr(39))}'")
+                elif isinstance(v, (list, dict)):
+                    fields.append(f'{k}: {json.dumps(v, ensure_ascii=False)}')
+                elif isinstance(v, bool):
+                    fields.append(f'{k}: {"true" if v else "false"}')
+                elif v is None:
+                    fields.append(f'{k}: null')
+                else:
+                    fields.append(f'{k}: {v}')
+            cat_items.append('              {\n                ' + ',\n                '.join(fields) + '\n              }')
+
+        items_joined = ',\n'.join(cat_items) if cat_items else ''
+        categories.append(
             f'''          {{
             name: '{cat_name}', icon: '{cat_icon}', iconBg: '{cat_icon_bg}',
             items: [
@@ -366,7 +402,7 @@ def _build_reading_workspace(data: dict) -> tuple[str, str]:
           }}'''
         )
 
-    categories_joined = ',\n'.join(items)
+    categories_joined = ',\n'.join(categories)
     workspace_js = f'''      {{
         id: '{data["id"]}', name: '{data["name"]}', icon: '{data.get("icon", "")}', iconBg: '{data.get("iconBg", "")}',
         categories: [
@@ -376,6 +412,11 @@ def _build_reading_workspace(data: dict) -> tuple[str, str]:
 
     constants_joined = '\n\n'.join(constants)
     return constants_joined + '\n', workspace_js
+
+
+# 保留旧函数名作为别名，兼容可能的外部调用
+def _build_reading_workspace(data: dict) -> tuple[str, str]:
+    return _build_module_workspace(data)
 
 
 def run_validate() -> None:
@@ -584,13 +625,15 @@ def build() -> Path:
         raise FileNotFoundError(f'Template not found: {TEMPLATE}')
     template = TEMPLATE.read_text(encoding='utf-8')
 
-    print('Rendering reading module...')
+    print('Rendering modules...')
     reading_constants = ''
-    workspaces_array = ''
-    if 'read' in enriched_modules:
-        reading_constants, workspaces_array = _build_reading_workspace(enriched_modules['read'])
-    else:
-        print('  [skip] reading module not enabled or missing')
+    workspace_objs = []
+    for m in modules:
+        mid = m.get('id')
+        constants, ws_js = _build_module_workspace(enriched_modules[mid])
+        reading_constants += constants
+        workspace_objs.append(ws_js)
+    workspaces_array = ',\n'.join(workspace_objs)
 
     print('Compiling styles...')
     styles_css = _compile_styles()
@@ -608,8 +651,11 @@ def build() -> Path:
     WORKBENCH.write_text(html, encoding='utf-8')
 
     print('Validating JS syntax...')
-    validate_js(html)
-    print('  JS syntax OK')
+    try:
+        validate_js(html)
+        print('  JS syntax OK')
+    except FileNotFoundError:
+        print('  [warn] node is not available; skipping JS syntax validation')
 
     return backup
 

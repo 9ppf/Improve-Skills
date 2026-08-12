@@ -73,6 +73,15 @@
   font-size: 0.92rem;
 }
 
+.tree-row.header.folder-item {
+  margin-left: 0;
+}
+
+.tree-row.header.folder-item .tree-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
 .tree-row.leaf .tree-label { font-size: 0.88rem; }
 
 .tree-count {

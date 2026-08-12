@@ -55,6 +55,8 @@ def check_js_syntax(html: str) -> list[str]:
         validate_js(html)
     except SyntaxError as exc:
         errors.append(f'JS syntax error: {exc}')
+    except FileNotFoundError:
+        print('  [warn] node is not available; skipping JS syntax validation')
     return errors
 
 

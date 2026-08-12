@@ -1,0 +1,34 @@
+{
+  "id": "ability",
+  "name": "能力提升",
+  "icon": "🚀",
+  "iconBg": "accent-cyan",
+  "editable": false,
+  "categories": [
+    {
+      "name": "总览",
+      "icon": "📊",
+      "iconBg": "blue-soft",
+      "items": [
+        {
+          "name": "学习进度驾驶舱",
+          "type": "ability-overview",
+          "stage": "实时",
+          "current": "Python 知识树 / 学习闭环 / 真题 / 背诵卡 进度汇总",
+          "tasks": [],
+          "review": "汇总各模块 localStorage 进度数据，每 3 秒自动刷新，支持切换标签页后返回触发刷新。",
+          "contentUrl": "能力提升/能力提升-学习驾驶舱.html"
+        },
+        {
+          "name": "学习路线图",
+          "type": "ability-overview",
+          "stage": "已生成",
+          "current": "4 阶段战略视图",
+          "tasks": [],
+          "review": "10 周自考冲刺 + 3 个月 AI 转型的战略视图，包含阶段划分、每日时间分配与拆解方法。",
+          "contentUrl": "能力提升/full-learning-roadmap.html"
+        }
+      ]
+    }
+  ]
+}

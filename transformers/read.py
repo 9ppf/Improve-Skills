@@ -9,6 +9,7 @@ section counts derived from the content source files.
 import re
 import sys
 from pathlib import Path
+from typing import Optional
 
 # 确保上级目录下的 .trae/skills 可作为 import 路径
 SKILLS_DIR = Path(__file__).resolve().parent.parent / '.trae' / 'skills'
@@ -22,7 +23,7 @@ from reading_integration import (
 )
 
 
-def _year_from_name(name: str) -> int | None:
+def _year_from_name(name: str) -> Optional[int]:
     """Extract the 4-digit year from an item name like '2026年高考语文...'."""
     # 从名称中匹配“4位数字 + 年”，如 2026年
     m = re.search(r'(\d{4})年', name)

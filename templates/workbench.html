@@ -6,6 +6,27 @@
   <title>此刻便是春天</title>
   <style>
 {{ styles }}
+.content-frame-wrap {
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  min-height: 520px;
+}
+.content-frame {
+  width: 100%;
+  height: 70vh;
+  min-height: 520px;
+  border: none;
+  display: block;
+}
+@media (max-width: 768px) {
+  .content-frame {
+    height: 65vh;
+    min-height: 420px;
+  }
+}
   </style>
 {{ theme_script }}
 </head>
@@ -60,11 +81,28 @@ const workspaces = [
     let activeTab = 'plan';
     const collapsed = new Set();
 
+    // ---- Recursive helpers ----
+    function isFolder(item) {
+      return Array.isArray(item.items) && item.items.length > 0;
+    }
+
+    function assignIds(node, ws, cat, prefix) {
+      if (isFolder(node)) {
+        node.items.forEach((child, idx) => {
+          child.id = child.id || (child.code ? `code_${child.code}` : `${prefix}_${idx}_${Date.now()}`);
+          assignIds(child, ws, cat, child.id);
+        });
+      }
+    }
+
     workspaces.forEach(ws => {
       ws.categories.forEach(cat => {
-        cat.items.forEach((item, idx) => {
-          item.id = item.id || (item.code ? `code_${item.code}` : `${ws.id}_${cat.name}_${idx}_${Date.now()}`);
-        });
+        if (Array.isArray(cat.items)) {
+          cat.items.forEach((item, idx) => {
+            item.id = item.id || (item.code ? `code_${item.code}` : `${ws.id}_${cat.name}_${idx}_${Date.now()}`);
+            assignIds(item, ws, cat, item.id);
+          });
+        }
       });
     });
 
@@ -74,6 +112,7 @@ const workspaces = [
 
     function wsKey(ws) { return `ws-${ws.id}`; }
     function catKey(ws, cat) { return `cat-${ws.id}-${cat.name}`; }
+    function folderKey(ws, cat, item) { return `folder-${ws.id}-${cat.name}-${item.id}`; }
 
     function matchesSearch(item) {
       if (!searchQuery) return true;
@@ -82,10 +121,31 @@ const workspaces = [
         (item.code && item.code.toLowerCase().includes(q));
     }
 
+    function countLeaves(items) {
+      if (!Array.isArray(items)) return 0;
+      return items.reduce((sum, item) => {
+        return sum + (isFolder(item) ? countLeaves(item.items) : 1);
+      }, 0);
+    }
+
+    function hasVisibleDescendant(item) {
+      if (!isFolder(item)) return matchesSearch(item);
+      return item.items.some(hasVisibleDescendant);
+    }
+
     
     function renderReadingContent(item) {
       const html = item.readingHtml || '<div class="reading-content"><p>暂无内容</p></div>';
       return html;
+    }
+
+    function renderContentFrame(item) {
+      const url = item.contentUrl || '';
+      return `
+        <div class="content-frame-wrap">
+          <iframe class="content-frame" src="${url}" title="${item.name}" loading="lazy"></iframe>
+        </div>
+      `;
     }
 
     function toggleReadingSection(id) {
@@ -93,48 +153,90 @@ const workspaces = [
       if (section) section.classList.toggle('collapsed');
     }
 
+    // ---- Live progress integration: read localStorage from interactive pages ----
+    var PY_KT_TOTAL = 29; // python-knowledge-tree.html has 29 knowledge points
+
+    function getLiveProgressForItem(item) {
+      if (!item.contentUrl) return null;
+      var url = item.contentUrl;
+      try {
+        if (url.indexOf('python-knowledge-tree.html') !== -1) {
+          var st = JSON.parse(localStorage.getItem('py_knowledge_tree_v1') || '{}');
+          var d = Object.keys(st).length;
+          return { done: d, total: PY_KT_TOTAL, percent: Math.min(100, Math.round(d / PY_KT_TOTAL * 100)) };
+        }
+        if (url.indexOf('python-learning-loop.html') !== -1) {
+          var loops = JSON.parse(localStorage.getItem('py_learning_loops_v1') || '[]');
+          var t = loops.length * 5;
+          var d2 = loops.reduce(function(s, l) { return s + (l.steps || []).filter(function(x) { return x; }).length; }, 0);
+          return { done: d2, total: t, percent: t ? Math.min(100, Math.round(d2 / t * 100)) : 0 };
+        }
+        if (url.indexOf('真题练习-真题与错题本.html') !== -1) {
+          var eq = JSON.parse(localStorage.getItem('exam-questions-data') || '{}');
+          var subj = (url.match(/subject=([^&]+)/) || [])[1] || '';
+          var et = 0, ed = 0;
+          if (subj && eq[subj]) {
+            eq[subj].forEach(function(q) { et++; if (q.status === 'correct') ed++; });
+          } else {
+            for (var sk in eq) { if (!eq.hasOwnProperty(sk)) continue; (eq[sk] || []).forEach(function(q) { et++; if (q.status === 'correct') ed++; }); }
+          }
+          return { done: ed, total: et, percent: et ? Math.min(100, Math.round(ed / et * 100)) : 0 };
+        }
+        if (url.indexOf('背诵与简答-核心概念背诵卡.html') !== -1) {
+          var rc = JSON.parse(localStorage.getItem('recite-cards-data') || '{}');
+          var rsubj = (url.match(/subject=([^&]+)/) || [])[1] || '';
+          var rt = 0, rd = 0;
+          if (rsubj && rc[rsubj]) {
+            rc[rsubj].forEach(function(c) { rt++; if (c.mastery === 'known') rd++; });
+          } else {
+            for (var rk in rc) { if (!rc.hasOwnProperty(rk)) continue; (rc[rk] || []).forEach(function(c) { rt++; if (c.mastery === 'known') rd++; }); }
+          }
+          return { done: rd, total: rt, percent: rt ? Math.min(100, Math.round(rd / rt * 100)) : 0 };
+        }
+      } catch(e) {}
+      return null;
+    }
+
+    function getItemProgress(item) {
+      var live = getLiveProgressForItem(item);
+      if (live) return live;
+      var total = item.total !== undefined ? item.total : (item.chapters || 1);
+      var done = item.done !== undefined ? item.done : 0;
+      var percent = Math.min(100, Math.round((done / total) * 100)) || 0;
+      return { done: done, total: total, percent: percent };
+    }
+
+    function updateSidebarProgress() {
+      workspaces.forEach(function(ws) {
+        ws.categories.forEach(function(cat) {
+          if (!Array.isArray(cat.items)) return;
+          cat.items.forEach(function walk(item) {
+            if (isFolder(item)) {
+              item.items.forEach(walk);
+              return;
+            }
+            var live = getLiveProgressForItem(item);
+            if (!live) return;
+            var el = document.querySelector('.tree-row.leaf .row-main[data-id="' + CSS.escape(item.id) + '"]');
+            if (el) {
+              var fill = el.querySelector('.leaf-progress-fill');
+              if (fill) fill.style.width = live.percent + '%';
+            }
+          });
+        });
+      });
+    }
+
 function renderTree() {
       const tree = document.getElementById('tree');
       tree.innerHTML = workspaces.map(ws => {
         const wsCollapsed = collapsed.has(wsKey(ws)) && !searchQuery;
-        const visibleTotal = ws.categories.reduce((sum, cat) => sum + cat.items.filter(matchesSearch).length, 0);
+        const visibleTotal = ws.categories.reduce((sum, cat) => sum + countLeaves(cat.items), 0);
         if (searchQuery && visibleTotal === 0) return '';
 
         const categoriesHtml = ws.categories.map(cat => {
-          const visibleItems = cat.items.filter(matchesSearch);
-          if (searchQuery && visibleItems.length === 0) return '';
-
           const catCollapsed = collapsed.has(catKey(ws, cat)) && !searchQuery;
-
-          const itemsHtml = visibleItems.length === 0
-            ? '<div class="tree-empty">暂无项目</div>'
-            : visibleItems.map(item => {
-                const total = item.total !== undefined ? item.total : (item.chapters || 1);
-                const done = item.done !== undefined ? item.done : 0;
-                const percent = Math.min(100, Math.round((done / total) * 100)) || 0;
-                const isActive = item.id === activeItemId;
-                return `
-                  <div class="tree-node tree-leaf">
-                    <div class="tree-row leaf ${isActive ? 'active' : ''}">
-                      <div class="row-main"
-                           data-id="${item.id}" tabindex="0"
-                           onclick="selectItem('${item.id}')"
-                           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectItem('${item.id}')}">
-                        <span class="leaf-dot ${item.type || 'task'}"></span>
-                        <span class="tree-label">${item.name}</span>
-                        <span class="leaf-meta">
-                          ${item.code ? `<span class="leaf-code">${item.code}</span>` : ''}
-                          <span class="leaf-progress"><span class="leaf-progress-fill" style="width:${percent}%"></span></span>
-                        </span>
-                      </div>
-                      <div class="row-actions">
-                        <button class="btn-icon btn-edit" title="编辑" onclick="event.stopPropagation();editItem('${item.id}')">✏️</button>
-                        <button class="btn-icon btn-delete" title="删除" onclick="event.stopPropagation();deleteItem('${item.id}')">🗑️</button>
-                      </div>
-                    </div>
-                  </div>
-                `;
-              }).join('');
+          const itemsHtml = renderItems(ws, cat, cat.items, 0);
 
           return `
             <div class="tree-node ${catCollapsed ? 'collapsed' : ''}">
@@ -143,7 +245,7 @@ function renderTree() {
                   <span class="tree-chevron">▾</span>
                   <span class="tree-icon" style="background:${cat.iconBg || 'var(--rule)'}" onclick="event.stopPropagation();editCategory('${ws.id}','${escapeJs(cat.name)}')" title="点击更换图标">${cat.icon}</span>
                   <span class="tree-label">${cat.name}</span>
-                  <span class="tree-count">${visibleItems.length}</span>
+                  <span class="tree-count">${countLeaves(cat.items)}</span>
                 </div>
                 <div class="row-actions">
                   <button class="btn-icon btn-edit" title="编辑分类" onclick="event.stopPropagation();editCategory('${ws.id}','${escapeJs(cat.name)}')">✏️</button>
@@ -175,6 +277,64 @@ function renderTree() {
       }).join('');
     }
 
+    function renderItems(ws, cat, items, depth) {
+      if (!Array.isArray(items) || items.length === 0) {
+        return '<div class="tree-empty">暂无项目</div>';
+      }
+
+      const visibleItems = searchQuery ? items.filter(item => matchesSearch(item) || hasVisibleDescendant(item)) : items;
+      if (visibleItems.length === 0) return '';
+
+      return visibleItems.map(item => {
+        if (isFolder(item)) {
+          const folderCollapsed = collapsed.has(folderKey(ws, cat, item)) && !searchQuery;
+          const childrenHtml = renderItems(ws, cat, item.items, depth + 1);
+          return `
+            <div class="tree-node ${folderCollapsed ? 'collapsed' : ''}">
+              <div class="tree-row header folder-item">
+                <div class="row-main" onclick="toggleFolder('${ws.id}','${escapeJs(cat.name)}','${escapeJs(item.id)}')" tabindex="0">
+                  <span class="tree-chevron">▾</span>
+                  <span class="tree-icon" style="background:${item.iconBg || 'var(--rule)'}" onclick="event.stopPropagation();editFolder('${ws.id}','${escapeJs(cat.name)}','${escapeJs(item.id)}')" title="点击更换图标">${item.icon || '📁'}</span>
+                  <span class="tree-label">${item.name}</span>
+                  <span class="tree-count">${countLeaves(item.items)}</span>
+                </div>
+                <div class="row-actions">
+                  <button class="btn-icon btn-edit" title="编辑" onclick="event.stopPropagation();editFolder('${ws.id}','${escapeJs(cat.name)}','${escapeJs(item.id)}')">✏️</button>
+                  <button class="btn-icon btn-delete" title="删除" onclick="event.stopPropagation();deleteFolder('${ws.id}','${escapeJs(cat.name)}','${escapeJs(item.id)}')">🗑️</button>
+                </div>
+              </div>
+              <div class="tree-children">${childrenHtml}</div>
+            </div>
+          `;
+        }
+
+        const prog = getItemProgress(item);
+        const percent = prog.percent;
+        const isActive = item.id === activeItemId;
+        return `
+          <div class="tree-node tree-leaf">
+            <div class="tree-row leaf ${isActive ? 'active' : ''}">
+              <div class="row-main"
+                   data-id="${item.id}" tabindex="0"
+                   onclick="selectItem('${item.id}')"
+                   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectItem('${item.id}')}">
+                <span class="leaf-dot ${item.type || 'task'}"></span>
+                <span class="tree-label">${item.name}</span>
+                <span class="leaf-meta">
+                  ${item.code ? `<span class="leaf-code">${item.code}</span>` : ''}
+                  <span class="leaf-progress"><span class="leaf-progress-fill" style="width:${percent}%"></span></span>
+                </span>
+              </div>
+              <div class="row-actions">
+                <button class="btn-icon btn-edit" title="编辑" onclick="event.stopPropagation();editItem('${item.id}')">✏️</button>
+                <button class="btn-icon btn-delete" title="删除" onclick="event.stopPropagation();deleteItem('${item.id}')">🗑️</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function escapeJs(str) {
       return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
     }
@@ -201,12 +361,30 @@ function renderTree() {
       renderTree();
     }
 
+    function toggleFolder(wsId, catName, itemId) {
+      const ws = findWorkspace(wsId);
+      const cat = ws.categories.find(c => c.name === catName);
+      const key = folderKey(ws, cat, { id: itemId });
+      if (collapsed.has(key)) collapsed.delete(key);
+      else collapsed.add(key);
+      renderTree();
+    }
+
     function collapseAll() {
       workspaces.forEach(ws => {
         collapsed.add(wsKey(ws));
-        ws.categories.forEach(cat => collapsed.add(catKey(ws, cat)));
+        ws.categories.forEach(cat => {
+          collapsed.add(catKey(ws, cat));
+          if (Array.isArray(cat.items)) cat.items.forEach(item => collapseFolder(ws, cat, item));
+        });
       });
       renderTree();
+    }
+
+    function collapseFolder(ws, cat, item) {
+      if (!isFolder(item)) return;
+      collapsed.add(folderKey(ws, cat, item));
+      item.items.forEach(child => collapseFolder(ws, cat, child));
     }
 
     function expandAll() {
@@ -225,9 +403,42 @@ function renderTree() {
     function findItemWithCategory(id) {
       for (const ws of workspaces) {
         for (const cat of ws.categories) {
-          for (const item of cat.items) {
-            if (item.id === id) return { ws, cat, item };
-          }
+          const found = findInItems(cat.items, id);
+          if (found) return { ws, cat, ...found };
+        }
+      }
+      return null;
+    }
+
+    function findInItems(items, id) {
+      if (!Array.isArray(items)) return null;
+      for (const item of items) {
+        if (item.id === id) return { item };
+        if (isFolder(item)) {
+          const child = findInItems(item.items, id);
+          if (child) return child;
+        }
+      }
+      return null;
+    }
+
+    function findItemContainer(id) {
+      for (const ws of workspaces) {
+        for (const cat of ws.categories) {
+          const found = findContainer(cat.items, id, ws, cat);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    function findContainer(items, id, ws, cat) {
+      if (!Array.isArray(items)) return null;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].id === id) return { container: items, index: i, item: items[i], ws, cat };
+        if (isFolder(items[i])) {
+          const child = findContainer(items[i].items, id, ws, cat);
+          if (child) return child;
         }
       }
       return null;
@@ -245,7 +456,10 @@ function renderTree() {
       const result = findItemWithCategory(id);
       if (!result) return;
       activeItemId = id;
-      activeTab = isReadingItem(result.item) ? 'content' : 'plan';
+      const item = result.item;
+      if (isReadingItem(item)) activeTab = 'content';
+      else if (hasContentUrl(item)) activeTab = 'content';
+      else activeTab = 'plan';
 
       document.querySelectorAll('.tree-row.leaf').forEach(el => el.classList.remove('active'));
       const activeEl = document.querySelector(`.tree-row.leaf .row-main[data-id="${CSS.escape(id)}"]`)?.closest('.tree-row.leaf');
@@ -266,6 +480,10 @@ function renderTree() {
       return item && item.type === 'reading';
     }
 
+    function hasContentUrl(item) {
+      return item && typeof item.contentUrl === 'string' && item.contentUrl.trim() !== '';
+    }
+
     function getItemMetaFields(item) {
       const targetDate = item.targetDate || item.exam || '待定';
       return [
@@ -276,10 +494,10 @@ function renderTree() {
     }
 
     function renderTabs(item) {
-      if (!isExamItem(item) && !isReadingItem(item)) return '';
+      if (!isExamItem(item) && !isReadingItem(item) && !hasContentUrl(item)) return '';
       const tabs = [{ key: 'plan', label: '计划' }];
       if (isExamItem(item)) tabs.push({ key: 'questionTypes', label: '题型分析' });
-      if (isReadingItem(item)) tabs.push({ key: 'content', label: '内容' });
+      if (isReadingItem(item) || hasContentUrl(item)) tabs.push({ key: 'content', label: '内容' });
       return `
         <div class="plan-tabs">
           ${tabs.map(t => `
@@ -312,12 +530,14 @@ function renderTree() {
       `;
 
       let contentHtml = '';
-      if (activeTab === 'plan' || (!isExamItem(item) && !isReadingItem(item))) {
+      if (activeTab === 'plan' || (!isExamItem(item) && !isReadingItem(item) && !hasContentUrl(item))) {
         contentHtml = renderPlanTab(item);
       } else if (activeTab === 'questionTypes') {
         contentHtml = renderQuestionTypes(item);
       } else if (activeTab === 'content' && isReadingItem(item)) {
         contentHtml = renderReadingContent(item);
+      } else if (activeTab === 'content' && hasContentUrl(item)) {
+        contentHtml = renderContentFrame(item);
       }
 
       document.getElementById('main').innerHTML = `
@@ -330,9 +550,10 @@ function renderTree() {
     }
 
     function renderPlanTab(item) {
-      const total = item.total !== undefined ? item.total : (item.chapters || 1);
-      const done = item.done !== undefined ? item.done : 0;
-      const percent = Math.min(100, Math.round((done / total) * 100)) || 0;
+      const prog = getItemProgress(item);
+      const total = prog.total;
+      const done = prog.done;
+      const percent = prog.percent;
       const tasks = item.tasks || [];
       const tasksHtml = tasks.map((t, i) => `<li class="${i < done ? 'done' : ''}">${t}</li>`).join('');
       const targetDate = item.targetDate || item.exam || '待定';
@@ -500,8 +721,7 @@ function renderTree() {
     function filterItems() {
       searchQuery = document.getElementById('search-input').value.trim();
       if (searchQuery) {
-        workspaces.forEach(ws => collapsed.delete(wsKey(ws)));
-        workspaces.forEach(ws => ws.categories.forEach(cat => collapsed.delete(catKey(ws, cat))));
+        collapsed.clear();
       }
       renderTree();
     }
@@ -512,7 +732,7 @@ function renderTree() {
       if (!name || !name.trim()) return;
       const id = 'ws_' + Date.now();
       const icon = prompt('工作区图标（emoji，国风可爱）：', '🏮') || '🏮';
-      const iconBg = prompt('图标底色（如 #FFE4EC）：', '#FFE4EC') || '#FFE4EC';
+      const iconBg = prompt('工作区图标底色（如 #FFE4EC）：', '#FFE4EC') || '#FFE4EC';
       workspaces.push({ id, name: name.trim(), icon, iconBg, categories: [] });
       collapsed.delete(wsKey(workspaces[workspaces.length - 1]));
       currentWorkspaceId = id;
@@ -525,7 +745,7 @@ function renderTree() {
       const name = prompt('工作区名称：', ws.name);
       if (!name || !name.trim()) return;
       const icon = prompt('工作区图标（emoji，国风可爱）：', ws.icon) || ws.icon;
-      const iconBg = prompt('图标底色：', ws.iconBg) || ws.iconBg;
+      const iconBg = prompt('工作区图标底色：', ws.iconBg) || ws.iconBg;
       ws.name = name.trim();
       ws.icon = icon;
       ws.iconBg = iconBg;
@@ -554,10 +774,14 @@ function renderTree() {
     // Category CRUD
     function addCategory() {
       const ws = getCurrentWorkspace();
+      if (ws.categories.length === 0) {
+        alert('请先添加一个分类');
+        return;
+      }
       const name = prompt('新分类名称：');
       if (!name || !name.trim()) return;
       const icon = prompt('分类图标（emoji，国风可爱）：', '🌸') || '🌸';
-      const iconBg = prompt('图标底色（如 #FCE7F3）：', '#FCE7F3') || '#FCE7F3';
+      const iconBg = prompt('分类图标底色（如 #FCE7F3）：', '#FCE7F3') || '#FCE7F3';
       ws.categories.push({ name: name.trim(), icon, iconBg, items: [] });
       collapsed.delete(catKey(ws, ws.categories[ws.categories.length - 1]));
       renderTree();
@@ -570,7 +794,7 @@ function renderTree() {
       const newName = prompt('分类名称：', cat.name);
       if (!newName || !newName.trim()) return;
       const newIcon = prompt('分类图标（emoji）：', cat.icon) || cat.icon;
-      const newIconBg = prompt('图标底色：', cat.iconBg) || cat.iconBg;
+      const newIconBg = prompt('分类图标底色：', cat.iconBg) || cat.iconBg;
       cat.name = newName.trim();
       cat.icon = newIcon;
       cat.iconBg = newIconBg;
@@ -581,13 +805,70 @@ function renderTree() {
       const ws = findWorkspace(wsId);
       const cat = ws.categories.find(c => c.name === name);
       if (!cat) return;
-      if (cat.items.length > 0) {
-        if (!confirm(`「${name}」下还有 ${cat.items.length} 个项目，确定删除整个分类吗？`)) return;
+      const leafCount = countLeaves(cat.items);
+      if (leafCount > 0) {
+        if (!confirm(`「${name}」下还有 ${leafCount} 个项目，确定删除整个分类吗？`)) return;
       } else {
         if (!confirm(`确定删除分类「${name}」吗？`)) return;
       }
-      const deletedIds = new Set(cat.items.map(i => i.id));
+      const deletedIds = collectIds(cat.items);
       ws.categories = ws.categories.filter(c => c.name !== name);
+      if (activeItemId && deletedIds.has(activeItemId)) {
+        activeItemId = null;
+        document.getElementById('main').innerHTML = `
+          <div class="empty-state"><h2>选择一个项目查看计划</h2><p>悬停或聚焦左侧行，可显示编辑/删除。</p></div>
+        `;
+      }
+      renderTree();
+    }
+
+    function collectIds(items) {
+      const ids = new Set();
+      if (!Array.isArray(items)) return ids;
+      items.forEach(item => {
+        ids.add(item.id);
+        if (isFolder(item)) {
+          collectIds(item.items).forEach(id => ids.add(id));
+        }
+      });
+      return ids;
+    }
+
+    // Folder CRUD (for nested subject groups)
+    function findFolder(wsId, catName, itemId) {
+      const ws = findWorkspace(wsId);
+      if (!ws) return null;
+      const cat = ws.categories.find(c => c.name === catName);
+      if (!cat) return null;
+      const item = findInItems(cat.items, itemId);
+      return item && isFolder(item.item) ? { ws, cat, item: item.item } : null;
+    }
+
+    function editFolder(wsId, catName, itemId) {
+      const found = findFolder(wsId, catName, itemId);
+      if (!found) return;
+      const item = found.item;
+      const newName = prompt('名称：', item.name);
+      if (!newName || !newName.trim()) return;
+      item.name = newName.trim();
+      const newIcon = prompt('图标（emoji）：', item.icon || '📁');
+      if (newIcon !== null) item.icon = newIcon;
+      renderTree();
+    }
+
+    function deleteFolder(wsId, catName, itemId) {
+      const found = findFolder(wsId, catName, itemId);
+      if (!found) return;
+      const { ws, cat, item } = found;
+      const leafCount = countLeaves(item.items);
+      if (leafCount > 0) {
+        if (!confirm(`「${item.name}」下还有 ${leafCount} 个项目，确定删除吗？`)) return;
+      } else {
+        if (!confirm(`确定删除「${item.name}」吗？`)) return;
+      }
+      const deletedIds = collectIds([item]);
+      const container = findContainer(cat.items, itemId, ws, cat);
+      if (container) container.container.splice(container.index, 1);
       if (activeItemId && deletedIds.has(activeItemId)) {
         activeItemId = null;
         document.getElementById('main').innerHTML = `
@@ -619,7 +900,7 @@ function renderTree() {
 
       if (isExam) {
         const code = prompt('课程代码：') || '';
-        const credits = parseFloat(prompt('学分：') || '0') || 0;
+        const credits = parseFloat(prompt('学分：', '0') || '0') || 0;
         const exam = prompt('考试时间：', '2027年4月') || '待定';
         cat.items.push({
           id: code ? `code_${code}` : baseId,
@@ -695,11 +976,11 @@ function renderTree() {
     }
 
     function deleteItem(id) {
-      const result = findItemWithCategory(id);
+      const result = findItemContainer(id);
       if (!result) return;
-      const { item, cat } = result;
+      const { item, container, index } = result;
       if (!confirm(`确定删除「${item.name}」吗？`)) return;
-      cat.items = cat.items.filter(i => i.id !== id);
+      container.splice(index, 1);
       if (activeItemId === id) {
         activeItemId = null;
         document.getElementById('main').innerHTML = `
@@ -709,7 +990,39 @@ function renderTree() {
       renderTree();
     }
 
+    function selectFirstItem() {
+      for (const ws of workspaces) {
+        for (const cat of ws.categories) {
+          const first = firstLeaf(cat.items);
+          if (first) {
+            selectItem(first.id);
+            return;
+          }
+        }
+      }
+    }
+
+    function firstLeaf(items) {
+      if (!Array.isArray(items)) return null;
+      for (const item of items) {
+        if (isFolder(item)) {
+          const child = firstLeaf(item.items);
+          if (child) return child;
+        } else {
+          return item;
+        }
+      }
+      return null;
+    }
+
     renderTree();
+    selectFirstItem();
+
+    // Live progress: refresh sidebar when user returns to workbench tab or periodically
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) { renderTree(); if (activeItemId) renderItemView(); }
+    });
+    setInterval(function() { updateSidebarProgress(); }, 3000);
   </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 {
   "meta": {
     "name": "此刻便是春天",
-    "version": "1.0",
+    "version": "1.1",
     "description": "个人学习与任务管理工作台"
   },
   "activeTheme": "light",
@@ -43,6 +43,36 @@
       "file": "tasks.json",
       "enabled": false,
       "description": "日常任务模块（已禁用）"
+    },
+    {
+      "id": "ability",
+      "file": "ability.json",
+      "enabled": true,
+      "description": "能力提升总览模块"
+    },
+    {
+      "id": "self-study",
+      "file": "self-study.json",
+      "enabled": true,
+      "description": "自考学习模块"
+    },
+    {
+      "id": "python",
+      "file": "python.json",
+      "enabled": true,
+      "description": "Python 基础模块"
+    },
+    {
+      "id": "ai-learning",
+      "file": "ai-learning.json",
+      "enabled": true,
+      "description": "AI 学习模块"
+    },
+    {
+      "id": "ai-roles",
+      "file": "ai-roles.json",
+      "enabled": true,
+      "description": "AI 助手角色模块"
     },
     {
       "id": "read",

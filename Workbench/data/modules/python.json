@@ -1,0 +1,43 @@
+{
+  "id": "python",
+  "name": "Python 基础",
+  "icon": "🐍",
+  "iconBg": "green-soft",
+  "editable": false,
+  "categories": [
+    {
+      "name": "Python 基础",
+      "icon": "🐍",
+      "iconBg": "green-soft",
+      "items": [
+        {
+          "name": "树形知识架构",
+          "type": "python",
+          "stage": "进行中",
+          "current": "按语法/数据结构/常用库/面向 AI 的 Python 组织",
+          "tasks": [],
+          "review": "可勾选的 Python 知识树，面向 AI 应用方向。",
+          "contentUrl": "Python基础/python-knowledge-tree.html"
+        },
+        {
+          "name": "小闭环 Demo",
+          "type": "python",
+          "stage": "进行中",
+          "current": "学完即做 Demo",
+          "tasks": [],
+          "review": "每个知识点对应一个小 Demo，如真题解析器、错题本导入导出、新闻抓取脚本。",
+          "contentUrl": "Python基础/python-demos.html"
+        },
+        {
+          "name": "闭环流程",
+          "type": "python",
+          "stage": "进行中",
+          "current": "学习目标 → 代码练习 → Demo → GitHub → 复盘",
+          "tasks": [],
+          "review": "每个知识点完成 5 步闭环，进度自动反馈到知识树。",
+          "contentUrl": "Python基础/python-learning-loop.html"
+        }
+      ]
+    }
+  ]
+}

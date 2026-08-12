@@ -1,0 +1,70 @@
+{
+  "id": "ai-roles",
+  "name": "AI 助手角色",
+  "icon": "🧑‍🏫",
+  "iconBg": "purple-soft",
+  "editable": false,
+  "categories": [
+    {
+      "name": "AI 助手角色",
+      "icon": "🧑‍🏫",
+      "iconBg": "purple-soft",
+      "items": [
+        {
+          "name": "学习规划师",
+          "type": "ai-role",
+          "stage": "可用",
+          "current": "拆解目标、制定计划、调整节奏",
+          "tasks": [],
+          "review": "例：把系统原理第 3 章拆成 3 天任务。",
+          "contentUrl": "ai-learning/ai-roles-hub.html?role=planner"
+        },
+        {
+          "name": "资料整理员",
+          "type": "ai-role",
+          "stage": "可用",
+          "current": "OCR 校对、生成框架、整理错题",
+          "tasks": [],
+          "review": "例：把真题截图转成文字并指出 OCR 错误。",
+          "contentUrl": "ai-learning/ai-roles-hub.html?role=organizer"
+        },
+        {
+          "name": "错题讲解员",
+          "type": "ai-role",
+          "stage": "可用",
+          "current": "分析错因、举一反三",
+          "tasks": [],
+          "review": "例：这道题我为什么错？再出 3 道。",
+          "contentUrl": "ai-learning/ai-roles-hub.html?role=explainer"
+        },
+        {
+          "name": "资讯采集员",
+          "type": "ai-role",
+          "stage": "可用",
+          "current": "抓取 AI 热点、政策、补贴",
+          "tasks": [],
+          "review": "例：本周上海 AI 补贴资讯有哪些？",
+          "contentUrl": "ai-learning/ai-roles-hub.html?role=collector"
+        },
+        {
+          "name": "代码 Reviewer",
+          "type": "ai-role",
+          "stage": "可用",
+          "current": "检查 Python 实现、提优化建议",
+          "tasks": [],
+          "review": "例：帮我看看这段快排代码。",
+          "contentUrl": "ai-learning/ai-roles-hub.html?role=reviewer"
+        },
+        {
+          "name": "进度提醒员",
+          "type": "ai-role",
+          "stage": "可用",
+          "current": "提醒偏差、建议调整策略",
+          "tasks": [],
+          "review": "例：我这周落后了，怎么调整？",
+          "contentUrl": "ai-learning/ai-roles-hub.html?role=reminder"
+        }
+      ]
+    }
+  ]
+}

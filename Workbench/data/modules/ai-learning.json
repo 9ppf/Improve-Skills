@@ -1,0 +1,68 @@
+{
+  "id": "ai-learning",
+  "name": "AI 学习",
+  "icon": "🤖",
+  "iconBg": "purple-soft",
+  "editable": false,
+  "categories": [
+    {
+      "name": "资讯",
+      "icon": "📰",
+      "iconBg": "green-soft",
+      "items": [
+        {
+          "name": "AI 资讯周报",
+          "type": "ai-news",
+          "stage": "采集中",
+          "current": "每周六 10:00 自动采集",
+          "tasks": [],
+          "review": "AI 热点、政策、补贴资讯聚合。",
+          "contentUrl": "ai-learning/ai-news-digest.html"
+        }
+      ]
+    },
+    {
+      "name": "学习",
+      "icon": "🧠",
+      "iconBg": "blue-soft",
+      "items": [
+        {
+          "name": "完整学习路线图",
+          "type": "ai-learning",
+          "stage": "已生成",
+          "current": "4 阶段战略视图",
+          "tasks": [],
+          "review": "把阶段计划与整体方案整合为一张路线图。",
+          "contentUrl": "ai-learning/full-learning-roadmap.html"
+        },
+        {
+          "name": "武汉理工自考 + AI 转型学习方案",
+          "type": "ai-learning",
+          "stage": "已生成",
+          "current": "整体方案文档",
+          "tasks": [],
+          "review": "包含时间分配、10 周冲刺计划、AI 集训方向及资讯追踪说明。",
+          "contentUrl": "ai-learning/ai-learning-plan.html"
+        },
+        {
+          "name": "每日执行计划",
+          "type": "ai-learning",
+          "stage": "已生成",
+          "current": "8.11–10.24 每天 5 时段任务",
+          "tasks": [],
+          "review": "把 10 周冲刺细化到每天每个时段。",
+          "contentUrl": "ai-learning/daily-plan.html"
+        },
+        {
+          "name": "AI 帮我复盘代码",
+          "type": "ai-learning",
+          "stage": "可用",
+          "current": "粘贴代码即可 Review",
+          "tasks": [],
+          "review": "粘贴 Python 代码，AI 检查 bug、提优化、解释算法复杂度。",
+          "contentUrl": "ai-learning/ai-code-review.html"
+        }
+      ]
+    }
+  ]
+}

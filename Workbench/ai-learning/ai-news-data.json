@@ -1,0 +1,33 @@
+{
+  "current": {
+    "weekLabel": "2026 年第 32 周",
+    "dateRange": "2026-08-04 ~ 2026-08-10",
+    "items": [
+      {
+        "date": "2026-08-10",
+        "category": "policy",
+        "title": "上海发布 AI 训练师补贴目录",
+        "summary": "符合条件者可申请职业技能提升补贴。建议 Demo：整理个人技能匹配清单。"
+      },
+      {
+        "date": "2026-08-08",
+        "category": "product",
+        "title": "OpenAI 开放新模型微调 API",
+        "summary": "支持更低成本微调。建议 Demo：考后用个人笔记数据做小模型微调实验。"
+      },
+      {
+        "date": "2026-08-05",
+        "category": "policy",
+        "title": "嘉定区数字经济人才政策更新",
+        "summary": "新增 AI 应用岗位租房补贴。建议 Demo：岗位补贴匹配计算器。"
+      },
+      {
+        "date": "2026-08-02",
+        "category": "product",
+        "title": "某国产 Agent 平台开放插件市场",
+        "summary": "插件化 Agent 成为新趋势。建议 Demo：考前体验一个插件工作流。"
+      }
+    ]
+  },
+  "archive": []
+}
