@@ -4,7 +4,7 @@
 
 ## 这是做什么的
 
-`build.py` 是「此刻便是春天」工作台的构建脚本。它读取 `Workbench/data/` 下的 JSON 配置和模块数据，编译 `styles/main.scss` 生成 CSS，再基于 `templates/workbench.html` 模板渲染生成 `Workbench/此刻便是春天.html`，同时清理临时产物并执行校验。
+`build.py` 是「此刻便是春天」工作台的构建脚本。它读取 `data/` 下的 JSON 配置和模块数据，编译 `styles/main.scss` 生成 CSS，再基于 `templates/workbench.html` 模板渲染生成 `Workbench/此刻便是春天.html`，同时清理临时产物并执行校验。
 
 运行一次构建后，`此刻便是春天.html` 就是最新版本的工作台页面。
 
@@ -42,7 +42,7 @@ python build.py --dry-run
 python dev_server.py
 ```
 
-启动本地 HTTP 服务器（默认 `http://localhost:8000`），并监听 `styles/`、`templates/`、`Workbench/data/`、`transformers/` 等源码目录。文件保存后自动重新运行 `build.py`，刷新浏览器即可看到最新效果。
+启动本地 HTTP 服务器（默认 `http://localhost:8000`），并监听 `styles/`、`templates/`、`data/`、`transformers/` 等源码目录。文件保存后自动重新运行 `build.py`，刷新浏览器即可看到最新效果。
 
 常用选项：
 
@@ -72,8 +72,8 @@ python build.py --confirm
 `build.py` 按以下顺序执行：
 
 1. **预清理**：删除上次残留的临时产物和旧备份
-2. **加载全局配置**：读取 `Workbench/data/workbench.json`
-3. **加载模块数据**：读取 `Workbench/data/modules/` 下启用的模块 JSON
+2. **加载全局配置**：读取 `data/workbench.json`
+3. **加载模块数据**：读取 `data/modules/` 下启用的模块 JSON
 4. **运行转换器**：每个模块可以对应 `transformers/{模块id}.py` 进行内容 enrich
 5. **应用主题 token**：把 JSON 中的颜色 token 替换为实际色值
 6. **备份旧 HTML**：生成带时间戳的 `.bak-YYYYMMDD_HHMMSS` 备份
@@ -90,8 +90,8 @@ python build.py --confirm
 
 | 路径 | 用途 |
 |---|---|
-| `Workbench/data/workbench.json` | 全局配置：当前主题、主题定义、模块注册表 |
-| `Workbench/data/modules/` | 各模块的 JSON 数据文件 |
+| `data/workbench.json` | 全局配置：当前主题、主题定义、模块注册表 |
+| `data/modules/` | 各模块的 JSON 数据文件 |
 | `transformers/` | 模块转换器，文件名与模块 id 对应，如 `read.py` |
 | `.trae/skills/` | Skill 脚本，包含 `reading_integration.py` 和 `validate_workbench.py` |
 | `styles/` | SCSS 样式源码，`main.scss` 为编译入口 |
@@ -103,7 +103,7 @@ python build.py --confirm
 
 ## 模块注册规则
 
-`Workbench/data/workbench.json` 中的 `modules` 数组决定加载哪些模块：
+`data/workbench.json` 中的 `modules` 数组决定加载哪些模块：
 
 ```json
 {
@@ -115,7 +115,7 @@ python build.py --confirm
 ```
 
 - `id`：模块标识，也是转换器文件名的依据
-- `file`：模块数据文件，位于 `Workbench/data/modules/`
+- `file`：模块数据文件，位于 `data/modules/`
 - `enabled`：false 时跳过该模块
 
 新增模块时，只需要添加注册项、准备 JSON 数据、可选写转换器，不需要修改 `此刻便是春天.html`。
@@ -231,8 +231,8 @@ Workbench/此刻便是春天.html.bak-YYYYMMDD_HHMMSS
 
 ## 新增模块步骤
 
-1. 在 `Workbench/data/modules/` 创建 `{模块id}.json`
-2. 在 `workbench.json` 的 `modules` 数组中注册该模块
+1. 在 `data/modules/` 创建 `{模块id}.json`
+2. 在 `data/workbench.json` 的 `modules` 数组中注册该模块
 3. 如需内容转换，在 `transformers/` 创建 `{模块id}.py`，实现 `enrich_module(data)`
 4. 运行 `python build.py` 和 `python validate_workbench.py`
 5. 确认 `此刻便是春天.html` 正常显示新模块

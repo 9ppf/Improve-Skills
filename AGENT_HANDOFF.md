@@ -13,12 +13,11 @@
 ## 核心原则（必须遵守）
 
 1. **`Workbench/此刻便是春天.html` 由 `build.py` 从模板生成，禁止手动编辑产物文件；提交 Git 时需随源码一同提交，方便对比各版本差异**。
-2. **所有结构性改动应通过修改 `Workbench/data/modules/*.json` + `templates/workbench.html` + `build.py` 并运行 `python build.py` 来落地**。
+2. **所有结构性改动应通过修改 `data/modules/*.json` + `templates/workbench.html` + `build.py` 并运行 `python build.py` 来落地**。
 3. 当前环境已确认 Python 可用（`E:\Python\python.exe`，版本 3.9.7），但缺少 Node.js；`build.py` 会在 Node 不可用时跳过 JS 语法校验并给出警告，不影响构建。
-4. **新增最终交付物**必须同步更新 `文件说明.md`。
-5. **中间产物**（脚本、OCR 文本、调试输出）只能放在 `temp/` 下，不能进入 `Workbench/`。
-6. **类名必须带模块前缀**，例如 `reading-card`、`exam-item`，禁止裸用 `card`、`item`、`title` 等通类。
-7. **结构性变更必须先讨论**：本文档的"下一步目标"仅说明工作方向，不等于已批准具体方案。如果任务涉及增删分类、重组导航、改变信息架构，必须先触发 `plan-before-create` skill 讨论确认后再动手。只有"往已有结构里填数据"的内容填充可以直接执行。
+4. **结构性变更必须先讨论**：涉及增删分类、重组导航、改变信息架构前，必须先触发 `plan-before-create` skill 讨论确认；只有"往已有结构里填数据"的内容填充可以直接执行。
+5. **新增最终交付物必须同步更新 `文件说明.md`**；**中间产物**（脚本、OCR 文本、调试输出）只能放在 `temp/` 下，不能进入 `Workbench/`。
+6. **类名必须带模块前缀**，例如 `reading-card`、`exam-item`，禁止裸用 `card`、`item`、`title` 等通类；新增/修改文件前，先查 `项目约束总览.md` 中的「新增/修改文件流程」。
 
 ---
 
@@ -34,6 +33,16 @@ e:\TraeWorkToDo\
 ├── 项目约束总览.md                     # 所有规范的索引入口
 ├── build.py 使用说明.md                # 构建流程详细说明
 ├── Workbench UI 交互规范.md            # UI 与交互规范
+│
+├── data/                               # 全局配置与模块数据
+│   ├── workbench.json                  # 主题与模块注册表
+│   └── modules/
+│       ├── ability.json                # 能力提升
+│       ├── self-study.json             # 自考学习
+│       ├── python.json                 # Python 基础
+│       ├── ai-learning.json            # AI 学习
+│       ├── ai-roles.json               # AI 助手角色
+│       └── reading.json                # 阅读资料
 │
 ├── templates/
 │   └── workbench.html                # HTML 模板（{{ placeholder }}）
@@ -76,15 +85,6 @@ e:\TraeWorkToDo\
 │   │   │   └── 复盘总结-章节复盘.html       # 章节复盘总结（每章总结/错题反思/改进计划，URL 参数 ?subject=XXX 预选科目）
 │   │   └── 未考科目/
 │   │       └── 00015英语（二）/
-│   ├── data/
-│   │   ├── workbench.json            # 主题与模块注册表
-│   │   └── modules/
-│   │       ├── ability.json          # 能力提升
-│   │       ├── self-study.json       # 自考学习
-│   │       ├── python.json           # Python 基础
-│   │       ├── ai-learning.json      # AI 学习
-│   │       ├── ai-roles.json         # AI 助手角色
-│   │       └── reading.json          # 阅读资料
 │   ├── read/                         # 阅读原始 HTML（2019 ~ 2026）
 │   └── 工作台迁移方案/               # 历史说明文档
 │
@@ -122,7 +122,7 @@ python build.py --confirm
 ## 主题系统说明
 
 - **基础 token** 定义在 `styles/_variables.scss`（浅色主题的唯一数据源）。
-- `Workbench/data/workbench.json` 中：
+- `data/workbench.json` 中：
   - `light.tokens` 保持为空；
   - `dark.tokens` 只写与浅色主题不同的覆盖项。
 - 构建时 `build.py` 从 SCSS 解析基础 token，再与主题覆盖合并，最终生成内联 JS。
@@ -132,8 +132,8 @@ python build.py --confirm
 
 ## 模块扩展方式
 
-1. 在 `Workbench/data/workbench.json` 的 `modules` 数组中注册新模块。
-2. 在 `Workbench/data/modules/` 下创建 `{module_id}.json`。
+1. 在 `data/workbench.json` 的 `modules` 数组中注册新模块。
+2. 在 `data/modules/` 下创建 `{module_id}.json`。
 3. 如需动态转换，在 `transformers/` 下创建 `{module_id}.py` 并实现 `enrich_module(data)`。
 4. 如需渲染到模板，在 `templates/workbench.html` 中预留占位符，并在 `build.py` 中填充。
 5. 运行 `python build.py` 验证。
@@ -143,7 +143,7 @@ python build.py --confirm
 ## 当前状态
 
 - 工作台已从单一「阅读资料」模块扩展为 6 大模块：能力提升、自考学习、Python 基础、AI 学习、AI 助手角色、阅读资料。
-- `Workbench/data/workbench.json` 已注册全部 6 个模块；`tasks` 模块已禁用。
+- `data/workbench.json` 已注册全部 6 个模块；`tasks` 模块已禁用。
 - `build.py` 与 `templates/workbench.html` 已扩展为支持任意模块的 `contentUrl` iframe 加载与阅读内容内联渲染。
 - 已修复 Python 3.9 兼容性（将 `int | None` 改为 `Optional[int]`）并安装 `libsass`、`watchdog`。
 - 已修复 Node.js 不可用时构建中断的问题：`build.py` 与 `validate_workbench.py` 现在会跳过 JS 语法校验并打印警告，而不是报错退出。
@@ -178,6 +178,7 @@ python build.py --confirm
 - 嵌入 JS 语法（通过 `node --check`）。
 - 旧独立页面类名（如 `class="essay"`）是否泄漏。
 - 通用类名（如 `card`、`title`、`section`）是否未加前缀出现在模块内容中。
+- **Tab 交互完整性**：若页面使用 `chapter-tab-btn`/`chapter-tab-pane`，必须同步包含对应 CSS 与切换 JS。
 - 阅读模块内容完整性（section / essay 数量匹配）。
 - 文件命名是否符合 `{子模块}-{任务}.html`。
 - `文件说明.md` 是否覆盖了根目录与 Workbench 顶层项。
@@ -215,6 +216,13 @@ python build.py --confirm
 21. ✅ **00023 高等数学（工本）教材例题补充** — 6 章知识框架均补充教材「典型例题」与「同步练习」（PDF 自动提取）
 
 > 说明：以上例题与练习从对应 PDF 教材自动提取，部分数学符号/字母可能存在 OCR 识别误差，页面已添加「例题说明」提示，实际学习请以纸质教材为准。
+
+### 经验教训
+
+- **脚本批量改造 HTML 时必须同步校验 CSS/JS 完整性**。本次 13003 数据结构与算法 Tab 改造曾出现 `.chapter-tab-btn` 等 CSS 未注入的情况，导致按钮丢失样式。已修复并在以下位置增加约束：
+  - `unify_tabs_13003.py` 写入文件后自检 DOM/CSS/JS 是否同步存在；
+  - `.trae/skills/validate_workbench.py` 增加全局 Tab 完整性校验；
+  - `项目约束总览.md`「新增/修改文件流程」第二步增加前端改造检查项，并在索引表中新增「前端改造完整性」条目。
 
 后续建议方向：
 

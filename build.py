@@ -37,7 +37,7 @@ from typing import Optional
 # 项目根目录与关键路径定义
 ROOT = Path(__file__).resolve().parent
 WORKBENCH = ROOT / 'Workbench' / '此刻便是春天.html'
-DATA_DIR = ROOT / 'Workbench' / 'data'
+DATA_DIR = ROOT / 'data'
 MODULES_DIR = DATA_DIR / 'modules'
 TRANSFORMERS_DIR = ROOT / 'transformers'
 TEMPLATES_DIR = ROOT / 'templates'
@@ -68,6 +68,7 @@ CLEANUP_CONFIG = {
         ROOT / '.git',
         ROOT / 'temp',
         ROOT / 'transformers',
+        ROOT / 'data',
         ROOT / 'Workbench',
         ROOT / 'templates',
         ROOT / 'styles',
@@ -79,7 +80,7 @@ CLEANUP_CONFIG = {
     'temp_dir_patterns': {'__pycache__', '.trae-html-share-*'},
     # 根目录下允许保留的空目录白名单
     'empty_root_keep': {
-        'build.py', '.trae', '.git', 'temp', 'transformers',
+        'build.py', '.trae', '.git', 'temp', 'transformers', 'data',
         'templates', 'styles', 'Workbench', '文件说明.md',
     },
     # 备份保留规则：保留最近 keep 个备份
@@ -440,7 +441,7 @@ def _is_protected(path: Path) -> bool:
     Protected paths guard core files and directories against wholesale
     deletion. Directories inside a protected root are also protected so that
     a buggy cleanup pattern cannot wipe out core subdirectories such as
-    .trae/skills or Workbench/data. Known temporary directories matching
+    .trae/skills or data/modules. Known temporary directories matching
     temp_dir_patterns are still allowed to be cleaned.
     """
     resolved = path.resolve()

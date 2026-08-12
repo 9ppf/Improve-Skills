@@ -4,7 +4,7 @@
 
 Note:
     This script is kept for quick manual updates. The canonical build path is
-    `python build.py`, which reads `Workbench/data/modules/reading.json` and
+    `python build.py`, which reads `data/modules/reading.json` and
     regenerates the workbench from the template. After this script updates the
     HTML, it reruns `build.py` so the final output always matches the standard
     build pipeline.

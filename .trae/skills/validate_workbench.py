@@ -159,6 +159,59 @@ def check_generic_class_prefixes_global() -> list[str]:
     return warnings
 
 
+def check_tab_integrity_global() -> list[str]:
+    """Scan all Workbench HTML sources for incomplete Tab implementations.
+
+    If a page uses chapter-tab-btn/chapter-tab-pane, it must also define the
+    corresponding CSS selectors and include the switching JavaScript. This
+    catches regressions where the DOM is transformed but the styles or JS are
+    accidentally dropped by an automation script.
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    errors = []
+    if not workbench.exists():
+        return errors
+
+    required_css = {
+        '.chapter-tabs {': 'chapter-tabs container CSS',
+        '.chapter-tab-btn {': 'chapter-tab-btn CSS',
+        '.chapter-tab-pane {': 'chapter-tab-pane CSS',
+    }
+
+    for item in workbench.rglob('*.html'):
+        rel = str(item.relative_to(root)).replace('\\', '/')
+        if rel == 'Workbench/此刻便是春天.html':
+            continue
+        if rel.startswith('Workbench/read/'):
+            continue
+        if rel in GENERIC_CLASS_GLOBAL_WHITELIST:
+            continue
+
+        try:
+            content = item.read_text(encoding='utf-8')
+        except OSError as exc:
+            errors.append(f'Could not read {rel}: {exc}')
+            continue
+
+        has_btns = 'class="chapter-tab-btn"' in content
+        has_panes = 'class="chapter-tab-pane' in content
+        if not (has_btns or has_panes):
+            continue
+
+        missing = []
+        for marker, name in required_css.items():
+            if marker not in content:
+                missing.append(name)
+        if has_btns and 'switchTab' not in content and 'tabBtns' not in content:
+            missing.append('Tab switching JS')
+
+        if missing:
+            errors.append(f'{rel}: incomplete Tab implementation (missing {", ".join(missing)})')
+
+    return errors
+
+
 def check_reading_content(html: str) -> list[str]:
     """Verify every read/YYYY.html source is present and correctly transformed."""
     errors = []
@@ -378,6 +431,9 @@ def main() -> int:
 
     html = WORKBENCH.read_text(encoding='utf-8')
     errors = validate(html)
+
+    # 全局 Tab 完整性检查：针对所有 Workbench HTML 源文件
+    errors.extend(check_tab_integrity_global())
 
     # 文档、命名与全局 class 检查作为警告而非致命错误
     doc_warnings = check_file_documentation()
