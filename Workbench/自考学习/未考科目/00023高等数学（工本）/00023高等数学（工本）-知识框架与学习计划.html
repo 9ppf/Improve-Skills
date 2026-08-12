@@ -251,6 +251,45 @@
     .framework-block[data-mastery="2"] { border-left: 3px solid #16a34a; padding-left: 1rem; }
     .framework-block[data-mastery="3"] { border-left: 3px solid #ea580c; padding-left: 1rem; }
     .framework-block[data-mastery="1"] { border-left: 3px solid #2563eb; padding-left: 1rem; }
+  
+    .example-block {
+      background: rgba(37, 99, 235, 0.03);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.8rem;
+    }
+    .example-block.exercise {
+      background: rgba(16, 185, 129, 0.03);
+      border-left-color: #10b981;
+    }
+    .example-title { margin-bottom: 0.5rem; font-weight: 600; }
+    .example-title strong { color: var(--accent); margin-right: 0.3rem; }
+    .example-statement { margin-bottom: 0.5rem; }
+    .example-statement p { margin-bottom: 0.3rem; }
+    .example-block.exercise .example-title strong { color: #10b981; }
+    .example-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.10);
+      color: #d97706;
+      font-weight: 600;
+      margin-right: 0.4rem;
+    }
+    .example-solution { color: var(--ink); }
+    .example-solution p { margin-bottom: 0.4rem; }
+    .example-solution pre {
+      background: rgba(15, 23, 42, 0.03);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+      overflow-x: auto;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+
   </style>
 </head>
 <body>
@@ -260,6 +299,9 @@
       <p>陈兆斗、马鹏 主编 · 北京大学出版社 · 2023 年版</p>
     </header>
 
+    <div class="callout">
+      <strong>例题说明：</strong>以下「典型例题」与「同步练习」是从教材 PDF 自动提取的，部分符号、数字或字母可能存在 OCR 识别误差。若发现题面与教材不一致，请以纸质教材为准。
+    </div>
     <section class="ss-dashboard" id="ss-dashboard" aria-label="掌握进度">
       <div class="ss-dashboard-top">
         <span class="ss-dashboard-label">掌握进度</span>
