@@ -140,6 +140,102 @@ python build.py --confirm
 
 ---
 
+## 知识框架页模板
+
+自考科目「目录与知识框架」页面统一采用以下 Tab 结构。当前已应用于 `13003 数据结构与算法`，待批量应用到 `02324 离散数学`、`13015 计算机系统原理`、`00023 高等数学（工本）`。
+
+### Tab 结构
+
+| 可见 Tab | data-tab | 包含内容 |
+|---|---|---|
+| 学习计划 | `study-plan` | 掌握进度 + 周学习建议 + 学习提示 |
+| 知识总览 | `knowledge-overview` | 整体定位 + 完整目录 + 总览 |
+
+第 1-N 章的内容 pane 保留，但 Tab 按钮隐藏，入口改为「完整目录」中的章节标题点击跳转。
+
+### Pane 内容规范
+
+```html
+<div class="chapter-tab-pane active" data-tab="study-plan">
+  <section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">...</section>
+  <section><h2>周学习建议</h2>...</section>
+  <section><h2>学习提示</h2>...</section>
+</div>
+
+<div class="chapter-tab-pane" data-tab="knowledge-overview">
+  <section><h2>整体定位</h2>...</section>
+  <section><h2>完整目录</h2>...</section>
+  <div><!-- 总览原内容 --></div>
+</div>
+
+<div class="chapter-tab-pane" data-tab="chapter-1">
+  <div class="framework-chapter">...</div>
+</div>
+```
+
+### 关键 CSS
+
+```css
+.chapter-tab-pane { display: none; }
+.chapter-tab-pane.active { display: block; }
+.chapter-tab-pane > section { margin-bottom: 1.5rem; }
+.chapter-tab-pane > section:last-of-type { margin-bottom: 0; }
+.hidden-chapter-tab { display: none; }
+.toc-title-link { cursor: pointer; transition: color 0.2s, background 0.2s; }
+.toc-title-link:hover { color: var(--accent); background: rgba(37, 99, 235, 0.06); border-radius: 6px; }
+```
+
+### 核心 JS
+
+```javascript
+(function() {
+  var tabBtns = document.querySelectorAll(".chapter-tab-btn");
+  var tabPanes = document.querySelectorAll(".chapter-tab-pane");
+  var STORAGE_TAB_KEY = "ss_active_tab_{科目代码}";
+
+  function switchTab(tabId) {
+    tabBtns.forEach(b => b.classList.toggle("active", b.dataset.tab === tabId));
+    tabPanes.forEach(p => p.classList.toggle("active", p.dataset.tab === tabId));
+    try { localStorage.setItem(STORAGE_TAB_KEY, tabId); } catch(e) {}
+  }
+
+  tabBtns.forEach(b => b.addEventListener("click", () => switchTab(b.dataset.tab)));
+
+  // 兼容旧 tab id
+  var legacyMap = {
+    progress: 'study-plan', schedule: 'study-plan', tips: 'study-plan',
+    position: 'knowledge-overview', toc: 'knowledge-overview', overview: 'knowledge-overview'
+  };
+  var saved = localStorage.getItem(STORAGE_TAB_KEY);
+  if (saved && legacyMap[saved]) saved = legacyMap[saved];
+  if (saved && document.querySelector('.chapter-tab-btn[data-tab="' + saved + '"]')) {
+    switchTab(saved);
+  }
+
+  // 暴露给目录标题点击
+  window.switchChapterTab = switchTab;
+})();
+```
+
+### 目录标题跳转约定
+
+完整目录中匹配 `第 N 章` 的 `.toc-title` 元素，添加：
+
+```html
+<div class="toc-title" onclick="switchChapterTab('chapter-1')">第 1 章 ...</div>
+```
+
+### localStorage Key 命名
+
+| 科目 | 当前 Tab Key | 掌握进度 Key |
+|---|---|---|
+| 13003 | `ss_active_tab_13003` | `ss_mastery_13003` |
+| 02324 | `ss_active_tab_02324` | `ss_mastery_02324` |
+| 13015 | `ss_active_tab_13015` | `ss_mastery_13015` |
+| 00023 | `ss_active_tab_00023` | `ss_mastery_00023` |
+
+---
+
 ## 当前状态
 
 - 工作台已从单一「阅读资料」模块扩展为 6 大模块：能力提升、自考学习、Python 基础、AI 学习、AI 助手角色、阅读资料。
