@@ -6,8 +6,18 @@
 
 ## v0.2.0
 
-**发布时间**：2026-08-13 01:23:32（北京时间）  
-**最新 commit**：`e6c2152`
+**发布时间**：2026-08-13 01:36:05（北京时间）  
+**最新 commit**：`3aaf946`
+
+### 2026-08-13 01:36:05 — `3aaf946` fix(ui): 知识框架页隐藏工作台级计划/内容 Tab
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/modules/self-study.json` | 为 5 个知识框架项添加 `"renderMode": "content"` |
+| `templates/workbench.html` | `renderTabs()` 识别 `renderMode === 'content'`，跳过「计划 / 内容」切换条，直接渲染内容 iframe |
+| `AGENT_HANDOFF.md` | 知识框架模块增加工作台注册约定；经验教训补充「自带 Tab 内容页需声明 renderMode」 |
+| `工作台搭建总结.md` | 新增问题 10：知识框架页内部 Tab 与工作台级 Tab 叠加；更新当前状态 |
+| `Workbench/此刻便是春天.html` | 重新构建，应用上述变更 |
 
 ### 2026-08-13 01:23:32 — `e6c2152` refactor(kf): 系统原理与高等数学应用知识框架页模板
 
