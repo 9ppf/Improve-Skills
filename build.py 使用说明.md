@@ -241,7 +241,7 @@ Workbench/此刻便是春天.html.bak-YYYYMMDD_HHMMSS
 
 ## 注意事项
 
-- `build.py` 本身不纳入 Git 忽略，但构建产物 `Workbench/此刻便是春天.html` 不提交到 Git
+- `build.py` 本身不纳入 Git 忽略；构建产物 `Workbench/此刻便是春天.html` 现在随源码一同提交 Git，方便对比各版本差异
 - 不要直接编辑 `此刻便是春天.html`，它是构建产物；修改源文件后重新运行 `build.py`
 - 如果清理后发现临时文件重新出现，那是因为 Python/Trae 在运行过程中又生成了，下次运行 `build.py` 会继续清理
 - 构建失败时，检查最近的 `.bak` 备份可以回滚到上一个可用版本

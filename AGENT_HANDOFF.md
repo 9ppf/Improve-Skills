@@ -12,7 +12,7 @@
 
 ## 核心原则（必须遵守）
 
-1. **`Workbench/此刻便是春天.html` 由 `build.py` 从模板生成，禁止手动编辑产物文件**。
+1. **`Workbench/此刻便是春天.html` 由 `build.py` 从模板生成，禁止手动编辑产物文件；提交 Git 时需随源码一同提交，方便对比各版本差异**。
 2. **所有结构性改动应通过修改 `Workbench/data/modules/*.json` + `templates/workbench.html` + `build.py` 并运行 `python build.py` 来落地**。
 3. 当前环境已确认 Python 可用（`E:\Python\python.exe`，版本 3.9.7），但缺少 Node.js；`build.py` 会在 Node 不可用时跳过 JS 语法校验并给出警告，不影响构建。
 4. **新增最终交付物**必须同步更新 `文件说明.md`。
