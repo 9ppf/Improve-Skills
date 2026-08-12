@@ -495,6 +495,8 @@ function renderTree() {
 
     function renderTabs(item) {
       if (!isExamItem(item) && !isReadingItem(item) && !hasContentUrl(item)) return '';
+      // 知识框架等内部自带 Tab 的内容页，不显示工作台级「计划/内容」切换条
+      if (item.renderMode === 'content') return '';
       const tabs = [{ key: 'plan', label: '计划' }];
       if (isExamItem(item)) tabs.push({ key: 'questionTypes', label: '题型分析' });
       if (isReadingItem(item) || hasContentUrl(item)) tabs.push({ key: 'content', label: '内容' });

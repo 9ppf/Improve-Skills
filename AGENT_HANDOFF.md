@@ -142,7 +142,7 @@ python build.py --confirm
 
 ## 知识框架页模板
 
-自考科目「目录与知识框架」页面统一采用以下 Tab 结构。当前已应用于 `13003 数据结构与算法`，待批量应用到 `02324 离散数学`、`13015 计算机系统原理`、`00023 高等数学（工本）`。
+自考科目「目录与知识框架」页面统一采用以下 Tab 结构。当前已应用于 `13003 数据结构与算法`、`02324 离散数学`、`13015 计算机系统原理`、`00023 高等数学（工本）`。
 
 ### Tab 结构
 
@@ -234,6 +234,22 @@ python build.py --confirm
 | 13015 | `ss_active_tab_13015` | `ss_mastery_13015` |
 | 00023 | `ss_active_tab_00023` | `ss_mastery_00023` |
 
+### 工作台注册约定
+
+知识框架页在 `data/modules/self-study.json` 中注册时，必须设置 `"renderMode": "content"`，避免工作台再显示一层「计划 / 内容」切换按钮，与页面内部的「学习计划 / 知识总览」Tab 重复。
+
+```json
+{
+  "code": "13003",
+  "name": "知识框架",
+  "type": "self-study",
+  "renderMode": "content",
+  "contentUrl": "自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html"
+}
+```
+
+`templates/workbench.html` 的 `renderTabs()` 会识别该字段：当 `item.renderMode === 'content'` 时，直接渲染内容 iframe，不展示 `plan-tabs`。
+
 ---
 
 ## 当前状态
@@ -319,6 +335,11 @@ python build.py --confirm
   - `unify_tabs_13003.py` 写入文件后自检 DOM/CSS/JS 是否同步存在；
   - `.trae/skills/validate_workbench.py` 增加全局 Tab 完整性校验；
   - `项目约束总览.md`「新增/修改文件流程」第二步增加前端改造检查项，并在索引表中新增「前端改造完整性」条目。
+
+- **内容页若自带 Tab 导航，需在注册数据中声明 `renderMode: "content"`**。知识框架页内部已有「学习计划 / 知识总览 / 第 N 章」Tab，若工作台再显示「计划 / 内容」切换按钮，会造成两层 Tab 叠加、界面冗余。解决方案：
+  - 在 `data/modules/self-study.json` 的知识框架项上添加 `"renderMode": "content"`；
+  - 在 `templates/workbench.html` 的 `renderTabs()` 中识别该字段，遇到 `renderMode === 'content'` 时跳过 `plan-tabs` 渲染，直接展示内容 iframe；
+  - 复用该字段：任何内部已具备完整导航的内容页（如路线图、独立仪表盘）均可通过 `renderMode: "content"` 避免工作台级 Tab 干扰。
 
 后续建议方向：
 
