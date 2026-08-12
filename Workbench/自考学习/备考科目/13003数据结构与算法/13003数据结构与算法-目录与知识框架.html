@@ -358,7 +358,7 @@
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .chapter-tab-pane > section { margin-bottom: 0; }
+    .chapter-tab-pane > section { margin-bottom: 1.5rem; }
     .chapter-tab-pane > section:last-of-type { margin-bottom: 0; }
 
     @media (max-width: 640px) {
@@ -382,8 +382,7 @@
 <div class="callout">
 <strong>例题说明：</strong>以下「典型例题」与「同步练习」是从教材 PDF 自动提取的，部分符号、数字或字母可能存在 OCR 识别误差。若发现题面与教材不一致，请以纸质教材为准。
     </div>
-
-<main><div class="chapter-tabs"><button class="chapter-tab-btn active" data-tab="progress"><span class="chapter-tab-text">进度</span></button><button class="chapter-tab-btn" data-tab="position"><span class="chapter-tab-text">整体定位</span></button><button class="chapter-tab-btn" data-tab="toc"><span class="chapter-tab-text">完整目录</span></button><button class="chapter-tab-btn" data-tab="schedule"><span class="chapter-tab-text">周学习建议</span></button><button class="chapter-tab-btn" data-tab="tips"><span class="chapter-tab-text">学习提示</span></button><button class="chapter-tab-btn" data-tab="overview"><span class="chapter-tab-text">总览</span></button><button class="chapter-tab-btn" data-chapter="1" data-tab="chapter-1"><span class="chapter-tab-text">第 1 章 绪论</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="2" data-tab="chapter-2"><span class="chapter-tab-text">第 2 章 线性表</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="3" data-tab="chapter-3"><span class="chapter-tab-text">第 3 章 栈和队列</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="4" data-tab="chapter-4"><span class="chapter-tab-text">第 4 章 数组、广义表和串</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="5" data-tab="chapter-5"><span class="chapter-tab-text">第 5 章 树与二叉树</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="6" data-tab="chapter-6"><span class="chapter-tab-text">第 6 章 图结构</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="7" data-tab="chapter-7"><span class="chapter-tab-text">第 7 章 内部排序</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="8" data-tab="chapter-8"><span class="chapter-tab-text">第 8 章 查找</span><span class="chapter-tab-dot"></span></button></div><div class="chapter-tab-content"><div class="chapter-tab-pane active" data-tab="progress"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
+<main><div class="chapter-tabs"><button class="chapter-tab-btn active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn" data-chapter="1" data-tab="chapter-1"><span class="chapter-tab-text">第 1 章 绪论</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="2" data-tab="chapter-2"><span class="chapter-tab-text">第 2 章 线性表</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="3" data-tab="chapter-3"><span class="chapter-tab-text">第 3 章 栈和队列</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="4" data-tab="chapter-4"><span class="chapter-tab-text">第 4 章 数组、广义表和串</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="5" data-tab="chapter-5"><span class="chapter-tab-text">第 5 章 树与二叉树</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="6" data-tab="chapter-6"><span class="chapter-tab-text">第 6 章 图结构</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="7" data-tab="chapter-7"><span class="chapter-tab-text">第 7 章 内部排序</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="8" data-tab="chapter-8"><span class="chapter-tab-text">第 8 章 查找</span><span class="chapter-tab-dot"></span></button></div><div class="chapter-tab-content"><div class="chapter-tab-pane active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
 <div class="ss-dashboard-top">
 <span class="ss-dashboard-label">掌握进度</span>
 <span class="ss-dashboard-count"><b id="ss-mastered-count">0</b> / <span id="ss-total-count">0</span> 章已掌握</span>
@@ -393,7 +392,34 @@
 </div>
 <div class="ss-dashboard-stats" id="ss-dashboard-stats"></div>
 <button class="ss-dashboard-reset" id="ss-reset-btn">重置全部进度</button>
-</section></div><div class="chapter-tab-pane" data-tab="position"><section>
+</section><section>
+<h2>周学习建议</h2>
+<h3>第 1 周：线性结构 + 树（第 1–5 章）</h3>
+<ul>
+<li><strong>第 1 天</strong>：第 1 章。重点：数据结构三要素、算法 5 特性、时间复杂度分析。</li>
+<li><strong>第 2 天</strong>：第 2 章。重点：顺序表与链表的操作、头结点作用。用 Python 实现单链表增删改查。</li>
+<li><strong>第 3 天</strong>：第 3 章。重点：栈与队列的特点、循环队列、栈的应用（表达式求值）。用 Python 实现栈和队列。</li>
+<li><strong>第 4 天</strong>：第 4 章。重点：数组地址计算、KMP 的 next 数组手推。广义表的表头表尾。</li>
+<li><strong>第 5–6 天</strong>：第 5 章。重点：二叉树遍历、由遍历序列恢复二叉树、哈夫曼树与 WPL。用 Python 实现二叉树遍历。</li>
+<li><strong>第 7 天</strong>：复习第 1–5 章 + 做课后习题。</li>
+</ul>
+<h3>第 2 周：图 + 排序查找（第 6–8 章）</h3>
+<ul>
+<li><strong>第 1–3 天</strong>：第 6 章。重点：邻接矩阵/邻接表、DFS/BFS、最小生成树（Prim/Kruskal）、最短路径（Dijkstra）、拓扑排序、关键路径。用 Python 实现 DFS/BFS。</li>
+<li><strong>第 4–5 天</strong>：第 7 章。重点：各排序算法的过程模拟、复杂度与稳定性对比、堆排序建堆过程。用 Python 实现快排、归并、堆排。</li>
+<li><strong>第 6 天</strong>：第 8 章。重点：折半查找判定树、BST/AVL 的构造与旋转、哈希表构造与 ASL 计算。</li>
+<li><strong>第 7 天</strong>：全书串讲 + 做真题。</li>
+</ul>
+</section><section>
+<h2>学习提示</h2>
+<ul>
+<li><strong>算法设计题</strong>：第 2 章（链表操作）、第 5 章（二叉树遍历）、第 6 章（图的搜索）是算法设计题的高频出题点，务必手写代码。</li>
+<li><strong>过程模拟题</strong>：第 7 章排序（每一趟结果）、第 8 章哈希表（构造与查找过程）、第 5 章哈夫曼树构造是过程模拟题的高频出题点。</li>
+<li><strong>计算题</strong>：时间复杂度分析、二叉树节点数计算、WPL 计算、ASL 计算必考。</li>
+<li><strong>Python 实现</strong>：每个核心数据结构用 Python 实现一遍，既加深理解又练习 Python 语法，对应 70/10/10/10 学习分配中的 Python 部分。</li>
+<li><strong>学位课要求</strong>：≥70 分，比及格线高 10 分，需要更扎实的掌握，不能只靠突击。</li>
+</ul>
+</section></div><div class="chapter-tab-pane" data-tab="knowledge-overview"><section>
 <h2>整体定位</h2>
 <p>数据结构与算法共 8 章，从基本概念到各类数据结构的存储与操作，再到排序与查找算法，层层递进。全书可以按"数据的组织方式 → 操作实现 → 算法效率"这条主线串起来：</p>
 <ol>
@@ -405,7 +431,7 @@
 <div class="callout">
           这是学位课，分数需 ≥70。建议用 2 周系统学习：第 1 周完成线性结构（第 1–4 章）+ 树（第 5 章），第 2 周完成图（第 6 章）+ 排序查找（第 7–8 章）。每个知识点配合 Python 实现代码加深理解。
         </div>
-</section></div><div class="chapter-tab-pane" data-tab="toc"><section>
+</section><section>
 <h2>完整目录</h2>
 <div class="toc-chapter">
 <div class="toc-title">数据结构与算法自学考试大纲 <span class="page">大纲部分</span></div>
@@ -587,34 +613,7 @@
 <div class="toc-chapter">
 <div class="toc-title">参考文献、后记</div>
 </div>
-</section></div><div class="chapter-tab-pane" data-tab="schedule"><section>
-<h2>2 周学习建议</h2>
-<h3>第 1 周：线性结构 + 树（第 1–5 章）</h3>
-<ul>
-<li><strong>第 1 天</strong>：第 1 章。重点：数据结构三要素、算法 5 特性、时间复杂度分析。</li>
-<li><strong>第 2 天</strong>：第 2 章。重点：顺序表与链表的操作、头结点作用。用 Python 实现单链表增删改查。</li>
-<li><strong>第 3 天</strong>：第 3 章。重点：栈与队列的特点、循环队列、栈的应用（表达式求值）。用 Python 实现栈和队列。</li>
-<li><strong>第 4 天</strong>：第 4 章。重点：数组地址计算、KMP 的 next 数组手推。广义表的表头表尾。</li>
-<li><strong>第 5–6 天</strong>：第 5 章。重点：二叉树遍历、由遍历序列恢复二叉树、哈夫曼树与 WPL。用 Python 实现二叉树遍历。</li>
-<li><strong>第 7 天</strong>：复习第 1–5 章 + 做课后习题。</li>
-</ul>
-<h3>第 2 周：图 + 排序查找（第 6–8 章）</h3>
-<ul>
-<li><strong>第 1–3 天</strong>：第 6 章。重点：邻接矩阵/邻接表、DFS/BFS、最小生成树（Prim/Kruskal）、最短路径（Dijkstra）、拓扑排序、关键路径。用 Python 实现 DFS/BFS。</li>
-<li><strong>第 4–5 天</strong>：第 7 章。重点：各排序算法的过程模拟、复杂度与稳定性对比、堆排序建堆过程。用 Python 实现快排、归并、堆排。</li>
-<li><strong>第 6 天</strong>：第 8 章。重点：折半查找判定树、BST/AVL 的构造与旋转、哈希表构造与 ASL 计算。</li>
-<li><strong>第 7 天</strong>：全书串讲 + 做真题。</li>
-</ul>
-</section></div><div class="chapter-tab-pane" data-tab="tips"><section>
-<h2>学习提示</h2>
-<ul>
-<li><strong>算法设计题</strong>：第 2 章（链表操作）、第 5 章（二叉树遍历）、第 6 章（图的搜索）是算法设计题的高频出题点，务必手写代码。</li>
-<li><strong>过程模拟题</strong>：第 7 章排序（每一趟结果）、第 8 章哈希表（构造与查找过程）、第 5 章哈夫曼树构造是过程模拟题的高频出题点。</li>
-<li><strong>计算题</strong>：时间复杂度分析、二叉树节点数计算、WPL 计算、ASL 计算必考。</li>
-<li><strong>Python 实现</strong>：每个核心数据结构用 Python 实现一遍，既加深理解又练习 Python 语法，对应 70/10/10/10 学习分配中的 Python 部分。</li>
-<li><strong>学位课要求</strong>：≥70 分，比及格线高 10 分，需要更扎实的掌握，不能只靠突击。</li>
-</ul>
-</section></div><div class="chapter-tab-pane" data-tab="overview"><div>
+</section><div>
 <h3>总览：数据结构的组织与算法效率</h3>
 <p>全书可按"数据怎么组织 → 操作怎么实现 → 算法多高效"串成一条主线。理解这条线，就能把 8 章内容连成整体：</p>
 <ol>
@@ -641,7 +640,7 @@
 </ul>
 <h4>必会公式</h4>
 <ul>
-<li>时间复杂度阶：O(1) &lt; O(log₂n) &lt; O(n) &lt; O(n log₂n) &lt; O(n²) &lt; O(2ⁿ) &lt; O(n!)</li>
+<li>时间复杂度阶：O(1) < O(log₂n) < O(n) < O(n log₂n) < O(n²) < O(2ⁿ) < O(n!)</li>
 <li>顺序存储地址：LOC(aᵢ) = LOC(a₀) + i × L（0 起始），或 LOC(aᵢ) = LOC(a₁) + (i−1) × L（1 起始）。</li>
 </ul>
 <h4>常见题型</h4>
@@ -956,12 +955,12 @@ clear、insertList、removeList^ setValue^g©田21皿等操作的返回值表示
 依次执行的。<br/>
 表2 -1 线性表操作示例<br/>
 序 号 _______________操 作_______________ 操作结果 ______________解 释______________<br/>
-1 initList(&amp;s) () 创建空线性表s______________________<br/>
-2 for(i = 0；i&lt;6；i++) insertList(&amp;s,i,2 * i) (0,2,4,6,8,10) 在空表二的表尾处依次插入6个值<br/>
-3 removeList( &amp;s, 3, &amp;x ) (0,2,4,8,10) 删除位置3的值并由x返回该值<br/>
-4 setVaIue( &amp;s,3,-10) (0,2,4,T0,10) 给位置3的元素赋值-10______________<br/>
-5 find( &amp;s,10) 返回值是4 在5中查找10, 10在位置4<br/>
-6 find( &amp;s,9) 返回值是-1 在$中查找9 ,查找失败<br/>
+1 initList(&s) () 创建空线性表s______________________<br/>
+2 for(i = 0；i<6；i++) insertList(&s,i,2 * i) (0,2,4,6,8,10) 在空表二的表尾处依次插入6个值<br/>
+3 removeList( &s, 3, &x ) (0,2,4,8,10) 删除位置3的值并由x返回该值<br/>
+4 setVaIue( &s,3,-10) (0,2,4,T0,10) 给位置3的元素赋值-10______________<br/>
+5 find( &s,10) 返回值是4 在5中查找10, 10在位置4<br/>
+6 find( &s,9) 返回值是-1 在$中查找9 ,查找失败<br/>
 第二节线性表的顺序存储及实现<br/>
 线性表基本操作的具体实现需要依赖线性表的存储结构。可以使用顺序存储方式和链式<br/>
 存储方式保存线性表，从而分别得到线性表的顺序存储结构和链式存储结构。顺序存储结构<br/>
@@ -1098,7 +1097,7 @@ push(f) , pop(f) , pop(e) , push(g) , pop(g) , pop(d), 能得到出栈序列E, e
 </div>
 <div class="example-block">
 <div class="example-title"><strong>例 3-3</strong></div>
-<div class="example-statement"><p>一个栈的输入序列为1,2,3,--,口，若输出序列的第一个元素是匹则第，（1&lt;<br/>
+<div class="example-statement"><p>一个栈的输入序列为1,2,3,--,口，若输出序列的第一个元素是匹则第，（1<<br/>
 iWn）个输出元素是（ ）□<br/>
 A .不确定 B. n-i+1 C. i D. n-i<br/>
 答案为九<br/>
@@ -1214,7 +1213,7 @@ _0 0 0 0_</p>
 ij(gWk)为非负整数。如果及为1 , 则数组是一维的，如果4 为2 , 则数组是二维的，<br/>
 等等。例如，值为整型类型的左维数组口3 2 丫可用如下的语句来声明：<br/>
 int DkAn^y[uJ[u2][u3]...[uJ ； . ；：<br/>
-在这个定义中，每一维的下标取值范围是：OWij&lt;Uj(l&lt;jWk)o因X，这个数组最多可<br/>
+在这个定义中，每一维的下标取值范围是：OWij<Uj(l<jWk)o因X，这个数组最多可<br/>
 以容纳几二〃1X〃2X〃3又一・ X%个整数。数组所需内存空间大小为sizeof( DkArray)= nXsizeof<br/>
 (向)字节。假设数组的开始地址为$匕叫那么该数组占用的空间将延伸至512照+出60E<br/>
 (DkArray ) — 1。<br/>
@@ -1313,7 +1312,7 @@ n'加个。有些矩阵因其特殊性，可以不必保存其中的所有元素
 在应用中经常出现的特殊矩阵有对称矩阵和三角矩阵，它们都是方阵，即行数与列数相
 等。矩 阵 "中 ，行/列的元素可以表示为X” 几X几矩阵时是一个对称矩阵，当且仅当对所
 有的1和。 有X尸以《,尸0,1「・・/-1）。在对称矩阵中，以对角线为界，上三角部分与下
-三角部分对称相等。图4-4&amp;为对称矩阵。几X口矩阵M 是一个上三角矩阵，当且仅当，》时
+三角部分对称相等。图4-4&为对称矩阵。几X口矩阵M 是一个上三角矩阵，当且仅当，》时
 有加广0（，,尸0,1,--4-1）。在上三角矩阵中，非0值仅会出现在矩阵的上三角部分，下三
 角部分的所有元素均为。。图4-4匕为上三角矩阵。"X九矩阵” 是一个下三角矩阵，当且仅
 当必时有促产0（勾=0,1「・ ・ /-1）。与上三角矩阵类似，在下三角矩阵中，非。值仅会出
@@ -1350,11 +1349,11 @@ map(ij)= l+2+3+--+i+j=ix(i+l)/2+j (OWiW^T,OWjWi)<br/>
 元素值0。<br/>
 对于对称矩阵，也是如X，在仅保存上三角部分或下三角部分时，也要根据行、列值的<br/>
 大小关系来决定具体的存储位置。如果不满足条件，则需要互换行、列值才能进行计算。<br/>
-设以一维数组吕［几&gt;5+1)/2］作为儿阶对称矩阵4 的存储结构，按行主序方式保存4<br/>
+设以一维数组吕［几>5+1)/2］作为儿阶对称矩阵4 的存储结构，按行主序方式保存4<br/>
 的下三角部分。元素4［订［书(0・ ，,/这九一1)保存在现幻(0・ 4三 "5+ 1)/2-1)中，贝曦与<br/>
 芍存在下列对应关系：<br/>
 _ rfx(/+l)/2+/ i^j<br/>
-~Lx(j+l)/2+i i&lt;j</p></div>
+~Lx(j+l)/2+i i<j</p></div>
 <div class="example-solution"></div>
 </div>
 <h4>同步练习</h4>
@@ -1483,7 +1482,7 @@ I、J也互为兄弟结点，而结点G和 H不是兄弟结点。<br/>
 后继结点。根的前驱结点个数为0 ,叶结点的后继结点个数为。。也就是说，树中每个元素<br/>
 的前驱的个数不会多于1个，后继的个数可以是任意个。<br/>
 已知树是一种层次结构，设根为0层，根的子结点为1层，依X类推。一般地，若某个<br/>
-结点位于，(/&gt; 0 )层，则它的子结点位于，+1层。<br/>
+结点位于，(/> 0 )层，则它的子结点位于，+1层。<br/>
 树中结点的最大层数定义为树的深度，最大层数加1即为树的高度。例如，在树丁中,<br/>
 结点A在0层，结点 E、F、G、H、I、1在2层，树 T的深度为2 ,树丁的高度为3。<br/>
 在树中，从某一结点出发，到达另一个结点所经过的边组成一条路径。路径中所含的边<br/>
@@ -1587,11 +1586,11 @@ n = n +1 (5-3)<br/>
 性质4 具有几个结点的完全二叉树的高度为口气2n」+1。<br/>
 证明：设有口个结点的完全二叉树的高度为以 从其0层到A-2 层，结点必然全部排<br/>
 满，根据性质2 和完全二叉树的定义，可以得到下列不等式<br/>
-2^-l&lt;n^2^-l (5-4)<br/>
+2^-l<n^2^-l (5-4)<br/>
 化简后得到<br/>
-2 x 几&lt;2' (5-5)<br/>
+2 x 几<2' (5-5)<br/>
 对 式 （5-5）的各项取对数，得到<br/>
-A-l^log n&lt;^i (5-6)</p>
+A-l^log n<^i (5-6)</p>
 <p>即有<br/>
 ^-l = Llog2^J<br/>
 或写为<br/>
@@ -1763,7 +1762,7 @@ i = 0 i = O<br/>
 <div class="example-block">
 <div class="example-title"><strong>例 6-3</strong></div>
 <div class="example-statement"><p>子图示例。<br/>
-&amp; ©<br/>
+& ©<br/>
 图6 -3 子图示例<br/>
 在图6-3中，对于图6 , 图61、G2、63和6,都是它的子图；特别地，图61与图6 完全<br/>
 一样，它也是图6 的子图，即图本身也是它自身的子图；同时，图62是图64的子图。而图<br/>
@@ -1868,10 +1867,10 @@ L 25 35 42 59 63 65 68 70 79<br/>
 int insertSort ( myRcd * myarr)<br/>
 I inti,j;<br/>
 ■、 . . 一 .、<br/>
-fbr ( i = 1 ； i&lt;myarr-&gt;currentNum ； i++) j<br/>
-if(myarr-&gt;data[i]&lt;myarr-&gt;data[i-l])|<br/>
-fbr ( j = i ； myarr-&gt;data[ j] &lt;myarr-&gt;data[j-1 ] &amp;&amp; j&gt;O ;j-)]<br/>
-swap( &amp;myarr-&gt;data[j] ,&amp;myarr-&gt;data[j-1 ]) ；<br/>
+fbr ( i = 1 ； i<myarr->currentNum ； i++) j<br/>
+if(myarr->data[i]<myarr->data[i-l])|<br/>
+fbr ( j = i ； myarr->data[ j] <myarr->data[j-1 ] && j>O ;j-)]<br/>
+swap( &myarr->data[j] ,&myarr->data[j-1 ]) ；<br/>
 retumTRUE;<br/>
 在直接插入排序的每趟扫描中，当待排序元素不再向前移动时，有序子序列中它前面的<br/>
 元素(如果有的话)必定小于等于它，而它后面的元素(如果有的话)必定大于它。如果<br/>
@@ -1887,14 +1886,14 @@ retumTRUE;<br/>
 <p>完毕再将temp中保存的值放回数组里面移动元素后出现的空位置中。实现如下。<br/>
 int insertSortl ( myRcd * myarr)<br/>
 inti,j,ten^); 一<br/>
-fbr fi= 1 ;i&lt;no7an--&gt;cwrentNum;i++) j<br/>
-*％ 、',：-- - ；：：；；「「「&lt;二；， . '"<br/>
-temp == myaCT-&gt;dkta[i]；<br/>
-' . .、 = ?■ - ---•-&lt;-. …、 一 .二<br/>
+fbr fi= 1 ;i<no7an-->cwrentNum;i++) j<br/>
+*％ 、',：-- - ；：：；；「「「<二；， . '"<br/>
+temp == myaCT->dkta[i]；<br/>
+' . .、 = ?■ - ---•-<-. …、 一 .二<br/>
 j = i-l;<br/>
-while ( myarr-&gt;data[j] &gt;temp &amp;&amp; j&gt; = 0)<br/>
-myarr-&gt;data[j+l] =myarr-&gt;data[j^-]; 〃后移<br/>
-.niyaj^&gt;&gt;d^ta[j+l]=temp; 一；.,<br/>
+while ( myarr->data[j] >temp && j> = 0)<br/>
+myarr->data[j+l] =myarr->data[j^-]; 〃后移<br/>
+.niyaj^>>d^ta[j+l]=temp; 一；.,<br/>
 ｝上「 M:<br/>
 retum TRUE ；<br/>
 除原来的数据所占用的数组空间以外，直接插入排序仅需要临时工作单元，所以它的空<br/>
@@ -1957,7 +1956,7 @@ n-l<br/>
 刚才的分析中知道，A值应该越来越小。A称为间隔，也称为增量。所以希尔排序也称为缩<br/>
 小增量排序。最后一趟排序的A值为1,也就是全部元素都在同一个组内，对所有元素进行<br/>
 直接插入排序。X时排序过程结束。<br/>
-在希尔排序中，增量序列&amp;的取法有很多种，比如：</p>
+在希尔排序中，增量序列&的取法有很多种，比如：</p>
 <p>①取亳=0 d. =Ld/2 J<br/>
 +1<br/>
 ② 取 4 = - d =L(d + l)/2j<br/>
@@ -2026,9 +2025,9 @@ A. 2 B. 3 C. 4 D. 5<br/>
 每趟中比较和移动的操作将较多。注意，最后一趟的增量一定是A<br/>
 希尔排序算法如下。<br/>
 void SheUSort(myRcd * myarr,int d[ ] ,int t) 〃希尔排序<br/>
-{ 〃/进行 t 趟希尔排序；d[0] WcurrentNum,d[0]&gt;d[ 1 ] &gt;• •- &gt;d[t] ,d[t] = 1<br/>
+{ 〃/进行 t 趟希尔排序；d[0] WcurrentNum,d[0]>d[ 1 ] >• •- >d[t] ,d[t] = 1<br/>
 intk = O,gap = d[k];<br/>
-while ( k&lt;t) |<br/>
+while ( k<t) |<br/>
 insertSortfbrSheU ( myarr, gap ) ； "<br/>
 k++;<br/>
 gap=d[k]；<br/>
@@ -2038,11 +2037,11 @@ gap=d[k]；<br/>
 是，进行比较及交换的两个记录不再是相邻记录，而是间隔为增量的两个记录。<br/>
 在直接插入排序算法沁6亚0«(0^及C1 ^^^^⑺的基础上进行修改，实现如下。<br/>
 int insertSortforSheU(myRcd *myarr,int gap)<br/>
-I int i,j; • .「二 ；：— &gt;：二 》.一一； ♦<br/>
-fbr (i = gap ； i&lt;myarr-&gt;currentNum ； i++)( ,<br/>
-if (myarr-&gt;data[ i] &lt;myarr-&gt;data[ i-gap] ) j<br/>
-fbr (j = i；myarr-&gt;data[ j] &lt;myarr-&gt;data[j-gap] &amp;&amp;j-gap&gt; = O;j=j-gap) j<br/>
-swap ( &amp;myarr-&gt;data[ j ] , &amp;myarr-&gt;data[ j—gap ]) ；</p>
+I int i,j; • .「二 ；：— >：二 》.一一； ♦<br/>
+fbr (i = gap ； i<myarr->currentNum ； i++)( ,<br/>
+if (myarr->data[ i] <myarr->data[ i-gap] ) j<br/>
+fbr (j = i；myarr->data[ j] <myarr->data[j-gap] &&j-gap> = O;j=j-gap) j<br/>
+swap ( &myarr->data[ j ] , &myarr->data[ j—gap ]) ；</p>
 <p>printf(n d=%d： \tH ,gap) ;<br/>
 diMpyy( *myarr,O);<br/>
 retumTRUE；<br/>
@@ -2052,9 +2051,9 @@ retumTRUE；<br/>
 void insertSortforSheni(myRcd * myarr,int gap) 〃以 gap 为步长进行直接插入排序<br/>
 { inttmp,iJ;<br/>
 .. . . ^ • : ^ ^ : 一 . ^<br/>
-fbr (i = gap ； i&lt;myarr-&gt;currentNum ； i++) (<br/>
+fbr (i = gap ； i<myarr->currentNum ； i++) (<br/>
 尸;<br/>
-myarr-&gt;data[ j ] =tmp;<br/>
+myarr->data[ j ] =tmp;<br/>
 printf( nd=%xl： \f* ,gap)；<br/>
 disp^y ( * myarr, 0 )；<br/>
 在希尔排序中，数据移动的“步幅”较大，确实改善了直接插入排序的效率，但也使<br/>
@@ -2113,7 +2112,7 @@ A」插入排序 B .选择排序 C .起泡排序 注快速排序</p></div>
 <li><span class="key-term">顺序查找</span>：适用于任意顺序表/链表；成功 ASL = (n+1)/2（等概率）。</li>
 <li><span class="key-term">折半查找（二分查找）</span>：仅适用于关键字有序的顺序表；判定树深度 ⌊log₂n⌋ + 1；ASL ≈ log₂(n+1) − 1。</li>
 <li><span class="key-term">分块查找（索引顺序查找）</span>：块间有序、块内无序；ASL 与块大小有关。</li>
-<li><span class="key-term">二叉排序树（BST）</span>：左子树关键字 &lt; 根 &lt; 右子树关键字；中序遍历得到有序序列；最坏退化为链表，ASL = O(n)。</li>
+<li><span class="key-term">二叉排序树（BST）</span>：左子树关键字 < 根 < 右子树关键字；中序遍历得到有序序列；最坏退化为链表，ASL = O(n)。</li>
 <li><span class="key-term">平衡二叉树（AVL）</span>：任意结点左右子树高度差 ≤1；通过 LL、RR、LR、RL 四种旋转保持平衡，查找效率 O(log₂n)。</li>
 <li><span class="key-term">B 树 / B+ 树</span>：多路平衡查找树；B 树关键字分布在所有结点，B+ 树关键字集中在叶子，叶子间链指针便于范围查找。</li>
 <li><span class="key-term">哈希表</span>：通过哈希函数直接定位存储位置；理想 O(1)。</li>
@@ -2183,7 +2182,7 @@ A」插入排序 B .选择排序 C .起泡排序 注快速排序</p></div>
 low high
 图8 -1 初始有序表及初始边界值
 要查找2 2 ,首先要求出初始查找区间的中间位置加4 = 5 ,将这个位置的关键字与查找
-目标22进行比较。这是第一次查找过程，如图8-2所示。因为22&lt;45,所以应该丢弃后半
+目标22进行比较。这是第一次查找过程，如图8-2所示。因为22<45,所以应该丢弃后半
 区间，在前半区间继续查找。
 0 1 2 3 4 5 6 7 8 9 10
 11 15 18 22 33 45 60 65 82 86 97
@@ -2191,7 +2190,7 @@ low high
 图8 -2 第一次查找过程
 X时1皿的值不变，而新的区间上界山811应为向心1= 4,也就是在区间［0,4］中继续查
 找。在这个区间再求出新的中间位置《^ = ［（0+4）/2」=2。保存在位置2 的值是18,因为
-22&gt;18,所以应该在后半区间查找，新的区间上界如8卜=4 不变，下界10卬应为疝4+1 = 3,
+22>18,所以应该在后半区间查找，新的区间上界如8卜=4 不变，下界10卬应为疝4+1 = 3,
 即在区间［3,4］中继续查找。再求它的中间位置加E^［（3+4）/2」=3 ,这个位置的关键字恰
 好是2 2 ,因X查找成功。这个过程如图8-3所示。</pre>
 <pre>0 1 2 3 4 5 6 7 8 9 10
@@ -2213,7 +2212,7 @@ mid
 t I
 high low （第四次）
 图8 - 4 查找85的过程
-由图8-4可以看出，经过三次比较之后，mid = 9 ,该位置的关键字值86&gt;85,按照规则,
+由图8-4可以看出，经过三次比较之后，mid = 9 ,该位置的关键字值86>85,按照规则,
 应在前半区间[1。0,疝41]继续查找，但X时新的区间上界面心1 = 8 ,它已小于下界1皿=9,
 即新的区间已不存在，这就意味着查找表中根本没有关键字值为85的元素，查找失败。
 折半查找的具体算法如下。
@@ -2221,14 +2220,14 @@ M B i ^ c h f i U s t L , E E E * s ） ；〃 螂 『 储的套序表中的折�
 1 〃若成功二则返回所处下标值；否财^回国咫"
 :"tlow=Og^=LA]; 〃置区间初值
 ^tfound = 0,mid;」 , 〃置是否找到标记幻0 ^ 为°（未找到）
-wMe（low&lt;-high&amp;&amp;!found&gt;! 〃当区间下界未超过上界且未找到时，循环查找;
+wMe（low<-high&&!found>! 〃当区间下界未超过上界且未找到时，循环查找;
 而d=（low+high）/2; 力隶中点「 ， 」
-if （L. element[ mid] = =target） found=l ; 〃自找到,置标记用血&amp;为 1
-eke if （target&gt;L. element[ mid] ） low=mid+l ; 〃在后半区间蜜续查找
+if （L. element[ mid] = =target） found=l ; 〃自找到,置标记用血&为 1
+eke if （target>L. element[ mid] ） low=mid+l ; 〃在后半区间蜜续查找
 • . •• : . •■ • / 丁:二士亡」；,「： ^ ,] ^ •二 ；
 = @ e hi^h=nwd-J ； = ； 「"獭半区间继续查找 i - …
 f ： * I -.' ?^' .. ^,\." ;「：‘；.：、 「：— ,，「：； 「 」 、，： 」 「； .一 .
-: &gt;'•： A. - x'，J = F ^ *, . . f K'*C, ”.；* ■*- A * U ； -',' ； •；
+: >'•： A. - x'，J = F ^ *, . . f K'*C, ”.；* ■*- A * U ； -',' ； •；
 、 if (found) retuni mid ；,.. — 一我型,返回找到的记” 位置
 =。皮 ，;博三E 二二.l*fl ." rj r
 else retum ERROR； “查找不成功，返回-1为标记— = = ，
@@ -2286,7 +2285,7 @@ else retum ERROR； “查找不成功，返回-1为标记— = = ，
 满二叉树，其高度4 = 1。82（九+1）。在这棵二叉树中，层次从。开始计数，层次为。的结点有<br/>
 1个，层次为1的结点有2个……层次为h - l的结点有2五一]个。现仍设表中每个记录的查找<br/>
 概率相等，即尸尸1/口，则查找成功时折半查找的平均查找长度为<br/>
-ASL= fp &amp; = - f j x 2 - 1<br/>
+ASL= fp & = - f j x 2 - 1<br/>
 i=i n j=i<br/>
 上式的计算结果约为1空2口。因X，当查找成功时，折半查找的平均查找长度对九来说是对<br/>
 数级的，即。（1"九）。而当查找不成功时，折半查找算法必须从二叉树的根“走”到空指<br/>
@@ -2576,9 +2575,12 @@ i=i n j=i<br/>
         });
       });
 
-      // 恢复上次停留的 Tab
+      // 恢复上次停留的 Tab（兼容旧 tab id）
       var saved = null;
       try { saved = localStorage.getItem(STORAGE_TAB_KEY); } catch(e) {}
+      var legacyMap = { progress: 'study-plan', schedule: 'study-plan', tips: 'study-plan',
+                        position: 'knowledge-overview', toc: 'knowledge-overview', overview: 'knowledge-overview' };
+      if (saved && legacyMap[saved]) saved = legacyMap[saved];
       if (saved && document.querySelector('.chapter-tab-btn[data-tab="' + saved + '"]')) {
         switchTab(saved);
       }
