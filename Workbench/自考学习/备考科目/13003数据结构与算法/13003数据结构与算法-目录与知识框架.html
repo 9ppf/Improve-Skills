@@ -371,6 +371,11 @@
         font-size: 0.82rem;
       }
     }
+
+    .hidden-chapter-tab { display: none; }
+
+    .toc-title-link { transition: color 0.2s, background 0.2s; }
+    .toc-title-link:hover { color: var(--accent); background: rgba(37, 99, 235, 0.06); border-radius: 6px; }
 </style>
 </head>
 <body>
@@ -382,7 +387,7 @@
 <div class="callout">
 <strong>例题说明：</strong>以下「典型例题」与「同步练习」是从教材 PDF 自动提取的，部分符号、数字或字母可能存在 OCR 识别误差。若发现题面与教材不一致，请以纸质教材为准。
     </div>
-<main><div class="chapter-tabs"><button class="chapter-tab-btn active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn" data-chapter="1" data-tab="chapter-1"><span class="chapter-tab-text">第 1 章 绪论</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="2" data-tab="chapter-2"><span class="chapter-tab-text">第 2 章 线性表</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="3" data-tab="chapter-3"><span class="chapter-tab-text">第 3 章 栈和队列</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="4" data-tab="chapter-4"><span class="chapter-tab-text">第 4 章 数组、广义表和串</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="5" data-tab="chapter-5"><span class="chapter-tab-text">第 5 章 树与二叉树</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="6" data-tab="chapter-6"><span class="chapter-tab-text">第 6 章 图结构</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="7" data-tab="chapter-7"><span class="chapter-tab-text">第 7 章 内部排序</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="8" data-tab="chapter-8"><span class="chapter-tab-text">第 8 章 查找</span><span class="chapter-tab-dot"></span></button></div><div class="chapter-tab-content"><div class="chapter-tab-pane active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
+<main><div class="chapter-tabs"><button class="chapter-tab-btn active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn hidden-chapter-tab" data-chapter="1" data-tab="chapter-1"><span class="chapter-tab-text">第 1 章 绪论</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn hidden-chapter-tab" data-chapter="2" data-tab="chapter-2"><span class="chapter-tab-text">第 2 章 线性表</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn hidden-chapter-tab" data-chapter="3" data-tab="chapter-3"><span class="chapter-tab-text">第 3 章 栈和队列</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn hidden-chapter-tab" data-chapter="4" data-tab="chapter-4"><span class="chapter-tab-text">第 4 章 数组、广义表和串</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn hidden-chapter-tab" data-chapter="5" data-tab="chapter-5"><span class="chapter-tab-text">第 5 章 树与二叉树</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn hidden-chapter-tab" data-chapter="6" data-tab="chapter-6"><span class="chapter-tab-text">第 6 章 图结构</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn hidden-chapter-tab" data-chapter="7" data-tab="chapter-7"><span class="chapter-tab-text">第 7 章 内部排序</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn hidden-chapter-tab" data-chapter="8" data-tab="chapter-8"><span class="chapter-tab-text">第 8 章 查找</span><span class="chapter-tab-dot"></span></button></div><div class="chapter-tab-content"><div class="chapter-tab-pane active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
 <div class="ss-dashboard-top">
 <span class="ss-dashboard-label">掌握进度</span>
 <span class="ss-dashboard-count"><b id="ss-mastered-count">0</b> / <span id="ss-total-count">0</span> 章已掌握</span>
@@ -441,7 +446,7 @@
 </div>
 </div>
 <div class="toc-chapter">
-<div class="toc-title">第 1 章 绪论 <span class="tag tag-key">重点</span> <span class="page">基础</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-1')" style="cursor: pointer;">第 1 章 绪论 <span class="tag tag-key">重点</span> <span class="page">基础</span></div>
 <div class="toc-sections">
 <div class="toc-section">1.1 基本概念和术语</div>
 <div class="toc-subsection">数据、数据元素、数据项、数据对象</div>
@@ -458,7 +463,7 @@
 </div>
 </div>
 <div class="toc-chapter">
-<div class="toc-title">第 2 章 线性表 <span class="tag tag-core">核心</span> <span class="page">高频考点</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-2')" style="cursor: pointer;">第 2 章 线性表 <span class="tag tag-core">核心</span> <span class="page">高频考点</span></div>
 <div class="toc-sections">
 <div class="toc-section">2.1 线性表的定义和基本操作</div>
 <div class="toc-subsection">线性表的定义、基本操作（初始化、插入、删除、查找、遍历）</div>
@@ -476,7 +481,7 @@
 </div>
 </div>
 <div class="toc-chapter">
-<div class="toc-title">第 3 章 栈和队列 <span class="tag tag-core">核心</span> <span class="page">高频考点</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-3')" style="cursor: pointer;">第 3 章 栈和队列 <span class="tag tag-core">核心</span> <span class="page">高频考点</span></div>
 <div class="toc-sections">
 <div class="toc-section">3.1 栈</div>
 <div class="toc-subsection">栈的定义与特点（LIFO）</div>
@@ -495,7 +500,7 @@
 </div>
 </div>
 <div class="toc-chapter">
-<div class="toc-title">第 4 章 数组、广义表和串 <span class="tag tag-key">重点</span> <span class="page">中等</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-4')" style="cursor: pointer;">第 4 章 数组、广义表和串 <span class="tag tag-key">重点</span> <span class="page">中等</span></div>
 <div class="toc-sections">
 <div class="toc-section">4.1 数组及广义表</div>
 <div class="toc-subsection">数组的存储方式（行优先、列优先）</div>
@@ -509,7 +514,7 @@
 </div>
 </div>
 <div class="toc-chapter">
-<div class="toc-title">第 5 章 树与二叉树 <span class="tag tag-core">核心</span> <span class="page">必考大题</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-5')" style="cursor: pointer;">第 5 章 树与二叉树 <span class="tag tag-core">核心</span> <span class="page">必考大题</span></div>
 <div class="toc-sections">
 <div class="toc-section">5.1 树的基本概念</div>
 <div class="toc-subsection">树的定义、术语（度、深度、叶子、分支节点）</div>
@@ -537,7 +542,7 @@
 </div>
 </div>
 <div class="toc-chapter">
-<div class="toc-title">第 6 章 图结构 <span class="tag tag-core">核心</span> <span class="page">必考大题</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-6')" style="cursor: pointer;">第 6 章 图结构 <span class="tag tag-core">核心</span> <span class="page">必考大题</span></div>
 <div class="toc-sections">
 <div class="toc-section">6.1 图的基本概念与基本操作</div>
 <div class="toc-subsection">有向图、无向图、完全图、子图</div>
@@ -565,7 +570,7 @@
 </div>
 </div>
 <div class="toc-chapter">
-<div class="toc-title">第 7 章 内部排序 <span class="tag tag-core">核心</span> <span class="page">必考大题</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-7')" style="cursor: pointer;">第 7 章 内部排序 <span class="tag tag-core">核心</span> <span class="page">必考大题</span></div>
 <div class="toc-sections">
 <div class="toc-section">7.1 排序的基本概念</div>
 <div class="toc-subsection">排序的稳定性、内部排序与外部排序</div>
@@ -591,7 +596,7 @@
 </div>
 </div>
 <div class="toc-chapter">
-<div class="toc-title">第 8 章 查找 <span class="tag tag-core">核心</span> <span class="page">高频考点</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-8')" style="cursor: pointer;">第 8 章 查找 <span class="tag tag-core">核心</span> <span class="page">高频考点</span></div>
 <div class="toc-sections">
 <div class="toc-section">8.1 查找的基本概念</div>
 <div class="toc-subsection">关键字、平均查找长度（ASL）</div>
@@ -1213,7 +1218,7 @@ _0 0 0 0_</p>
 ij(gWk)为非负整数。如果及为1 , 则数组是一维的，如果4 为2 , 则数组是二维的，<br/>
 等等。例如，值为整型类型的左维数组口3 2 丫可用如下的语句来声明：<br/>
 int DkAn^y[uJ[u2][u3]...[uJ ； . ；：<br/>
-在这个定义中，每一维的下标取值范围是：OWij<Uj(l<jWk)o因X，这个数组最多可<br/>
+在这个定义中，每一维的下标取值范围是：OWij<uj(l<jwk)o因x，这个数组最多可<br></uj(l<jwk)o因x，这个数组最多可<br>
 以容纳几二〃1X〃2X〃3又一・ X%个整数。数组所需内存空间大小为sizeof( DkArray)= nXsizeof<br/>
 (向)字节。假设数组的开始地址为$匕叫那么该数组占用的空间将延伸至512照+出60E<br/>
 (DkArray ) — 1。<br/>
@@ -1353,7 +1358,7 @@ map(ij)= l+2+3+--+i+j=ix(i+l)/2+j (OWiW^T,OWjWi)<br/>
 的下三角部分。元素4［订［书(0・ ，,/这九一1)保存在现幻(0・ 4三 "5+ 1)/2-1)中，贝曦与<br/>
 芍存在下列对应关系：<br/>
 _ rfx(/+l)/2+/ i^j<br/>
-~Lx(j+l)/2+i i<j</p></div>
+~Lx(j+l)/2+i i<j< p=""></j<></p></div>
 <div class="example-solution"></div>
 </div>
 <h4>同步练习</h4>
@@ -1586,7 +1591,7 @@ n = n +1 (5-3)<br/>
 性质4 具有几个结点的完全二叉树的高度为口气2n」+1。<br/>
 证明：设有口个结点的完全二叉树的高度为以 从其0层到A-2 层，结点必然全部排<br/>
 满，根据性质2 和完全二叉树的定义，可以得到下列不等式<br/>
-2^-l<n^2^-l (5-4)<br/>
+2^-l<n^2^-l (5-4)<br=""></n^2^-l>
 化简后得到<br/>
 2 x 几<2' (5-5)<br/>
 对 式 （5-5）的各项取对数，得到<br/>
@@ -1875,7 +1880,7 @@ retumTRUE;<br/>
 在直接插入排序的每趟扫描中，当待排序元素不再向前移动时，有序子序列中它前面的<br/>
 元素(如果有的话)必定小于等于它，而它后面的元素(如果有的话)必定大于它。如果<br/>
 当前元素与它前面的元素值相等，则不需要交换。所以直接插入排序可以保证具有相等关键<br/>
-字值的两个元素在排序前后的相对次序保持不变，即直接插入排序是稳定的。</p>
+字值的两个元素在排序前后的相对次序保持不变，即直接插入排序是稳定的。</myarr-></myarr-></myarr-></p>
 <p>当待排序元素与它前面的元素进行交换时，需要进行1次比较操作和3 次元素移动操<br/>
 作。在统计时间复杂度时，元素的交换与移动可以看成等价的指标，不失一般性，可以只统<br/>
 计元素交换的次数。另外，待排序元素的最后一次操作是比较操作，即当它大于等于前面的<br/>
@@ -1903,7 +1908,7 @@ retum TRUE ；<br/>
 次数为0。这是直接插入排序算法能够达到的最优情况。在对〃个元素进行排序时，总的比<br/>
 较次数为<br/>
 n-l<br/>
-，，二∧一</p>
+，，二∧一</no7an--></p>
 <p>i — 1<br/>
 即时间复杂度为。（九）。当待排序记录按关键字递减排列时，因为是逆序排列，所以每个待<br/>
 插入元素都需要移动到有序子序列的最前面，待插入的元素需要和有序子序列中的所有元素<br/>
@@ -2027,7 +2032,7 @@ A. 2 B. 3 C. 4 D. 5<br/>
 void SheUSort(myRcd * myarr,int d[ ] ,int t) 〃希尔排序<br/>
 { 〃/进行 t 趟希尔排序；d[0] WcurrentNum,d[0]>d[ 1 ] >• •- >d[t] ,d[t] = 1<br/>
 intk = O,gap = d[k];<br/>
-while ( k<t) |<br/>
+while ( k<t) |<br=""></t)>
 insertSortfbrSheU ( myarr, gap ) ； "<br/>
 k++;<br/>
 gap=d[k]；<br/>
@@ -2041,7 +2046,7 @@ I int i,j; • .「二 ；：— >：二 》.一一； ♦<br/>
 fbr (i = gap ； i<myarr->currentNum ； i++)( ,<br/>
 if (myarr->data[ i] <myarr->data[ i-gap] ) j<br/>
 fbr (j = i；myarr->data[ j] <myarr->data[j-gap] &&j-gap> = O;j=j-gap) j<br/>
-swap ( &myarr->data[ j ] , &myarr->data[ j—gap ]) ；</p>
+swap ( &myarr->data[ j ] , &myarr->data[ j—gap ]) ；</myarr-></myarr-></myarr-></p>
 <p>printf(n d=%d： \tH ,gap) ;<br/>
 diMpyy( *myarr,O);<br/>
 retumTRUE；<br/>
@@ -2068,7 +2073,7 @@ disp^y ( * myarr, 0 )；<br/>
 类的课程中介绍。<br/>
 参与排序的以个数据均保存在数组A中，起泡排序算法的一般策略是：扫描整个数组,<br/>
 依次比较相邻的两个元素，如果它们是逆序的，则交换它们，然后去查看后面的相邻元素。<br/>
-持续地进行这个过程，直到所有元素都有序时为止。</p>
+持续地进行这个过程，直到所有元素都有序时为止。</myarr-></p>
 <p>从前至后扫描一遍数组的执行结果是将原始数据中的最大值“起泡”到数组的最后位<br/>
 置，这也正是它的最终位置。这样的过程称为一趟起泡排序。当完成第一趟起泡排序后，选<br/>
 出了最大值，它不需要再参与后续的排序过程。所以后面的排序只需要对前面剩余的元素进<br/>
@@ -2600,6 +2605,7 @@ i=i n j=i<br/>
       updateTabDots();
       window.addEventListener("storage", updateTabDots);
       setInterval(updateTabDots, 1000);
+      window.switchChapterTab = switchTab;
     })();
 </script>
 </body>
