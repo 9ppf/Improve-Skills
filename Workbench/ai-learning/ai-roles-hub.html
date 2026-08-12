@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 助手角色 · 交互中心</title>
+<title>AI 学习规划师 · 统筹与单科指导</title>
 <style>
 :root {
   --bg: #f8fafc;
@@ -14,6 +14,11 @@
   --rule: #e2e8f0;
   --accent: #8b5cf6;
   --accent2: #a78bfa;
+  --accent-soft: #f5f3ff;
+  --pass: #10b981;
+  --warn: #f59e0b;
+  --fail: #ef4444;
+  --info: #3b82f6;
   --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   --font-mono: "JetBrains Mono", Consolas, monospace;
   --max: 860px;
@@ -55,144 +60,34 @@ article.ai-role-page {
   margin-top: 0.2rem;
 }
 
-/* ---------- Tabs ---------- */
-.ai-role-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.ai-role-tab {
-  display: flex;
+.ai-role-mode-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.95rem;
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  background: var(--bg2);
-  font-family: var(--font);
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.ai-role-tab:hover {
-  border-color: var(--accent2);
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--accent-soft);
   color: var(--accent);
-  background: rgba(139, 92, 246, 0.04);
+  border: 1px solid rgba(139, 92, 246, 0.15);
 }
 
-.ai-role-tab.ai-role-active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
-}
+.ai-role-mode-badge.global::before { content: "🌐"; }
+.ai-role-mode-badge.subject::before { content: "📚"; }
 
-.ai-role-tab-icon {
-  font-size: 1.05rem;
-  line-height: 1;
-}
-
-/* ---------- Content Wrapper ---------- */
-.ai-role-content {
-  animation: ai-role-fade-in 0.3s ease;
-}
-
-@keyframes ai-role-fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ---------- Role Card ---------- */
-.ai-role-card {
+/* ---------- Context Card ---------- */
+.ai-context-card {
   background: var(--bg2);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 1.4rem;
-  margin-bottom: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
 }
 
-.ai-role-card-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.ai-role-card-icon {
-  font-size: 2.2rem;
-  line-height: 1;
-}
-
-.ai-role-card-info h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.ai-role-card-info p {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin-top: 0.1rem;
-}
-
-.ai-role-card-section {
-  margin-top: 0.85rem;
-}
-
-.ai-role-card-section-title {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.4rem;
-}
-
-.ai-role-capabilities {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.ai-role-capability {
-  background: rgba(139, 92, 246, 0.08);
-  color: var(--accent);
-  border: 1px solid rgba(139, 92, 246, 0.15);
-  padding: 0.25rem 0.7rem;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.ai-role-example {
-  background: #fff;
-  border: 1px solid var(--rule);
-  border-left: 3px solid var(--accent2);
-  border-radius: 10px;
-  padding: 0.65rem 0.85rem;
-  font-size: 0.85rem;
-  color: var(--ink);
-  line-height: 1.6;
-}
-
-.ai-role-example::before {
-  content: "💬 示例：";
-  font-weight: 600;
-  color: var(--muted);
-}
-
-/* ---------- Prompts Section ---------- */
-.ai-role-prompts {
-  margin-bottom: 1rem;
-}
-
-.ai-role-section-title {
+.ai-context-card h2 {
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
@@ -201,7 +96,7 @@ article.ai-role-page {
   gap: 0.4rem;
 }
 
-.ai-role-section-title::before {
+.ai-context-card h2::before {
   content: "";
   width: 4px;
   height: 18px;
@@ -209,125 +104,135 @@ article.ai-role-page {
   border-radius: 2px;
 }
 
-.ai-role-prompt-card {
-  background: var(--bg2);
-  border: 1px solid var(--rule);
-  border-radius: 16px;
-  padding: 1.15rem;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+.ai-context-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
 }
 
-.ai-role-prompt-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--ink);
-}
-
-.ai-role-prompt-text {
-  background: #1e293b;
-  color: #e2e8f0;
-  padding: 0.85rem 1rem;
-  border-radius: 10px;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  line-height: 1.7;
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow-x: auto;
-  margin-bottom: 0.6rem;
-}
-
-.ai-role-prompt-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.6rem;
-}
-
-.ai-role-prompt-custom-label {
-  display: block;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--muted);
-  margin-bottom: 0.3rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.ai-role-prompt-custom {
-  width: 100%;
-  min-height: 70px;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--rule);
-  border-radius: 10px;
-  font-family: var(--font);
-  font-size: 0.85rem;
-  line-height: 1.6;
-  resize: vertical;
+.ai-context-item {
   background: #fff;
-  color: var(--ink);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 0.75rem;
 }
 
-.ai-role-prompt-custom:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+.ai-context-item-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
 }
 
-.ai-role-prompt-custom::placeholder {
-  color: #cbd5e1;
-}
-
-/* ---------- Buttons ---------- */
-.ai-role-btn {
-  padding: 0.45rem 1rem;
-  border: none;
-  border-radius: 9px;
-  font-family: var(--font);
-  font-size: 0.82rem;
+.ai-context-item-value {
+  font-size: 0.95rem;
   font-weight: 600;
+}
+
+.ai-context-item-value.good { color: var(--pass); }
+.ai-context-item-value.warn { color: var(--warn); }
+.ai-context-item-value.danger { color: var(--fail); }
+
+.ai-context-chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.ai-context-chapter {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.ai-context-chapter.m0 { background: #f1f5f9; color: var(--muted); }
+.ai-context-chapter.m1 { background: rgba(37, 99, 235, 0.10); color: var(--info); }
+.ai-context-chapter.m2 { background: rgba(16, 185, 129, 0.12); color: var(--pass); }
+.ai-context-chapter.m3 { background: rgba(239, 68, 68, 0.10); color: var(--fail); }
+
+/* ---------- Scenario Buttons ---------- */
+.ai-scenario-section {
+  margin-bottom: 1.5rem;
+}
+
+.ai-scenario-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ai-scenario-title::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.ai-scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.ai-scenario-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--bg2);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink);
   cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap;
+  text-align: left;
 }
 
-.ai-role-btn-primary {
-  background: var(--accent);
-  color: #fff;
-}
-
-.ai-role-btn-primary:hover {
-  background: #7c3aed;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-}
-
-.ai-role-btn-secondary {
-  background: #fff;
-  color: var(--ink);
-  border: 1px solid var(--rule);
-}
-
-.ai-role-btn-secondary:hover {
+.ai-scenario-btn:hover {
   border-color: var(--accent2);
-  color: var(--accent);
-  background: rgba(139, 92, 246, 0.04);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
 }
 
-.ai-role-btn-sm {
-  padding: 0.35rem 0.8rem;
-  font-size: 0.8rem;
+.ai-scenario-btn .icon {
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
-/* ---------- Interaction Area ---------- */
-.ai-role-interaction {
+/* ---------- Custom Request ---------- */
+.ai-custom-section {
   background: var(--bg2);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 1.15rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+
+.ai-custom-section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ai-custom-section h2::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
 }
 
 .ai-role-textarea {
@@ -359,6 +264,152 @@ article.ai-role-page {
 .ai-role-actions {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Generated Prompt ---------- */
+.ai-output-section {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.ai-output-section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ai-output-section h2::before {
+  content: "✨";
+}
+
+.ai-output-text {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+  min-height: 120px;
+  margin-bottom: 0.75rem;
+}
+
+.ai-output-empty {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ---------- Role Reference ---------- */
+.ai-role-reference {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.ai-role-reference h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ai-role-reference h2::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.ai-role-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ai-role-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+  font-family: var(--font);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-role-tab:hover {
+  border-color: var(--accent2);
+  color: var(--accent);
+  background: rgba(139, 92, 246, 0.04);
+}
+
+.ai-role-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.ai-role-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ---------- Buttons ---------- */
+.ai-role-btn {
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: 9px;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ai-role-btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.ai-role-btn-primary:hover {
+  background: #7c3aed;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.ai-role-btn-secondary {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--rule);
+}
+
+.ai-role-btn-secondary:hover {
+  border-color: var(--accent2);
+  color: var(--accent);
+  background: rgba(139, 92, 246, 0.04);
 }
 
 /* ---------- Toast ---------- */
@@ -385,42 +436,81 @@ article.ai-role-page {
   transform: translateX(-50%) translateY(0);
 }
 
+/* ---------- Loading ---------- */
+.ai-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.ai-loading::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--rule);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ai-spin 0.8s linear infinite;
+}
+
+@keyframes ai-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ---------- Responsive ---------- */
-@media (max-width: 560px) {
-  .ai-role-tab {
-    font-size: 0.8rem;
-    padding: 0.4rem 0.7rem;
-  }
-  .ai-role-tab-icon { font-size: 0.95rem; }
+@media (max-width: 640px) {
+  body { padding: 1.5rem 0.9rem; }
+  .ai-role-header h1 { font-size: 1.45rem; }
+  .ai-scenario-grid { grid-template-columns: 1fr; }
+  .ai-context-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 <article class="ai-role-page">
   <header class="ai-role-header">
-    <h1>AI 助手角色 · 交互中心</h1>
-    <p>选择角色，获取专属提示词，复制到外部 AI 工具使用</p>
+    <h1>AI 学习规划师</h1>
+    <p>根据你的工作台进度，生成可直接复制到 AI 工具的提示词</p>
+    <div class="ai-role-mode-badge" id="modeBadge">加载中...</div>
   </header>
 
-  <nav class="ai-role-tabs" id="aiRoleTabs"></nav>
+  <section class="ai-context-card" id="contextCard">
+    <h2>当前学习上下文</h2>
+    <div class="ai-loading" id="contextLoading">正在读取进度数据...</div>
+    <div class="ai-context-grid" id="contextGrid" style="display:none"></div>
+    <div class="ai-context-chapters" id="contextChapters" style="display:none"></div>
+  </section>
 
-  <div class="ai-role-content" id="aiRoleContent">
-    <div class="ai-role-card" id="aiRoleCard"></div>
+  <section class="ai-scenario-section">
+    <h2 class="ai-scenario-title">常用场景</h2>
+    <div class="ai-scenario-grid" id="scenarioGrid"></div>
+  </section>
 
-    <section class="ai-role-prompts">
-      <h2 class="ai-role-section-title">预设提示词</h2>
-      <div id="aiRolePromptList"></div>
-    </section>
+  <section class="ai-custom-section">
+    <h2>自定义需求</h2>
+    <textarea class="ai-role-textarea" id="customRequest" placeholder="例如：我本周只有 10 小时，请帮我重新安排各科优先级..."></textarea>
+    <div class="ai-role-actions">
+      <button class="ai-role-btn ai-role-btn-primary" id="generateCustom">生成提示词</button>
+      <button class="ai-role-btn ai-role-btn-secondary" id="clearCustom">清空</button>
+    </div>
+  </section>
 
-    <section class="ai-role-interaction">
-      <h2 class="ai-role-section-title">自由提问</h2>
-      <textarea class="ai-role-textarea" id="aiRoleQuestion" placeholder="在此输入你的问题，可以基于上方提示词修改，也可以自由发挥..."></textarea>
-      <div class="ai-role-actions">
-        <button class="ai-role-btn ai-role-btn-primary" id="aiRoleCopyQuestion">复制问题</button>
-        <button class="ai-role-btn ai-role-btn-secondary" id="aiRoleClear">清空</button>
-      </div>
-    </section>
-  </div>
+  <section class="ai-output-section" id="outputSection" style="display:none">
+    <h2>生成的提示词</h2>
+    <pre class="ai-output-text" id="outputText"></pre>
+    <div class="ai-role-actions">
+      <button class="ai-role-btn ai-role-btn-primary" id="copyOutput">复制提示词</button>
+      <button class="ai-role-btn ai-role-btn-secondary" id="clearOutput">清空</button>
+    </div>
+  </section>
+
+  <section class="ai-role-reference">
+    <h2>角色能力参考</h2>
+    <nav class="ai-role-tabs" id="roleTabs"></nav>
+    <div class="ai-role-desc" id="roleDesc"></div>
+  </section>
 
   <div class="ai-role-toast" id="aiRoleToast"></div>
 </article>
@@ -429,169 +519,89 @@ article.ai-role-page {
 (function() {
   "use strict";
 
+  // ---------- Config ----------
+  var SUBJECT_NAMES = {
+    "02324": "离散数学",
+    "13015": "计算机系统原理",
+    "13003": "数据结构与算法",
+    "00023": "高等数学（工本）",
+    "00015": "英语（二）"
+  };
+
+  var MASTERY_LABELS = ["未开始", "学习中", "已掌握", "需复习"];
+
   var roles = {
     planner: {
       name: "学习规划师",
       icon: "🧭",
-      description: "拆解目标、制定计划、调整节奏",
-      capabilities: [
-        "目标拆解为周/日任务",
-        "制定复习时间表",
-        "识别薄弱环节并调整计划"
-      ],
-      example: "帮我把《数据结构》第3-5章拆解为7天的学习任务，每天2小时学习+1小时练习",
-      prompts: [
-        {
-          title: "按天拆解学习任务",
-          text: "请帮我把【科目+章节】拆解为【N】天的学习任务，每天包含：学习内容（2小时）、练习题（1小时）、复习要点"
-        },
-        {
-          title: "制定冲刺计划",
-          text: "我目前的学习进度是【描述进度】，距离考试还有【N】周，请帮我制定冲刺计划"
-        }
-      ]
+      description: "拆解目标、制定计划、调整节奏。适合制定周计划、冲刺安排、时间分配。"
     },
     organizer: {
       name: "资料整理员",
       icon: "📂",
-      description: "OCR校对、生成框架、整理错题",
-      capabilities: [
-        "OCR文本校对",
-        "知识框架生成",
-        "错题归类整理"
-      ],
-      example: "以下是我 OCR 识别的教材内容，请帮我校对错别字并整理为结构化笔记",
-      prompts: [
-        {
-          title: "OCR校对与笔记整理",
-          text: "以下是我 OCR 识别的教材内容，请帮我校对错别字并整理为结构化笔记：【粘贴文本】"
-        },
-        {
-          title: "生成知识框架",
-          text: "请根据以下知识点列表，生成一个树形知识框架：【粘贴知识点】"
-        }
-      ]
+      description: "OCR 校对、生成框架、整理错题。适合处理教材截图、整理笔记。"
     },
     explainer: {
       name: "错题讲解员",
       icon: "💡",
-      description: "分析错因、举一反三",
-      capabilities: [
-        "错因分析",
-        "知识点定位",
-        "举一反三出题"
-      ],
-      example: "这道题我做错了，请帮我分析错因、讲解正确解法、再出3道同类题",
-      prompts: [
-        {
-          title: "错题分析与举一反三",
-          text: "这道题我做错了，请帮我分析错因、讲解正确解法、再出3道同类题：【题目+我的答案】"
-        },
-        {
-          title: "知识点陷阱梳理",
-          text: "我在【知识点】上反复出错，请帮我梳理这个知识点的常见陷阱和解题技巧"
-        }
-      ]
+      description: "分析错因、举一反三。适合讲解错题、梳理易错点。"
     },
     collector: {
       name: "资讯采集员",
       icon: "📡",
-      description: "抓取AI热点、政策、补贴",
-      capabilities: [
-        "AI行业热点追踪",
-        "政策补贴信息",
-        "技术趋势分析"
-      ],
-      example: "请帮我整理本周AI领域的重大新闻，分为技术突破、政策法规、行业动态三个板块",
-      prompts: [
-        {
-          title: "AI周报整理",
-          text: "请帮我整理本周AI领域的重大新闻，分为：技术突破、政策法规、行业动态三个板块"
-        },
-        {
-          title: "补贴政策查询",
-          text: "请搜索上海地区最新的AI相关补贴政策和申报条件"
-        }
-      ]
+      description: "抓取 AI 热点、政策、补贴。适合整理周报、查询资讯。"
     },
     reviewer: {
       name: "代码 Reviewer",
       icon: "🔍",
-      description: "检查Python实现、提优化建议",
-      capabilities: [
-        "Python代码审查",
-        "算法复杂度分析",
-        "性能优化建议"
-      ],
-      example: "请帮我Review以下Python代码，检查bug、提优化建议、分析时间复杂度",
-      prompts: [
-        {
-          title: "代码Review",
-          text: "请帮我Review以下Python代码，检查bug、提优化建议、分析时间复杂度：【粘贴代码】"
-        },
-        {
-          title: "数据结构实现",
-          text: "请帮我用Python实现【数据结构名称】，并解释每一步的思路"
-        }
-      ]
+      description: "检查 Python 实现、提优化建议。适合代码 review、算法实现。"
     },
     reminder: {
       name: "进度提醒员",
       icon: "⏰",
-      description: "提醒偏差、建议调整策略",
-      capabilities: [
-        "进度偏差分析",
-        "学习策略调整",
-        "复习优先级排序"
-      ],
-      example: "我本周计划完成5个任务，实际完成3个，请分析偏差原因并建议调整策略",
-      prompts: [
-        {
-          title: "进度偏差分析",
-          text: "我本周计划完成【任务列表】，实际完成了【已完成项】，请分析偏差原因并建议调整策略"
-        },
-        {
-          title: "复习优先级排序",
-          text: "距离考试还有【N】天，我还有【未完成章节】没复习，请帮我排出优先级"
-        }
-      ]
+      description: "提醒偏差、建议调整策略。适合复盘进度、调整计划。"
     }
   };
 
-  var roleOrder = ["planner", "organizer", "explainer", "collector", "reviewer", "reminder"];
-  var currentRole = "planner";
+  // ---------- State ----------
+  var urlParams = new URLSearchParams(window.location.search);
+  var mode = urlParams.get("mode") || (urlParams.get("subject") ? "subject" : "global");
+  var subjectCode = urlParams.get("subject") || "";
+  var subjectName = SUBJECT_NAMES[subjectCode] || subjectCode;
 
-  var tabsEl       = document.getElementById("aiRoleTabs");
-  var contentEl    = document.getElementById("aiRoleContent");
-  var cardEl       = document.getElementById("aiRoleCard");
-  var promptListEl = document.getElementById("aiRolePromptList");
-  var questionEl   = document.getElementById("aiRoleQuestion");
-  var copyQBtn     = document.getElementById("aiRoleCopyQuestion");
-  var clearBtn     = document.getElementById("aiRoleClear");
-  var toastEl      = document.getElementById("aiRoleToast");
+  var selfStudyData = null;
+  var subjectItem = null;
 
-  /* ---------- Toast ---------- */
-  var toastTimer = null;
+  // ---------- DOM ----------
+  var modeBadge = document.getElementById("modeBadge");
+  var contextLoading = document.getElementById("contextLoading");
+  var contextGrid = document.getElementById("contextGrid");
+  var contextChapters = document.getElementById("contextChapters");
+  var scenarioGrid = document.getElementById("scenarioGrid");
+  var customRequest = document.getElementById("customRequest");
+  var generateCustomBtn = document.getElementById("generateCustom");
+  var clearCustomBtn = document.getElementById("clearCustom");
+  var outputSection = document.getElementById("outputSection");
+  var outputText = document.getElementById("outputText");
+  var copyOutputBtn = document.getElementById("copyOutput");
+  var clearOutputBtn = document.getElementById("clearOutput");
+  var roleTabs = document.getElementById("roleTabs");
+  var roleDesc = document.getElementById("roleDesc");
+  var toastEl = document.getElementById("aiRoleToast");
+
+  // ---------- Utilities ----------
   function showToast(msg) {
     toastEl.textContent = msg;
     toastEl.classList.add("ai-role-show");
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(function() {
-      toastEl.classList.remove("ai-role-show");
-    }, 2000);
+    setTimeout(function() { toastEl.classList.remove("ai-role-show"); }, 2000);
   }
 
-  /* ---------- Clipboard ---------- */
   function copyToClipboard(text) {
+    if (!text) { showToast("没有可复制的内容"); return; }
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function() {
-        showToast("已复制到剪贴板");
-      }).catch(function() {
-        fallbackCopy(text);
-      });
-    } else {
-      fallbackCopy(text);
-    }
+      navigator.clipboard.writeText(text).then(function() { showToast("已复制到剪贴板"); })
+        .catch(function() { fallbackCopy(text); });
+    } else { fallbackCopy(text); }
   }
 
   function fallbackCopy(text) {
@@ -604,181 +614,460 @@ article.ai-role-page {
     try {
       document.execCommand("copy");
       showToast("已复制到剪贴板");
-    } catch (e) {
-      showToast("复制失败，请手动复制");
-    }
+    } catch (e) { showToast("复制失败，请手动复制"); }
     document.body.removeChild(ta);
   }
 
-  /* ---------- URL / Hash ---------- */
-  function getRoleFromUrl() {
-    var params = new URLSearchParams(window.location.search);
-    var role = params.get("role");
-    if (role && roles[role]) return role;
-
-    var hash = window.location.hash;
-    if (hash) {
-      var hashRole = hash.replace(/^#/, "").replace(/^role=/, "");
-      if (hashRole && roles[hashRole]) return hashRole;
-    }
-
-    return "planner";
+  function safeParse(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key) || "") || fallback; }
+    catch(e) { return fallback; }
   }
 
-  function updateHash(role) {
-    if (window.location.hash !== "#" + role) {
-      window.location.hash = role;
+  function daysUntil(dateStr) {
+    if (!dateStr || dateStr === "待定") return null;
+    var match = String(dateStr).match(/(\d{4})\.(\d{1,2})/);
+    if (!match) return null;
+    var target = new Date(parseInt(match[1]), parseInt(match[2]) - 1, 15);
+    var now = new Date();
+    var diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+    return diff;
+  }
+
+  // ---------- Data Loading ----------
+  function loadSelfStudyData() {
+    return fetch("../../data/modules/self-study.json")
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        selfStudyData = data;
+        if (subjectCode) {
+          subjectItem = findSubjectItem(subjectCode);
+        }
+      })
+      .catch(function(err) {
+        console.error("加载 self-study.json 失败", err);
+        selfStudyData = { categories: [] };
+      });
+  }
+
+  function findSubjectItem(code) {
+    if (!selfStudyData || !selfStudyData.categories) return null;
+    for (var i = 0; i < selfStudyData.categories.length; i++) {
+      var cat = selfStudyData.categories[i];
+      for (var j = 0; j < (cat.items || []).length; j++) {
+        var item = cat.items[j];
+        if (item.code === code) return item;
+        if (item.items) {
+          for (var k = 0; k < item.items.length; k++) {
+            if (item.items[k].code === code) return item;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function getSubjectMastery(code) {
+    return safeParse("ss_mastery_" + code, { mastery: {} }).mastery || {};
+  }
+
+  function getAllSubjectProgress() {
+    var subjects = [];
+    if (!selfStudyData || !selfStudyData.categories) return subjects;
+    selfStudyData.categories.forEach(function(cat) {
+      (cat.items || []).forEach(function(item) {
+        if (!item.code) return;
+        var mastery = getSubjectMastery(item.code);
+        var total = Object.keys(mastery).length;
+        var learned = Object.values(mastery).filter(function(v) { return v >= 2; }).length;
+        var reviewing = Object.values(mastery).filter(function(v) { return v === 3; }).length;
+        subjects.push({
+          code: item.code,
+          name: SUBJECT_NAMES[item.code] || item.name,
+          exam: item.exam,
+          days: daysUntil(item.exam),
+          stage: item.stage,
+          review: item.review,
+          total: total,
+          learned: learned,
+          reviewing: reviewing,
+          percent: total ? Math.round(learned / total * 100) : 0,
+          mastery: mastery
+        });
+      });
+    });
+    return subjects;
+  }
+
+  function getPyProgress() {
+    var kt = safeParse("py_knowledge_tree_v1", {});
+    var loops = safeParse("py_learning_loops_v1", []);
+    return {
+      ktDone: Object.keys(kt).length,
+      ktTotal: 29,
+      loopsDone: loops.filter(function(l) { return (l.steps || []).every(Boolean); }).length,
+      loopsTotal: loops.length
+    };
+  }
+
+  function getExamReciteStats() {
+    var exam = safeParse("exam-questions-data", {});
+    var recite = safeParse("recite-cards-data", {});
+    var examTotal = 0, examCorrect = 0;
+    Object.values(exam).forEach(function(items) {
+      items.forEach(function(q) {
+        examTotal++;
+        if (q.status === "correct") examCorrect++;
+      });
+    });
+    var reciteTotal = 0, reciteKnown = 0;
+    Object.values(recite).forEach(function(items) {
+      items.forEach(function(c) {
+        reciteTotal++;
+        if (c.mastery === "known") reciteKnown++;
+      });
+    });
+    return { examTotal: examTotal, examCorrect: examCorrect, reciteTotal: reciteTotal, reciteKnown: reciteKnown };
+  }
+
+  // ---------- Rendering ----------
+  function renderModeBadge() {
+    if (mode === "subject" && subjectCode) {
+      modeBadge.textContent = "单科模式 · " + subjectName;
+      modeBadge.className = "ai-role-mode-badge subject";
+    } else {
+      modeBadge.textContent = "统筹模式 · 跨科目规划";
+      modeBadge.className = "ai-role-mode-badge global";
     }
   }
 
-  /* ---------- Render Tabs ---------- */
-  function renderTabs() {
-    tabsEl.innerHTML = "";
-    roleOrder.forEach(function(key) {
+  function renderContext() {
+    contextLoading.style.display = "none";
+    contextGrid.style.display = "grid";
+    contextGrid.innerHTML = "";
+
+    if (mode === "subject" && subjectCode) {
+      renderSubjectContext();
+    } else {
+      renderGlobalContext();
+    }
+  }
+
+  function renderSubjectContext() {
+    var mastery = getSubjectMastery(subjectCode);
+    var total = Object.keys(mastery).length;
+    var learned = Object.values(mastery).filter(function(v) { return v >= 2; }).length;
+    var reviewing = Object.values(mastery).filter(function(v) { return v === 3; }).length;
+    var percent = total ? Math.round(learned / total * 100) : 0;
+    var days = subjectItem ? daysUntil(subjectItem.exam) : null;
+
+    contextGrid.innerHTML =
+      contextItem("科目", subjectName) +
+      contextItem("考试", (subjectItem && subjectItem.exam) ? subjectItem.exam + (days !== null ? "（约 " + days + " 天）" : "") : "待定") +
+      contextItem("阶段", subjectItem ? subjectItem.stage : "—") +
+      contextItem("掌握度", learned + "/" + total + " 章（" + percent + "%）") +
+      contextItem("需复习", reviewing > 0 ? reviewing + " 章" : "无", reviewing > 0 ? "warn" : "good");
+
+    renderChapterPills(mastery);
+  }
+
+  function renderGlobalContext() {
+    var subjects = getAllSubjectProgress();
+    var py = getPyProgress();
+    var stats = getExamReciteStats();
+
+    var totalChapters = subjects.reduce(function(s, sub) { return s + sub.total; }, 0);
+    var learnedChapters = subjects.reduce(function(s, sub) { return s + sub.learned; }, 0);
+    var reviewingChapters = subjects.reduce(function(s, sub) { return s + sub.reviewing; }, 0);
+    var urgentSubjects = subjects.filter(function(s) { return s.days !== null && s.days <= 60; });
+
+    contextGrid.innerHTML =
+      contextItem("备考科目", subjects.length + " 科") +
+      contextItem("已掌握章节", learnedChapters + "/" + totalChapters + " 章") +
+      contextItem("需复习章节", reviewingChapters > 0 ? reviewingChapters + " 章" : "无", reviewingChapters > 0 ? "warn" : "good") +
+      contextItem("Python 知识树", py.ktDone + "/" + py.ktTotal) +
+      contextItem("学习闭环", py.loopsDone + "/" + py.loopsTotal + " 个") +
+      contextItem("真题掌握", stats.examCorrect + "/" + stats.examTotal) +
+      contextItem("背诵卡", stats.reciteKnown + "/" + stats.reciteTotal) +
+      contextItem("临近考试", urgentSubjects.length > 0 ? urgentSubjects.map(function(s) { return s.name; }).join("、") : "无", urgentSubjects.length > 0 ? "warn" : "good");
+
+    contextChapters.style.display = "none";
+  }
+
+  function contextItem(label, value, valueClass) {
+    valueClass = valueClass || "";
+    return '<div class="ai-context-item">' +
+      '<div class="ai-context-item-label">' + label + '</div>' +
+      '<div class="ai-context-item-value ' + valueClass + '">' + value + '</div>' +
+    '</div>';
+  }
+
+  function renderChapterPills(mastery) {
+    contextChapters.style.display = "flex";
+    contextChapters.innerHTML = "";
+    var chapters = Object.keys(mastery).map(Number).sort(function(a, b) { return a - b; });
+    if (chapters.length === 0) {
+      contextChapters.innerHTML = '<span style="color:var(--muted);font-size:0.8rem">尚未标记章节掌握度</span>';
+      return;
+    }
+    chapters.forEach(function(ch) {
+      var level = mastery[ch];
+      var pill = document.createElement("span");
+      pill.className = "ai-context-chapter m" + level;
+      pill.textContent = "第 " + ch + " 章：" + MASTERY_LABELS[level];
+      contextChapters.appendChild(pill);
+    });
+  }
+
+  function renderScenarios() {
+    scenarioGrid.innerHTML = "";
+    var scenarios = mode === "subject" && subjectCode ? subjectScenarios() : globalScenarios();
+    scenarios.forEach(function(s) {
+      var btn = document.createElement("button");
+      btn.className = "ai-scenario-btn";
+      btn.innerHTML = '<span class="icon">' + s.icon + '</span><span>' + s.name + '</span>';
+      btn.addEventListener("click", function() { generatePrompt(s.generator); });
+      scenarioGrid.appendChild(btn);
+    });
+  }
+
+  function globalScenarios() {
+    return [
+      { name: "制定本周跨科目计划", icon: "📅", generator: generateWeeklyPlan },
+      { name: "分析进度偏差", icon: "📊", generator: generateProgressAnalysis },
+      { name: "调整时间分配", icon: "⚖️", generator: generateTimeAllocation },
+      { name: "考前冲刺方案", icon: "🚀", generator: generateSprintPlan },
+      { name: "推荐今日任务", icon: "✅", generator: generateTodayTasks },
+      { name: "Python + AI 学习建议", icon: "🐍", generator: generatePyAiAdvice }
+    ];
+  }
+
+  function subjectScenarios() {
+    return [
+      { name: "制定本章学习计划", icon: "📅", generator: generateSubjectChapterPlan },
+      { name: "出本章练习题", icon: "📝", generator: generateSubjectExercises },
+      { name: "讲解本章易错点", icon: "💡", generator: generateSubjectPitfalls },
+      { name: "针对薄弱点出题", icon: "🎯", generator: generateWeakPointExercises },
+      { name: "生成本章背诵卡", icon: "🎴", generator: generateSubjectCards },
+      { name: "考前冲刺方案", icon: "🚀", generator: generateSubjectSprint }
+    ];
+  }
+
+  // ---------- Prompt Generators ----------
+  function baseContext() {
+    var subjects = getAllSubjectProgress();
+    var py = getPyProgress();
+    var stats = getExamReciteStats();
+    var ctx = "【我的学习背景】\n";
+    ctx += "- 身份：武汉理工大学计算机科学与技术自考本科生\n";
+    ctx += "- 当前在上海嘉定区自学，每天可用学习时间约 3–4 小时\n";
+    ctx += "- 学习分配原则：70% 自考备考、10% Python 基础、10% AI 学习、10% 休息\n\n";
+
+    ctx += "【备考科目进度】\n";
+    if (subjects.length === 0) {
+      ctx += "- 暂无科目数据\n";
+    } else {
+      subjects.forEach(function(s) {
+        ctx += "- " + s.name + "（" + s.code + "）：考试 " + (s.exam || "待定") + "，阶段「" + s.stage + "」，已掌握 " + s.learned + "/" + s.total + " 章（" + s.percent + "%）";
+        if (s.reviewing > 0) ctx += "，需复习 " + s.reviewing + " 章";
+        if (s.days !== null) ctx += "，距考试约 " + s.days + " 天";
+        ctx += "\n";
+      });
+    }
+
+    ctx += "\n【其他模块进度】\n";
+    ctx += "- Python 知识树：" + py.ktDone + "/" + py.ktTotal + "\n";
+    ctx += "- Python 学习闭环：" + py.loopsDone + "/" + py.loopsTotal + " 个完整闭环\n";
+    ctx += "- 真题练习：已掌握 " + stats.examCorrect + "/" + stats.examTotal + " 题\n";
+    ctx += "- 背诵卡：已掌握 " + stats.reciteKnown + "/" + stats.reciteTotal + " 张\n";
+
+    return ctx;
+  }
+
+  function generateWeeklyPlan() {
+    return baseContext() + "\n\n【我的需求】\n请根据以上进度，帮我制定接下来一周（7 天）的跨科目学习计划。要求：\n" +
+      "1. 每天任务具体到小时级；\n" +
+      "2. 优先安排临近考试科目和薄弱章节；\n" +
+      "3. 每天保留 30 分钟休息/缓冲时间；\n" +
+      "4. 周末安排一次复盘；\n" +
+      "5. 如果某科进度明显落后，请给出调整建议。";
+  }
+
+  function generateProgressAnalysis() {
+    return baseContext() + "\n\n【我的需求】\n请帮我分析当前学习进度是否存在偏差。具体包括：\n" +
+      "1. 哪些科目/章节明显落后？\n" +
+      "2. 哪些科目进度健康？\n" +
+      "3. 接下来 2 周最高优先级的 3 件事是什么？\n" +
+      "4. 针对落后项，给出可执行的补救方案。";
+  }
+
+  function generateTimeAllocation() {
+    return baseContext() + "\n\n【我的需求】\n我本周可用学习时间有限，请帮我重新优化时间分配。要求：\n" +
+      "1. 基于 70/10/10/10 原则给出建议；\n" +
+      "2. 考虑考试倒计时和当前掌握度；\n" +
+      "3. 如果我要突击某一科，给出具体调整后的分配方案；\n" +
+      "4. 说明每种分配方案的适用场景。";
+  }
+
+  function generateSprintPlan() {
+    return baseContext() + "\n\n【我的需求】\n距离 2026 年 10 月自考还有约 2 个月，请帮我制定考前冲刺方案。要求：\n" +
+      "1. 以周为单位，划分基础巩固期、强化期、模考期；\n" +
+      "2. 每科给出具体的冲刺重点；\n" +
+      "3. 每天的学习、做题、背诵、复盘时间比例；\n" +
+      "4. 最后一周的注意事项。";
+  }
+
+  function generateTodayTasks() {
+    return baseContext() + "\n\n【我的需求】\n请根据当前进度，帮我推荐今天的 3–5 个具体学习任务。要求：\n" +
+      "1. 每个任务可在 1–2 小时内完成；\n" +
+      "2. 优先选择「需复习」和「学习中」的章节；\n" +
+      "3. 包含一个 Python 小练习或 AI 学习任务；\n" +
+      "4. 给出每个任务的完成标准。";
+  }
+
+  function generatePyAiAdvice() {
+    var py = getPyProgress();
+    return baseContext() + "\n\n【我的需求】\n我同时在学 Python 基础和 AI 相关内容，请帮我协调这两个模块。要求：\n" +
+      "1. Python 当前进度 " + py.ktDone + "/" + py.ktTotal + "，给出本周 Python 学习重点；\n" +
+      "2. AI 学习方面，推荐本周可以看的方向或做的项目；\n" +
+      "3. 如何把 Python 练习和 AI 学习结合起来？\n" +
+      "4. 给出每天 30–60 分钟的具体安排。";
+  }
+
+  function subjectBaseContext() {
+    var mastery = getSubjectMastery(subjectCode);
+    var total = Object.keys(mastery).length;
+    var learned = Object.values(mastery).filter(function(v) { return v >= 2; }).length;
+    var learning = Object.values(mastery).filter(function(v) { return v === 1; }).length;
+    var reviewing = Object.values(mastery).filter(function(v) { return v === 3; }).length;
+    var notStarted = Object.values(mastery).filter(function(v) { return v === 0; }).length;
+    var days = subjectItem ? daysUntil(subjectItem.exam) : null;
+
+    var ctx = "【科目背景】\n";
+    ctx += "- 科目：" + subjectName + "（" + subjectCode + "）\n";
+    ctx += "- 考试：" + (subjectItem && subjectItem.exam ? subjectItem.exam : "待定") + (days !== null ? "，约 " + days + " 天后考试" : "") + "\n";
+    ctx += "- 当前阶段：" + (subjectItem ? subjectItem.stage : "—") + "\n";
+    ctx += "- 整体进度：已掌握 " + learned + " 章，学习中 " + learning + " 章，需复习 " + reviewing + " 章，未开始 " + notStarted + " 章，共 " + total + " 章\n";
+    if (subjectItem && subjectItem.review) ctx += "- 历史评估：" + subjectItem.review + "\n";
+
+    ctx += "\n【章节掌握度】\n";
+    var chapters = Object.keys(mastery).map(Number).sort(function(a, b) { return a - b; });
+    if (chapters.length === 0) {
+      ctx += "- 尚未标记章节掌握度\n";
+    } else {
+      chapters.forEach(function(ch) {
+        ctx += "- 第 " + ch + " 章：" + MASTERY_LABELS[mastery[ch]] + "\n";
+      });
+    }
+
+    return ctx;
+  }
+
+  function generateSubjectChapterPlan() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请帮我制定该科目下一章（或当前正在学的一章）的详细学习计划。要求：\n" +
+      "1. 把一章拆成 3–5 天；\n" +
+      "2. 每天包含：概念学习、例题练习、自我检测；\n" +
+      "3. 每天任务具体到小时；\n" +
+      "4. 给出本章的达标标准。";
+  }
+
+  function generateSubjectExercises() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请为当前科目出 10–15 道练习题。要求：\n" +
+      "1. 覆盖「学习中」和「需复习」的章节；\n" +
+      "2. 包含选择题、填空题、简答题/证明题；\n" +
+      "3. 每道题给出答案和详细解析；\n" +
+      "4. 标注每道题对应的知识点。";
+  }
+
+  function generateSubjectPitfalls() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请针对当前科目「学习中」和「需复习」的章节，总结常见易错点和解题陷阱。要求：\n" +
+      "1. 按章节列出易错点；\n" +
+      "2. 每个易错点给出正确理解和记忆方法；\n" +
+      "3. 给出 1–2 道典型反例题。";
+  }
+
+  function generateWeakPointExercises() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请针对当前科目掌握度为「需复习」和「学习中」的章节，专门出题强化。要求：\n" +
+      "1. 每个薄弱章节出 2–3 道题；\n" +
+      "2. 题目难度中等偏上，直击常见错误；\n" +
+      "3. 每题给出解析和对应补救建议。";
+  }
+
+  function generateSubjectCards() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请为当前科目生成 10–20 张背诵卡（正面问题/背面答案）。要求：\n" +
+      "1. 覆盖核心概念、公式、定理、定义；\n" +
+      "2. 优先覆盖「学习中」和「需复习」章节；\n" +
+      "3. 每张卡片正面简洁，背面包含解释和例子；\n" +
+      "4. 以 JSON 或 Markdown 列表形式输出，方便导入背诵卡系统。";
+  }
+
+  function generateSubjectSprint() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请为该科目制定考前冲刺方案。要求：\n" +
+      "1. 按剩余天数倒排，分为基础回顾、真题训练、错题复盘三个阶段；\n" +
+      "2. 优先突破「需复习」章节；\n" +
+      "3. 推荐该科目近 5 年真题的使用策略；\n" +
+      "4. 给出考前 3 天的重点。";
+  }
+
+  function generateCustomPrompt() {
+    var request = customRequest.value.trim();
+    if (!request) { showToast("请先输入需求"); customRequest.focus(); return; }
+    var ctx = mode === "subject" ? subjectBaseContext() : baseContext();
+    return ctx + "\n\n【我的需求】\n" + request + "\n\n请根据以上背景给出具体、可执行的建议。";
+  }
+
+  function generatePrompt(generator) {
+    var prompt = typeof generator === "function" ? generator() : generator;
+    outputText.textContent = prompt;
+    outputSection.style.display = "block";
+    outputSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // ---------- Role Reference ----------
+  function renderRoleReference() {
+    roleTabs.innerHTML = "";
+    Object.keys(roles).forEach(function(key) {
       var r = roles[key];
       var btn = document.createElement("button");
-      btn.className = "ai-role-tab" + (key === currentRole ? " ai-role-active" : "");
-      btn.setAttribute("data-role", key);
-      btn.innerHTML =
-        '<span class="ai-role-tab-icon">' + r.icon + "</span>" +
-        "<span>" + r.name + "</span>";
+      btn.className = "ai-role-tab";
+      btn.innerHTML = '<span>' + r.icon + '</span><span>' + r.name + '</span>';
       btn.addEventListener("click", function() {
-        switchRole(key);
+        document.querySelectorAll(".ai-role-tab").forEach(function(t) { t.classList.remove("active"); });
+        btn.classList.add("active");
+        roleDesc.textContent = r.description;
       });
-      tabsEl.appendChild(btn);
+      roleTabs.appendChild(btn);
     });
+    if (roleTabs.firstChild) roleTabs.firstChild.click();
   }
 
-  /* ---------- Render Role Card ---------- */
-  function renderCard() {
-    var r = roles[currentRole];
-
-    var capabilitiesHtml = r.capabilities.map(function(c) {
-      return '<span class="ai-role-capability">' + c + "</span>";
-    }).join("");
-
-    cardEl.innerHTML =
-      '<div class="ai-role-card-header">' +
-        '<div class="ai-role-card-icon">' + r.icon + "</div>" +
-        '<div class="ai-role-card-info">' +
-          "<h2>" + r.name + "</h2>" +
-          "<p>" + r.description + "</p>" +
-        "</div>" +
-      "</div>" +
-      '<div class="ai-role-card-section">' +
-        '<div class="ai-role-card-section-title">核心能力</div>' +
-        '<div class="ai-role-capabilities">' + capabilitiesHtml + "</div>" +
-      "</div>" +
-      '<div class="ai-role-card-section">' +
-        '<div class="ai-role-card-section-title">使用示例</div>' +
-        '<div class="ai-role-example">' + r.example + "</div>" +
-      "</div>";
-  }
-
-  /* ---------- Render Prompts ---------- */
-  function renderPrompts() {
-    var r = roles[currentRole];
-    promptListEl.innerHTML = "";
-
-    r.prompts.forEach(function(prompt, index) {
-      var card = document.createElement("div");
-      card.className = "ai-role-prompt-card";
-
-      var textareaId = "aiRoleCustom_" + index;
-
-      card.innerHTML =
-        '<h3 class="ai-role-prompt-title">' + prompt.title + "</h3>" +
-        '<pre class="ai-role-prompt-text">' + escapeHtml(prompt.text) + "</pre>" +
-        '<div class="ai-role-prompt-actions">' +
-          '<button class="ai-role-btn ai-role-btn-primary ai-role-btn-sm" data-action="copy-original">复制原文</button>' +
-        "</div>" +
-        '<label class="ai-role-prompt-custom-label" for="' + textareaId + '">自定义（可编辑后复制）</label>' +
-        '<textarea class="ai-role-prompt-custom" id="' + textareaId + '" placeholder="默认填入提示词原文，可在此修改...">' + escapeHtml(prompt.text) + "</textarea>" +
-        '<div class="ai-role-prompt-actions">' +
-          '<button class="ai-role-btn ai-role-btn-secondary ai-role-btn-sm" data-action="copy-custom">复制自定义内容</button>' +
-        "</div>";
-
-      var copyOriginalBtn = card.querySelector('[data-action="copy-original"]');
-      var copyCustomBtn = card.querySelector('[data-action="copy-custom"]');
-      var customTextarea = card.querySelector("#" + textareaId);
-
-      copyOriginalBtn.addEventListener("click", function() {
-        copyToClipboard(prompt.text);
-      });
-
-      copyCustomBtn.addEventListener("click", function() {
-        var customText = customTextarea.value.trim();
-        if (customText) {
-          copyToClipboard(customText);
-        } else {
-          showToast("自定义内容为空");
-          customTextarea.focus();
-        }
-      });
-
-      promptListEl.appendChild(card);
-    });
-  }
-
-  /* ---------- Escape HTML ---------- */
-  function escapeHtml(str) {
-    var div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  /* ---------- Re-trigger animation ---------- */
-  function retriggerAnimation() {
-    contentEl.style.animation = "none";
-    void contentEl.offsetHeight;
-    contentEl.style.animation = "";
-  }
-
-  /* ---------- Switch Role ---------- */
-  function switchRole(role) {
-    if (!roles[role]) role = "planner";
-    currentRole = role;
-    updateHash(role);
-
-    var tabs = tabsEl.querySelectorAll(".ai-role-tab");
-    tabs.forEach(function(tab) {
-      tab.classList.toggle("ai-role-active", tab.getAttribute("data-role") === role);
-    });
-
-    renderCard();
-    renderPrompts();
-    retriggerAnimation();
-  }
-
-  /* ---------- Event Bindings ---------- */
-  copyQBtn.addEventListener("click", function() {
-    var text = questionEl.value.trim();
-    if (text) {
-      copyToClipboard(text);
-    } else {
-      showToast("请先输入问题");
-      questionEl.focus();
-    }
+  // ---------- Event Bindings ----------
+  generateCustomBtn.addEventListener("click", function() {
+    var prompt = generateCustomPrompt();
+    if (prompt) generatePrompt(prompt);
   });
 
-  clearBtn.addEventListener("click", function() {
-    questionEl.value = "";
+  clearCustomBtn.addEventListener("click", function() {
+    customRequest.value = "";
     showToast("已清空");
-    questionEl.focus();
+    customRequest.focus();
   });
 
-  window.addEventListener("hashchange", function() {
-    var role = getRoleFromUrl();
-    if (role !== currentRole) {
-      switchRole(role);
-    }
+  copyOutputBtn.addEventListener("click", function() {
+    copyToClipboard(outputText.textContent);
   });
 
-  /* ---------- Init ---------- */
-  currentRole = getRoleFromUrl();
-  renderTabs();
-  renderCard();
-  renderPrompts();
+  clearOutputBtn.addEventListener("click", function() {
+    outputSection.style.display = "none";
+    outputText.textContent = "";
+  });
+
+  // ---------- Init ----------
+  renderModeBadge();
+  renderRoleReference();
+  loadSelfStudyData().then(function() {
+    renderContext();
+    renderScenarios();
+  });
 })();
 </script>
 </body>

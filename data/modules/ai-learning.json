@@ -54,6 +54,15 @@
           "contentUrl": "ai-learning/daily-plan.html"
         },
         {
+          "name": "AI 学习规划师",
+          "type": "ai-learning",
+          "stage": "可用",
+          "current": "根据进度生成跨科目学习计划",
+          "tasks": [],
+          "review": "统筹 Python、AI、备考科目进度，生成可直接复制到 AI 工具的提示词。",
+          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global"
+        },
+        {
           "name": "AI 帮我复盘代码",
           "type": "ai-learning",
           "stage": "可用",

@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>学习驾驶舱 · 进度总览</title>
+<title>学习驾驶舱 · 统筹计划与进度总览</title>
 <style>
 :root {
   --bg: #f8fafc;
@@ -58,6 +58,268 @@ article.dash-page {
   color: var(--muted);
   font-size: 0.92rem;
   margin-top: 0.2rem;
+}
+
+.dash-header-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.dash-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.dash-btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.28);
+}
+
+.dash-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.35);
+}
+
+.dash-btn-secondary {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--rule);
+}
+
+.dash-btn-secondary:hover {
+  border-color: var(--accent2);
+  color: var(--accent);
+}
+
+/* ---------- Planning Card ---------- */
+.dash-plan-card {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+
+.dash-plan-card h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dash-plan-card h2::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Countdown */
+.dash-countdown-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.dash-countdown-item {
+  flex: 1;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.dash-countdown-days {
+  font-size: 1.8rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+
+.dash-countdown-days.urgent { color: var(--fail); }
+.dash-countdown-days.warn { color: var(--warn); }
+
+.dash-countdown-label {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+.dash-countdown-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+/* Time allocation */
+.dash-time-section {
+  margin-bottom: 1.25rem;
+}
+
+.dash-time-section h3 {
+  font-size: 0.95rem;
+  font-weight: 650;
+  margin-bottom: 0.75rem;
+}
+
+.dash-time-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 80px;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.dash-time-label {
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.dash-time-bar {
+  height: 10px;
+  background: var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.dash-time-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.dash-time-fill.exam { background: linear-gradient(90deg, #ef4444, #f97316); }
+.dash-time-fill.python { background: linear-gradient(90deg, #10b981, #34d399); }
+.dash-time-fill.ai { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.dash-time-fill.rest { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+
+.dash-time-input {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.dash-time-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+.dash-time-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--rule);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.dash-time-total strong {
+  color: var(--ink);
+  font-family: var(--font-mono);
+}
+
+/* Tasks */
+.dash-task-section h3 {
+  font-size: 0.95rem;
+  font-weight: 650;
+  margin-bottom: 0.75rem;
+}
+
+.dash-task-list {
+  margin-bottom: 0.75rem;
+}
+
+.dash-task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.dash-task-item:last-child { border-bottom: none; }
+
+.dash-task-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.dash-task-item label {
+  flex: 1;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.dash-task-item.done label {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.dash-task-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dash-task-tag.exam { background: rgba(239, 68, 68, 0.10); color: #dc2626; }
+.dash-task-tag.python { background: rgba(16, 185, 129, 0.12); color: #059669; }
+.dash-task-tag.ai { background: rgba(139, 92, 246, 0.12); color: #7c3aed; }
+
+.dash-task-add {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.dash-task-input {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 9px;
+  font-size: 0.85rem;
+}
+
+.dash-task-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+.dash-task-empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0.75rem 0;
 }
 
 /* ---------- Overall Card ---------- */
@@ -129,6 +391,7 @@ article.dash-page {
 
 @media (max-width: 640px) {
   .dash-grid { grid-template-columns: 1fr; }
+  .dash-time-row { grid-template-columns: 1fr; gap: 0.4rem; }
 }
 
 .dash-card {
@@ -230,14 +493,85 @@ article.dash-page {
   border-radius: 4px;
   font-size: 0.78rem;
 }
+
+/* ---------- Toast ---------- */
+.dash-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: #fff;
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 9999;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dash-toast.dash-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 </style>
 </head>
 <body>
 <article class="dash-page">
   <div class="dash-header">
-    <h1>学习驾驶舱 · 进度总览</h1>
-    <p>汇总 Python 知识树、学习闭环、真题练习、背诵卡的实时进度</p>
+    <h1>学习驾驶舱 · 统筹计划与进度总览</h1>
+    <p>本周计划、考试倒计时、各模块进度，一站掌握</p>
+    <div class="dash-header-actions">
+      <a class="dash-btn dash-btn-primary" href="../ai-learning/ai-roles-hub.html?mode=global">🤖 AI 统筹规划师</a>
+      <a class="dash-btn dash-btn-secondary" href="../ai-learning/daily-plan.html">📅 每日执行计划</a>
+    </div>
   </div>
+
+  <section class="dash-plan-card" id="planCard" style="display:none">
+    <h2>本周统筹计划</h2>
+
+    <div class="dash-countdown-row" id="countdownRow"></div>
+
+    <div class="dash-time-section">
+      <h3>本周时间分配（小时）</h3>
+      <div class="dash-time-row">
+        <span class="dash-time-label">自考备考</span>
+        <div class="dash-time-bar"><div class="dash-time-fill exam" id="examBar" style="width:70%"></div></div>
+        <input class="dash-time-input" type="number" id="examHours" min="0" step="0.5" value="14">
+      </div>
+      <div class="dash-time-row">
+        <span class="dash-time-label">Python 基础</span>
+        <div class="dash-time-bar"><div class="dash-time-fill python" id="pythonBar" style="width:10%"></div></div>
+        <input class="dash-time-input" type="number" id="pythonHours" min="0" step="0.5" value="2">
+      </div>
+      <div class="dash-time-row">
+        <span class="dash-time-label">AI 学习</span>
+        <div class="dash-time-bar"><div class="dash-time-fill ai" id="aiBar" style="width:10%"></div></div>
+        <input class="dash-time-input" type="number" id="aiHours" min="0" step="0.5" value="2">
+      </div>
+      <div class="dash-time-row">
+        <span class="dash-time-label">休息缓冲</span>
+        <div class="dash-time-bar"><div class="dash-time-fill rest" id="restBar" style="width:10%"></div></div>
+        <input class="dash-time-input" type="number" id="restHours" min="0" step="0.5" value="2">
+      </div>
+      <div class="dash-time-total">
+        <span>本周总计：<strong id="totalHours">20</strong> 小时</span>
+        <span>推荐：14–28 小时</span>
+      </div>
+    </div>
+
+    <div class="dash-task-section">
+      <h3>本周重点任务</h3>
+      <div class="dash-task-list" id="taskList"></div>
+      <div class="dash-task-add">
+        <input class="dash-task-input" type="text" id="newTaskInput" placeholder="添加新任务...">
+        <button class="dash-btn dash-btn-secondary" id="addTaskBtn">添加</button>
+      </div>
+    </div>
+  </section>
 
   <div class="dash-overall" id="overallCard">
     <div class="dash-overall-row">
@@ -255,17 +589,17 @@ article.dash-page {
   <div class="dash-tip">
     进度数据来自各模块页面的 localStorage，每 3 秒自动刷新 · 也可切换标签页后返回触发刷新
   </div>
+
+  <div class="dash-toast" id="dashToast"></div>
 </article>
 
 <script>
 /**
- * 学习驾驶舱 · 进度总览
+ * 学习驾驶舱 · 统筹计划与进度总览
  *
- * 读取 4 个 localStorage 键，汇总展示各模块学习进度：
- * - py_knowledge_tree_v1: Python 知识树勾选状态
- * - py_learning_loops_v1: Python 学习闭环记录
- * - exam-questions-data: 真题练习与错题本
- * - recite-cards-data: 背诵卡掌握度
+ * 1. 从 self-study.json 读取考试科目、考试时间、阶段、建议
+ * 2. 从 localStorage 读取各科掌握度、Python、真题、背诵卡进度
+ * 3. 支持编辑本周时间分配和任务清单（保存到 localStorage）
  */
 
 var PY_BRANCHES = [
@@ -278,12 +612,71 @@ var PY_BRANCHES = [
 var SUBJECT_NAMES = {
   '02324': '离散数学',
   '13015': '计算机系统原理',
-  '13003': '数据结构与算法'
+  '13003': '数据结构与算法',
+  '00023': '高等数学（工本）',
+  '00015': '英语（二）'
 };
+
+var TIME_STORAGE_KEY = 'dash_weekly_time_v1';
+var TASKS_STORAGE_KEY = 'dash_weekly_tasks_v1';
+
+var selfStudyData = null;
 
 function safeParse(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key) || '') || fallback; }
   catch(e) { return fallback; }
+}
+
+function safeSave(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
+}
+
+function showToast(msg) {
+  var toast = document.getElementById('dashToast');
+  toast.textContent = msg;
+  toast.classList.add('dash-show');
+  setTimeout(function() { toast.classList.remove('dash-show'); }, 2000);
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr || dateStr === '待定') return null;
+  var match = String(dateStr).match(/(\d{4})\.(\d{1,2})/);
+  if (!match) return null;
+  var target = new Date(parseInt(match[1]), parseInt(match[2]) - 1, 15);
+  var now = new Date();
+  return Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+}
+
+// ---------- Data Loading ----------
+function loadSelfStudyData() {
+  return fetch('../data/modules/self-study.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) { selfStudyData = data; })
+    .catch(function(err) {
+      console.error('加载 self-study.json 失败', err);
+      selfStudyData = { categories: [] };
+    });
+}
+
+function getSubjectItems() {
+  var items = [];
+  if (!selfStudyData || !selfStudyData.categories) return items;
+  selfStudyData.categories.forEach(function(cat) {
+    (cat.items || []).forEach(function(item) {
+      if (item.items) {
+        item.items.forEach(function(sub) {
+          if (sub.code) items.push(sub);
+        });
+      } else if (item.code) {
+        items.push(item);
+      }
+    });
+  });
+  return items;
+}
+
+function getSubjectMastery(code) {
+  return safeParse('ss_mastery_' + code, { mastery: {} }).mastery || {};
 }
 
 function getPyKnowledgeProgress() {
@@ -357,13 +750,156 @@ function subjectLabel(code) {
   return SUBJECT_NAMES[code] || code;
 }
 
-function render() {
-  var pyKt = getPyKnowledgeProgress();
-  var pyLoop = getPyLoopProgress();
-  var exam = getExamProgress();
-  var recite = getReciteProgress();
+// ---------- Planning Section ----------
+function renderPlanning() {
+  document.getElementById('planCard').style.display = 'block';
+  renderCountdown();
+  initTimeInputs();
+  renderTasks();
+}
 
-  // Overall
+function renderCountdown() {
+  var row = document.getElementById('countdownRow');
+  row.innerHTML = '';
+  var items = getSubjectItems().filter(function(s) { return s.exam && s.exam !== '待定'; });
+
+  if (items.length === 0) {
+    row.innerHTML = '<div class="dash-empty"><div class="dash-empty-icon">📅</div>暂无考试日期数据</div>';
+    return;
+  }
+
+  items.sort(function(a, b) {
+    return (daysUntil(a.exam) || 9999) - (daysUntil(b.exam) || 9999);
+  });
+
+  items.forEach(function(item) {
+    var days = daysUntil(item.exam);
+    var cls = 'dash-countdown-days';
+    if (days !== null) {
+      if (days <= 30) cls += ' urgent';
+      else if (days <= 60) cls += ' warn';
+    }
+    var div = document.createElement('div');
+    div.className = 'dash-countdown-item';
+    div.innerHTML =
+      '<div class="' + cls + '">' + (days !== null ? days : '—') + '</div>' +
+      '<div class="dash-countdown-label">天后考试</div>' +
+      '<div class="dash-countdown-meta">' + subjectLabel(item.code) + ' · ' + item.exam + '</div>';
+    row.appendChild(div);
+  });
+}
+
+function initTimeInputs() {
+  var saved = safeParse(TIME_STORAGE_KEY, { exam: 14, python: 2, ai: 2, rest: 2 });
+  document.getElementById('examHours').value = saved.exam;
+  document.getElementById('pythonHours').value = saved.python;
+  document.getElementById('aiHours').value = saved.ai;
+  document.getElementById('restHours').value = saved.rest;
+
+  ['examHours', 'pythonHours', 'aiHours', 'restHours'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', updateTimeSummary);
+  });
+  updateTimeSummary();
+}
+
+function updateTimeSummary() {
+  var exam = parseFloat(document.getElementById('examHours').value) || 0;
+  var python = parseFloat(document.getElementById('pythonHours').value) || 0;
+  var ai = parseFloat(document.getElementById('aiHours').value) || 0;
+  var rest = parseFloat(document.getElementById('restHours').value) || 0;
+  var total = exam + python + ai + rest;
+
+  document.getElementById('totalHours').textContent = total;
+  document.getElementById('examBar').style.width = total ? (exam / total * 100) + '%' : '0%';
+  document.getElementById('pythonBar').style.width = total ? (python / total * 100) + '%' : '0%';
+  document.getElementById('aiBar').style.width = total ? (ai / total * 100) + '%' : '0%';
+  document.getElementById('restBar').style.width = total ? (rest / total * 100) + '%' : '0%';
+
+  safeSave(TIME_STORAGE_KEY, { exam: exam, python: python, ai: ai, rest: rest });
+}
+
+function renderTasks() {
+  var list = document.getElementById('taskList');
+  var tasks = getWeeklyTasks();
+  list.innerHTML = '';
+
+  if (tasks.length === 0) {
+    list.innerHTML = '<div class="dash-task-empty">暂无任务，点击下方添加或使用 AI 规划师生成</div>';
+    return;
+  }
+
+  tasks.forEach(function(task, index) {
+    var div = document.createElement('div');
+    div.className = 'dash-task-item' + (task.done ? ' done' : '');
+    div.innerHTML =
+      '<input type="checkbox" id="task_' + index + '" ' + (task.done ? 'checked' : '') + '>' +
+      '<label for="task_' + index + '">' + escapeHtml(task.text) + '</label>' +
+      '<span class="dash-task-tag ' + task.category + '">' + categoryLabel(task.category) + '</span>';
+
+    div.querySelector('input').addEventListener('change', function() {
+      toggleTask(index, this.checked);
+    });
+    list.appendChild(div);
+  });
+}
+
+function categoryLabel(cat) {
+  var map = { exam: '自考', python: 'Python', ai: 'AI', other: '其他' };
+  return map[cat] || '其他';
+}
+
+function getWeeklyTasks() {
+  var saved = safeParse(TASKS_STORAGE_KEY, []);
+  if (saved.length > 0) return saved;
+
+  // Seed tasks from self-study.json if none saved
+  var seeded = [];
+  getSubjectItems().forEach(function(item) {
+    if (item.tasks && item.tasks.length) {
+      item.tasks.forEach(function(t) {
+        seeded.push({ text: '[' + subjectLabel(item.code) + '] ' + t, done: false, category: 'exam' });
+      });
+    }
+  });
+  return seeded;
+}
+
+function saveTasks(tasks) {
+  safeSave(TASKS_STORAGE_KEY, tasks);
+  renderTasks();
+}
+
+function toggleTask(index, done) {
+  var tasks = getWeeklyTasks();
+  if (tasks[index]) {
+    tasks[index].done = done;
+    saveTasks(tasks);
+  }
+}
+
+function addTask() {
+  var input = document.getElementById('newTaskInput');
+  var text = input.value.trim();
+  if (!text) return;
+  var tasks = getWeeklyTasks();
+  var category = 'other';
+  if (/离散|系统|数据|高等|英语|自考/i.test(text)) category = 'exam';
+  else if (/python|py/i.test(text)) category = 'python';
+  else if (/ai/i.test(text)) category = 'ai';
+  tasks.push({ text: text, done: false, category: category });
+  saveTasks(tasks);
+  input.value = '';
+  showToast('已添加任务');
+}
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ---------- Overall Progress ----------
+function renderOverall(pyKt, pyLoop, exam, recite) {
   var allDone = pyKt.done + pyLoop.done + exam.done + recite.done;
   var allTotal = pyKt.total + pyLoop.total + exam.total + recite.total;
   var overallPercent = allTotal ? Math.min(100, Math.round(allDone / allTotal * 100)) : 0;
@@ -377,8 +913,17 @@ function render() {
     '<span>📝 真题 ' + exam.done + '/' + exam.total + '</span>' +
     '<span>🎴 背诵卡 ' + recite.done + '/' + recite.total + '</span>';
   document.getElementById('overallStats').innerHTML = statsHtml;
+}
 
-  // Module cards
+// ---------- Module Cards ----------
+function renderCards() {
+  var pyKt = getPyKnowledgeProgress();
+  var pyLoop = getPyLoopProgress();
+  var exam = getExamProgress();
+  var recite = getReciteProgress();
+
+  renderOverall(pyKt, pyLoop, exam, recite);
+
   var grid = document.getElementById('moduleGrid');
   var cards = [];
 
@@ -458,9 +1003,20 @@ function render() {
   grid.innerHTML = cards.join('');
 }
 
-render();
-setInterval(render, 3000);
-document.addEventListener('visibilitychange', function() { if (!document.hidden) render(); });
+// ---------- Event Bindings ----------
+document.getElementById('addTaskBtn').addEventListener('click', addTask);
+document.getElementById('newTaskInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') addTask();
+});
+
+// ---------- Init ----------
+loadSelfStudyData().then(function() {
+  renderPlanning();
+  renderCards();
+});
+
+setInterval(renderCards, 3000);
+document.addEventListener('visibilitychange', function() { if (!document.hidden) renderCards(); });
 </script>
 </body>
 </html>

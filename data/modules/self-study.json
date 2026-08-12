@@ -53,6 +53,15 @@
               "tasks": [],
               "review": "计算机系统原理章节复盘总结。",
               "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13015"
+            },
+            {
+              "name": "AI助手",
+              "type": "ai-role",
+              "stage": "可用",
+              "current": "针对本科目生成学习计划、出题、讲错题",
+              "tasks": [],
+              "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=13015"
             }
           ]
         },
@@ -99,6 +108,15 @@
               "tasks": [],
               "review": "离散数学章节复盘总结。",
               "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=02324"
+            },
+            {
+              "name": "AI助手",
+              "type": "ai-role",
+              "stage": "可用",
+              "current": "针对本科目生成学习计划、出题、讲错题",
+              "tasks": [],
+              "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=02324"
             }
           ]
         },
@@ -145,6 +163,15 @@
               "tasks": [],
               "review": "数据结构与算法章节复盘总结。",
               "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13003"
+            },
+            {
+              "name": "AI助手",
+              "type": "ai-role",
+              "stage": "可用",
+              "current": "针对本科目生成学习计划、出题、讲错题",
+              "tasks": [],
+              "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=13003"
             }
           ]
         }
@@ -156,28 +183,60 @@
       "iconBg": "green-soft",
       "items": [
         {
-          "code": "00015",
           "name": "英语（二）",
-          "type": "self-study",
-          "renderMode": "content",
-          "exam": "待定",
-          "stage": "基础积累",
-          "current": "已整理知识框架与学习计划",
-          "tasks": [],
-          "review": "长期科目，现阶段每天 30–45 分钟保持输入，重点积累词汇和阅读。",
-          "contentUrl": "自考学习/未考科目/00015英语（二）/00015英语（二）-知识框架与学习计划.html"
+          "icon": "🔤",
+          "iconBg": "green-soft",
+          "items": [
+            {
+              "code": "00015",
+              "name": "知识框架",
+              "type": "self-study",
+              "renderMode": "content",
+              "exam": "待定",
+              "stage": "基础积累",
+              "current": "已整理知识框架与学习计划",
+              "tasks": [],
+              "review": "长期科目，现阶段每天 30–45 分钟保持输入，重点积累词汇和阅读。",
+              "contentUrl": "自考学习/未考科目/00015英语（二）/00015英语（二）-知识框架与学习计划.html"
+            },
+            {
+              "name": "AI助手",
+              "type": "ai-role",
+              "stage": "可用",
+              "current": "针对本科目生成学习计划、出题、讲错题",
+              "tasks": [],
+              "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=00015"
+            }
+          ]
         },
         {
-          "code": "00023",
           "name": "高等数学（工本）",
-          "type": "self-study",
-          "renderMode": "content",
-          "exam": "待定",
-          "stage": "基础积累",
-          "current": "已整理知识框架与学习计划",
-          "tasks": [],
-          "review": "长期科目，先建立微积分、线性代数、概率论三大板块框架，配合教材例题逐步推进。",
-          "contentUrl": "自考学习/未考科目/00023高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.html"
+          "icon": "📐",
+          "iconBg": "green-soft",
+          "items": [
+            {
+              "code": "00023",
+              "name": "知识框架",
+              "type": "self-study",
+              "renderMode": "content",
+              "exam": "待定",
+              "stage": "基础积累",
+              "current": "已整理知识框架与学习计划",
+              "tasks": [],
+              "review": "长期科目，先建立微积分、线性代数、概率论三大板块框架，配合教材例题逐步推进。",
+              "contentUrl": "自考学习/未考科目/00023高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.html"
+            },
+            {
+              "name": "AI助手",
+              "type": "ai-role",
+              "stage": "可用",
+              "current": "针对本科目生成学习计划、出题、讲错题",
+              "tasks": [],
+              "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=00023"
+            }
+          ]
         }
       ]
     }

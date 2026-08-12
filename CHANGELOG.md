@@ -4,6 +4,24 @@
 
 ---
 
+## v0.3.0
+
+**发布时间**：2026-08-13（北京时间）  
+**最新 commit**：待填写
+
+### 2026-08-13 — feat(ai): 重构 AI 学习规划师并新增统筹计划面板
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/ai-learning/ai-roles-hub.html` | 重构为交互式 AI 学习规划师：支持全局统筹与单科专项两种模式，自动读取 localStorage 学习进度，生成场景化提示词并支持一键复制 |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | 升级为统筹计划面板：新增考试倒计时、每周时间分配、重点任务清单，支持跨科目（自考 / Python / AI）统一规划 |
+| `data/modules/self-study.json` | 为 5 个科目的子项新增「AI助手」入口，分别带 `subject` 参数指向单科模式 |
+| `data/modules/ai-roles.json` | 所有角色入口统一指向 `ai-roles-hub.html?mode=global`，进入全局统筹模式 |
+| `data/modules/ai-learning.json` | 新增「AI 学习规划师」入口，指向全局统筹模式 |
+| `Workbench/此刻便是春天.html` | 重新构建，应用上述导航变更 |
+
+---
+
 ## v0.2.0
 
 **发布时间**：2026-08-13 01:36:05（北京时间）  
