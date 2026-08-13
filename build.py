@@ -30,6 +30,7 @@ import json
 import re
 import subprocess
 import sys
+import webbrowser
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -713,6 +714,7 @@ def main() -> int:
     parser.add_argument('--skip-validate', action='store_true', help='Skip running validate_workbench.py')
     parser.add_argument('--dry-run', action='store_true', help='Report artifacts to clean without building or deleting')
     parser.add_argument('--confirm', action='store_true', help='Confirm before removing artifacts')
+    parser.add_argument('--open', action='store_true', help='Open the generated workbench in the default browser after build')
     args = parser.parse_args()
 
     if args.dry_run:
@@ -745,6 +747,12 @@ def main() -> int:
         print('Build and validation passed.')
     else:
         print('Build complete (validation skipped).')
+
+    if args.open:
+        # 构建校验完成后用默认浏览器打开工作台，方便在模拟器中预览效果
+        workbench_url = WORKBENCH.resolve().as_uri()
+        print(f'Opening workbench in browser: {workbench_url}')
+        webbrowser.open(workbench_url)
 
     return 0
 
