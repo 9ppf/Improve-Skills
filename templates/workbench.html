@@ -27,6 +27,15 @@
     min-height: 420px;
   }
 }
+.content-frame-bare {
+  border: none;
+  border-radius: 0;
+  min-height: 600px;
+}
+.content-frame-bare .content-frame {
+  height: calc(100vh - 60px);
+  min-height: 600px;
+}
   </style>
 {{ theme_script }}
 </head>
@@ -81,7 +90,7 @@ const workspaces = [
     let activeTab = 'plan';
     const collapsed = new Set();
 
-    // ---- Recursive helpers ----
+    // ---- 递归辅助函数 ----
     function isFolder(item) {
       return Array.isArray(item.items) && item.items.length > 0;
     }
@@ -141,8 +150,9 @@ const workspaces = [
 
     function renderContentFrame(item) {
       const url = item.contentUrl || '';
+      const bareCls = item.renderMode === 'bare' ? ' content-frame-bare' : '';
       return `
-        <div class="content-frame-wrap">
+        <div class="content-frame-wrap${bareCls}">
           <iframe class="content-frame" src="${url}" title="${item.name}" loading="lazy"></iframe>
         </div>
       `;
@@ -153,8 +163,8 @@ const workspaces = [
       if (section) section.classList.toggle('collapsed');
     }
 
-    // ---- Live progress integration: read localStorage from interactive pages ----
-    var PY_KT_TOTAL = 29; // python-knowledge-tree.html has 29 knowledge points
+    // ---- 实时进度集成：从交互页面读取 localStorage ----
+    var PY_KT_TOTAL = 29; // python-knowledge-tree.html 有 29 个知识点
 
     function getLiveProgressForItem(item) {
       if (!item.contentUrl) return null;
@@ -496,7 +506,8 @@ function renderTree() {
     function renderTabs(item) {
       if (!isExamItem(item) && !isReadingItem(item) && !hasContentUrl(item)) return '';
       // 知识框架等内部自带 Tab 的内容页，不显示工作台级「计划/内容」切换条
-      if (item.renderMode === 'content') return '';
+      // bare 模式：完全无外层包装，直接显示内容
+      if (item.renderMode === 'content' || item.renderMode === 'bare') return '';
       const tabs = [{ key: 'plan', label: '计划' }];
       if (isExamItem(item)) tabs.push({ key: 'questionTypes', label: '题型分析' });
       if (isReadingItem(item) || hasContentUrl(item)) tabs.push({ key: 'content', label: '内容' });
@@ -520,6 +531,12 @@ function renderTree() {
       const result = findItemWithCategory(activeItemId);
       if (!result) return;
       const { item } = result;
+
+      // bare 模式：直接显示内容，无 plan-card / plan-header / tabs 包装
+      if (item.renderMode === 'bare' && hasContentUrl(item)) {
+        document.getElementById('main').innerHTML = renderContentFrame(item);
+        return;
+      }
 
       const headerHtml = `
         <div class="plan-header">
@@ -728,7 +745,7 @@ function renderTree() {
       renderTree();
     }
 
-    // Workspace CRUD
+    // 工作区增删改查
     function addWorkspace() {
       const name = prompt('新工作区名称：');
       if (!name || !name.trim()) return;
@@ -773,7 +790,7 @@ function renderTree() {
       renderTree();
     }
 
-    // Category CRUD
+    // 分类增删改查
     function addCategory() {
       const ws = getCurrentWorkspace();
       if (ws.categories.length === 0) {
@@ -836,7 +853,7 @@ function renderTree() {
       return ids;
     }
 
-    // Folder CRUD (for nested subject groups)
+    // 文件夹增删改查（用于嵌套的科目分组）
     function findFolder(wsId, catName, itemId) {
       const ws = findWorkspace(wsId);
       if (!ws) return null;
@@ -880,7 +897,7 @@ function renderTree() {
       renderTree();
     }
 
-    // Item CRUD
+    // 任务项增删改查
     function addItem() {
       const ws = getCurrentWorkspace();
       if (ws.categories.length === 0) {
@@ -1020,7 +1037,7 @@ function renderTree() {
     renderTree();
     selectFirstItem();
 
-    // Live progress: refresh sidebar when user returns to workbench tab or periodically
+    // 实时进度：用户切换回工作台标签页或定期刷新侧边栏
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) { renderTree(); if (activeItemId) renderItemView(); }
     });

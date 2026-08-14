@@ -13,10 +13,16 @@ Usage:
 """
 
 import argparse
+import json
+import os
 import socket
 import subprocess
 import sys
+import threading
 import time
+import urllib.error
+import urllib.request
+from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
 from watchdog.events import FileSystemEventHandler
@@ -36,7 +42,7 @@ WATCH_PATTERNS = {
 IGNORE_PATTERNS = {
     '__pycache__', '.git', '.gitignore', '.gitattributes',
     '.trae-html-share-packages', '.trae-html-share-*',
-    'temp', '*.tmp', '*.bak-*', '*.log',
+    'temp', '*.tmp', '*.bak-*', '*.log', '.env',
 }
 
 
@@ -61,6 +67,161 @@ def _should_ignore(path: Path) -> bool:
         return True
 
     return False
+
+
+# ---------- DeepSeek API Proxy ----------
+
+DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions'
+
+
+def _load_api_key():
+    """Load DeepSeek API key from .env file or environment variable."""
+    key = os.environ.get('DEEPSEEK_API_KEY')
+    if key:
+        return key.strip()
+    env_file = ROOT / '.env'
+    if env_file.exists():
+        for line in env_file.read_text(encoding='utf-8').splitlines():
+            line = line.strip()
+            if line.startswith('DEEPSEEK_API_KEY=') and not line.startswith('#'):
+                return line.split('=', 1)[1].strip()
+    return None
+
+
+class WorkbenchHandler(SimpleHTTPRequestHandler):
+    """HTTP handler: serves static files + proxies /api/chat to DeepSeek."""
+
+    protocol_version = 'HTTP/1.1'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    def do_POST(self):
+        if self.path == '/api/chat':
+            self._handle_chat()
+        else:
+            self.send_error(404, 'Not Found')
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Content-Length', '0')
+        self.end_headers()
+
+    def do_GET(self):
+        if self.path == '/api/health':
+            self._handle_health()
+        else:
+            super().do_GET()
+
+    def _handle_health(self):
+        api_key = _load_api_key()
+        body = json.dumps({
+            'status': 'ok',
+            'api_key_configured': bool(api_key),
+        }, ensure_ascii=False).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _handle_chat(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+
+        api_key = _load_api_key()
+        if not api_key:
+            self._send_json(503, {
+                'error': 'API Key 未配置。请在项目根目录创建 .env 文件，'
+                         '写入 DEEPSEEK_API_KEY=sk-xxxx'
+            })
+            return
+
+        messages = data.get('messages', [])
+        model = data.get('model', 'deepseek-v4-flash')
+        use_stream = data.get('stream', True)
+        thinking = data.get('thinking', {'type': 'disabled'})
+        max_tokens = data.get('max_tokens', 2000)
+
+        payload_dict = {
+            'model': model,
+            'messages': messages,
+            'stream': use_stream,
+            'thinking': thinking,
+            'max_tokens': max_tokens,
+        }
+        payload = json.dumps(payload_dict).encode('utf-8')
+
+        req = urllib.request.Request(DEEPSEEK_URL, data=payload, method='POST')
+        req.add_header('Content-Type', 'application/json')
+        req.add_header('Authorization', f'Bearer {api_key}')
+
+        try:
+            resp = urllib.request.urlopen(req, timeout=300)
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode('utf-8')
+            try:
+                error_data = json.loads(error_body)
+                error_msg = error_data.get('error', {}).get('message', error_body) if isinstance(error_data.get('error'), dict) else error_body
+            except (json.JSONDecodeError, AttributeError):
+                error_msg = error_body
+            self._send_json(e.code, {'error': error_msg, 'http_status': e.code})
+            return
+        except Exception as e:
+            self._send_json(502, {'error': f'无法连接 DeepSeek API: {e}'})
+            return
+
+        if use_stream:
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/event-stream')
+            self.send_header('Cache-Control', 'no-cache')
+            self.send_header('Transfer-Encoding', 'chunked')
+            self.end_headers()
+            try:
+                done = False
+                for line in resp:
+                    if line.strip():
+                        chunk = f'{len(line):x}\r\n'.encode() + line + b'\r\n'
+                        self.wfile.write(chunk)
+                        self.wfile.flush()
+                        if b'[DONE]' in line:
+                            done = True
+                            break
+                if not done:
+                    end_data = b'data: [DONE]\n\n'
+                    self.wfile.write(f'{len(end_data):x}\r\n'.encode() + end_data + b'\r\n')
+                    self.wfile.flush()
+                self.wfile.write(b'0\r\n\r\n')
+                self.wfile.flush()
+            except (BrokenPipeError, ConnectionResetError, socket.timeout, OSError):
+                pass
+            finally:
+                resp.close()
+        else:
+            result = resp.read().decode('utf-8')
+            resp.close()
+            self._send_json(200, json.loads(result))
+
+    def _send_json(self, code, data):
+        body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+        self.send_response(code)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format, *args):
+        try:
+            msg = format % args
+        except Exception:
+            return
+        if isinstance(args[0] if args else '', str) and '/api/' in args[0]:
+            print(f'[api] {msg}')
 
 
 class RebuildHandler(FileSystemEventHandler):
@@ -115,12 +276,13 @@ def _port_in_use(port: int) -> bool:
         return sock.connect_ex(('localhost', port)) == 0
 
 
-def _start_http_server(port: int) -> subprocess.Popen:
-    """Start a simple HTTP server in the project root."""
-    return subprocess.Popen(
-        [sys.executable, '-m', 'http.server', str(port)],
-        cwd=ROOT,
-    )
+def _start_http_server(port: int) -> ThreadingHTTPServer:
+    """Start a custom HTTP server that serves static files and proxies AI API calls."""
+    server = ThreadingHTTPServer(('localhost', port), WorkbenchHandler)
+    server.daemon_threads = True
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    return server
 
 
 def main() -> int:
@@ -156,19 +318,16 @@ def main() -> int:
     print('[dev] press Ctrl+C to stop')
 
     try:
-        # 主循环：等待 HTTP 服务进程退出或用户按下 Ctrl+C
-        while server.poll() is None:
+        # 主循环：等待用户按下 Ctrl+C
+        while True:
             time.sleep(0.5)
     except KeyboardInterrupt:
         print('\n[dev] stopping...')
     finally:
         observer.stop()
         observer.join()
-        server.terminate()
-        try:
-            server.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            server.kill()
+        server.shutdown()
+        server.server_close()
 
     return 0
 

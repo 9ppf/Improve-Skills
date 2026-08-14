@@ -156,6 +156,45 @@ article.ai-role-page {
   margin-bottom: 1.5rem;
 }
 
+/* ---------- Mode Switcher ---------- */
+.ai-mode-switcher {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--bg2);
+}
+
+.ai-mode-tab {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: none;
+  background: transparent;
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  position: relative;
+}
+
+.ai-mode-tab.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.ai-mode-tab:not(.active):hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .ai-scenario-title {
   font-size: 1rem;
   font-weight: 700;
@@ -269,6 +308,7 @@ article.ai-role-page {
 
 /* ---------- Generated Prompt ---------- */
 .ai-output-section {
+  display: none;
   background: #1e293b;
   border-radius: 16px;
   padding: 1.25rem;
@@ -459,6 +499,76 @@ article.ai-role-page {
   to { transform: rotate(360deg); }
 }
 
+/* ---------- AI Direct Chat ---------- */
+.ai-btn-generate {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+}
+.ai-btn-generate:hover { opacity: 0.9; }
+.ai-btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ai-chat-section {
+  display: none;
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: #f8f9fe;
+  border: 1px solid #e0e0e8;
+  border-radius: 12px;
+}
+.ai-chat-display {
+  max-height: 500px;
+  overflow-y: auto;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+}
+.ai-chat-msg { margin-bottom: 0.75rem; }
+.ai-chat-msg .msg-label {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+.ai-chat-msg.msg-user { margin-left: 2.5rem; }
+.ai-chat-msg.msg-user .msg-content {
+  background: #4b3fe3;
+  color: #fff;
+  padding: 0.625rem 0.875rem;
+  border-radius: 12px 12px 4px 12px;
+  white-space: pre-wrap;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.ai-chat-msg.msg-assistant { margin-right: 2.5rem; }
+.ai-chat-msg.msg-assistant .msg-content {
+  background: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 12px 12px 12px 4px;
+  border: 1px solid #e0e0e8;
+  white-space: pre-wrap;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.ai-chat-msg.typing .msg-content { color: #aaa; }
+.ai-chat-msg.typing .msg-content::after {
+  content: ' ●';
+  animation: ai-blink 1s infinite;
+}
+.ai-chat-msg.error .msg-content { border-color: #ef4444; color: #ef4444; }
+@keyframes ai-blink { 0%,50% { opacity:1; } 51%,100% { opacity:0; } }
+
+.ai-chat-input-wrap { display: flex; gap: 0.5rem; }
+.ai-chat-input {
+  flex: 1;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #e0e0e8;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  resize: none;
+  font-family: inherit;
+}
+.ai-chat-input:focus { outline: none; border-color: #4b3fe3; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 640px) {
   body { padding: 1.5rem 0.9rem; }
@@ -472,9 +582,15 @@ article.ai-role-page {
 <article class="ai-role-page">
   <header class="ai-role-header">
     <h1>AI 学习规划师</h1>
-    <p>根据你的工作台进度，生成可直接复制到 AI 工具的提示词</p>
+    <p>根据工作台进度生成提示词，或直接与 AI 对话制定学习计划</p>
     <div class="ai-role-mode-badge" id="modeBadge">加载中...</div>
   </header>
+
+  <section class="ai-role-reference">
+    <h2>角色能力参考</h2>
+    <nav class="ai-role-tabs" id="roleTabs"></nav>
+    <div class="ai-role-desc" id="roleDesc"></div>
+  </section>
 
   <section class="ai-context-card" id="contextCard">
     <h2>当前学习上下文</h2>
@@ -484,7 +600,11 @@ article.ai-role-page {
   </section>
 
   <section class="ai-scenario-section">
-    <h2 class="ai-scenario-title">常用场景</h2>
+    <div class="ai-mode-switcher" id="modeSwitcher">
+      <button class="ai-mode-tab active" data-mode="prompt">📝 提示词模式</button>
+      <button class="ai-mode-tab" data-mode="chat">💬 AI 对话模式</button>
+    </div>
+    <h2 class="ai-scenario-title" id="scenarioTitle">常用场景</h2>
     <div class="ai-scenario-grid" id="scenarioGrid"></div>
   </section>
 
@@ -493,6 +613,7 @@ article.ai-role-page {
     <textarea class="ai-role-textarea" id="customRequest" placeholder="例如：我本周只有 10 小时，请帮我重新安排各科优先级..."></textarea>
     <div class="ai-role-actions">
       <button class="ai-role-btn ai-role-btn-primary" id="generateCustom">生成提示词</button>
+      <button class="ai-role-btn ai-btn-generate" id="chatCustom">💬 直接对话</button>
       <button class="ai-role-btn ai-role-btn-secondary" id="clearCustom">清空</button>
     </div>
   </section>
@@ -502,14 +623,18 @@ article.ai-role-page {
     <pre class="ai-output-text" id="outputText"></pre>
     <div class="ai-role-actions">
       <button class="ai-role-btn ai-role-btn-primary" id="copyOutput">复制提示词</button>
+      <button class="ai-role-btn ai-btn-generate" id="generateDirect">⚡ 直接生成</button>
       <button class="ai-role-btn ai-role-btn-secondary" id="clearOutput">清空</button>
     </div>
   </section>
 
-  <section class="ai-role-reference">
-    <h2>角色能力参考</h2>
-    <nav class="ai-role-tabs" id="roleTabs"></nav>
-    <div class="ai-role-desc" id="roleDesc"></div>
+  <section class="ai-chat-section" id="aiChatSection" style="display:none">
+    <h2 style="font-size:1.05rem;margin-bottom:0.75rem;">AI 助手对话</h2>
+    <div class="ai-chat-display" id="aiChatDisplay"></div>
+    <div class="ai-chat-input-wrap">
+      <textarea class="ai-chat-input" id="aiFollowUp" placeholder="输入追问或调整需求（Enter 发送，Shift+Enter 换行）" rows="2"></textarea>
+      <button class="ai-role-btn ai-role-btn-primary" id="aiSendBtn">发送追问</button>
+    </div>
   </section>
 
   <div class="ai-role-toast" id="aiRoleToast"></div>
@@ -571,6 +696,7 @@ article.ai-role-page {
 
   var selfStudyData = null;
   var subjectItem = null;
+  var interactionMode = "prompt"; // "prompt" or "chat"
 
   // ---------- DOM ----------
   var modeBadge = document.getElementById("modeBadge");
@@ -581,6 +707,9 @@ article.ai-role-page {
   var customRequest = document.getElementById("customRequest");
   var generateCustomBtn = document.getElementById("generateCustom");
   var clearCustomBtn = document.getElementById("clearCustom");
+  var chatCustomBtn = document.getElementById("chatCustom");
+  var modeSwitcher = document.getElementById("modeSwitcher");
+  var scenarioTitle = document.getElementById("scenarioTitle");
   var outputSection = document.getElementById("outputSection");
   var outputText = document.getElementById("outputText");
   var copyOutputBtn = document.getElementById("copyOutput");
@@ -658,7 +787,8 @@ article.ai-role-page {
         if (item.code === code) return item;
         if (item.items) {
           for (var k = 0; k < item.items.length; k++) {
-            if (item.items[k].code === code) return item;
+            // 返回匹配 code 的子项（含 stage/exam/review 等字段），而非父级文件夹
+            if (item.items[k].code === code) return item.items[k];
           }
         }
       }
@@ -763,7 +893,7 @@ article.ai-role-page {
     contextGrid.innerHTML =
       contextItem("科目", subjectName) +
       contextItem("考试", (subjectItem && subjectItem.exam) ? subjectItem.exam + (days !== null ? "（约 " + days + " 天）" : "") : "待定") +
-      contextItem("阶段", subjectItem ? subjectItem.stage : "—") +
+      contextItem("阶段", (subjectItem && subjectItem.stage) ? subjectItem.stage : "—") +
       contextItem("掌握度", learned + "/" + total + " 章（" + percent + "%）") +
       contextItem("需复习", reviewing > 0 ? reviewing + " 章" : "无", reviewing > 0 ? "warn" : "good");
 
@@ -825,7 +955,13 @@ article.ai-role-page {
       var btn = document.createElement("button");
       btn.className = "ai-scenario-btn";
       btn.innerHTML = '<span class="icon">' + s.icon + '</span><span>' + s.name + '</span>';
-      btn.addEventListener("click", function() { generatePrompt(s.generator); });
+      btn.addEventListener("click", function() {
+        if (interactionMode === "chat") {
+          startChatWithGenerator(s.generator);
+        } else {
+          generatePrompt(s.generator);
+        }
+      });
       scenarioGrid.appendChild(btn);
     });
   }
@@ -945,7 +1081,7 @@ article.ai-role-page {
     var ctx = "【科目背景】\n";
     ctx += "- 科目：" + subjectName + "（" + subjectCode + "）\n";
     ctx += "- 考试：" + (subjectItem && subjectItem.exam ? subjectItem.exam : "待定") + (days !== null ? "，约 " + days + " 天后考试" : "") + "\n";
-    ctx += "- 当前阶段：" + (subjectItem ? subjectItem.stage : "—") + "\n";
+    ctx += "- 当前阶段：" + ((subjectItem && subjectItem.stage) ? subjectItem.stage : "—") + "\n";
     ctx += "- 整体进度：已掌握 " + learned + " 章，学习中 " + learning + " 章，需复习 " + reviewing + " 章，未开始 " + notStarted + " 章，共 " + total + " 章\n";
     if (subjectItem && subjectItem.review) ctx += "- 历史评估：" + subjectItem.review + "\n";
 
@@ -1059,6 +1195,186 @@ article.ai-role-page {
   clearOutputBtn.addEventListener("click", function() {
     outputSection.style.display = "none";
     outputText.textContent = "";
+  });
+
+  // ---------- Mode Switcher ----------
+  modeSwitcher.addEventListener("click", function(e) {
+    var tab = e.target.closest(".ai-mode-tab");
+    if (!tab) return;
+    var newMode = tab.dataset.mode;
+    if (newMode === interactionMode) return;
+    interactionMode = newMode;
+    modeSwitcher.querySelectorAll(".ai-mode-tab").forEach(function(t) {
+      t.classList.toggle("active", t.dataset.mode === newMode);
+    });
+    if (newMode === "chat") {
+      scenarioTitle.textContent = "选择场景直接对话";
+      aiChatSection.style.display = "block";
+      outputSection.style.display = "none";
+      if (!aiChatDisplay.innerHTML.trim()) {
+        aiChatDisplay.innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.875rem;">👆 选择上方场景或输入自定义需求，开始与 AI 对话</div>';
+      }
+    } else {
+      scenarioTitle.textContent = "常用场景";
+      aiChatSection.style.display = "none";
+    }
+  });
+
+  // ---------- AI Direct Chat ----------
+  var aiChatSection = document.getElementById("aiChatSection");
+  var aiChatDisplay = document.getElementById("aiChatDisplay");
+  var aiFollowUp = document.getElementById("aiFollowUp");
+  var aiSendBtn = document.getElementById("aiSendBtn");
+  var generateDirectBtn = document.getElementById("generateDirect");
+  var conversationHistory = [];
+
+  function appendChatMsg(role, content) {
+    var msg = document.createElement("div");
+    msg.className = "ai-chat-msg " + (role === "user" ? "msg-user" : "msg-assistant");
+    var label = document.createElement("div");
+    label.className = "msg-label";
+    label.textContent = role === "user" ? "我" : "AI 助手";
+    var body = document.createElement("div");
+    body.className = "msg-content";
+    body.textContent = content;
+    msg.appendChild(label);
+    msg.appendChild(body);
+    aiChatDisplay.appendChild(msg);
+    aiChatDisplay.scrollTop = aiChatDisplay.scrollHeight;
+    return body;
+  }
+
+  function startDirectChat() {
+    var promptText = outputText.textContent;
+    if (!promptText) { showToast("请先生成提示词"); return; }
+    startChatWithPrompt(promptText);
+  }
+
+  function startChatWithPrompt(promptText) {
+    aiChatSection.style.display = "block";
+    conversationHistory = [
+      { role: "system", content: "你是一位专业的学习规划师。请根据学生的学习进度和需求，制定具体、可执行的学习计划。回复使用中文，使用 Markdown 格式，包含时间安排、任务清单和达标标准。" },
+      { role: "user", content: promptText }
+    ];
+    aiChatDisplay.innerHTML = "";
+    appendChatMsg("user", promptText);
+    aiChatSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    callAI();
+  }
+
+  function startChatWithGenerator(generator) {
+    var prompt = typeof generator === "function" ? generator() : generator;
+    startChatWithPrompt(prompt);
+  }
+
+  function callAI() {
+    var bubble = appendChatMsg("assistant", "");
+    var bubbleEl = bubble.parentElement;
+    bubbleEl.classList.add("typing");
+    bubble.textContent = "正在思考...";
+    aiSendBtn.disabled = true;
+    aiSendBtn.textContent = "AI 思考中...";
+
+    fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: conversationHistory, model: "deepseek-v4-flash", stream: true })
+    }).then(function(response) {
+      if (!response.ok) {
+        return response.json().then(function(err) {
+          throw new Error(err.error || ("HTTP " + response.status));
+        });
+      }
+      var reader = response.body.getReader();
+      var decoder = new TextDecoder();
+      var fullText = "";
+
+      function readChunk() {
+        reader.read().then(function(result) {
+          if (result.done) {
+            bubbleEl.classList.remove("typing");
+            if (fullText) {
+              conversationHistory.push({ role: "assistant", content: fullText });
+            }
+            aiSendBtn.disabled = false;
+            aiSendBtn.textContent = "发送追问";
+            aiFollowUp.focus();
+            return;
+          }
+          var chunk = decoder.decode(result.value, { stream: true });
+          var lines = chunk.split("\n");
+          for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line.startsWith("data: ") && line !== "data: [DONE]") {
+              try {
+                var parsed = JSON.parse(line.slice(6));
+                if (parsed.error) {
+                  bubbleEl.classList.remove("typing");
+                  bubbleEl.classList.add("error");
+                  bubble.textContent = "❌ " + parsed.error;
+                  aiSendBtn.disabled = false;
+                  aiSendBtn.textContent = "发送追问";
+                  return;
+                }
+                var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta;
+                if (delta && delta.reasoning_content) {
+                  if (!fullText) {
+                    bubble.textContent = "💭 思考中...\n\n";
+                    bubbleEl.classList.remove("typing");
+                  }
+                }
+                if (delta && delta.content) {
+                  if (bubble.textContent.indexOf("💭 思考中") === 0) {
+                    bubble.textContent = "";
+                  }
+                  fullText += delta.content;
+                  bubble.textContent = fullText;
+                }
+              } catch (e) { /* partial chunk, skip */ }
+            }
+          }
+          if (fullText) { bubbleEl.classList.remove("typing"); }
+          readChunk();
+        });
+      }
+      readChunk();
+    }).catch(function(err) {
+      bubbleEl.classList.remove("typing");
+      bubbleEl.classList.add("error");
+      var msg = err.message || "";
+      if (msg.indexOf("Insufficient Balance") !== -1) {
+        bubble.textContent = "❌ DeepSeek 账户余额不足\n\n请访问 platform.deepseek.com 充值（¥10 即可使用数月），充值后重试。";
+      } else if (msg.indexOf("401") !== -1 || msg.toLowerCase().indexOf("invalid api key") !== -1) {
+        bubble.textContent = "❌ API Key 无效\n\n请检查 .env 文件中的 DEEPSEEK_API_KEY 是否正确。";
+      } else if (msg.indexOf("Failed to fetch") !== -1 || msg.indexOf("NetworkError") !== -1) {
+        bubble.textContent = "❌ 无法连接服务器\n\n请确认 dev_server.py 正在运行（python dev_server.py）。";
+      } else {
+        bubble.textContent = "❌ " + msg + "\n\n请确认 dev_server.py 正在运行。";
+      }
+      aiSendBtn.disabled = false;
+      aiSendBtn.textContent = "发送追问";
+    });
+  }
+
+  function sendFollowUp() {
+    var text = aiFollowUp.value.trim();
+    if (!text) return;
+    conversationHistory.push({ role: "user", content: text });
+    appendChatMsg("user", text);
+    aiFollowUp.value = "";
+    callAI();
+  }
+
+  generateDirectBtn.addEventListener("click", startDirectChat);
+  chatCustomBtn.addEventListener("click", function() {
+    var request = customRequest.value.trim();
+    if (!request) { showToast("请先输入需求"); customRequest.focus(); return; }
+    var prompt = generateCustomPrompt();
+    if (prompt) startChatWithPrompt(prompt);
+  });
+  aiSendBtn.addEventListener("click", sendFollowUp);
+  aiFollowUp.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendFollowUp(); }
   });
 
   // ---------- Init ----------

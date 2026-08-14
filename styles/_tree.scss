@@ -1,12 +1,12 @@
 @import "variables";
 
-/* Tree */
+/* 树形导航 */
 .tree { padding: 0 var(--space-sm); }
 .tree-node { user-select: none; }
 .tree-children { padding-left: 18px; }
 .tree-node.collapsed > .tree-children { display: none; }
 
-/* Tree row */
+/* 树形行 */
 .tree-row {
   display: flex;
   align-items: center;
@@ -95,7 +95,7 @@
   flex-shrink: 0;
 }
 
-/* Row actions */
+/* 行操作按钮：桌面端 hover/focus 时显示，触屏设备常驻显示 */
 .row-actions {
   display: flex;
   align-items: center;
@@ -138,6 +138,7 @@
 .btn-edit:hover { background: var(--blue-soft); color: var(--blue-text); }
 .btn-delete:hover { background: var(--coral-soft); color: var(--coral-text); }
 
+// 触屏设备（无 hover 能力）：操作按钮常驻显示
 @media (hover: none) and (pointer: coarse) {
   .row-actions {
     visibility: visible;
@@ -146,7 +147,7 @@
   }
 }
 
-/* Leaf */
+/* 叶子节点 */
 .leaf-dot {
   width: 7px;
   height: 7px;
@@ -191,7 +192,7 @@
   border-radius: 999px;
 }
 
-/* Empty hint */
+/* 空状态提示 */
 .tree-empty {
   padding: 6px 8px 6px 28px;
   font-size: 0.8rem;

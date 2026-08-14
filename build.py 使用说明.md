@@ -243,7 +243,7 @@ Workbench/此刻便是春天.html.bak-YYYYMMDD_HHMMSS
 1. 在 `data/modules/` 创建 `{模块id}.json`
 2. 在 `data/workbench.json` 的 `modules` 数组中注册该模块
 3. 如需内容转换，在 `transformers/` 创建 `{模块id}.py`，实现 `enrich_module(data)`
-4. 运行 `python build.py` 和 `python validate_workbench.py`
+4. 运行 `python build.py` 和 `python .trae/skills/validate_workbench.py`
 5. 确认 `此刻便是春天.html` 正常显示新模块
 
 ---

@@ -4,6 +4,45 @@
 
 ---
 
+## v2.0.0
+
+**发布时间**：2026-08-14（北京时间）
+**最新 commit**：`待提交`（v2.0.0 变更尚未提交 Git）
+
+### 2026-08-14 — v2.0.0 功能增强与约束体系升级
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | AI 统筹规划师增强：每日执行计划新增 22:00–23:00「整理复盘」时段；AI 对话消息默认折叠 2-3 行，支持展开/收起；「详细计划」与「对话区」位置调换；AI 生成计划自动写入课程表；对话历史存 localStorage 超 20 条自动截断 |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | 页面重构为「今日任务」/「总任务」双板块结构，按钮切换；今日任务按周次自动匹配章节，卡片按掌握度排序；移除顶部科目分类按钮，改用 URL 参数预选科目；按钮事件从 onclick 改为 addEventListener；预置 13015 和 en 两个科目卡片；DATA_VERSION 升至 5 |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | 修复关键 Bug：离散数学卡片补元符号 `a'` 单引号未转义导致 JS SyntaxError，整个页面交互静默失效。修复为 `a\'`（3 处） |
+| `项目约束总览.md` | 新增「功能验证」约束（修改 HTML/JS 后必须浏览器实测）；新增「JS 字符串转义」约束（内嵌数据须检查引号转义）；校验脚本条目新增 6 项自动化检查说明；修正 validate_workbench.py 路径为 `.trae/skills/validate_workbench.py` |
+| `文件约束隐患与规避方案.md` | 新增第 13 条隐患「JS 内嵌数据字符串转义遗漏」，含案例记录与规避措施 |
+| `.trae/skills/validate_workbench.py` | 新增 8 个检查函数：`check_chinese_comments()`（代码中文注释，覆盖 templates/）、`check_backup_count()`（备份数量）、`check_json_html_naming()`（JSON-HTML 同名）、`check_date_format()`（日期格式）、`check_folder_naming()`（文件夹中文命名）、`check_interactive_styles_global()`（交互组件样式完整性）、`check_directory_structure_sync()`（目录结构同步 + CHANGELOG 版本一致性）、`check_changelog_coverage()`（git 已修改文件 vs CHANGELOG 最新版本表格，防止变更信息散落）；`check_directory_structure_sync()` 扫描范围扩展至 Workbench 各模块、data/modules、templates、.trae/skills、transformers |
+| `styles/*.scss`（9 个文件） | 全部英文注释改为中文，符合代码注释约束 |
+| `templates/workbench.html` | 7 处英文 JS 注释改为中文 |
+| `Workbench/ai-learning/ai-code-review.html`、`python-knowledge-tree.html`、`full-learning-roadmap.html` | 英文注释改为中文 |
+| `Workbench/ai-learning/ai-roles-hub.html` | `.ai-output-section` 和 `.ai-chat-section` CSS 新增 `display:none`，消除对内联样式的依赖 |
+| `Workbench/ai-learning/ai-news-digest.html` | `.ainews-archive` CSS 新增 `display:none`，消除对内联样式的依赖 |
+| `build.py 使用说明.md`、`版本控制规范.md` | 修正 validate_workbench.py 路径为 `.trae/skills/validate_workbench.py` |
+| `AGENT_HANDOFF.md` | 目录结构补充 7 项缺失（.gitignore/.gitattributes/temp/_responsive.scss/_tree.scss/AI统筹规划师-版本C方案.md/00023高等数学）；Node.js 描述修正；v2.0.0 章节精简为功能级摘要，文件级明细引用 CHANGELOG |
+| `CHANGELOG.md` | 新增 v2.0.0 章节 |
+| `项目约束总览.md` | 校验脚本条目更新；新增文档职责分工定义；新增 CHANGELOG 更新检查项与 CHANGELOG 变更覆盖自动校验 |
+| `.gitignore` | v2.0.0 约束体系升级过程中同步更新忽略规则 |
+| `Workbench/ai-learning/daily-plan.html` | AI 统筹规划师重构期间同步更新每日执行计划页面 |
+| `data/modules/ability.json` | 能力提升模块导航数据同步更新 |
+| `data/modules/ai-learning.json` | AI 学习模块导航数据同步更新 |
+| `data/modules/ai-roles.json` | AI 助手角色模块导航数据同步更新 |
+| `data/modules/self-study.json` | 自考学习模块导航数据同步更新（含背诵与简答子项调整） |
+| `data/workbench.json` | 工作台全局配置同步更新 |
+| `dev_server.py` | AI API 代理端点与错误处理同步调整 |
+| `文件说明.md` | 同步更新文件用途说明；补充 `AI统筹规划师-版本C方案.md` 用途说明 |
+| `.git/hooks/pre-commit` | 新增 Git pre-commit hook，提交前自动运行 `validate_workbench.py`，校验失败则阻止提交 |
+| `AGENT_HANDOFF.md` | 目录结构补充 3 项缺失（tasks.json、工作台迁移方案-说明.html、zujian-file-router/）；校验规则摘要补充目录结构同步、CHANGELOG 变更覆盖与 pre-commit hook 说明；核心原则新增 pre-commit hook、CHANGELOG 同步要求与 .env 说明；文档顶部新增未提交变更警告 |
+| `.trae/skills/validate_workbench.py` | `check_json_html_naming()` 新增纯数据 JSON 白名单（`ai-news-data.json`）；`check_folder_naming()` 英文目录白名单新增 `ai-learning` |
+
+---
+
 ## v0.3.0
 
 **发布时间**：2026-08-13 02:43:12（北京时间）  

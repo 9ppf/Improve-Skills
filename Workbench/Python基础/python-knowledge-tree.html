@@ -516,7 +516,7 @@
         var pct = total ? Math.round((done / total) * 100) : 0;
         fillEl.style.width = pct + "%";
 
-        // update per-branch counts
+        // 更新各分支计数
         branches.forEach(function (branch) {
           var leafChecks = branch.querySelectorAll(".python-check");
           var bDone = 0;
@@ -546,7 +546,7 @@
         });
       });
 
-      // search filter
+      // 搜索过滤
       function filterTree() {
         var q = searchInput.value.trim().toLowerCase();
         var anyVisible = false;
@@ -560,7 +560,7 @@
             if (match) visibleInBranch++;
           });
           if (q) {
-            // searching: show branch only if it has matches; expand matches
+            // 搜索时：仅显示有匹配项的分支，并展开匹配项
             if (visibleInBranch > 0) {
               branch.style.display = "";
               branch.classList.remove("python-collapsed");
@@ -585,7 +585,7 @@
         updateProgress();
       });
 
-      // init
+      // 初始化
       syncFromState();
       updateProgress();
     })();

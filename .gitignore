@@ -19,3 +19,6 @@ Workbench/此刻便是春天.html.bak-*
 # OS files
 .DS_Store
 Thumbs.db
+
+# API Keys (never commit)
+.env

@@ -1,8 +1,10 @@
+// 基础样式与重置
 @import "variables";
 
 * { box-sizing: border-box; }
 html { font-size: 15px; }
 
+// 尊重用户「减少动画」的系统偏好
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

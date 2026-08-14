@@ -38,7 +38,7 @@ article.ai-code-page {
   margin: 0 auto;
 }
 
-/* ---------- Header ---------- */
+/* ---------- 头部 ---------- */
 .ai-code-header { margin-bottom: 1.75rem; }
 
 .ai-code-header h1 {
@@ -145,7 +145,7 @@ article.ai-code-page {
   background: rgba(139, 92, 246, 0.04);
 }
 
-/* ---------- Report Section ---------- */
+/* ---------- 报告区 ---------- */
 .ai-code-report {
   display: none;
   margin-bottom: 1.5rem;
@@ -187,7 +187,7 @@ article.ai-code-page {
   border-radius: 2px;
 }
 
-/* ---------- Stats ---------- */
+/* ---------- 统计数据 ---------- */
 .ai-code-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -222,7 +222,7 @@ article.ai-code-page {
   margin-top: 0.15rem;
 }
 
-/* ---------- Checklist ---------- */
+/* ---------- 检查清单 ---------- */
 .ai-code-checklist {
   display: flex;
   flex-direction: column;
@@ -292,7 +292,7 @@ article.ai-code-page {
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
 }
 
-/* ---------- Textareas ---------- */
+/* ---------- 文本域 ---------- */
 .ai-code-textarea {
   width: 100%;
   min-height: 80px;
@@ -369,7 +369,7 @@ article.ai-code-page {
   overflow-x: auto;
 }
 
-/* ---------- Toast ---------- */
+/* ---------- 提示弹窗 ---------- */
 .ai-code-toast {
   position: fixed;
   bottom: 2rem;
@@ -505,7 +505,7 @@ article.ai-code-page {
   var summaryEl      = document.getElementById("aiCodeSummary");
   var toastEl        = document.getElementById("aiCodeToast");
 
-  /* ---------- Toast ---------- */
+  /* ---------- 提示弹窗 ---------- */
   var toastTimer = null;
   function showToast(msg) {
     toastEl.textContent = msg;
@@ -516,7 +516,7 @@ article.ai-code-page {
     }, 2000);
   }
 
-  /* ---------- Clipboard ---------- */
+  /* ---------- 剪贴板 ---------- */
   function copyToClipboard(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function() {
@@ -545,7 +545,7 @@ article.ai-code-page {
     document.body.removeChild(ta);
   }
 
-  /* ---------- Code Analysis ---------- */
+  /* ---------- 代码分析 ---------- */
   function analyzeCode(code) {
     var lines = code.split("\n");
     var stats = {
@@ -610,7 +610,7 @@ article.ai-code-page {
     return stats;
   }
 
-  /* ---------- Render Stats ---------- */
+  /* ---------- 渲染统计 ---------- */
   function renderStats(stats) {
     var items = [
       { value: stats.lines,     label: "总行数" },
@@ -631,7 +631,7 @@ article.ai-code-page {
     });
   }
 
-  /* ---------- Render Checklist ---------- */
+  /* ---------- 渲染检查清单 ---------- */
   function renderChecklist(stats) {
     checklistContainer.innerHTML = "";
 
@@ -698,7 +698,7 @@ article.ai-code-page {
     });
   }
 
-  /* ---------- Generate Report ---------- */
+  /* ---------- 生成报告 ---------- */
   function generateReport() {
     var code = codeInput.value.trim();
     if (!code) {
@@ -720,7 +720,7 @@ article.ai-code-page {
     }, 100);
   }
 
-  /* ---------- Clear ---------- */
+  /* ---------- 清空 ---------- */
   function clearAll() {
     codeInput.value = "";
     suggestionsEl.value = "";
@@ -735,7 +735,7 @@ article.ai-code-page {
     codeInput.focus();
   }
 
-  /* ---------- Copy Prompt ---------- */
+  /* ---------- 复制提示词 ---------- */
   function copyPrompt() {
     var code = codeInput.value.trim();
     var text = presetPrompt;
@@ -745,7 +745,7 @@ article.ai-code-page {
     copyToClipboard(text);
   }
 
-  /* ---------- localStorage ---------- */
+  /* ---------- 本地存储 ---------- */
   function saveState() {
     var checklistStates = {};
     var selects = checklistContainer.querySelectorAll(".ai-code-checklist-item");
@@ -819,7 +819,7 @@ article.ai-code-page {
     }
   }
 
-  /* ---------- Auto-save on input ---------- */
+  /* ---------- 输入时自动保存 ---------- */
   [codeInput, suggestionsEl, timeCompEl, spaceCompEl, summaryEl].forEach(function(el) {
     el.addEventListener("input", function() {
       if (reportSection.classList.contains("ai-code-visible")) {
@@ -828,12 +828,12 @@ article.ai-code-page {
     });
   });
 
-  /* ---------- Event Bindings ---------- */
+  /* ---------- 事件绑定 ---------- */
   generateBtn.addEventListener("click", generateReport);
   clearBtn.addEventListener("click", clearAll);
   copyPromptBtn.addEventListener("click", copyPrompt);
 
-  /* ---------- Init ---------- */
+  /* ---------- 初始化 ---------- */
   loadState();
 })();
 </script>

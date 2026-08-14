@@ -47,6 +47,7 @@
         {
           "name": "每日执行计划",
           "type": "ai-learning",
+          "renderMode": "bare",
           "stage": "已生成",
           "current": "8.11–10.24 每天 5 时段任务",
           "tasks": [],
@@ -56,6 +57,7 @@
         {
           "name": "AI 学习规划师",
           "type": "ai-learning",
+          "renderMode": "bare",
           "stage": "可用",
           "current": "根据进度生成跨科目学习计划",
           "tasks": [],

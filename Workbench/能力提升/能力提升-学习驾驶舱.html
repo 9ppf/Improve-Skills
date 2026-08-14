@@ -104,6 +104,13 @@ article.dash-page {
   color: var(--accent);
 }
 
+.dash-view-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.28);
+}
+
 /* ---------- Planning Card ---------- */
 .dash-plan-card {
   background: var(--bg2);
@@ -322,6 +329,118 @@ article.dash-page {
   padding: 0.75rem 0;
 }
 
+.dash-tip {
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0.75rem 0;
+}
+
+/* ---------- Tab Bar ---------- */
+.dash-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--rule);
+}
+.dash-tab {
+  padding: 0.6rem 1.1rem;
+  border: none;
+  background: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+  font-family: var(--font);
+  white-space: nowrap;
+}
+.dash-tab:hover { color: var(--ink); }
+.dash-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.dash-panel { display: none; }
+.dash-panel.active { display: block; }
+
+/* ---------- Completion Panel ---------- */
+.comp-section { margin-bottom: 1.5rem; }
+.comp-section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.comp-section h2::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 640px) { .comp-grid { grid-template-columns: 1fr; } }
+.comp-card {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03);
+}
+.comp-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+.comp-card-icon { font-size: 1.2rem; }
+.comp-card-name { font-weight: 600; flex: 1; }
+.comp-card-percent {
+  font-weight: 800;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+}
+.comp-card-percent.good { color: var(--pass); }
+.comp-card-percent.mid { color: var(--warn); }
+.comp-card-percent.low { color: var(--muted); }
+.comp-card-bar {
+  height: 8px;
+  background: var(--rule);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.comp-card-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.5s ease;
+}
+.comp-card-fill.good { background: linear-gradient(90deg, #10b981, #34d399); }
+.comp-card-fill.mid { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.comp-card-fill.low { background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
+.comp-card-detail {
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Roadmap Panel ---------- */
+.dash-roadmap-frame {
+  width: 100%;
+  min-height: 70vh;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+}
+
 /* ---------- Overall Card ---------- */
 .dash-overall {
   background: linear-gradient(135deg, var(--accent-soft), rgba(167, 139, 250, 0.08));
@@ -517,6 +636,840 @@ article.dash-page {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* ---------- Week Overview (周任务概览) ---------- */
+.wk-section { margin-bottom: 1.5rem; }
+
+.wk-section h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.wk-section h2::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.wk-phase-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.wk-phase-nav button {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+}
+
+.wk-phase-nav button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wk-phase-nav button.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wk-week {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03);
+  transition: border-color 0.2s;
+}
+
+.wk-week.current {
+  border: 2px solid var(--accent);
+  background: var(--accent-soft);
+}
+
+.wk-week.past { opacity: 0.65; }
+
+.wk-week-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.wk-week-title {
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.wk-week-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.12rem 0.45rem;
+  border-radius: 5px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.wk-week-dates {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.wk-week-progress {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.wk-week-progress .pct {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.wk-week-progress .label {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.wk-goals {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.wk-goal {
+  display: grid;
+  grid-template-columns: 22px 70px 1fr auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.5rem 0.6rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  font-size: 0.88rem;
+}
+
+.wk-goal.done {
+  background: rgba(16, 185, 129, 0.06);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.wk-goal.done .wk-goal-text {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+/* Simplified week goals */
+.wk-goals-simple { gap: 0.3rem; }
+.wk-goal-simple {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+}
+.wk-goal-simple:hover { background: rgba(139,92,246,0.05); }
+.wk-goal-simple.done { opacity: 0.55; }
+.wk-goal-simple.done .wk-goal-text {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.wk-goal-simple .wk-tag { flex-shrink: 0; }
+.wk-goal-simple .wk-goal-text { flex: 1; }
+
+.wk-check {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--rule);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.wk-check:hover { border-color: var(--accent); }
+
+.wk-check.checked {
+  background: var(--pass);
+  border-color: var(--pass);
+}
+
+.wk-check.checked::after {
+  content: "✓";
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.wk-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  padding: 0.12rem 0.4rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.wk-tag-core { background: rgba(239, 68, 68, 0.10); color: #dc2626; }
+.wk-tag-core2 { background: rgba(245, 158, 11, 0.12); color: #d97706; }
+.wk-tag-key { background: rgba(37, 99, 235, 0.10); color: #2563eb; }
+.wk-tag-py { background: rgba(16, 185, 129, 0.10); color: #059669; }
+.wk-tag-ai { background: rgba(139, 92, 246, 0.10); color: #7c3aed; }
+.wk-tag-en { background: rgba(236, 72, 153, 0.10); color: #db2777; }
+
+.wk-goal-text {
+  cursor: text;
+  border-radius: 4px;
+  padding: 0.1rem 0.3rem;
+  transition: background 0.15s;
+}
+
+.wk-goal-text:hover { background: rgba(139, 92, 246, 0.06); }
+
+.wk-goal-text[contenteditable="true"] {
+  background: #fff;
+  outline: 2px solid var(--accent);
+  border-radius: 4px;
+}
+
+.wk-goal-actions {
+  display: flex;
+  gap: 0.3rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.wk-goal:hover .wk-goal-actions { opacity: 1; }
+
+.wk-goal-btn {
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.12rem 0.4rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--font);
+}
+
+.wk-goal-btn:hover {
+  color: var(--fail);
+  border-color: var(--fail);
+}
+
+.wk-add-goal {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.wk-add-btn {
+  background: none;
+  border: 1px dashed var(--rule);
+  border-radius: 8px;
+  padding: 0.35rem 1rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+}
+
+.wk-add-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.wk-milestone {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.7rem;
+  background: rgba(139, 92, 246, 0.06);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.wk-milestone strong { color: var(--ink); }
+
+@media (max-width: 640px) {
+  .wk-week { padding: 1rem; }
+  .wk-goal { grid-template-columns: 20px 60px 1fr; font-size: 0.82rem; }
+  .wk-goal-actions { grid-column: 1 / 4; opacity: 1; }
+  .wk-week-header { flex-direction: column; gap: 0.4rem; }
+  .wk-week-progress { text-align: left; }
+}
+
+/* ---------- AI 统筹规划师面板 ---------- */
+.ai-scenario-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.ai-scenario-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.28);
+}
+
+.ai-scenario-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.35);
+}
+
+.ai-scenario-btn:active {
+  transform: translateY(0);
+}
+
+.ai-status {
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 0.5rem 0;
+  min-height: 1.5rem;
+}
+
+.ai-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ai-preview-card {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03);
+  backdrop-filter: blur(8px);
+}
+
+.ai-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.92rem;
+}
+
+.ai-preview-goal {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+
+.ai-preview-goal .wk-tag {
+  flex-shrink: 0;
+}
+
+.ai-preview-milestone {
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  background: rgba(139, 92, 246, 0.06);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.ai-summary {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.ai-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.ai-apply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.28);
+}
+
+.ai-apply-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+
+.ai-conversation {
+  margin-top: 0.5rem;
+}
+
+/* ---------- AI Daily Plan Cards ---------- */
+.ai-daily-plan { margin-top: 0.75rem; }
+.ai-daily-plan:empty { display: none; }
+
+.dp-summary {
+  background: var(--accent-soft);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.dp-day {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+}
+.dp-day-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+}
+.dp-date { font-weight: 600; font-size: 0.9rem; }
+.dp-weekday {
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: var(--surface);
+  padding: 2px 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+}
+.dp-hours {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+.dp-task {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid var(--rule);
+}
+.dp-task:last-child { border-bottom: none; }
+.dp-tag {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 2px 0.5rem;
+  border-radius: 999px;
+  color: #fff;
+  min-width: 3.5rem;
+  text-align: center;
+  white-space: nowrap;
+}
+.dp-tag-core { background: #6366f1; }
+.dp-tag-core2 { background: #0ea5e9; }
+.dp-tag-key { background: #f59e0b; }
+.dp-tag-py { background: #10b981; }
+.dp-tag-ai { background: #8b5cf6; }
+.dp-tag-en { background: #ec4899; }
+.dp-tag-review { background: #64748b; }
+.dp-task-text { flex: 1; font-size: 0.82rem; line-height: 1.5; }
+.dp-task-hours {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ---------- Daily Execution Plan ---------- */
+.dp-exec-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+}
+.dp-exec-empty p { margin-bottom: 0.5rem; }
+.dp-exec-hint { font-size: 0.82rem; opacity: 0.8; }
+
+.dp-exec-container { max-width: 100%; }
+
+.dp-exec-day {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+.dp-exec-day.today {
+  border: 2px solid var(--accent);
+  background: var(--accent-soft);
+}
+.dp-exec-day.past { opacity: 0.65; }
+
+.dp-exec-day-header {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dp-exec-day-header .dp-exec-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 0.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+}
+.dp-exec-day-header .dp-exec-badge.past {
+  background: var(--muted);
+}
+
+.dp-exec-row {
+  display: grid;
+  grid-template-columns: 90px 70px 1fr;
+  gap: 0.6rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px dashed var(--rule);
+  font-size: 0.85rem;
+  align-items: center;
+}
+.dp-exec-row:last-child { border-bottom: none; }
+.dp-exec-row .dp-exec-time {
+  color: var(--muted);
+  font-family: var(--font-mono, "JetBrains Mono", Consolas, monospace);
+  font-size: 0.8rem;
+}
+.dp-exec-row .dp-exec-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 0.12rem 0.4rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+.dp-exec-tag.core { background: rgba(99,102,241,0.12); color: #4f46e5; }
+.dp-exec-tag.core2 { background: rgba(14,165,233,0.12); color: #0284c7; }
+.dp-exec-tag.key { background: rgba(245,158,11,0.12); color: #d97706; }
+.dp-exec-tag.py { background: rgba(16,185,129,0.12); color: #059669; }
+.dp-exec-tag.ai { background: rgba(139,92,246,0.12); color: #7c3aed; }
+.dp-exec-tag.en { background: rgba(236,72,153,0.12); color: #db2777; }
+.dp-exec-tag.review { background: rgba(100,116,139,0.12); color: #475569; }
+.dp-exec-tag.rest { background: rgba(34,197,94,0.12); color: #16a34a; }
+
+.dp-exec-output {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.dp-exec-output strong { color: var(--ink); }
+
+.dp-exec-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .dp-exec-row {
+    grid-template-columns: 75px 60px 1fr;
+    font-size: 0.8rem;
+  }
+}
+
+/* ---------- AI Input ---------- */
+.ai-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  align-items: flex-end;
+}
+
+.ai-input {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  resize: vertical;
+  min-height: 44px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: #fff;
+}
+
+.ai-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+.ai-send-btn {
+  flex-shrink: 0;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.28);
+}
+
+.ai-send-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.35);
+}
+
+.ai-msg {
+  margin-bottom: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ai-msg-user {
+  background: var(--accent-soft);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  margin-left: 2rem;
+}
+
+.ai-msg-bot {
+  background: #fff;
+  border: 1px solid var(--rule);
+  margin-right: 2rem;
+}
+
+.ai-msg-bot strong { color: var(--accent); }
+
+.ai-msg-text-wrap {
+  position: relative;
+}
+.ai-msg-text-wrap.ai-collapsed {
+  max-height: 4.1rem;
+  overflow: hidden;
+}
+.ai-msg-user .ai-msg-text-wrap.ai-collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1rem;
+  background: linear-gradient(transparent, var(--accent-soft));
+  pointer-events: none;
+}
+.ai-msg-bot .ai-msg-text-wrap.ai-collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1rem;
+  background: linear-gradient(transparent, #fff);
+  pointer-events: none;
+}
+.ai-msg-toggle {
+  display: inline-block;
+  margin-top: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font);
+}
+.ai-msg-toggle:hover {
+  text-decoration: underline;
+}
+
+.ai-conv-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.3rem;
+}
+.ai-clear-btn {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.ai-clear-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.ai-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ai-loading::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--accent-soft);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ai-spin 0.8s linear infinite;
+}
+
+@keyframes ai-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-retry-btn {
+  display: inline-block;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: var(--font);
+  margin-right: 0.4rem;
+  margin-top: 0.4rem;
+  transition: opacity 0.2s;
+}
+.ai-retry-btn:hover { opacity: 0.85; }
+.ai-retry-clear {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--rule);
+}
+.ai-retry-clear:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  opacity: 1;
+}
+
+/* 验收反馈卡片 */
+.ai-review-card {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03);
+  backdrop-filter: blur(8px);
+}
+
+.ai-review-header {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.ai-review-rate {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.ai-review-feedback {
+  font-size: 0.85rem;
+  color: var(--ink);
+  line-height: 1.7;
+  padding: 0.5rem 0.7rem;
+  background: var(--accent-soft);
+  border-radius: 8px;
+  margin-bottom: 0.6rem;
+}
+
+.ai-review-suggestions {
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.ai-review-suggestions ul {
+  margin: 0.35rem 0 0 1.2rem;
+  padding: 0;
+}
+
+.ai-review-suggestions li {
+  margin-bottom: 0.3rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .ai-scenario-row { flex-direction: column; }
+  .ai-scenario-btn { width: 100%; justify-content: center; }
+  .ai-apply-btn { width: 100%; justify-content: center; }
+}
 </style>
 </head>
 <body>
@@ -525,70 +1478,90 @@ article.dash-page {
     <h1>学习驾驶舱 · 统筹计划与进度总览</h1>
     <p>本周计划、考试倒计时、各模块进度，一站掌握</p>
     <div class="dash-header-actions">
-      <a class="dash-btn dash-btn-primary" href="../ai-learning/ai-roles-hub.html?mode=global">🤖 AI 统筹规划师</a>
-      <a class="dash-btn dash-btn-secondary" href="../ai-learning/daily-plan.html">📅 每日执行计划</a>
+      <button class="dash-btn dash-btn-secondary dash-view-btn" data-view="dashboard">📋 统筹计划</button>
+      <button class="dash-btn dash-btn-secondary dash-view-btn" data-view="ai">🤖 AI统筹规划师</button>
+      <button class="dash-btn dash-btn-secondary dash-view-btn" data-view="daily">📅 每日执行计划</button>
+      <button class="dash-btn dash-btn-secondary dash-view-btn" data-view="completion">📈 综合完成度</button>
+      <button class="dash-btn dash-btn-secondary dash-view-btn" data-view="roadmap">🗺️ 学习路线</button>
     </div>
   </div>
 
-  <section class="dash-plan-card" id="planCard" style="display:none">
-    <h2>本周统筹计划</h2>
-
+  <div class="dash-panel active" id="panel-dashboard">
+    <!-- 倒计时 -->
     <div class="dash-countdown-row" id="countdownRow"></div>
 
-    <div class="dash-time-section">
-      <h3>本周时间分配（小时）</h3>
-      <div class="dash-time-row">
-        <span class="dash-time-label">自考备考</span>
-        <div class="dash-time-bar"><div class="dash-time-fill exam" id="examBar" style="width:70%"></div></div>
-        <input class="dash-time-input" type="number" id="examHours" min="0" step="0.5" value="14">
+    <!-- 周任务概览 -->
+    <div class="wk-section">
+      <h2>阶段周任务概览</h2>
+      <div class="wk-phase-nav" id="wkPhaseNav">
+        <button data-phase="0">初级阶段：各章梳理+练习</button>
+        <button data-phase="1">中间阶段：重点难点突破</button>
+        <button data-phase="2">冲刺阶段：模拟考+题海</button>
       </div>
-      <div class="dash-time-row">
-        <span class="dash-time-label">Python 基础</span>
-        <div class="dash-time-bar"><div class="dash-time-fill python" id="pythonBar" style="width:10%"></div></div>
-        <input class="dash-time-input" type="number" id="pythonHours" min="0" step="0.5" value="2">
-      </div>
-      <div class="dash-time-row">
-        <span class="dash-time-label">AI 学习</span>
-        <div class="dash-time-bar"><div class="dash-time-fill ai" id="aiBar" style="width:10%"></div></div>
-        <input class="dash-time-input" type="number" id="aiHours" min="0" step="0.5" value="2">
-      </div>
-      <div class="dash-time-row">
-        <span class="dash-time-label">休息缓冲</span>
-        <div class="dash-time-bar"><div class="dash-time-fill rest" id="restBar" style="width:10%"></div></div>
-        <input class="dash-time-input" type="number" id="restHours" min="0" step="0.5" value="2">
-      </div>
-      <div class="dash-time-total">
-        <span>本周总计：<strong id="totalHours">20</strong> 小时</span>
-        <span>推荐：14–28 小时</span>
-      </div>
+      <div id="weeksContainer"></div>
     </div>
 
-    <div class="dash-task-section">
-      <h3>本周重点任务</h3>
-      <div class="dash-task-list" id="taskList"></div>
-      <div class="dash-task-add">
-        <input class="dash-task-input" type="text" id="newTaskInput" placeholder="添加新任务...">
-        <button class="dash-btn dash-btn-secondary" id="addTaskBtn">添加</button>
+  </div><!-- /panel-dashboard -->
+
+  <div class="dash-panel" id="panel-completion">
+    <div class="dash-overall" id="compOverall">
+      <div class="dash-overall-row">
+        <span class="dash-overall-title">总进度</span>
+        <span class="dash-overall-percent" id="compTotalPercent">—</span>
       </div>
+      <div class="dash-overall-bar">
+        <div class="dash-overall-fill" id="compTotalFill" style="width:0%"></div>
+      </div>
+      <div class="dash-overall-stats" id="compTotalStats"></div>
     </div>
-  </section>
 
-  <div class="dash-overall" id="overallCard">
-    <div class="dash-overall-row">
-      <span class="dash-overall-title">综合完成度</span>
-      <span class="dash-overall-percent" id="overallPercent">—</span>
+    <section class="comp-section">
+      <h2>各科目完成度</h2>
+      <div class="comp-grid" id="compSubjectGrid"></div>
+    </section>
+
+    <section class="comp-section">
+      <h2>Python 完成度</h2>
+      <div class="comp-grid" id="compPythonGrid"></div>
+    </section>
+
+    <section class="comp-section">
+      <h2>AI 学习完成度</h2>
+      <div class="comp-grid" id="compAIGrid"></div>
+    </section>
+
+    <div class="dash-tip">
+      进度数据来自各模块页面的 localStorage，每 3 秒自动刷新
     </div>
-    <div class="dash-overall-bar">
-      <div class="dash-overall-fill" id="overallFill" style="width:0%"></div>
+  </div><!-- /panel-completion -->
+
+  <div class="dash-panel" id="panel-daily">
+    <div class="dp-exec-empty" id="dpExecEmpty">
+      <p>📋 尚无逐日计划数据</p>
+      <p class="dp-exec-hint">请先在「AI统筹规划师」中生成本周计划，此处将自动细化为每小时课程表</p>
     </div>
-    <div class="dash-overall-stats" id="overallStats"></div>
-  </div>
+    <div class="dp-exec-container" id="dpExecContainer"></div>
+  </div><!-- /panel-daily -->
 
-  <div class="dash-grid" id="moduleGrid"></div>
+  <div class="dash-panel" id="panel-ai">
+    <div class="ai-scenario-row">
+      <button class="ai-scenario-btn" onclick="aiGenerate()">📅 生成本周计划</button>
+      <button class="ai-scenario-btn" onclick="aiAdjust()">🔄 调整后续计划</button>
+      <button class="ai-scenario-btn" onclick="aiReview()">✅ 验收今日任务</button>
+    </div>
+    <div class="ai-status" id="aiStatus">点击上方按钮开始，也可以在下方直接输入需求告诉 AI</div>
+    <div class="ai-daily-plan" id="aiDailyPlan"></div>
+    <div class="ai-conversation" id="aiConversation"></div>
+    <div class="ai-conv-actions"><button class="ai-clear-btn" onclick="aiClearChat()">🗑️ 清空对话</button></div>
+    <div class="ai-input-row">
+      <textarea class="ai-input" id="aiInput" placeholder="告诉 AI 你的情况：比如「离散数学第1章没跟上，需要调整后续计划」" rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSendMessage();}"></textarea>
+      <button class="ai-send-btn" onclick="aiSendMessage()">发送</button>
+    </div>
+  </div><!-- /panel-ai -->
 
-  <div class="dash-tip">
-    进度数据来自各模块页面的 localStorage，每 3 秒自动刷新 · 也可切换标签页后返回触发刷新
-  </div>
+  <div class="dash-panel" id="panel-roadmap">
+    <iframe class="dash-roadmap-frame" src="full-learning-roadmap.html" loading="lazy"></iframe>
+  </div><!-- /panel-roadmap -->
 
   <div class="dash-toast" id="dashToast"></div>
 </article>
@@ -649,7 +1622,7 @@ function daysUntil(dateStr) {
 
 // ---------- Data Loading ----------
 function loadSelfStudyData() {
-  return fetch('../data/modules/self-study.json')
+  return fetch('../../data/modules/self-study.json')
     .then(function(r) { return r.json(); })
     .then(function(data) { selfStudyData = data; })
     .catch(function(err) {
@@ -752,10 +1725,7 @@ function subjectLabel(code) {
 
 // ---------- Planning Section ----------
 function renderPlanning() {
-  document.getElementById('planCard').style.display = 'block';
   renderCountdown();
-  initTimeInputs();
-  renderTasks();
 }
 
 function renderCountdown() {
@@ -900,6 +1870,7 @@ function escapeHtml(str) {
 
 // ---------- Overall Progress ----------
 function renderOverall(pyKt, pyLoop, exam, recite) {
+  if (!document.getElementById('overallPercent')) return;
   var allDone = pyKt.done + pyLoop.done + exam.done + recite.done;
   var allTotal = pyKt.total + pyLoop.total + exam.total + recite.total;
   var overallPercent = allTotal ? Math.min(100, Math.round(allDone / allTotal * 100)) : 0;
@@ -1003,20 +1974,1103 @@ function renderCards() {
   grid.innerHTML = cards.join('');
 }
 
+// ---------- Week Overview (周任务概览) ----------
+var SCHEDULE_STORAGE_KEY = 'schedule_data';
+
+// 三阶段：0=初级(第1-5周) 1=中间(第6-7周) 2=冲刺(第8-10周)
+var PHASE_RANGES = [
+  { name: '初级阶段：各章梳理+练习', start: '2026-08-14', end: '2026-09-14' },
+  { name: '中间阶段：重点难点突破', start: '2026-09-15', end: '2026-09-28' },
+  { name: '冲刺阶段：模拟考+题海', start: '2026-09-29', end: '2026-10-24' }
+];
+var currentPhase = 0;
+var PHASE_OVERRIDE_KEY = 'schedule_phase_override';
+
+var WEEK_DATA = [
+  // ===== 初级阶段（第1-5周）=====
+  { week: '第1周', dates: '8/14 — 8/17', badge: '起点', phase: 0, isCurrent: true,
+    goals: [
+      { tag: 'core', tagText: '系统原理', text: '第1章：冯·诺依曼结构、程序执行、系统层次结构、性能评价', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '第1章：命题逻辑基本概念、命题公式、等值演算', done: false },
+      { tag: 'py', tagText: 'Python', text: '基础语法复习：变量/循环/列表/字典 + LeetCode 1 道', done: false },
+      { tag: 'ai', tagText: 'AI', text: 'AI 资讯速览 + 体验 Agent Demo', done: false },
+      { tag: 'en', tagText: '英语', text: '单词 150 个 + 阅读判断 1 篇', done: false }
+    ],
+    milestone: '里程碑：系统原理第1章 + 离散数学第1章完成'
+  },
+  { week: '第2周', dates: '8/18 — 8/24', badge: '', phase: 0, isCurrent: false,
+    goals: [
+      { tag: 'core', tagText: '系统原理', text: '第2章：数制编码、整数/实数表示、IEEE 754、ALU、乘除运算', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '第2章：谓词逻辑、第3章：集合论基本概念', done: false },
+      { tag: 'py', tagText: 'Python', text: 'IEEE 754 转换脚本 + 进制转换函数 + LeetCode 1 道', done: false },
+      { tag: 'ai', tagText: 'AI', text: 'RAG 概念 + Prompt Engineering 入门', done: false },
+      { tag: 'en', tagText: '英语', text: '单词 150 个 + 完形填空 1 篇', done: false }
+    ],
+    milestone: '里程碑：系统原理第1-2章 + 离散数学第1-3章完成'
+  },
+  { week: '第3周', dates: '8/25 — 8/31', badge: '', phase: 0, isCurrent: false,
+    goals: [
+      { tag: 'core', tagText: '系统原理', text: '第3章：IA-32 指令系统、寻址方式、过程调用、x86-64', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '第4章：关系、第5章：函数', done: false },
+      { tag: 'py', tagText: 'Python', text: '汇编指令解析器 + 结构体 sizeof 计算器 + LeetCode 2 道', done: false },
+      { tag: 'ai', tagText: 'AI', text: 'MCP 概念 + Agent 工作流案例', done: false },
+      { tag: 'en', tagText: '英语', text: '单词 150 个 + 阅读判断 2 篇', done: false }
+    ],
+    milestone: '里程碑：系统原理第3章 + 离散数学第4-5章完成'
+  },
+  { week: '第4周', dates: '9/1 — 9/7', badge: '', phase: 0, isCurrent: false,
+    goals: [
+      { tag: 'core', tagText: '系统原理', text: '第4章：预处理/编译/汇编/链接、ELF 格式 + 第5章：CPU 数据通路', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '第6章：代数系统 + 全册错题一刷', done: false },
+      { tag: 'key', tagText: '数据结构', text: '第1章：线性表 + 栈/队列概念', done: false },
+      { tag: 'py', tagText: 'Python', text: '实现链表/栈/队列 + LeetCode 2 道', done: false },
+      { tag: 'en', tagText: '英语', text: '单词 150 个 + 完形填空 2 篇', done: false }
+    ],
+    milestone: '里程碑：系统原理第4-5章 + 数据结构第1章开始'
+  },
+  { week: '第5周', dates: '9/8 — 9/14', badge: '', phase: 0, isCurrent: false,
+    goals: [
+      { tag: 'core', tagText: '系统原理', text: '第6章：总线与 I/O 组织、中断 + 全册错题二刷', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '第7章：图论、第8章：树、第9章：组合数学', done: false },
+      { tag: 'key', tagText: '数据结构', text: '第2章：树（二叉树/BST/堆）+ 第3章：图（BFS/DFS）', done: false },
+      { tag: 'py', tagText: 'Python', text: '实现 BST/堆/图遍历 + LeetCode 3 道', done: false },
+      { tag: 'en', tagText: '英语', text: '单词 150 个 + 阅读判断 2 篇', done: false }
+    ],
+    milestone: '里程碑：三科章节全部梳理完成，进入中间阶段'
+  },
+  // ===== 中间阶段（第6-7周）=====
+  { week: '第6周', dates: '9/15 — 9/21', badge: '中间', phase: 1, isCurrent: false,
+    goals: [
+      { tag: 'key', tagText: '数据结构', text: '第4章：排序算法 + 第5章：查找（二分/哈希）— 章节收尾', done: false },
+      { tag: 'core', tagText: '系统原理', text: '重点：CPU 数据通路 + 流水线 + 指令系统 难点突破', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '重点：谓词逻辑推理 + 图论证明 难点突破', done: false },
+      { tag: 'core', tagText: '系统原理', text: '真题分类练习：按章节刷真题 2 套 + 错题复盘', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '真题分类练习：按章节刷真题 2 套 + 错题复盘', done: false },
+      { tag: 'en', tagText: '英语', text: '单词 150 个 + 阅读判断 2 篇 + 完形 1 篇', done: false }
+    ],
+    milestone: '里程碑：三科重点难点攻克 + 真题分类练手'
+  },
+  { week: '第7周', dates: '9/22 — 9/28', badge: '', phase: 1, isCurrent: false,
+    goals: [
+      { tag: 'key', tagText: '数据结构', text: '重点：排序算法实现 + 图遍历应用 难点突破 + 真题 2 套', done: false },
+      { tag: 'core', tagText: '系统原理', text: '真题 3 套 + 错题三刷 + 知识框架图整理', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '真题 3 套 + 错题三刷 + 知识框架图整理', done: false },
+      { tag: 'py', tagText: 'Python', text: 'LeetCode 5 道 + GitHub commit', done: false },
+      { tag: 'ai', tagText: 'AI', text: 'Agent 框架了解（LangChain/AutoGPT）', done: false },
+      { tag: 'en', tagText: '英语', text: '真题 2 套 + 作文模板背诵', done: false }
+    ],
+    milestone: '里程碑：三科真题完成 + 知识框架图 + 英语作文模板'
+  },
+  // ===== 冲刺阶段（第8-10周）=====
+  { week: '第8周', dates: '9/29 — 10/5', badge: '冲刺', phase: 2, isCurrent: false,
+    goals: [
+      { tag: 'core', tagText: '系统原理', text: '模拟考 2 套 + 高频考点背诵 + 错题四刷', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '模拟考 2 套 + 高频考点背诵 + 错题四刷', done: false },
+      { tag: 'key', tagText: '数据结构', text: '模拟考 1 套 + 高频考点背诵 + LeetCode 5 道', done: false },
+      { tag: 'en', tagText: '英语', text: '作文模板默写 + 阅读技巧巩固 + 高频词汇', done: false },
+      { tag: 'py', tagText: 'Python', text: 'GitHub 项目整理 + README 完善', done: false }
+    ],
+    milestone: '里程碑：全部科目模拟考开始 + 高频考点背诵'
+  },
+  { week: '第9周', dates: '10/6 — 10/12', badge: '', phase: 2, isCurrent: false,
+    goals: [
+      { tag: 'core', tagText: '系统原理', text: '模拟考 3 套 + 查漏补缺 + 串讲笔记', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '模拟考 3 套 + 查漏补缺 + 串讲笔记', done: false },
+      { tag: 'key', tagText: '数据结构', text: '模拟考 2 套 + 查漏补缺 + 串讲笔记', done: false },
+      { tag: 'en', tagText: '英语', text: '模拟考 2 套 + 高频词汇复习 + 作文练习', done: false },
+      { tag: 'ai', tagText: 'AI', text: '面试准备 + 简历更新', done: false }
+    ],
+    milestone: '里程碑：三科模拟考完成 + 串讲笔记定稿'
+  },
+  { week: '第10周', dates: '10/13 — 10/24', badge: '考试', phase: 2, isCurrent: false,
+    goals: [
+      { tag: 'core', tagText: '系统原理', text: '考前冲刺：错题终刷 + 考点速记 + 状态调整', done: false },
+      { tag: 'core2', tagText: '离散数学', text: '考前冲刺：错题终刷 + 考点速记 + 状态调整', done: false },
+      { tag: 'key', tagText: '数据结构', text: '考前冲刺：错题终刷 + 考点速记 + 状态调整', done: false },
+      { tag: 'en', tagText: '英语', text: '考前冲刺：作文模板终记 + 高频词汇终刷', done: false },
+      { tag: 'py', tagText: 'Python', text: '项目最终整理 + 面试模拟', done: false }
+    ],
+    milestone: '里程碑：10/18–10/24 考试周，全力冲刺'
+  }
+];
+
+var TAG_CLASS = {
+  core: 'wk-tag-core',
+  core2: 'wk-tag-core2',
+  key: 'wk-tag-key',
+  py: 'wk-tag-py',
+  ai: 'wk-tag-ai',
+  en: 'wk-tag-en'
+};
+
+function loadWeekData() {
+  var saved = safeParse(SCHEDULE_STORAGE_KEY, null);
+  if (saved && Array.isArray(saved) && saved.length > 0) return saved;
+  return WEEK_DATA;
+}
+
+function saveWeekData(data) {
+  safeSave(SCHEDULE_STORAGE_KEY, data);
+}
+
+// 按日期自动选择阶段，可被 localStorage 手动覆盖
+function autoSelectPhase() {
+  var override = localStorage.getItem(PHASE_OVERRIDE_KEY);
+  if (override !== null) {
+    var p = parseInt(override);
+    if (!isNaN(p) && p >= 0 && p <= 2) { currentPhase = p; return; }
+  }
+  var today = new Date();
+  for (var i = 0; i < PHASE_RANGES.length; i++) {
+    var start = new Date(PHASE_RANGES[i].start);
+    var end = new Date(PHASE_RANGES[i].end);
+    if (today >= start && today <= end) { currentPhase = i; return; }
+  }
+  // 默认初级
+  currentPhase = 0;
+}
+
+function updatePhaseNav() {
+  var nav = document.getElementById('wkPhaseNav');
+  if (!nav) return;
+  var btns = nav.querySelectorAll('button');
+  btns.forEach(function(btn, i) {
+    if (i === currentPhase) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+}
+
+function renderWeeks() {
+  autoSelectPhase();
+  updatePhaseNav();
+  var data = loadWeekData();
+  var container = document.getElementById('weeksContainer');
+  if (!container) return;
+  var phaseData = data.filter(function(w) { return w.phase === currentPhase; });
+  var html = '';
+  phaseData.forEach(function(week) {
+    var wi = data.indexOf(week);
+    var doneCount = week.goals.filter(function(g) { return g.done; }).length;
+    var totalCount = week.goals.length;
+    var pct = totalCount > 0 ? Math.round(doneCount / totalCount * 100) : 0;
+    html += '<div class="wk-week' + (week.isCurrent ? ' current' : '') + '">';
+    html += '<div class="wk-week-header"><div><div class="wk-week-title">';
+    if (week.badge) html += '<span class="wk-week-badge">' + escapeHtml(week.badge) + '</span>';
+    html += escapeHtml(week.week) + '</div><div class="wk-week-dates">' + escapeHtml(week.dates) + '</div></div>';
+    html += '<div class="wk-week-progress"><div class="pct">' + pct + '%</div><div class="label">' + doneCount + '/' + totalCount + ' 项</div></div></div>';
+    // 简洁列表：仅显示科目标签 + 章节名，无编辑/删除按钮
+    html += '<div class="wk-goals wk-goals-simple">';
+    week.goals.forEach(function(goal, gi) {
+      var shortText = goal.text.replace(/^第\d+章\s*/, '').replace(/\s*[+＋]\s*/g, ' · ');
+      html += '<div class="wk-goal-simple' + (goal.done ? ' done' : '') + '">';
+      html += '<div class="wk-check' + (goal.done ? ' checked' : '') + '" onclick="toggleGoal(' + wi + ',' + gi + ')"></div>';
+      html += '<span class="wk-tag ' + (TAG_CLASS[goal.tag] || 'wk-tag-core') + '">' + escapeHtml(goal.tagText) + '</span>';
+      html += '<span class="wk-goal-text">' + escapeHtml(shortText) + '</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function switchPhase(phase) {
+  currentPhase = phase;
+  localStorage.setItem(PHASE_OVERRIDE_KEY, String(phase));
+  updatePhaseNav();
+  renderWeeks();
+}
+
+// ---------- AI 统筹规划师 ----------
+// 4a. 数据收集函数：从 localStorage 收集当前学习进度
+function aiGatherContext() {
+  var schedule = loadWeekData();
+  var currentWeeks = schedule.filter(function(w) { return w.phase === currentPhase; });
+  var totalGoals = 0, doneGoals = 0;
+  currentWeeks.forEach(function(w) {
+    w.goals.forEach(function(g) { totalGoals++; if (g.done) doneGoals++; });
+  });
+
+  // 科目掌握度
+  var subjects = [];
+  var codes = [{code:'02324',name:'离散数学'},{code:'13015',name:'计算机系统原理'},{code:'13003',name:'数据结构与算法'}];
+  codes.forEach(function(s) {
+    var m = safeParse('ss_mastery_' + s.code, {mastery:{}}).mastery || {};
+    var mastered = Object.values(m).filter(function(v){return v===2;}).length;
+    subjects.push(s.name + '(已掌握' + mastered + '章)');
+  });
+
+  // Python 进度
+  var pyState = safeParse('py_knowledge_tree_v1', {});
+  var pyDone = Object.keys(pyState).length;
+
+  return {
+    phase: currentPhase,
+    phaseName: PHASE_RANGES[currentPhase].name,
+    totalGoals: totalGoals,
+    doneGoals: doneGoals,
+    completionRate: totalGoals > 0 ? Math.round(doneGoals/totalGoals*100) + '%' : '0%',
+    subjects: subjects.join('、'),
+    pythonProgress: pyDone + '/29',
+    currentWeeks: currentWeeks.map(function(w) {
+      return w.week + '(' + w.dates + '): ' + w.goals.map(function(g) {
+        return g.tagText + '-' + (g.done ? '✓' : '✗') + g.text;
+      }).join('; ');
+    }).join('\n')
+  };
+}
+
+// 4b. 调用 AI 函数（非流式，获取完整 JSON 响应）
+var AI_LOADING = false;
+var aiConvHistory = []; // 对话历史，支持多轮
+
+function saveConvHistory() {
+  // 保留 system prompt + 最近 20 条对话
+  var systemMsgs = aiConvHistory.filter(function(m) { return m.role === 'system'; });
+  var chatMsgs = aiConvHistory.filter(function(m) { return m.role !== 'system'; });
+  if (chatMsgs.length > 20) {
+    chatMsgs = chatMsgs.slice(chatMsgs.length - 20);
+  }
+  aiConvHistory = systemMsgs.concat(chatMsgs);
+  try {
+    localStorage.setItem('ai_conv_history', JSON.stringify(aiConvHistory));
+  } catch(e) {}
+}
+
+var AI_SCENARIO_STARTED = false; // 防止 restoreConvHistory 在场景启动后重复渲染
+
+function restoreConvHistory() {
+  // 如果用户已启动新场景，不再恢复旧对话
+  if (AI_SCENARIO_STARTED) return false;
+  try {
+    // 恢复逐日计划
+    var savedPlan = localStorage.getItem('ai_daily_plan');
+    if (savedPlan) {
+      var plan = JSON.parse(savedPlan);
+      if (plan && plan.days) renderDailyPlan(plan);
+    }
+    var saved = localStorage.getItem('ai_conv_history');
+    if (saved) {
+      aiConvHistory = JSON.parse(saved);
+      // 重新渲染对话（AI 的 JSON 消息转为可读摘要）
+      aiConvHistory.forEach(function(msg) {
+        if (msg.role === 'system') return;
+        if (msg.role === 'assistant') {
+          // 尝试解析 JSON，显示格式化摘要而非原始数据
+          var result = aiParseJSON(msg.content);
+          if (result && result.days) {
+            var s = result.summary || '已生成逐日计划';
+            aiRenderChatMsg('assistant', '✅ ' + s + '\n\n详细计划已显示在上方。');
+            return;
+          }
+          if (result && result.weeks) {
+            var s2 = result.summary || '已生成计划';
+            aiRenderChatMsg('assistant', '✅ ' + s2);
+            return;
+          }
+          if (result && result.feedback) {
+            var rt = '✅ 验收反馈\n完成率：' + (result.completionRate || '未知') + '\n\n' + (result.feedback || '');
+            if (result.suggestions && result.suggestions.length) {
+              rt += '\n\n建议：\n' + result.suggestions.map(function(s, i) { return (i+1) + '. ' + s; }).join('\n');
+            }
+            aiRenderChatMsg('assistant', rt);
+            return;
+          }
+        }
+        aiRenderChatMsg(msg.role, msg.content);
+      });
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+function aiClearChat() {
+  // 停止进度计时器
+  if (AI_PROGRESS_TIMER) { clearInterval(AI_PROGRESS_TIMER); AI_PROGRESS_TIMER = null; }
+  AI_LOADING = false;
+  AI_RETRY_CONTEXT = null;
+  AI_SCENARIO_STARTED = true; // 清空后也不恢复旧对话
+  aiConvHistory = [];
+  try { localStorage.removeItem('ai_conv_history'); } catch(e) {}
+  try { localStorage.removeItem('ai_daily_plan'); } catch(e) {}
+  document.getElementById('aiConversation').innerHTML = '';
+  document.getElementById('aiDailyPlan').innerHTML = '';
+  document.getElementById('aiStatus').textContent = '对话已清空，点击上方按钮开始新的对话';
+}
+
+// --- 进度提示 & 断线重试 ---
+var AI_PROGRESS_TIMER = null;
+var AI_START_TIME = 0;
+var AI_RETRY_CONTEXT = null; // { messages, callback, isChat, retryCount }
+
+var AI_PROGRESS_STEPS = [
+  { t: 0,  msg: '正在分析学习进度…' },
+  { t: 5,  msg: '正在生成任务计划…' },
+  { t: 10, msg: '正在格式化计划…' },
+  { t: 15, msg: '正在优化任务安排…' },
+  { t: 20, msg: '响应时间较长，AI 正在处理复杂任务…' },
+  { t: 30, msg: '仍在生成中，请耐心等待…' }
+];
+
+function aiStartProgress() {
+  var el = document.getElementById('aiStatus');
+  AI_PROGRESS_TIMER = setInterval(function() {
+    var sec = Math.floor((Date.now() - AI_START_TIME) / 1000);
+    var step = AI_PROGRESS_STEPS[0];
+    for (var i = 0; i < AI_PROGRESS_STEPS.length; i++) {
+      if (sec >= AI_PROGRESS_STEPS[i].t) step = AI_PROGRESS_STEPS[i];
+    }
+    var warn = sec >= 20 ? ' ⚠️' : '';
+    el.innerHTML = '<span class="ai-loading">🤖 ' + step.msg + ' (已等待 ' + sec + 's)' + warn + '</span>';
+  }, 1000);
+  // 立即显示第一帧
+  el.innerHTML = '<span class="ai-loading">🤖 ' + AI_PROGRESS_STEPS[0].msg + ' (已等待 0s)</span>';
+}
+
+function aiStopProgress() {
+  if (AI_PROGRESS_TIMER) { clearInterval(AI_PROGRESS_TIMER); AI_PROGRESS_TIMER = null; }
+}
+
+function aiCall(messages, callback, isChat) {
+  if (AI_LOADING) return;
+  AI_LOADING = true;
+  AI_START_TIME = Date.now();
+  AI_RETRY_CONTEXT = { messages: messages, callback: callback, isChat: isChat, retryCount: 0 };
+  aiStartProgress();
+  aiDoFetch(messages, callback);
+}
+
+function aiDoFetch(messages, callback) {
+  fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      messages: messages,
+      model: 'deepseek-v4-flash',
+      stream: false,
+      max_tokens: 3000
+    })
+  }).then(function(res) {
+    if (!res.ok) {
+      return res.text().then(function(txt) {
+        var errMsg = txt;
+        try { errMsg = JSON.parse(txt).error || txt; } catch(e) {}
+        throw new Error(errMsg || ('服务器错误 ' + res.status));
+      });
+    }
+    return res.json();
+  }).then(function(data) {
+    aiStopProgress();
+    AI_LOADING = false;
+    AI_RETRY_CONTEXT = null;
+    var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    document.getElementById('aiStatus').textContent = '✅ 收到 AI 响应，正在处理…';
+    // try-catch 防止回调内 JS 错误导致无输出
+    try {
+      callback(content || '');
+    } catch(cbErr) {
+      console.error('[AI] 回调执行出错:', cbErr);
+      document.getElementById('aiStatus').textContent = '⚠️ 内部错误：' + cbErr.message + '（请截图控制台联系修复）';
+    }
+  }).catch(function(err) {
+    aiStopProgress();
+    console.error('[AI] 请求失败:', err.message);
+    // 自动重试 1 次
+    if (AI_RETRY_CONTEXT && AI_RETRY_CONTEXT.retryCount < 1) {
+      AI_RETRY_CONTEXT.retryCount++;
+      document.getElementById('aiStatus').innerHTML =
+        '<span class="ai-loading">🔄 连接中断，2 秒后自动重试…</span>';
+      setTimeout(function() {
+        AI_START_TIME = Date.now();
+        aiStartProgress();
+        aiDoFetch(messages, callback);
+      }, 2000);
+    } else {
+      AI_LOADING = false;
+      aiShowRetryButtons(err.message);
+    }
+  });
+}
+
+function aiShowRetryButtons(errMsg) {
+  document.getElementById('aiStatus').innerHTML =
+    '❌ 连接中断' + (errMsg ? '：' + errMsg : '') + '（已自动重试仍失败）<br>' +
+    '<button class="ai-retry-btn" onclick="aiManualRetry()">🔄 手动重试</button>' +
+    '<button class="ai-retry-btn ai-retry-clear" onclick="aiClearChat()">📋 清空对话重新开始</button>';
+}
+
+function aiManualRetry() {
+  if (!AI_RETRY_CONTEXT) return;
+  AI_LOADING = true;
+  AI_START_TIME = Date.now();
+  AI_RETRY_CONTEXT.retryCount = 0;
+  aiStartProgress();
+  aiDoFetch(AI_RETRY_CONTEXT.messages, AI_RETRY_CONTEXT.callback);
+}
+
+// 4c. JSON 解析函数（兼容 markdown 代码块标记）
+function aiParseJSON(text) {
+  // 去除 markdown 代码块标记
+  var cleaned = text.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+  }
+  try {
+    return JSON.parse(cleaned);
+  } catch(e) {
+    // 尝试找到第一个 { 和最后一个 }
+    var start = text.indexOf('{');
+    var end = text.lastIndexOf('}');
+    if (start >= 0 && end > start) {
+      try { return JSON.parse(text.substring(start, end + 1)); } catch(e2) {}
+    }
+    return null;
+  }
+}
+
+// 4d-1. 场景一：生成本周计划
+function aiGenerate() {
+  // 清空对话区域（新场景重置对话历史，旧消息不再显示）
+  AI_SCENARIO_STARTED = true;
+  document.getElementById('aiConversation').innerHTML = '';
+  document.getElementById('aiDailyPlan').innerHTML = '';
+  var ctx = aiGatherContext();
+  var systemPrompt = '你是一位专业的自考学习规划师。你的任务是根据学生当前的学习进度，生成下一周的逐日学习计划（每天具体学什么知识点）。' +
+    '注意：不要照搬已有计划，而是根据已掌握的章节和未完成的任务，生成具体的、可执行的每日任务。' +
+    '比如学生已掌握系统原理第1章，就生成第2章的任务；已掌握离散数学第1-3章，就生成第4章的任务。' +
+    '【重要规则】每天必须包含Python和AI相关的学习内容，不能遗漏。每天4-5个任务。' +
+    '【难度分配】根据各科章节难度灵活分配时间：简单章节（如概述、入门概念）可缩短至1h或合并两章学习；困难章节（如复杂算法、证明推导）分配2-3h。' +
+    '例如离散数学第1章命题逻辑较简单可1h完成，第3章集合论较难可分配2h。' +
+    '你必须返回纯 JSON 格式，不要包含 markdown 代码块标记。' +
+    'JSON 格式：{ action:\'generate\', days:[{date:\'8/14\',weekday:\'周四\',tasks:[{tag,tagText,text,hours:2}]}], summary:\'文字总结，说明为什么这样安排\' }。' +
+    'tag 可选值：core(系统原理),core2(离散数学),key(数据结构),py(Python),ai(AI),en(英语),review(整理复盘)。' +
+    '每天5-6个任务，必须覆盖py、ai和review。review任务固定为"整理当日笔记 + 错题回顾 + 次日计划确认"，hours为1。' +
+    '其他任务描述要具体到章节和小节，如"1.3 数据表示方法（原码、反码、补码）+ 1.4 IEEE 754 浮点数格式"。' +
+    'hours为预计学习时长（小时），根据章节难度灵活设定。生成7天的计划（本周一到周日）。';
+  var userPrompt = '当前阶段：' + ctx.phaseName + '（phase=' + ctx.phase + '）\n' +
+    '阶段完成率：' + ctx.completionRate + '（' + ctx.doneGoals + '/' + ctx.totalGoals + '）\n' +
+    '科目掌握情况：' + ctx.subjects + '\n' +
+    'Python 进度：' + ctx.pythonProgress + '\n' +
+    '当前阶段已有计划及完成状态（仅供参考已学内容，不要照搬）：\n' + ctx.currentWeeks + '\n\n' +
+    '请根据已掌握的进度，生成下一周7天的逐日学习计划。每天的任务要具体到知识点和小节。';
+
+  aiConvHistory = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt }
+  ];
+  aiCall(aiConvHistory, function(content) {
+    if (!content) {
+      document.getElementById('aiStatus').textContent = '⚠️ AI 返回为空，请重试';
+      return;
+    }
+    var result = aiParseJSON(content);
+    if (result && result.days) {
+      aiConvHistory.push({ role: 'assistant', content: content });
+      aiAutoApplyDaily(result);
+      var summary = result.summary || '已生成逐日计划';
+      aiRenderChatMsg('assistant', '✅ ' + summary + '\n\n详细计划已显示在上方，如需调整直接在下方告诉我。');
+      saveConvHistory();
+      document.getElementById('aiStatus').textContent = '✅ 逐日计划已生成，见上方详细计划';
+    } else {
+      aiConvHistory.push({ role: 'assistant', content: content });
+      aiRenderChatMsg('assistant', content);
+      saveConvHistory();
+      document.getElementById('aiStatus').textContent = '✅ AI 已回复，见下方对话';
+    }
+  });
+}
+
+// 4d-2. 场景二：调整后续计划
+function aiAdjust() {
+  // 清空对话区域（新场景重置对话历史，旧消息不再显示）
+  AI_SCENARIO_STARTED = true;
+  document.getElementById('aiConversation').innerHTML = '';
+  document.getElementById('aiDailyPlan').innerHTML = '';
+  var ctx = aiGatherContext();
+  var systemPrompt = '你是一位专业的自考学习规划师。请根据学生已完成和未完成的任务，调整后续逐日学习计划。' +
+    '【重要规则】每天必须包含Python和AI相关的学习内容。每天4-5个任务。' +
+    '【难度分配】根据各科章节难度灵活分配时间：简单章节可缩短至1h或合并两章学习；困难章节分配2-3h。' +
+    '你必须返回纯 JSON 格式，不要包含 markdown 代码块标记。' +
+    'JSON 格式：{ action:\'adjust\', days:[{date,weekday,tasks:[{tag,tagText,text,hours}]}], summary:\'调整说明\' }。' +
+    'tag 可选值：core(系统原理),core2(离散数学),key(数据结构),py(Python),ai(AI),en(英语),review(整理复盘)。' +
+    '每天5-6个任务，必须覆盖py、ai和review。review任务固定为"整理当日笔记 + 错题回顾 + 次日计划确认"，hours为1。' +
+    '针对未完成任务，请重新安排到后续日期，并适当调整内容。' +
+    'hours为预计学习时长（小时），根据章节难度灵活设定。';
+  var userPrompt = '当前阶段：' + ctx.phaseName + '（phase=' + ctx.phase + '）\n' +
+    '阶段完成率：' + ctx.completionRate + '（' + ctx.doneGoals + '/' + ctx.totalGoals + '）\n' +
+    '科目掌握情况：' + ctx.subjects + '\n' +
+    'Python 进度：' + ctx.pythonProgress + '\n' +
+    '当前阶段各周计划与完成状态（✓表示已完成，✗表示未完成）：\n' + ctx.currentWeeks + '\n\n' +
+    '请根据未完成任务调整后续逐日计划，重新安排每天的学习内容。';
+
+  aiConvHistory = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt }
+  ];
+  aiCall(aiConvHistory, function(content) {
+    if (!content) {
+      document.getElementById('aiStatus').textContent = '⚠️ AI 返回为空，请重试';
+      return;
+    }
+    var result = aiParseJSON(content);
+    if (result && result.days) {
+      aiConvHistory.push({ role: 'assistant', content: content });
+      if (result.summary) result.summary = '【调整方案】' + result.summary;
+      aiAutoApplyDaily(result);
+      var summary = result.summary || '已生成调整方案';
+      aiRenderChatMsg('assistant', '✅ ' + summary + '\n\n详细计划已显示在上方，如需调整直接在下方告诉我。');
+      saveConvHistory();
+      document.getElementById('aiStatus').textContent = '✅ 调整方案已生成，见上方详细计划';
+    } else {
+      aiConvHistory.push({ role: 'assistant', content: content });
+      aiRenderChatMsg('assistant', content);
+      saveConvHistory();
+      document.getElementById('aiStatus').textContent = '✅ AI 已回复，见下方对话';
+    }
+  });
+}
+
+// 4d-3. 场景三：验收今日任务
+function aiReview() {
+  // 清空对话区域（新场景重置对话历史，旧消息不再显示）
+  AI_SCENARIO_STARTED = true;
+  document.getElementById('aiConversation').innerHTML = '';
+  document.getElementById('aiDailyPlan').innerHTML = '';
+  var ctx = aiGatherContext();
+  var systemPrompt = '你是一位专业的自考学习规划师。请根据今日任务完成情况，给出验收反馈。' +
+    '你必须返回纯 JSON 格式，不要包含 markdown 代码块标记。' +
+    'JSON 格式：{ action:\'review\', completionRate:\'60%\', feedback:\'反馈文字\', suggestions:[\'建议1\',\'建议2\'] }。';
+  var userPrompt = '当前阶段：' + ctx.phaseName + '（phase=' + ctx.phase + '）\n' +
+    '阶段完成率：' + ctx.completionRate + '（' + ctx.doneGoals + '/' + ctx.totalGoals + '）\n' +
+    '科目掌握情况：' + ctx.subjects + '\n' +
+    'Python 进度：' + ctx.pythonProgress + '\n' +
+    '当前阶段各周计划与完成状态（✓表示已完成，✗表示未完成）：\n' + ctx.currentWeeks + '\n\n' +
+    '请根据今日任务完成情况给出验收反馈。';
+
+  aiConvHistory = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt }
+  ];
+  aiCall(aiConvHistory, function(content) {
+    if (!content) {
+      document.getElementById('aiStatus').textContent = '⚠️ AI 返回为空，请重试';
+      return;
+    }
+    var result = aiParseJSON(content);
+    if (result) {
+      aiConvHistory.push({ role: 'assistant', content: content });
+      var reviewText = '✅ 验收反馈\n完成率：' + (result.completionRate || '未知') + '\n\n' + (result.feedback || '');
+      if (result.suggestions && result.suggestions.length) {
+        reviewText += '\n\n建议：\n' + result.suggestions.map(function(s, i) { return (i+1) + '. ' + s; }).join('\n');
+      }
+      aiRenderChatMsg('assistant', reviewText);
+      saveConvHistory();
+      document.getElementById('aiStatus').textContent = '✅ 验收完成，见下方对话';
+    } else {
+      aiConvHistory.push({ role: 'assistant', content: content });
+      aiRenderChatMsg('assistant', content);
+      saveConvHistory();
+      document.getElementById('aiStatus').textContent = '✅ AI 已回复，见下方对话';
+    }
+  });
+}
+
+// 4e. 逐日计划存储与渲染（独立于统筹计划）
+function aiAutoApplyDaily(result) {
+  if (!result || !result.days) return;
+  // 存储到独立的 localStorage key，不写入统筹计划
+  try {
+    localStorage.setItem('ai_daily_plan', JSON.stringify(result));
+  } catch(e) {}
+  renderDailyPlan(result);
+  renderDailyExecPlan(); // 同步刷新每日执行计划
+}
+
+function renderDailyPlan(result) {
+  var container = document.getElementById('aiDailyPlan');
+  if (!container) return;
+  container.innerHTML = '';
+
+  // 摘要
+  if (result.summary) {
+    var sumDiv = document.createElement('div');
+    sumDiv.className = 'dp-summary';
+    sumDiv.innerHTML = '<span>📋</span><span>' + escapeHtml(result.summary) + '</span>';
+    container.appendChild(sumDiv);
+  }
+
+  // 按天渲染
+  result.days.forEach(function(day) {
+    var dayDiv = document.createElement('div');
+    dayDiv.className = 'dp-day';
+
+    // 日期头部
+    var totalHours = 0;
+    if (day.tasks) {
+      day.tasks.forEach(function(t) { totalHours += parseFloat(t.hours) || 0; });
+    }
+    var header = document.createElement('div');
+    header.className = 'dp-day-header';
+    header.innerHTML = '<span class="dp-date">' + escapeHtml(day.date || '') + ' ' + escapeHtml(day.weekday || '') + '</span>' +
+      '<span class="dp-hours">共 ' + totalHours + 'h</span>';
+    dayDiv.appendChild(header);
+
+    // 任务列表
+    if (day.tasks) {
+      day.tasks.forEach(function(task) {
+        var taskDiv = document.createElement('div');
+        taskDiv.className = 'dp-task';
+        var tagClass = 'dp-tag-' + (task.tag || 'core');
+        taskDiv.innerHTML = '<span class="dp-tag ' + tagClass + '">' + escapeHtml(task.tagText || task.tag || '') + '</span>' +
+          '<span class="dp-task-text">' + escapeHtml(task.text || '') + '</span>' +
+          '<span class="dp-task-hours">' + (task.hours || '') + 'h</span>';
+        dayDiv.appendChild(taskDiv);
+      });
+    }
+    container.appendChild(dayDiv);
+  });
+}
+
+// 4e-2. 每日执行计划：从 AI 逐日计划细化到小时级时段
+var DP_EXEC_SLOTS = [
+  { time: '08:00–11:30', hours: 3.5, tags: ['core','core2','key'], label: '自考主科' },
+  { time: '14:00–16:00', hours: 2,   tags: ['core','core2','key'], label: '自考主科' },
+  { time: '16:30–17:30', hours: 1,   tags: ['py'], label: 'Python' },
+  { time: '19:30–20:30', hours: 1,   tags: ['ai'], label: 'AI' },
+  { time: '20:30–21:30', hours: 1,   tags: ['en'], label: '英语' },
+  { time: '22:00–23:00', hours: 1,   tags: ['review'], label: '整理复盘' }
+];
+
+function renderDailyExecPlan() {
+  var container = document.getElementById('dpExecContainer');
+  var empty = document.getElementById('dpExecEmpty');
+  if (!container || !empty) return;
+
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem('ai_daily_plan')); } catch(e) {}
+
+  if (!saved || !saved.days || !saved.days.length) {
+    container.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // 判断今天日期（格式 X/X）
+  var now = new Date();
+  var todayStr = (now.getMonth() + 1) + '/' + now.getDate();
+
+  var html = '';
+
+  // 图例
+  html += '<div class="dp-exec-legend">';
+  html += '<span class="dp-exec-tag core">系统原理</span>';
+  html += '<span class="dp-exec-tag core2">离散数学</span>';
+  html += '<span class="dp-exec-tag key">数据结构</span>';
+  html += '<span class="dp-exec-tag py">Python</span>';
+  html += '<span class="dp-exec-tag ai">AI</span>';
+  html += '<span class="dp-exec-tag en">英语</span>';
+  html += '<span class="dp-exec-tag review">复盘</span>';
+  html += '</div>';
+
+  saved.days.forEach(function(day) {
+    var isToday = day.date === todayStr;
+    var dayClass = isToday ? 'dp-exec-day today' : 'dp-exec-day';
+
+    html += '<div class="' + dayClass + '">';
+    html += '<div class="dp-exec-day-header">';
+    html += '<span>' + escapeHtml(day.date || '') + ' ' + escapeHtml(day.weekday || '') + '</span>';
+    if (isToday) html += '<span class="dp-exec-badge">今天</span>';
+    html += '</div>';
+
+    // 将任务分配到时段
+    var slots = distributeTasksToSlots(day.tasks || []);
+
+    slots.forEach(function(slot) {
+      if (slot.tasks.length === 0) {
+        // 空时段显示休息
+        html += '<div class="dp-exec-row">';
+        html += '<span class="dp-exec-time">' + slot.time + '</span>';
+        html += '<span class="dp-exec-tag rest">休息</span>';
+        html += '<span>—</span>';
+        html += '</div>';
+      } else {
+        slot.tasks.forEach(function(t, idx) {
+          html += '<div class="dp-exec-row">';
+          if (idx === 0) {
+            html += '<span class="dp-exec-time">' + slot.time + '</span>';
+          } else {
+            html += '<span class="dp-exec-time"></span>';
+          }
+          html += '<span class="dp-exec-tag ' + (t.tag || 'core') + '">' + escapeHtml(t.tagText || t.tag || '') + '</span>';
+          html += '<span>' + escapeHtml(t.text || '') + (t.hours ? ' (' + t.hours + 'h)' : '') + '</span>';
+          html += '</div>';
+        });
+      }
+    });
+
+    // 今日产出
+    var outputs = [];
+    (day.tasks || []).forEach(function(t) {
+      if (t.tag === 'py') outputs.push('Python 代码 commit');
+      else if (t.tag === 'en') outputs.push('单词背诵记录');
+      else outputs.push((t.tagText || t.tag || '') + '笔记/手绘图');
+    });
+    if (outputs.length) {
+      html += '<div class="dp-exec-output"><strong>今日产出：</strong>' + escapeHtml(outputs.join('、')) + '</div>';
+    }
+
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+// 将 AI 每日任务分配到 5 个固定时段
+function distributeTasksToSlots(tasks) {
+  var slots = DP_EXEC_SLOTS.map(function(s) {
+    return { time: s.time, hours: s.hours, tags: s.tags, label: s.label, tasks: [] };
+  });
+
+  // 按科目分组
+  var mainTasks = []; // core, core2, key
+  var pyTasks = [];
+  var aiTasks = [];
+  var enTasks = [];
+  var reviewTasks = [];
+  var otherTasks = [];
+
+  tasks.forEach(function(t) {
+    var tag = t.tag || 'core';
+    if (tag === 'core' || tag === 'core2' || tag === 'key') mainTasks.push(t);
+    else if (tag === 'py') pyTasks.push(t);
+    else if (tag === 'ai') aiTasks.push(t);
+    else if (tag === 'en') enTasks.push(t);
+    else if (tag === 'review') reviewTasks.push(t);
+    else otherTasks.push(t);
+  });
+
+  // 上午（slot[0]）和下午（slot[1]）分配主科任务
+  if (mainTasks.length > 0) {
+    // 第一个主科 → 上午
+    slots[0].tasks.push(mainTasks[0]);
+    // 第二个主科 → 下午
+    if (mainTasks.length > 1) {
+      slots[1].tasks.push(mainTasks[1]);
+    }
+    // 更多主科任务也放上午
+    for (var i = 2; i < mainTasks.length; i++) {
+      slots[0].tasks.push(mainTasks[i]);
+    }
+  }
+
+  // Python → slot[2]
+  pyTasks.forEach(function(t) { slots[2].tasks.push(t); });
+
+  // AI → slot[3]
+  aiTasks.forEach(function(t) { slots[3].tasks.push(t); });
+
+  // 英语 → slot[4]
+  enTasks.forEach(function(t) { slots[4].tasks.push(t); });
+
+  // 复盘 → slot[5]
+  reviewTasks.forEach(function(t) { slots[5].tasks.push(t); });
+
+  // 如果没有复盘任务，自动生成默认复盘
+  if (reviewTasks.length === 0) {
+    slots[5].tasks.push({ tag: 'review', tagText: '复盘', text: '整理当日笔记 + 错题回顾 + 次日计划确认', hours: 1 });
+  }
+
+  // 其他任务放到上午
+  otherTasks.forEach(function(t) { slots[0].tasks.push(t); });
+
+  return slots;
+}
+
+// 4e-legacy. 旧的周计划自动应用（保留但不再被调用）
+function aiAutoApply(result) {
+  if (!result || !result.weeks) return;
+  var isAdjust = result.action === 'adjust';
+  var data = loadWeekData();
+  result.weeks.forEach(function(newWeek) {
+    var existing = data.find(function(w) { return w.week === newWeek.week; });
+    if (existing) {
+      // 替换而非追加，避免每次生成都累加任务
+      existing.goals = newWeek.goals.map(function(g) {
+        if (isAdjust) g.adjusted = true;
+        return g;
+      });
+      if (newWeek.milestone) existing.milestone = newWeek.milestone;
+      existing.dates = newWeek.dates || existing.dates;
+      existing.phase = newWeek.phase !== undefined ? newWeek.phase : existing.phase;
+    } else {
+      data.push(newWeek);
+    }
+  });
+  saveWeekData(data);
+  renderWeeks();
+}
+
+// 4h. 对话消息渲染
+function aiRenderChatMsg(role, text) {
+  var cls = role === 'user' ? 'ai-msg-user' : 'ai-msg-bot';
+  var label = role === 'user' ? '我' : '🤖 AI';
+  var conv = document.getElementById('aiConversation');
+  var div = document.createElement('div');
+  div.className = 'ai-msg ' + cls;
+
+  var wrap = document.createElement('div');
+  wrap.className = 'ai-msg-text-wrap';
+  wrap.innerHTML = '<strong>' + label + '：</strong>' + escapeHtml(text);
+
+  var toggle = document.createElement('button');
+  toggle.className = 'ai-msg-toggle';
+  toggle.textContent = '展开 ▼';
+  toggle.style.display = 'none';
+  toggle.addEventListener('click', function() {
+    if (wrap.classList.contains('ai-collapsed')) {
+      wrap.classList.remove('ai-collapsed');
+      toggle.textContent = '收起 ▲';
+    } else {
+      wrap.classList.add('ai-collapsed');
+      toggle.textContent = '展开 ▼';
+    }
+  });
+
+  div.appendChild(wrap);
+  div.appendChild(toggle);
+  conv.appendChild(div);
+
+  var naturalH = wrap.offsetHeight;
+  if (naturalH > 68 || (naturalH === 0 && text.length > 80)) {
+    wrap.classList.add('ai-collapsed');
+    toggle.style.display = 'inline-block';
+  }
+
+  conv.scrollTop = conv.scrollHeight;
+}
+
+// 4i. 用户发送消息（多轮对话）
+function aiSendMessage() {
+  var input = document.getElementById('aiInput');
+  var msg = input.value.trim();
+  if (!msg) return;
+  if (AI_LOADING) return;
+  AI_SCENARIO_STARTED = true; // 用户开始对话，不再恢复旧历史
+
+  // 如果没有历史对话，创建一个通用的 system prompt
+  if (aiConvHistory.length === 0) {
+    var ctx = aiGatherContext();
+    aiConvHistory = [
+      { role: 'system', content: '你是一位专业的自考学习规划师。请根据学生的情况，用中文回复。' +
+        '如果学生要求生成或调整计划，请返回纯 JSON 格式（不要 markdown 代码块标记）。' +
+        'JSON 格式：{ action:\'generate|adjust\', days:[{date,weekday,tasks:[{tag,tagText,text,hours}]}], summary:\'文字总结\' }。' +
+        'tag 可选值：core(系统原理),core2(离散数学),key(数据结构),py(Python),ai(AI),en(英语),review(整理复盘)。' +
+        '每天5-6个任务，必须包含py、ai和review。hours根据章节难度灵活设定。' +
+        '当前阶段：' + ctx.phaseName + '，完成率：' + ctx.completionRate + '，科目掌握：' + ctx.subjects + '，Python进度：' + ctx.pythonProgress }
+    ];
+  }
+
+  // 显示用户消息
+  aiRenderChatMsg('user', msg);
+  aiConvHistory.push({ role: 'user', content: msg });
+  input.value = '';
+
+  // 调用 AI（aiCall 内部管理进度提示）
+  aiCall(aiConvHistory, function(content) {
+    if (!content) {
+      document.getElementById('aiStatus').textContent = '⚠️ AI 返回为空，请重试';
+      return;
+    }
+    aiConvHistory.push({ role: 'assistant', content: content });
+
+    // 尝试解析 JSON（可能是计划）
+    var result = aiParseJSON(content);
+    if (result && result.days) {
+      // 是逐日计划 JSON，自动应用
+      aiAutoApplyDaily(result);
+      var summary = result.summary || '已生成逐日计划';
+      aiRenderChatMsg('assistant', '✅ ' + summary + '\n\n详细计划已显示在上方，如需调整直接在下方告诉我。');
+      saveConvHistory();
+      document.getElementById('aiStatus').textContent = '✅ 逐日计划已生成，见上方详细计划';
+    } else if (result && result.feedback) {
+      // 是验收反馈
+      var reviewText = '✅ 验收反馈\n完成率：' + (result.completionRate || '未知') + '\n\n' + (result.feedback || '');
+      if (result.suggestions && result.suggestions.length) {
+        reviewText += '\n\n建议：\n' + result.suggestions.map(function(s, i) { return (i+1) + '. ' + s; }).join('\n');
+      }
+      aiRenderChatMsg('assistant', reviewText);
+      saveConvHistory();
+      document.getElementById('aiStatus').textContent = '✅ 验收完成，见下方对话';
+    } else {
+      // 普通文字回复
+      aiRenderChatMsg('assistant', content);
+      document.getElementById('aiStatus').textContent = '✅ AI 已回复，见下方对话';
+      saveConvHistory();
+    }
+  });
+}
+
+function toggleGoal(wi, gi) {
+  var data = loadWeekData();
+  if (data[wi] && data[wi].goals[gi]) {
+    data[wi].goals[gi].done = !data[wi].goals[gi].done;
+    saveWeekData(data);
+    renderWeeks();
+  }
+}
+
+function editGoal(el, wi, gi) {
+  el.contentEditable = 'true';
+  el.focus();
+}
+
+function saveGoal(el, wi, gi) {
+  el.contentEditable = 'false';
+  var data = loadWeekData();
+  if (data[wi] && data[wi].goals[gi]) {
+    data[wi].goals[gi].text = el.textContent.trim();
+    saveWeekData(data);
+  }
+}
+
+function deleteGoal(wi, gi) {
+  var data = loadWeekData();
+  if (data[wi] && data[wi].goals[gi]) {
+    data[wi].goals.splice(gi, 1);
+    saveWeekData(data);
+    renderWeeks();
+  }
+}
+
+function addGoal(wi) {
+  var data = loadWeekData();
+  if (data[wi]) {
+    data[wi].goals.push({ tag: 'en', tagText: '英语', text: '新目标（双击编辑）', done: false });
+    saveWeekData(data);
+    renderWeeks();
+  }
+}
+
 // ---------- Event Bindings ----------
-document.getElementById('addTaskBtn').addEventListener('click', addTask);
-document.getElementById('newTaskInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') addTask();
+// 阶段标签点击切换
+document.querySelectorAll('#wkPhaseNav button').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    switchPhase(parseInt(this.getAttribute('data-phase')));
+  });
 });
 
 // ---------- Init ----------
 loadSelfStudyData().then(function() {
   renderPlanning();
-  renderCards();
+  renderWeeks();
+  restoreConvHistory();
+  renderDailyExecPlan(); // 渲染每日执行计划
+}).catch(function(err) {
+  console.error('初始化失败，使用降级渲染', err);
+  renderPlanning();
+  renderWeeks();
+  renderDailyExecPlan();
 });
 
-setInterval(renderCards, 3000);
-document.addEventListener('visibilitychange', function() { if (!document.hidden) renderCards(); });
+// ---------- Tab Switching ----------
+var COMP_SUBJECTS = [
+  { code: '02324', name: '离散数学', icon: '🔢', totalChapters: 9 },
+  { code: '13015', name: '计算机系统原理', icon: '💻', totalChapters: 6 },
+  { code: '13003', name: '数据结构与算法', icon: '🌳', totalChapters: 8 },
+  { code: '00023', name: '高等数学（工本）', icon: '📐', totalChapters: 6 },
+  { code: '00015', name: '英语（二）', icon: '🔤', totalChapters: 0 }
+];
+var PY_TOTAL_POINTS = 29;
+
+function levelCls(pct) {
+  if (pct >= 60) return 'good';
+  if (pct >= 1) return 'mid';
+  return 'low';
+}
+
+function getSubjectComp(subj) {
+  if (subj.totalChapters === 0) return { done: 0, total: 0, percent: 0, empty: true, detail: '暂无追踪数据' };
+  var m = safeParse('ss_mastery_' + subj.code, { mastery: {} }).mastery || {};
+  var mastered = 0, learning = 0, review = 0;
+  for (var i = 1; i <= subj.totalChapters; i++) {
+    var lv = m[i];
+    if (lv === 2) mastered++;
+    else if (lv === 1) learning++;
+    else if (lv === 3) review++;
+  }
+  var done = mastered + review;
+  return {
+    done: done, total: subj.totalChapters,
+    percent: Math.min(100, Math.round(done / subj.totalChapters * 100)),
+    detail: '已掌握 ' + mastered + ' · 学习中 ' + learning + ' · 需复习 ' + review + ' · 共 ' + subj.totalChapters + ' 章'
+  };
+}
+
+function getPyComp() {
+  var st = safeParse('py_knowledge_tree_v1', {});
+  var done = Object.keys(st).length;
+  var branches = PY_BRANCHES.map(function(b) {
+    var bd = Object.keys(st).filter(function(k) { return k.indexOf(b.prefix + '-') === 0; }).length;
+    return { name: b.name, done: bd, total: b.total };
+  });
+  return { done: done, total: PY_TOTAL_POINTS, percent: Math.min(100, Math.round(done / PY_TOTAL_POINTS * 100)), branches: branches };
+}
+
+function renderCompletion() {
+  // Subjects
+  var sGrid = document.getElementById('compSubjectGrid');
+  var sHtml = '';
+  COMP_SUBJECTS.forEach(function(s) {
+    var p = getSubjectComp(s);
+    var cls = levelCls(p.percent);
+    if (p.empty) {
+      sHtml += '<div class="comp-card"><div class="comp-card-header"><span class="comp-card-icon">' + s.icon + '</span><span class="comp-card-name">' + s.name + '</span><span class="comp-card-percent low">—</span></div><div class="comp-card-bar"><div class="comp-card-fill low" style="width:0%"></div></div><div class="comp-card-detail"><span>' + p.detail + '</span></div></div>';
+    } else {
+      sHtml += '<div class="comp-card"><div class="comp-card-header"><span class="comp-card-icon">' + s.icon + '</span><span class="comp-card-name">' + s.name + '</span><span class="comp-card-percent ' + cls + '">' + p.percent + '%</span></div><div class="comp-card-bar"><div class="comp-card-fill ' + cls + '" style="width:' + p.percent + '%"></div></div><div class="comp-card-detail"><span>' + p.detail + '</span></div></div>';
+    }
+  });
+  sGrid.innerHTML = sHtml;
+
+  // Python
+  var py = getPyComp();
+  var pyCls = levelCls(py.percent);
+  var pyDetail = py.done === 0
+    ? '<div style="text-align:center;color:var(--muted);font-size:0.82rem;padding:0.5rem;">🌱 尚未开始勾选知识点</div>'
+    : py.branches.map(function(b) { return '<span>' + b.name + ' ' + b.done + '/' + b.total + '</span>'; }).join('');
+  document.getElementById('compPythonGrid').innerHTML =
+    '<div class="comp-card"><div class="comp-card-header"><span class="comp-card-icon">🐍</span><span class="comp-card-name">Python 知识树</span><span class="comp-card-percent ' + pyCls + '">' + py.percent + '%</span></div><div class="comp-card-bar"><div class="comp-card-fill ' + pyCls + '" style="width:' + py.percent + '%"></div></div><div class="comp-card-detail">' + pyDetail + '</div></div>';
+
+  // AI
+  document.getElementById('compAIGrid').innerHTML =
+    '<div class="comp-card"><div class="comp-card-header"><span class="comp-card-icon">🤖</span><span class="comp-card-name">AI 学习</span><span class="comp-card-percent low">0%</span></div><div class="comp-card-bar"><div class="comp-card-fill low" style="width:0%"></div></div><div class="comp-card-detail"><span>追踪机制待建立</span></div></div>';
+
+  // Total
+  var allDone = 0, allTotal = 0;
+  COMP_SUBJECTS.forEach(function(s) {
+    var p = getSubjectComp(s);
+    if (!p.empty) { allDone += p.done; allTotal += p.total; }
+  });
+  allDone += py.done; allTotal += py.total;
+  allTotal += 1; // AI placeholder weight
+  var pct = allTotal ? Math.min(100, Math.round(allDone / allTotal * 100)) : 0;
+  document.getElementById('compTotalPercent').textContent = pct + '%';
+  document.getElementById('compTotalFill').style.width = pct + '%';
+  document.getElementById('compTotalStats').innerHTML =
+    '<span>📚 各科目 ' + allDone + '/' + allTotal + '</span><span>🐍 Python ' + py.done + '/' + py.total + '</span><span>🤖 AI 学习 0%</span>';
+}
+
+document.querySelectorAll('.dash-view-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var view = this.getAttribute('data-view');
+    document.querySelectorAll('.dash-view-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.dash-panel').forEach(function(p) { p.classList.remove('active'); });
+    this.classList.add('active');
+    document.getElementById('panel-' + view).classList.add('active');
+    if (view === 'completion') renderCompletion();
+  });
+});
 </script>
 </body>
 </html>

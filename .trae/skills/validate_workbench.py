@@ -10,7 +10,9 @@ edit, run it to catch regressions such as:
 """
 
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 # 通用 class 黑名单：模块内容中不应直接使用这些过于宽泛的类名
@@ -57,6 +59,74 @@ def check_js_syntax(html: str) -> list[str]:
         errors.append(f'JS syntax error: {exc}')
     except FileNotFoundError:
         print('  [warn] node is not available; skipping JS syntax validation')
+    return errors
+
+
+def check_js_syntax_global() -> list[str]:
+    """扫描 Workbench/ 下所有 HTML 文件的内嵌 JS 语法。
+
+    主工作台文件由 check_js_syntax 单独校验，本函数覆盖通过 iframe
+    加载的内容页（如背诵卡、真题练习等），确保内嵌数据中的引号转义、
+    语法错误能被构建阶段拦截。
+
+    使用独立临时文件而非 validate_js 的共享文件，避免 Windows 下
+    反复写入同一文件导致的句柄冲突。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    errors = []
+    if not workbench.exists():
+        return errors
+
+    node_available = True
+    for item in workbench.rglob('*.html'):
+        rel = str(item.relative_to(root)).replace('\\', '/')
+        if rel == 'Workbench/此刻便是春天.html':
+            continue
+        if rel.startswith('Workbench/read/'):
+            continue
+        if rel in GENERIC_CLASS_GLOBAL_WHITELIST:
+            continue
+
+        try:
+            content = item.read_text(encoding='utf-8')
+        except OSError as exc:
+            errors.append(f'Could not read {rel}: {exc}')
+            continue
+
+        if '<script' not in content:
+            continue
+
+        # 提取所有 script 块的 JS 代码
+        scripts = re.findall(r'<script[^>]*>(.*?)</script>', content, re.DOTALL)
+        js = '\n'.join(scripts)
+        if not js.strip():
+            continue
+
+        # 使用独立临时文件，避免共享文件句柄冲突
+        with tempfile.NamedTemporaryFile(
+            mode='w', suffix='.js', encoding='utf-8', delete=False
+        ) as tmp:
+            tmp.write(js)
+            tmp_path = tmp.name
+
+        try:
+            result = subprocess.run(
+                ['node', '--check', tmp_path],
+                capture_output=True, text=True, timeout=30,
+            )
+            if result.returncode != 0:
+                first_line = result.stderr.strip().split('\n')[0] if result.stderr else 'unknown'
+                errors.append(f'{rel}: JS syntax error: {first_line}')
+        except FileNotFoundError:
+            if node_available:
+                print('  [warn] node is not available; skipping global JS syntax validation')
+                node_available = False
+        except subprocess.TimeoutExpired:
+            errors.append(f'{rel}: JS syntax check timed out')
+        finally:
+            Path(tmp_path).unlink(missing_ok=True)
+
     return errors
 
 
@@ -409,6 +479,579 @@ def check_temp_directory_exists() -> list[str]:
     return []
 
 
+# CJK 统一汉字 Unicode 范围，用于检测注释是否包含中文
+CJK_PATTERN = re.compile(r'[\u4e00-\u9fff\u3400-\u4dbf]')
+
+
+def extract_comments(content: str, filetype: str) -> list[str]:
+    """从代码中提取注释文本，支持 SASS / Python / JS 注释格式。"""
+    comments = []
+
+    if filetype == 'scss':
+        # SASS 单行注释 //
+        for line in content.split('\n'):
+            stripped = line.strip()
+            if stripped.startswith('//'):
+                comments.append(stripped[2:].strip())
+        # SASS 多行注释 /* */
+        for match in re.finditer(r'/\*(.*?)\*/', content, re.DOTALL):
+            comments.append(match.group(1).strip())
+
+    elif filetype == 'py':
+        # Python 单行注释 #（跳过 shebang 和编码声明）
+        for line in content.split('\n'):
+            stripped = line.strip()
+            if stripped.startswith('#') and not stripped.startswith('#!') and 'coding' not in stripped:
+                comments.append(stripped[1:].strip())
+        # Python docstring
+        for match in re.finditer(r'"""(.*?)"""', content, re.DOTALL):
+            comments.append(match.group(1).strip())
+        for match in re.finditer(r"'''(.*?)'''", content, re.DOTALL):
+            comments.append(match.group(1).strip())
+
+    elif filetype == 'js':
+        # JS 单行注释 //
+        for line in content.split('\n'):
+            stripped = line.strip()
+            if stripped.startswith('//'):
+                comments.append(stripped[2:].strip())
+        # JS 多行注释 /* */
+        for match in re.finditer(r'/\*(.*?)\*/', content, re.DOTALL):
+            comments.append(match.group(1).strip())
+
+    return [c for c in comments if c]
+
+
+def check_chinese_comments() -> list[str]:
+    """检查 SASS / Python / JS 代码注释是否包含中文。
+
+    约束要求：Python / JS / SASS 代码必须包含中文注释，
+    说明复杂逻辑、正则、边界处理与外部调用用途。
+
+    扫描所有 .scss / .py 文件、Workbench HTML 和 templates/ HTML 中的 <script> 块，
+    如果文件包含注释但没有任何中文注释，则发出警告。
+    """
+    root = SKILLS_DIR.parent.parent
+    warnings = []
+
+    # --- 检查 SASS 文件 ---
+    styles_dir = root / 'styles'
+    if styles_dir.exists():
+        for f in sorted(styles_dir.glob('*.scss')):
+            try:
+                content = f.read_text(encoding='utf-8')
+            except OSError:
+                continue
+            comments = extract_comments(content, 'scss')
+            if comments and not any(CJK_PATTERN.search(c) for c in comments):
+                warnings.append(f'{f.relative_to(root)}: 注释全部为非中文，违反中文注释约束')
+
+    # --- 检查 Python 文件（根目录 + .trae/skills/）---
+    for py_dir in [root, SKILLS_DIR]:
+        for f in sorted(py_dir.glob('*.py')):
+            try:
+                content = f.read_text(encoding='utf-8')
+            except OSError:
+                continue
+            comments = extract_comments(content, 'py')
+            if comments and not any(CJK_PATTERN.search(c) for c in comments):
+                warnings.append(f'{f.relative_to(root)}: 注释全部为非中文，违反中文注释约束')
+
+    # --- 检查 Workbench HTML 的 <script> 块 ---
+    workbench = root / 'Workbench'
+    if workbench.exists():
+        for item in sorted(workbench.rglob('*.html')):
+            rel = str(item.relative_to(root)).replace('\\', '/')
+            if rel == 'Workbench/此刻便是春天.html':
+                continue
+            if rel.startswith('Workbench/read/'):
+                continue
+            if rel in GENERIC_CLASS_GLOBAL_WHITELIST:
+                continue
+
+            try:
+                content = item.read_text(encoding='utf-8')
+            except OSError:
+                continue
+
+            if '<script' not in content:
+                continue
+
+            scripts = re.findall(r'<script[^>]*>(.*?)</script>', content, re.DOTALL)
+            js = '\n'.join(scripts)
+            if not js.strip():
+                continue
+
+            comments = extract_comments(js, 'js')
+            if comments and not any(CJK_PATTERN.search(c) for c in comments):
+                warnings.append(f'{rel}: JS 注释全部为非中文，违反中文注释约束')
+
+    # --- 检查 templates/ 目录 HTML 的 <script> 块 ---
+    templates_dir = root / 'templates'
+    if templates_dir.exists():
+        for f in sorted(templates_dir.glob('*.html')):
+            try:
+                content = f.read_text(encoding='utf-8')
+            except OSError:
+                continue
+
+            if '<script' not in content:
+                continue
+
+            scripts = re.findall(r'<script[^>]*>(.*?)</script>', content, re.DOTALL)
+            js = '\n'.join(scripts)
+            if not js.strip():
+                continue
+
+            comments = extract_comments(js, 'js')
+            if comments and not any(CJK_PATTERN.search(c) for c in comments):
+                rel = str(f.relative_to(root)).replace('\\', '/')
+                warnings.append(f'{rel}: JS 注释全部为非中文，违反中文注释约束')
+
+    return warnings
+
+
+def check_backup_count() -> list[str]:
+    """检查 Workbench/ 下的备份文件不超过 3 份。
+
+    约束要求：旧备份未超过 3 份。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    warnings = []
+    if not workbench.exists():
+        return warnings
+
+    backups = sorted(workbench.glob('*.bak-*'))
+    if len(backups) > 3:
+        warnings.append(
+            f'Workbench/ 下有 {len(backups)} 份备份文件，超过 3 份限制，建议清理旧备份'
+        )
+    return warnings
+
+
+def check_json_html_naming() -> list[str]:
+    """检查 Workbench/ 下 JSON 文件与对应 HTML 文件同名。
+
+    约束要求：JSON 文件名与对应 HTML 同名。
+    如果同一目录下存在 .json 文件，检查是否有同名的 .html 文件。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    warnings = []
+    if not workbench.exists():
+        return warnings
+
+    # 纯数据 JSON 文件白名单：这些文件是数据源而非页面配置，不需要同名 HTML
+    data_only_json = {'ai-news-data.json'}
+
+    for item in sorted(workbench.rglob('*.json')):
+        rel = str(item.relative_to(root)).replace('\\', '/')
+        # 跳过 read/ 目录
+        if rel.startswith('Workbench/read/'):
+            continue
+        # 跳过备份目录
+        if '_备份_' in rel:
+            continue
+        # 跳过纯数据文件
+        if item.name in data_only_json:
+            continue
+
+        html_sibling = item.with_suffix('.html')
+        if not html_sibling.exists():
+            warnings.append(
+                f'{rel}: 没有对应的 HTML 文件 {item.stem}.html，违反 JSON 与 HTML 同名约束'
+            )
+    return warnings
+
+
+def check_date_format() -> list[str]:
+    """检查文件名和文件夹名中的日期格式使用 YYYY.MM。
+
+    约束要求：年份格式使用 YYYY.MM。
+    扫描 Workbench/ 下的文件和文件夹名，检测 YYYY-MM 或 YYYY/MM 格式。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    warnings = []
+    if not workbench.exists():
+        return warnings
+
+    # 匹配 YYYY-MM 或 YYYY/MM（应改为 YYYY.MM）
+    bad_date_pattern = re.compile(r'(\d{4})[-/](\d{1,2})\b')
+
+    for item in workbench.rglob('*'):
+        name = item.name
+        # 跳过备份文件（使用 YYYYMMDD_HHMMSS 格式，属设计例外）
+        if '.bak-' in name:
+            continue
+        # 跳过 read/ 目录下的年份文件（如 2026.html，仅年份非日期）
+        rel_parts = item.relative_to(workbench).parts
+        if rel_parts and rel_parts[0] == 'read':
+            continue
+
+        match = bad_date_pattern.search(name)
+        if match:
+            rel = str(item.relative_to(root)).replace('\\', '/')
+            warnings.append(
+                f'{rel}: 日期格式应为 YYYY.MM，当前为 {match.group(0)}'
+            )
+    return warnings
+
+
+def check_folder_naming() -> list[str]:
+    """检查 Workbench/ 下的文件夹优先使用中文命名。
+
+    约束要求：文件夹优先使用中文命名，必要时改用拼音。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    warnings = []
+    if not workbench.exists():
+        return warnings
+
+    # 允许使用英文名的目录白名单（read 为批量阅读文件目录，ai-learning 为 AI 学习模块约定目录）
+    english_dir_whitelist = {'read', 'ai-learning'}
+
+    for item in sorted(workbench.iterdir()):
+        if not item.is_dir():
+            continue
+        if item.name in english_dir_whitelist:
+            continue
+        if not CJK_PATTERN.search(item.name):
+            warnings.append(
+                f'{item.name}/: 文件夹名未使用中文，违反中文命名约束'
+            )
+    return warnings
+
+
+def check_interactive_styles_global() -> list[str]:
+    """检查交互组件的 CSS 样式完整性。
+
+    约束要求：新增 Tab、折叠、弹窗等交互组件后，
+    已检查 .active、显示/隐藏、响应式断点三类样式是否存在。
+
+    检测页面中 JS 使用 .active 类或显示/隐藏切换时，
+    验证对应的 CSS 样式是否已定义。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    warnings = []
+    if not workbench.exists():
+        return warnings
+
+    for item in sorted(workbench.rglob('*.html')):
+        rel = str(item.relative_to(root)).replace('\\', '/')
+        if rel == 'Workbench/此刻便是春天.html':
+            continue
+        if rel.startswith('Workbench/read/'):
+            continue
+        if rel in GENERIC_CLASS_GLOBAL_WHITELIST:
+            continue
+        # 跳过备份目录（_备份_YYYYMMDD_HHMMSS）
+        if '_备份_' in rel:
+            continue
+
+        try:
+            content = item.read_text(encoding='utf-8')
+        except OSError:
+            continue
+
+        # 提取 CSS 和 JS
+        css_blocks = re.findall(r'<style[^>]*>(.*?)</style>', content, re.DOTALL)
+        css = '\n'.join(css_blocks)
+        scripts = re.findall(r'<script[^>]*>(.*?)</script>', content, re.DOTALL)
+        js = '\n'.join(scripts)
+
+        if not js.strip():
+            continue
+
+        # 检测是否有交互组件
+        has_interactive = (
+            'classList.toggle' in js or
+            'classList.add' in js or
+            'classList.remove' in js or
+            'style.display' in js
+        )
+        if not has_interactive:
+            continue
+
+        # 检查 .active 样式：JS 使用 active 类时 CSS 应定义 .active 规则
+        uses_active = "'active'" in js or '"active"' in js
+        if uses_active:
+            has_active_css = re.search(r'\.active\s*\{', css) is not None
+            if not has_active_css:
+                warnings.append(f'{rel}: JS 使用 .active 类但 CSS 未定义 .active 样式')
+
+        # 检查显示/隐藏样式：JS 切换显示状态时 CSS 应有隐藏规则
+        uses_display = 'style.display' in js
+        uses_hidden = "'hidden'" in js or '"hidden"' in js
+        if uses_display or uses_hidden:
+            has_hide_css = (
+                'display: none' in css or 'display:none' in css or
+                '.hidden' in css or 'visibility: hidden' in css or
+                'visibility:hidden' in css
+            )
+            if not has_hide_css:
+                warnings.append(f'{rel}: JS 使用显示/隐藏切换但 CSS 未定义隐藏样式')
+
+    return warnings
+
+
+def check_directory_structure_sync() -> list[str]:
+    """检查实际文件系统与 AGENT_HANDOFF.md 目录结构是否同步。
+
+    扫描根目录、styles/、Workbench/ 各模块、data/modules/、templates/、
+    .trae/skills/、transformers/ 等关键目录，
+    对比 AGENT_HANDOFF.md 中是否已列出，防止文档过时。
+    同时检查 CHANGELOG.md 版本与 AGENT_HANDOFF.md 当前版本是否一致。
+    """
+    root = SKILLS_DIR.parent.parent
+    handoff_path = root / 'AGENT_HANDOFF.md'
+    if not handoff_path.exists():
+        return ['AGENT_HANDOFF.md not found']
+
+    handoff_content = handoff_path.read_text(encoding='utf-8')
+    warnings = []
+
+    # 备份文件和临时文件不检查
+    def is_backup(name: str) -> bool:
+        return '.bak-' in name or name.startswith('~')
+
+    # 忽略不需要检查的根目录项
+    ignored_root = {'.git', '__pycache__', '.trae-html-share-packages'}
+    for item in sorted(root.iterdir()):
+        if item.name in ignored_root or is_backup(item.name):
+            continue
+        if item.name not in handoff_content:
+            warnings.append(f'根目录项 {item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+    # 检查 styles/ 目录
+    styles_dir = root / 'styles'
+    if styles_dir.exists():
+        for item in sorted(styles_dir.iterdir()):
+            if item.is_file() and item.suffix == '.scss':
+                if item.name not in handoff_content:
+                    warnings.append(f'styles/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+    # 检查 Workbench/ 顶层子目录和 HTML 文件
+    workbench_dir = root / 'Workbench'
+    if workbench_dir.exists():
+        for item in sorted(workbench_dir.iterdir()):
+            if is_backup(item.name):
+                continue
+            if item.name not in handoff_content:
+                warnings.append(f'Workbench/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+        # 检查 Workbench 各模块下的内容文件（HTML / JSON）
+        # read/ 目录包含按年份批量命名的阅读文件，目录已用 "2019 ~ 2026" 说明，跳过逐文件检查
+        skip_content_scan = {'read'}
+        for module_dir in sorted(workbench_dir.iterdir()):
+            if not module_dir.is_dir() or is_backup(module_dir.name):
+                continue
+            if module_dir.name in skip_content_scan:
+                continue
+            for item in sorted(module_dir.iterdir()):
+                if is_backup(item.name):
+                    continue
+                if item.is_file() and item.suffix in ('.html', '.json'):
+                    if item.name not in handoff_content:
+                        warnings.append(
+                            f'Workbench/{module_dir.name}/{item.name} '
+                            f'未在 AGENT_HANDOFF.md 目录结构中列出')
+
+        # 检查 自考学习/ 子目录
+        zikao_dir = workbench_dir / '自考学习'
+        if zikao_dir.exists():
+            for item in sorted(zikao_dir.iterdir()):
+                if item.is_dir() and not is_backup(item.name):
+                    if item.name not in handoff_content:
+                        warnings.append(
+                            f'自考学习/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+            # 检查 备考科目/ 子目录
+            beikao_dir = zikao_dir / '备考科目'
+            if beikao_dir.exists():
+                for item in sorted(beikao_dir.iterdir()):
+                    if item.is_dir() and not is_backup(item.name):
+                        if item.name not in handoff_content:
+                            warnings.append(
+                                f'备考科目/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+            # 检查 未考科目/ 子目录
+            weikao_dir = zikao_dir / '未考科目'
+            if weikao_dir.exists():
+                for item in sorted(weikao_dir.iterdir()):
+                    if item.is_dir() and not is_backup(item.name):
+                        if item.name not in handoff_content:
+                            warnings.append(
+                                f'未考科目/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+    # 检查 data/modules/ 下的 JSON 文件
+    modules_dir = root / 'data' / 'modules'
+    if modules_dir.exists():
+        for item in sorted(modules_dir.iterdir()):
+            if item.is_file() and item.suffix == '.json':
+                if item.name not in handoff_content:
+                    warnings.append(
+                        f'data/modules/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+    # 检查 templates/ 下的文件
+    templates_dir = root / 'templates'
+    if templates_dir.exists():
+        for item in sorted(templates_dir.iterdir()):
+            if item.is_file() and not is_backup(item.name):
+                if item.name not in handoff_content:
+                    warnings.append(
+                        f'templates/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+    # 检查 .trae/skills/ 下的 Python 文件
+    for item in sorted(SKILLS_DIR.iterdir()):
+        if item.is_file() and item.suffix == '.py':
+            if item.name not in handoff_content:
+                warnings.append(
+                    f'.trae/skills/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+        elif item.is_dir() and not is_backup(item.name):
+            # 检查子目录是否在文档中列出
+            if item.name not in handoff_content:
+                warnings.append(
+                    f'.trae/skills/{item.name}/ 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+    # 检查 transformers/ 下的文件
+    transformers_dir = root / 'transformers'
+    if transformers_dir.exists():
+        for item in sorted(transformers_dir.iterdir()):
+            if item.is_file() and not is_backup(item.name):
+                if item.name not in handoff_content:
+                    warnings.append(
+                        f'transformers/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
+
+    # 检查 CHANGELOG.md 版本是否与 AGENT_HANDOFF.md 一致
+    changelog_path = root / 'CHANGELOG.md'
+    if changelog_path.exists():
+        changelog_content = changelog_path.read_text(encoding='utf-8')
+        # 从 AGENT_HANDOFF.md 提取当前版本号
+        version_match = re.search(r'当前版本[：:]\s*(v[\d.]+)', handoff_content)
+        if version_match:
+            current_version = version_match.group(1)
+            # 检查 CHANGELOG.md 是否包含该版本号标题
+            if f'## {current_version}' not in changelog_content:
+                warnings.append(f'CHANGELOG.md 未包含当前版本 {current_version} 的变更记录')
+
+    return warnings
+
+
+def check_changelog_coverage() -> list[str]:
+    """检查 git 已修改文件是否都在 CHANGELOG.md 最新版本中记录。
+
+    通过 git diff HEAD --name-only 获取已修改的已跟踪文件，
+    对比 CHANGELOG.md 最新版本章节中列出的文件路径，
+    报告未在 CHANGELOG 中记录的已修改文件，防止变更信息散落。
+    """
+    import fnmatch
+
+    root = SKILLS_DIR.parent.parent
+    changelog_path = root / 'CHANGELOG.md'
+    if not changelog_path.exists():
+        return ['CHANGELOG.md not found']
+
+    # 查找可用的 git 可执行文件：先尝试 PATH 中的 git，回退到已知安装路径
+    git_candidates = ['git', r'E:\Git\Git\cmd\git.exe']
+    git_exe = None
+    for candidate in git_candidates:
+        try:
+            subprocess.run([candidate, '--version'], capture_output=True, timeout=10)
+            git_exe = candidate
+            break
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            continue
+    if git_exe is None:
+        return []  # git 不可用，跳过检查
+
+    # 获取相对于 HEAD 的所有已修改文件（含暂存和未暂存）
+    try:
+        result = subprocess.run(
+            [git_exe, '-C', str(root), '-c', 'core.quotepath=false',
+             'diff', 'HEAD', '--name-only'],
+            capture_output=True, text=True, timeout=30,
+        )
+    except subprocess.TimeoutExpired:
+        return []
+
+    if not result.stdout.strip():
+        return []  # 无修改文件
+
+    modified_files = [f.strip() for f in result.stdout.strip().split('\n') if f.strip()]
+
+    # 排除不需要在 CHANGELOG 中记录的文件
+    skip_files = {
+        'CHANGELOG.md',                # 变更日志本身
+        'Workbench/此刻便是春天.html',   # 构建产物，源码变更已记录
+    }
+    modified_files = [f for f in modified_files if f not in skip_files]
+
+    if not modified_files:
+        return []
+
+    # 解析 CHANGELOG.md，提取最新版本章节内容
+    # 按 ## vX.X.X 分割，第一段是文件头部，之后交替为 [版本号, 内容, ...]
+    changelog_content = changelog_path.read_text(encoding='utf-8')
+    version_parts = re.split(r'\n## (v[\d.]+)\b', changelog_content)
+    if len(version_parts) < 3:
+        return []  # 没有版本章节
+
+    latest_version = version_parts[1]
+    latest_content = version_parts[2]
+    # 截取到下一个版本章节（分隔线 --- 之前的内容属于当前版本）
+    if '\n---\n' in latest_content:
+        latest_content = latest_content.split('\n---\n')[0]
+
+    # 从最新版本章节中提取所有反引号包裹的文件路径
+    changelog_entries = re.findall(r'`([^`]+)`', latest_content)
+
+    # 拆分被顿号/逗号连接的多个路径，清理括号说明
+    changelog_paths = []
+    for entry in changelog_entries:
+        parts = re.split(r'[、,]', entry)
+        for part in parts:
+            part = part.strip()
+            # 去除尾部括号说明（如 "styles/*.scss（9 个文件）"）
+            part = re.sub(r'[（(].*$', '', part).strip()
+            if part:
+                changelog_paths.append(part)
+
+    # 对每个已修改文件，检查是否在 CHANGELOG 中记录
+    warnings = []
+    for filepath in modified_files:
+        normalized = filepath.replace('\\', '/')
+        filename = normalized.split('/')[-1]
+
+        found = False
+        for cl_path in changelog_paths:
+            cl_normalized = cl_path.replace('\\', '/')
+            cl_filename = cl_normalized.split('/')[-1]
+
+            # 完整路径匹配（任一方包含另一方）
+            if normalized in cl_normalized or cl_normalized in normalized:
+                found = True
+                break
+            # 文件名完全匹配
+            if filename and filename == cl_filename:
+                found = True
+                break
+            # 通配符匹配（如 styles/*.scss）
+            if '*' in cl_normalized and fnmatch.fnmatch(normalized, cl_normalized):
+                found = True
+                break
+
+        if not found:
+            warnings.append(
+                f'git 已修改文件 `{normalized}` 未在 CHANGELOG.md 最新版本 {latest_version} 中记录'
+            )
+
+    return warnings
+
+
 def validate(html: str) -> list[str]:
     """Run all validation checks and return a list of errors."""
     errors = []
@@ -435,11 +1078,27 @@ def main() -> int:
     # 全局 Tab 完整性检查：针对所有 Workbench HTML 源文件
     errors.extend(check_tab_integrity_global())
 
-    # 文档、命名与全局 class 检查作为警告而非致命错误
+    # 全局 JS 语法检查：扫描所有内容页的内嵌 JS
+    errors.extend(check_js_syntax_global())
+
+    # 文档、命名、全局 class、中文注释等检查作为警告而非致命错误
     doc_warnings = check_file_documentation()
     naming_warnings = check_naming_conventions()
     generic_global_warnings = check_generic_class_prefixes_global()
-    all_warnings = doc_warnings + naming_warnings + generic_global_warnings
+    comment_warnings = check_chinese_comments()
+    backup_warnings = check_backup_count()
+    json_naming_warnings = check_json_html_naming()
+    date_format_warnings = check_date_format()
+    folder_naming_warnings = check_folder_naming()
+    interactive_style_warnings = check_interactive_styles_global()
+    dir_sync_warnings = check_directory_structure_sync()
+    changelog_coverage_warnings = check_changelog_coverage()
+    all_warnings = (
+        doc_warnings + naming_warnings + generic_global_warnings +
+        comment_warnings + backup_warnings + json_naming_warnings +
+        date_format_warnings + folder_naming_warnings + interactive_style_warnings +
+        dir_sync_warnings + changelog_coverage_warnings
+    )
     if all_warnings:
         print('Warnings:')
         for warn in all_warnings:

@@ -1,3 +1,4 @@
+// 将 SASS 变量注入为 CSS 自定义属性，供运行时主题系统覆盖
 @import "variables";
 
 :root {

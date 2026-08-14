@@ -39,6 +39,7 @@
             {
               "name": "背诵与简答",
               "type": "self-study",
+              "renderMode": "bare",
               "stage": "待填充",
               "current": "正面问题 · 背面答案",
               "tasks": [],
@@ -57,6 +58,7 @@
             {
               "name": "AI助手",
               "type": "ai-role",
+              "renderMode": "bare",
               "stage": "可用",
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
@@ -94,6 +96,7 @@
             {
               "name": "背诵与简答",
               "type": "self-study",
+              "renderMode": "bare",
               "stage": "待填充",
               "current": "正面问题 · 背面答案",
               "tasks": [],
@@ -112,6 +115,7 @@
             {
               "name": "AI助手",
               "type": "ai-role",
+              "renderMode": "bare",
               "stage": "可用",
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
@@ -149,6 +153,7 @@
             {
               "name": "背诵与简答",
               "type": "self-study",
+              "renderMode": "bare",
               "stage": "待填充",
               "current": "正面问题 · 背面答案",
               "tasks": [],
@@ -167,6 +172,7 @@
             {
               "name": "AI助手",
               "type": "ai-role",
+              "renderMode": "bare",
               "stage": "可用",
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
@@ -200,8 +206,19 @@
               "contentUrl": "自考学习/未考科目/00015英语（二）/00015英语（二）-知识框架与学习计划.html"
             },
             {
+              "name": "背诵与简答",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "基础积累",
+              "current": "阅读判断技巧 + 高频词汇",
+              "tasks": [],
+              "review": "英语（二）阅读判断技巧与高频词汇背诵。",
+              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=en"
+            },
+            {
               "name": "AI助手",
               "type": "ai-role",
+              "renderMode": "bare",
               "stage": "可用",
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
@@ -230,6 +247,7 @@
             {
               "name": "AI助手",
               "type": "ai-role",
+              "renderMode": "bare",
               "stage": "可用",
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],

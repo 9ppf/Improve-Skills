@@ -1,6 +1,6 @@
 @import "variables";
 
-/* Buttons */
+/* 按钮 */
 .btn {
   flex: 1;
   display: inline-flex;
@@ -42,7 +42,7 @@
 }
 .btn-subtle:hover { background: var(--blue-soft); }
 
-/* Plan card */
+/* 计划卡片 */
 .plan-card {
   background: var(--surface);
   border-radius: var(--radius);
@@ -169,7 +169,7 @@
   font-weight: 700;
 }
 
-/* Tabs */
+/* 标签页 */
 .plan-tabs {
   display: flex;
   gap: 6px;
@@ -205,7 +205,7 @@
 
 .plan-tab:focus-visible { box-shadow: 0 0 0 2px var(--accent-blue); }
 
-/* Question type analysis */
+/* 题型分析 */
 .qt-toolbar {
   display: flex;
   justify-content: space-between;
@@ -295,7 +295,7 @@
   margin-right: 4px;
 }
 
-/* Papers source */
+/* 真题来源 */
 .papers-block { margin-top: 20px; }
 
 .papers-block h4 {

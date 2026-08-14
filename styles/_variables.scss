@@ -1,23 +1,23 @@
-// Design tokens: tweak these variables to customize the workbench appearance.
-// They are compiled into CSS custom properties in :root, and the runtime theme
-// system can still override those custom properties for dark mode.
+// 设计令牌：调整这些变量可自定义工作台外观。
+// 它们会被编译为 :root 中的 CSS 自定义属性，
+// 运行时主题系统仍可覆盖这些自定义属性以实现深色模式。
 
-// Background & surfaces
+// 背景与表面
 $bg: #F0F9FF;
 $surface: #ffffff;
 $sidebar: #F5FBFF;
 $bg2: #f1f5f9;
 
-// Text
+// 文字
 $ink: #2D2A32;
 $muted: #64748B;
 $light: #94A3B8;
 
-// Rules / borders
+// 分割线/边框
 $rule: #E0F2FE;
 $rule-strong: #BAE6FD;
 
-// Accent palette
+// 强调色板
 $accent-purple: #A78BFA;
 $purple-soft: #EDE9FE;
 $purple-text: #7C3AED;
@@ -38,22 +38,22 @@ $accent-cyan: #22D3EE;
 $accent-yellow: #FBBF24;
 $accent-orange: #FB923C;
 
-// Notice
+// 提示
 $notice-bg: #fffbeb;
 $notice-border: #fde68a;
 $notice-text: #92400e;
 
-// Reading
+// 阅读模块
 $reading-warm: #FEF3C7;
 
-// Derived aliases
+// 派生别名
 $brand: $accent-blue;
 $brand-soft: $blue-soft;
 $brand-text: $blue-text;
 $danger: $coral-text;
 $success: $accent-green;
 
-// Geometry
+// 几何尺寸
 $radius-sm: 10px;
 $radius: 14px;
 
@@ -67,5 +67,5 @@ $space-sm: 8px;
 $space-md: 12px;
 $space-lg: 16px;
 
-// Typography
+// 字体
 $font-sans: "SF Pro Text", "PingFang SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;

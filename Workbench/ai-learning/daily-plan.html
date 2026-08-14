@@ -12,8 +12,9 @@
       --ink: #1e293b;
       --muted: #64748b;
       --rule: #e2e8f0;
-      --accent: #2563eb;
-      --accent2: #8b5cf6;
+      --accent: #8b5cf6;
+      --accent2: #a78bfa;
+      --accent-soft: #f5f3ff;
       --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
       --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
       --max: 860px;
@@ -24,13 +25,9 @@
     body {
       font-family: var(--font);
       color: var(--ink);
-      background:
-        radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.06), transparent 35%),
-        radial-gradient(circle at 90% 20%, rgba(139, 92, 246, 0.06), transparent 35%),
-        radial-gradient(circle at 50% 90%, rgba(37, 99, 235, 0.04), transparent 40%),
-        var(--bg);
-      line-height: 1.75;
-      padding: 2.5rem 1rem;
+      background: var(--bg);
+      line-height: 1.7;
+      padding: 2rem 1rem;
     }
     article.page {
       max-width: var(--max);
@@ -38,43 +35,52 @@
     }
 
     header {
-      text-align: center;
-      margin-bottom: 3rem;
+      text-align: left;
+      margin-bottom: 1.5rem;
     }
     header h1 {
-      font-size: 2rem;
+      font-size: 1.7rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--ink);
+    }
+    header h1::before {
+      content: "📅";
+      margin-right: 0.4rem;
     }
     header p {
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
     }
 
     section {
       background: var(--bg2);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(37, 99, 235, 0.10);
+      border: 1px solid var(--rule);
       border-radius: 16px;
-      padding: 1.75rem;
+      padding: 1.5rem;
       margin-bottom: 1.5rem;
       box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
     }
     section h2 {
-      font-size: 1.25rem;
+      font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    section h2::before {
+      content: "";
+      width: 4px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 2px;
     }
     section h3 {
       font-size: 1.05rem;
       font-weight: 650;
-      margin: 1.5rem 0 0.75rem;
+      margin: 1rem 0 0.5rem;
       color: var(--ink);
     }
     section p {
@@ -83,7 +89,7 @@
     section p:last-child { margin-bottom: 0; }
 
     .lead {
-      font-size: 1.05rem;
+      font-size: 0.92rem;
       color: var(--muted);
     }
 
@@ -93,19 +99,20 @@
     }
 
     .callout {
-      background: rgba(37, 99, 235, 0.06);
+      background: var(--accent-soft);
       border-left: 4px solid var(--accent);
-      padding: 1rem 1.1rem;
+      padding: 0.75rem 1rem;
       border-radius: 0 10px 10px 0;
-      margin: 1rem 0;
+      margin: 0.75rem 0;
+      font-size: 0.9rem;
     }
 
     .day-block {
       background: rgba(255, 255, 255, 0.55);
       border: 1px solid var(--rule);
       border-radius: 12px;
-      padding: 1rem 1.1rem;
-      margin-bottom: 1rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
     }
     .day-block h3 {
       font-size: 1rem;
@@ -117,7 +124,7 @@
     }
     .day-block.today {
       border: 2px solid var(--accent);
-      background: rgba(37, 99, 235, 0.04);
+      background: var(--accent-soft);
     }
     .day-block.past {
       opacity: 0.7;
@@ -128,19 +135,19 @@
 
     .time-row {
       display: grid;
-      grid-template-columns: 90px 90px 1fr;
-      gap: 0.75rem;
-      padding: 0.45rem 0;
+      grid-template-columns: 80px 80px 1fr;
+      gap: 0.6rem;
+      padding: 0.35rem 0;
       border-bottom: 1px dashed var(--rule);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
     }
     .time-row:last-child { border-bottom: none; }
     .time-row span:first-child { color: var(--muted); font-family: var(--font-mono); }
 
     .tag {
       display: inline-block;
-      font-size: 0.75rem;
-      padding: 0.15rem 0.45rem;
+      font-size: 0.72rem;
+      padding: 0.12rem 0.4rem;
       border-radius: 6px;
       font-weight: 600;
       text-align: center;
@@ -156,10 +163,10 @@
     .tag-rest { background: rgba(34, 197, 94, 0.10); color: #16a34a; }
 
     .output {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
       border-top: 1px solid var(--rule);
-      font-size: 0.92rem;
+      font-size: 0.85rem;
       color: var(--muted);
     }
     .output strong { color: var(--ink); }
@@ -167,28 +174,28 @@
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      margin: 1rem 0;
+      gap: 0.4rem;
+      margin: 0.75rem 0;
     }
 
     ul, ol {
       margin-left: 1.25rem;
-      margin-bottom: 0.9rem;
+      margin-bottom: 0.75rem;
     }
-    li { margin-bottom: 0.4rem; }
+    li { margin-bottom: 0.35rem; }
 
     @media (max-width: 640px) {
-      body { padding: 1.5rem 0.9rem; }
-      section { padding: 1.25rem; }
-      header h1 { font-size: 1.6rem; }
-      .time-row { grid-template-columns: 75px 75px 1fr; font-size: 0.85rem; }
+      body { padding: 1rem 0.75rem; }
+      section { padding: 1rem; }
+      header h1 { font-size: 1.4rem; }
+      .time-row { grid-template-columns: 65px 65px 1fr; font-size: 0.85rem; }
     }
   </style>
 </head>
 <body>
   <article class="page">
-    <header>
-      <h1>武汉自考 + AI 转型 · 每日执行计划</h1>
+    <header class="dp-header">
+      <h1>每日执行计划</h1>
       <p>2026 年 8 月 11 日 — 10 月 24 日 · 具体到每个时段</p>
     </header>
 

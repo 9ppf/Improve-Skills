@@ -1,6 +1,6 @@
-// Entry point for the workbench stylesheet.
-// Compile with: sass styles/main.scss
-// In the build pipeline this is compiled automatically by build.py.
+// 工作台样式表入口
+// 编译命令：sass styles/main.scss
+// 在构建流程中由 build.py 自动编译
 
 @import "variables";
 @import "root";

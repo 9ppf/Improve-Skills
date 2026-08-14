@@ -71,8 +71,8 @@
     {
       "id": "ai-roles",
       "file": "ai-roles.json",
-      "enabled": true,
-      "description": "AI 助手角色模块"
+      "enabled": false,
+      "description": "AI 助手角色模块（已合并到学习驾驶舱）"
     },
     {
       "id": "read",

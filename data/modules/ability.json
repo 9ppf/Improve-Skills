@@ -13,20 +13,12 @@
         {
           "name": "学习进度驾驶舱",
           "type": "ability-overview",
+          "renderMode": "bare",
           "stage": "实时",
-          "current": "Python 知识树 / 学习闭环 / 真题 / 背诵卡 进度汇总",
+          "current": "驾驶舱 / 综合完成度 / 学习路线 三合一",
           "tasks": [],
-          "review": "汇总各模块 localStorage 进度数据，每 3 秒自动刷新，支持切换标签页后返回触发刷新。",
+          "review": "页面内含三个 Tab：驾驶舱（本周计划、考试倒计时、模块进度）、综合完成度（各科目+Python+AI 进度条）、学习路线（战略路线图）。",
           "contentUrl": "能力提升/能力提升-学习驾驶舱.html"
-        },
-        {
-          "name": "学习路线图",
-          "type": "ability-overview",
-          "stage": "已生成",
-          "current": "4 阶段战略视图",
-          "tasks": [],
-          "review": "10 周自考冲刺 + 3 个月 AI 转型的战略视图，包含阶段划分、每日时间分配与拆解方法。",
-          "contentUrl": "能力提升/full-learning-roadmap.html"
         }
       ]
     }

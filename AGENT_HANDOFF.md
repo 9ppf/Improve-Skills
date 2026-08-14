@@ -1,12 +1,25 @@
 # 此刻便是春天工作台 —— Agent 交接文档
 
-> 把本文档直接交给新 Agent，并告诉他「下一步目标」即可开始工作。
+> 把本文档直接交给新 Agent，并告诉他当前任务即可开始工作。文档末尾「v2.0.0 后续建议」列出待办优先级。
+
+> **⚠ 重要：v2.0.0 变更尚未提交 Git。** 当前工作区包含大量未提交的 v2.0.0 变更（详见 `CHANGELOG.md` v2.0.0 章节）。**禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，否则会丢失未提交的工作。
+
+---
+
+## 版本更新记录
+
+| 版本 | 日期 | 摘要 |
+|---|---|---|
+| v1.0.0 | 2026-08-12 ~ 2026-08-13 | 工作台从单一阅读模块扩展为 6 大模块，全部线框占位替换为真实内容页；AI 学习规划师重构、统筹计划面板升级、科目 AI 助手入口、构建后自动预览 |
+| v2.0.0 | 2026-08-14 | AI 统筹规划师功能增强（对话折叠/复盘时段/面板调换）；背诵卡页面重构（今日任务/总任务双板块）；背诵卡语法错误修复（JS 字符串转义）；新增「实现即测试」硬性约束；约束文档与隐患规避方案更新；validate_workbench.py 扩展至 21 个检查函数（含目录结构同步、CHANGELOG 变更覆盖）；新增 Git pre-commit hook；流程清单补充 CHANGELOG 更新步骤 |
+
+> **当前版本：v2.0.0** — 详见下方「v2.0.0 更新内容」章节。
 
 ---
 
 ## 项目一句话描述
 
-一个 Python 构建的静态 HTML 个人工作台，聚合「能力提升」「自考学习」「Python 基础」「AI 学习」「AI 助手角色」与「阅读资料」六大模块，主题可切换，支持本地热重载预览。
+一个 Python 构建的静态 HTML 个人工作台，聚合「能力提升」「自考学习」「Python 基础」「AI 学习」「AI 助手角色」与「阅读资料」六大模块，主题可切换，支持本地热重载预览。v2.0.0 新增：AI 统筹规划师（对话式生成每日学习计划，6 时段含复盘，对话消息可折叠）；背诵卡系统（今日任务/总任务双板块，按科目区分，翻转卡片 + 掌握度标记）；「实现即测试」硬性约束体系。
 
 ---
 
@@ -14,10 +27,15 @@
 
 1. **`Workbench/此刻便是春天.html` 由 `build.py` 从模板生成，禁止手动编辑产物文件；提交 Git 时需随源码一同提交，方便对比各版本差异**。
 2. **所有结构性改动应通过修改 `data/modules/*.json` + `templates/workbench.html` + `build.py` 并运行 `python build.py` 来落地**。
-3. 当前环境已确认 Python 可用（`E:\Python\python.exe`，版本 3.9.7），但缺少 Node.js；`build.py` 会在 Node 不可用时跳过 JS 语法校验并给出警告，不影响构建。
+3. 当前环境已确认 Python 可用（`E:\Python\python.exe`，版本 3.9.7）；Node.js 通过 NVM 安装（v14.19.0，路径 `C:\nvm-nodejs\nodejs\`）。用户终端可直接使用 `node --check`；TRAE Shell 工具的 PATH 不含 NVM 路径，需先执行 `$env:PATH += ';C:\nvm-nodejs\nodejs'` 才能运行 JS 语法校验。若未添加 PATH，`build.py` 与 `validate_workbench.py` 会跳过 JS 校验并打印警告，不报错退出。
 4. **结构性变更必须先讨论**：涉及增删分类、重组导航、改变信息架构前，必须先触发 `plan-before-create` skill 讨论确认；只有"往已有结构里填数据"的内容填充可以直接执行。
 5. **新增最终交付物必须同步更新 `文件说明.md`**；**中间产物**（脚本、OCR 文本、调试输出）只能放在 `temp/` 下，不能进入 `Workbench/`。
 6. **类名必须带模块前缀**，例如 `reading-card`、`exam-item`，禁止裸用 `card`、`item`、`title` 等通类；新增/修改文件前，先查 `项目约束总览.md` 中的「新增/修改文件流程」。
+7. **实现功能后必须在浏览器中实际测试**（v2.0.0 新增）。代码审查可以发现逻辑错误，但无法替代运行时测试——语法错误、事件绑定失效、样式丢失等问题只有在浏览器中执行才会暴露。不能仅凭代码推断功能正常。
+8. **内嵌大段数据到 JS 字符串时，必须检查所有引号转义**（v2.0.0 新增）。数学符号（如补元 `a'`、导数 `f'`）中的撇号与 JS 字符串界定符冲突，未转义会导致整个 `<script>` 块静默崩溃。详见 `文件约束隐患与规避方案.md` 第 13 条。
+9. **提交前校验已自动化**（v2.0.0 新增）。`.git/hooks/pre-commit` 会在 `git commit` 时自动运行 `validate_workbench.py`，校验失败则阻止提交。若 hook 不存在（如新克隆的仓库），需手动创建：将 `.git/hooks/pre-commit.sample` 复制为 `.git/hooks/pre-commit`，写入 `python .trae/skills/validate_workbench.py` 并确保可执行。可用 `git commit --no-verify` 跳过（不推荐）。
+10. **修改文件后必须同步更新 `CHANGELOG.md`**（v2.0.0 新增）。`validate_workbench.py` 的 `check_changelog_coverage()` 会对比 `git diff HEAD --name-only` 与 CHANGELOG 最新版本表格，未记录的修改文件会触发警告。
+11. **`.env` 文件不在版本控制中**（`.gitignore` 排除）。测试 AI 功能（统筹规划师、学习规划师）需要 DeepSeek API Key，若 `.env` 不存在需向用户索取，不可自行创建或硬编码 Key。
 
 ---
 
@@ -26,13 +44,23 @@
 ```
 e:\TraeWorkToDo\
 ├── build.py                          # 核心构建脚本
-├── dev_server.py                     # 本地预览 + 热重载
+├── dev_server.py                     # 本地预览 + 热重载 + AI API 代理（/api/chat 端点）
 ├── requirements.txt                  # Python 依赖：libsass, watchdog
+├── .env                              # API Key 存储（已加入 .gitignore，不入版本控制）
+├── .gitignore                        # Git 忽略规则
+├── .gitattributes                    # Git LFS 与属性配置
 ├── AGENT_HANDOFF.md                  # 本文档
+├── CHANGELOG.md                      # 变更日志（当前版本 v2.0.0）
 ├── 文件说明.md                        # 项目文件用途说明
 ├── 项目约束总览.md                     # 所有规范的索引入口
+├── 文件约束隐患与规避方案.md             # 已知隐患与规避方案（13 条）
+├── 工作台搭建总结.md                   # 工作台演进过程与已解决问题
+├── 版本控制规范.md                     # Git 提交范围、LFS、提交信息格式
 ├── build.py 使用说明.md                # 构建流程详细说明
 ├── Workbench UI 交互规范.md            # UI 与交互规范
+├── AI统筹规划师-版本C方案.md             # AI 统筹规划师设计方案文档
+│
+├── temp/                              # 临时产物（脚本、OCR 文本、调试输出，已加入 .gitignore）
 │
 ├── data/                               # 全局配置与模块数据
 │   ├── workbench.json                  # 主题与模块注册表
@@ -41,8 +69,9 @@ e:\TraeWorkToDo\
 │       ├── self-study.json             # 自考学习
 │       ├── python.json                 # Python 基础
 │       ├── ai-learning.json            # AI 学习
-│       ├── ai-roles.json               # AI 助手角色
-│       └── reading.json                # 阅读资料
+│       ├── ai-roles.json                # AI 助手角色
+│       ├── reading.json                # 阅读资料
+│       └── tasks.json                  # 任务模块（已禁用）
 │
 ├── templates/
 │   └── workbench.html                # HTML 模板（{{ placeholder }}）
@@ -54,10 +83,14 @@ e:\TraeWorkToDo\
 │   ├── _layout.scss                  # 布局（sidebar / main）
 │   ├── _components.scss              # 通用组件
 │   ├── _reading.scss                 # 阅读模块样式
+│   ├── _responsive.scss              # 响应式适配（移动端断点）
+│   ├── _tree.scss                    # 侧边栏树形组件样式
 │   └── main.scss                     # SASS 入口
 │
 ├── Workbench/                        # 最终交付物
-│   ├── 此刻便是春天.html             # 构建产物（原则上走 build.py）
+│   ├── 此刻便是春天.html             # 构建产物（由 build.py 生成，禁止手动编辑）
+│   │                                  # 注意：Workbench/ 下其他 HTML 文件均为独立内容页，
+│   │                                  # 不经过 build.py，可直接编辑
 │   ├── ai-learning/                  # AI 学习相关页面
 │   │   ├── ai-learning-plan.html           # 武汉理工自考 + AI 转型方案
 │   │   ├── daily-plan.html                 # 每日执行计划
@@ -84,17 +117,20 @@ e:\TraeWorkToDo\
 │   │   ├── 复盘总结/
 │   │   │   └── 复盘总结-章节复盘.html       # 章节复盘总结（每章总结/错题反思/改进计划，URL 参数 ?subject=XXX 预选科目）
 │   │   └── 未考科目/
-│   │       └── 00015英语（二）/
+│   │       ├── 00015英语（二）/
+│   │       └── 00023高等数学（工本）/
 │   ├── read/                         # 阅读原始 HTML（2019 ~ 2026）
 │   └── 工作台迁移方案/               # 历史说明文档
+│       └── 工作台迁移方案-说明.html   # 迁移方案详情页
 │
 ├── transformers/
 │   └── read.py                       # 阅读模块数据转换器
 │
 └── .trae/skills/
     ├── reading_integration.py        # 阅读内容转换与注入核心
-    ├── validate_workbench.py         # 校验脚本（build.py 调用）
+    ├── validate_workbench.py         # 校验脚本（可独立运行或被 build.py 调用）
     ├── integrate_reading.py          # 手动批量集成入口（已统一走 build.py）
+    ├── zujian-file-router/           # 文件路由 skill（决定文件创建位置）
     └── integrate_reading_year/
         └── integrate_reading_year.py # 单年份手动集成入口
 ```
@@ -107,8 +143,14 @@ e:\TraeWorkToDo\
 # 完整构建并校验
 python build.py
 
-# 本地预览（自动构建 + 监听文件变化）
+# 构建并自动打开浏览器预览
+python build.py --open
+
+# 本地预览（自动构建 + 监听文件变化 + AI API 代理）
 python dev_server.py
+
+# 仅校验，不构建
+python .trae/skills/validate_workbench.py
 
 # 仅查看会清理哪些文件，不构建也不删除
 python build.py --dry-run
@@ -116,6 +158,10 @@ python build.py --dry-run
 # 构建前确认再清理
 python build.py --confirm
 ```
+
+> **TRAE Shell 工具注意**：Shell 环境的 PATH 不含 NVM 路径，运行涉及 `node --check` 的校验前需先执行：
+> `$env:PATH += ';C:\nvm-nodejs\nodejs'`
+> 用户终端无需此操作。
 
 ---
 
@@ -140,9 +186,45 @@ python build.py --confirm
 
 ---
 
+## AI API 代理架构
+
+浏览器中的 AI 功能（AI 统筹规划师、AI 学习规划师）**不直接调用 AI API**，而是通过本地 `dev_server.py` 的 `/api/chat` 端点代理：
+
+```
+浏览器 (fetch /api/chat)  →  dev_server.py  →  AI API (流式响应)  →  浏览器
+```
+
+- **API Key 存储**：`.env` 文件（已加入 `.gitignore`），不入版本控制。
+- **流式输出**：`dev_server.py` 支持 SSE 流式响应，浏览器端通过 `fetch` + `ReadableStream` 接收。
+- **关键文件**：
+  - `dev_server.py` — `/api/chat` 端点，处理 AI API 调用、流式输出、错误处理。
+  - `Workbench/能力提升/能力提升-学习驾驶舱.html` — AI 统筹规划师（对话式生成每日学习计划）。
+  - `Workbench/ai-learning/ai-roles-hub.html` — AI 学习规划师（提示词生成 + 直接生成模式）。
+
+---
+
+## localStorage Key 一览
+
+新 Agent 添加功能时需避免与已有 Key 冲突：
+
+| Key | 用途 | 写入文件 |
+|---|---|---|
+| `ai_daily_plan` | AI 统筹规划师生成的每日计划 | 能力提升-学习驾驶舱.html |
+| `ai_conversation` | AI 统筹规划师对话历史（20 条截断） | 能力提升-学习驾驶舱.html |
+| `self_study_weeks` | 统筹计划（按周×科目） | 能力提升-学习驾驶舱.html |
+| `recite-cards-data` | 背诵卡数据（按科目） | 背诵与简答-核心概念背诵卡.html |
+| `recite-cards-version` | 背诵卡数据版本（当前 = 5） | 背诵与简答-核心概念背诵卡.html |
+| `exam-questions-data` | 真题与错题数据（按科目） | 真题练习-真题与错题本.html |
+| `py_knowledge_tree_v1` | Python 知识树勾选状态 | python-knowledge-tree.html |
+| `py_learning_loops_v1` | Python 闭环学习记录 | python-learning-loop.html |
+| `ss_mastery_{科目代码}` | 科目掌握进度（如 ss_mastery_13015） | 各科目知识框架页 |
+| `ss_active_tab_{科目代码}` | 科目当前 Tab（如 ss_active_tab_13003） | 各科目知识框架页 |
+
+---
+
 ## 知识框架页模板
 
-自考科目「目录与知识框架」页面统一采用以下 Tab 结构。当前已应用于 `13003 数据结构与算法`、`02324 离散数学`、`13015 计算机系统原理`、`00023 高等数学（工本）`。
+自考科目「目录与知识框架」页面统一采用以下 Tab 结构。当前已应用于 `13003 数据结构与算法`、`02324 离散数学`、`13015 计算机系统原理`。`00023 高等数学（工本）`已在 `self-study.json` 中注册但尚未创建知识框架页面。
 
 ### Tab 结构
 
@@ -252,17 +334,17 @@ python build.py --confirm
 
 ---
 
-## 当前状态
+## v1.0.0 状态（2026-08-12 ~ 2026-08-13）
 
 - 工作台已从单一「阅读资料」模块扩展为 6 大模块：能力提升、自考学习、Python 基础、AI 学习、AI 助手角色、阅读资料。
 - `data/workbench.json` 已注册全部 6 个模块；`tasks` 模块已禁用。
 - `build.py` 与 `templates/workbench.html` 已扩展为支持任意模块的 `contentUrl` iframe 加载与阅读内容内联渲染。
 - 已修复 Python 3.9 兼容性（将 `int | None` 改为 `Optional[int]`）并安装 `libsass`、`watchdog`。
-- 已修复 Node.js 不可用时构建中断的问题：`build.py` 与 `validate_workbench.py` 现在会跳过 JS 语法校验并打印警告，而不是报错退出。
+- Node.js 环境说明：Node.js 通过 NVM 安装（v14.19.0，路径 `C:\nvm-nodejs\nodejs\`），用户终端可直接使用。v1.0.0 时因 TRAE Shell 环境 PATH 不含 NVM 路径而误判为未安装，v2.0.0 已确认实际可用。`build.py` 与 `validate_workbench.py` 保留降级保护：找不到 node 时跳过 JS 语法校验并打印警告，不报错退出。
 - 已在模板中添加 `selectFirstItem()`，页面加载后自动选中第一个项目，避免右侧空白。
 - 已通过 `E:\Python\python.exe build.py` 重新生成 `Workbench/此刻便是春天.html`，并在本地 HTTP 服务下验证：6 个工作区全部渲染、默认加载路线图、自考科目与 AI 助手角色的 iframe 内容加载均正常。
 
-### 本轮新增内容页（2026-08-12）
+### v1.0.0 新增内容页（2026-08-12）
 
 - **自考学习模块**：
   - 新增「13003 数据结构与算法」知识框架页面（8 章完整目录 + 核心概念/公式/题型/易错点 + 2 周学习建议），替换线框占位。
@@ -288,6 +370,7 @@ python build.py --confirm
 `validate_workbench.py` 会检查：
 
 - 嵌入 JS 语法（通过 `node --check`）。
+- **全局 JS 语法校验（v2.0.0 新增）**：扫描 `Workbench/` 下所有 HTML 文件的内嵌 JS，覆盖内容页（背诵卡、真题练习等），使用独立临时文件避免 Windows 句柄冲突。
 - 旧独立页面类名（如 `class="essay"`）是否泄漏。
 - 通用类名（如 `card`、`title`、`section`）是否未加前缀出现在模块内容中。
 - **Tab 交互完整性**：若页面使用 `chapter-tab-btn`/`chapter-tab-pane`，必须同步包含对应 CSS 与切换 JS。
@@ -296,14 +379,17 @@ python build.py --confirm
 - `文件说明.md` 是否覆盖了根目录与 Workbench 顶层项。
 - `Workbench/` 内是否混入了 `.py` / `.log` 等临时文件。
 - `.gitignore` / `.gitattributes` 是否包含必要规则。
+- **目录结构同步（v2.0.0 扩展）**：扫描根目录、styles/、Workbench 各模块（含 HTML/JSON 文件）、data/modules/、templates/、.trae/skills/、transformers/，对比 AGENT_HANDOFF.md 是否已列出。
+- **CHANGELOG 变更覆盖（v2.0.0 新增）**：通过 `git diff HEAD --name-only` 获取已修改文件，对比 CHANGELOG.md 最新版本表格，报告未记录的变更。
+- **Git pre-commit hook（v2.0.0 新增）**：`.git/hooks/pre-commit` 在提交前自动运行 `validate_workbench.py`，校验失败则阻止提交（可用 `--no-verify` 跳过，不推荐）。
 
 ---
 
-## 下一步目标
+## v1.0.0 已完成任务（归档）
 
-<!-- 交给 Agent 时，把下面这段替换为具体任务 -->
+> 以下任务在 v1.0.0（2026-08-12 ~ 08-13）已全部完成，仅作归档记录。新 Agent 不需要重复执行。
 
-### 本轮新增与改造（2026-08-13）
+### v1.0.0 新增与改造内容
 
 1. ✅ **AI 学习规划师重构** — `Workbench/ai-learning/ai-roles-hub.html` 从静态角色展示改造为交互式规划师：
    - 支持 `?mode=global` 全局统筹与 `?subject=XXXX` 单科专项两种模式；
@@ -343,24 +429,63 @@ python build.py --confirm
 
 ---
 
-### 后续建议方向
+### v1.0.0 后续建议（部分已在 v2.0.0 完成）
 
-1. **验证 AI 助手实际效果**
-   - 打开 `Workbench/此刻便是春天.html`，依次检查：
-     - AI 学习 → AI 学习规划师（全局模式）
-     - 自考学习 → 任一科目 → AI助手（单科模式）
-     - 能力提升 → 学习驾驶舱（统筹面板）
-   - 确认场景按钮、进度读取、提示词生成、一键复制等功能正常。
+1. **验证 AI 助手实际效果** — 打开 `Workbench/此刻便是春天.html`，依次检查 AI 学习规划师、科目 AI 助手、学习驾驶舱。v2.0.0 已验证 AI 统筹规划师功能正常。
+2. **填充真题与背诵内容** — ~~背诵卡目前是空框架~~ v2.0.0 已内置 13015（86 张）和 en（6 张）预置卡片；02324 和 13003 仍需补充。真题与错题本仍为空框架，需用户逐步添加。
+3. **AI 资讯周报数据更新** — 定时任务每周六生成周报后，需更新 `Workbench/ai-learning/ai-news-data.json`。
+4. **结构性变更约束** — 已写入核心原则第 4 条，不再作为建议。
 
-2. **填充真题与背诵内容**
-   - 真题与错题本、背诵卡目前是空框架，需要用户在实际学习中逐步添加内容。
+> 以上为 v1.0.0 归档内容。新 Agent 请跳转至「v2.0.0 后续建议」查看当前待办。
 
-3. **AI 资讯周报数据更新**
-   - 定时任务每周六生成周报后，需更新 `Workbench/ai-learning/ai-news-data.json` 才能在页面展示最新内容。
-   - 可考虑在定时任务的 instruction 中加入「更新 ai-news-data.json」步骤。
+---
 
-4. **结构性变更约束**
-   - 任何涉及增删分类、重组导航、改变信息架构的改动，**必须先触发 `plan-before-create` skill 讨论确认后再动手**。
-   - 判断标准：如果改动只影响内容填充（往已有结构里填数据），可以直接执行；如果改动影响结构本身（增删分类、层级、导航项），必须先讨论。
+## v2.0.0 更新内容（2026-08-14）
 
-Agent 接到目标后，直接运行 `E:\Python\python.exe build.py --open` 重新生成、校验并预览，再按上述优先级推进。
+> 文件级变更明细详见 `CHANGELOG.md` v2.0.0 章节。本节记录功能级上下文、经验教训与后续建议，供新 Agent 快速理解项目当前状态。
+
+### 1. AI 统筹规划师功能增强
+
+- **每日执行计划新增第 6 时段**：22:00–23:00「整理复盘」，默认任务为"整理当日笔记 + 错题回顾 + 次日计划确认"；AI 提示词同步更新，要求每天必须包含 `review` 类型任务。
+- **AI 对话消息折叠**：消息默认显示约 2-3 行，超出部分用渐变遮罩收起，底部显示"展开 ▼"按钮；点击展开后显示"收起 ▲"；短消息（≤3 行）不显示折叠按钮。
+- **面板布局调换**：「详细计划」区域移至「对话区」上方，所有提示文案中的方位描述从"下方"更新为"上方"。
+- **AI 统筹规划数据独立存储**：`localStorage['ai_daily_plan']` 独立于统筹计划的 `localStorage['self_study_weeks']`；AI 生成计划后自动写入课程表，无需手动确认；对话历史存储在 localStorage，刷新不丢失，超过 20 条自动截断。
+
+### 2. 背诵卡页面重构
+
+- **双板块结构**：页面分为「今日任务」和「总任务」两个板块，通过按钮切换。
+  - 今日任务：显示当天学习计划对应章节的卡片（按周次自动计算，第 1 周 → 第 1 章），章节内按 不会 → 不熟练 → 已掌握 排列。
+  - 总任务：显示整个科目的全部卡片。
+- **顶部科目分类按钮移除**：科目通过 URL 参数 `?subject=XXX` 预选，不再在页面顶部显示科目切换按钮。
+- **按钮事件修复**：从 `onclick` 属性改为 `addEventListener` 绑定，解决按钮点击无响应问题。
+- **预置卡片数据**：`PRESET_CARDS` 内置 13015（计算机系统原理，~86 张）和 en（英语，6 张）两个科目。02324（离散数学）和 13003（数据结构与算法）暂无预置数据。
+- **数据版本管理**：`DATA_VERSION = 5`，版本不匹配时自动清空 localStorage 并重新加载预置卡片。
+
+### 3. 背诵卡语法错误修复（关键 Bug）
+
+**根因**：离散数学卡片中补元符号 `a'` 的单引号未转义，导致 JavaScript 字符串提前终止，触发 `SyntaxError`，整个 `<script>` 块执行失败，页面所有交互功能静默失效。修复方式为转义撇号并升级 `DATA_VERSION`。
+
+### 4. 约束体系升级
+
+v2.0.0 将多条手动约束升级为 `validate_workbench.py` 自动化校验，核心变化：
+
+- **新增硬性约束**：「实现即测试」（修改 HTML/JS 后必须浏览器实测）、「JS 字符串转义」（内嵌数据须检查引号转义）
+- **自动化校验扩展**：`validate_workbench.py` 从 13 个检查函数扩展到 21 个，新增中文注释检查、备份数量、JSON-HTML 同名、日期格式、文件夹命名、交互组件样式完整性、目录结构同步（根目录 + Workbench 各模块 + data/modules + templates + .trae/skills + transformers vs AGENT_HANDOFF.md + CHANGELOG 版本一致性）、CHANGELOG 变更覆盖（`check_changelog_coverage()`，对比 `git diff HEAD --name-only` 与 CHANGELOG 最新版本表格，防止变更信息散落）
+- **检查盲区消除**：`check_chinese_comments()` 现覆盖 `templates/` 目录，不再仅扫描 `Workbench/`
+- **文档职责分工**：CHANGELOG.md 为变更记录唯一权威（文件级），AGENT_HANDOFF.md 记录功能级上下文与经验教训，两者不重复
+- **Git pre-commit hook**：`.git/hooks/pre-commit` 在 `git commit` 时自动运行 `validate_workbench.py`，校验失败则阻止提交（见核心原则第 9 条）
+- **CHANGELOG 同步约束**：修改已纳入版本控制的文件后，必须在 CHANGELOG.md 当前版本表格中补充变更记录（见核心原则第 10 条，`check_changelog_coverage()` 自动校验）
+
+### 5. v2.0.0 经验教训
+
+- **「实现即测试」必须成为硬性约定**：背诵卡语法错误存在多个版本未被发现，根本原因是修改后从未在浏览器中实际验证。代码审查可以发逻辑错误，但无法替代运行时测试——语法错误只有在执行时才会暴露。
+- **大段数据内嵌在 JS 中是脆弱的**：90+ 张卡片的 question/answer/hint 硬编码在 JavaScript 字符串中，任何一个转义遗漏都会导致整个脚本崩溃。建议后续将预置卡片数据迁移为外部 JSON 文件。
+- **数学符号与编程语法的冲突**：数学中 `a'` 表示补元/导数，编程中 `'` 是字符串界定符。这类冲突在离散数学、线性代数等科目中会反复出现，需特别注意转义。
+- **约束文档化 ≠ 约束生效**：手动勾选清单项会被遗漏，必须配套自动化校验才能有效执行。v2.0.0 已将大部分手动约束升级为 `validate_workbench.py` 自动检查。
+
+### 6. v2.0.0 后续建议
+
+1. **补充离散数学和数据结构的预置卡片** — `PRESET_CARDS` 当前只有 13015 和 en，02324 和 13003 依赖 localStorage 残留数据，刷新后可能消失。
+2. **预置数据迁移为外部 JSON** — 彻底消除 JS 字符串转义风险，便于维护和扩展。
+3. ~~**构建流程加入语法预检**~~ — ✅ 已完成：`validate_workbench.py` 新增 `check_js_syntax_global()` 函数，扫描所有 HTML 文件的内嵌 JS。
+4. **全局扫描 answer 字段** — 检查是否还有其他未转义的引号，特别是含 `a'`、`f'`、`G'` 等数学撇号的卡片。
