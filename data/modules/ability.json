@@ -18,7 +18,24 @@
           "current": "驾驶舱 / 综合完成度 / 学习路线 三合一",
           "tasks": [],
           "review": "页面内含三个 Tab：驾驶舱（本周计划、考试倒计时、模块进度）、综合完成度（各科目+Python+AI 进度条）、学习路线（战略路线图）。",
-          "contentUrl": "能力提升/能力提升-学习驾驶舱.html?v=2.3.4"
+          "contentUrl": "能力提升/能力提升-学习驾驶舱.html?v=2.5.0"
+        }
+      ]
+    },
+    {
+      "name": "工具",
+      "icon": "🛠️",
+      "iconBg": "purple-soft",
+      "items": [
+        {
+          "name": "AI 帮我复盘代码",
+          "type": "ability",
+          "renderMode": "content",
+          "stage": "可用",
+          "current": "粘贴代码即可 Review",
+          "tasks": [],
+          "review": "粘贴 Python 代码，AI 检查 bug、提优化、解释算法复杂度。",
+          "contentUrl": "ai-learning/ai-code-review.html?v=2.5.0"
         }
       ]
     }

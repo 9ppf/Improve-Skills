@@ -2586,7 +2586,22 @@ const workspaces = [
                 current: '驾驶舱 / 综合完成度 / 学习路线 三合一',
                 tasks: [],
                 review: '页面内含三个 Tab：驾驶舱（本周计划、考试倒计时、模块进度）、综合完成度（各科目+Python+AI 进度条）、学习路线（战略路线图）。',
-                contentUrl: '能力提升/能力提升-学习驾驶舱.html?v=2.3.4'
+                contentUrl: '能力提升/能力提升-学习驾驶舱.html?v=2.5.0'
+              }
+            ]
+          },
+          {
+            name: '工具', icon: '🛠️', iconBg: '#EDE9FE',
+            items: [
+              {
+                name: 'AI 帮我复盘代码',
+                type: 'ability',
+                renderMode: 'content',
+                stage: '可用',
+                current: '粘贴代码即可 Review',
+                tasks: [],
+                review: '粘贴 Python 代码，AI 检查 bug、提优化、解释算法复杂度。',
+                contentUrl: 'ai-learning/ai-code-review.html?v=2.5.0'
               }
             ]
           }
@@ -2681,6 +2696,31 @@ const workspaces = [
         id: 'ai-learning', name: 'AI 学习', icon: '🤖', iconBg: '#EDE9FE',
         categories: [
           {
+            name: '知识体系', icon: '🧠', iconBg: '#E0F2FE',
+            items: [
+              {
+                name: 'AI 知识图谱',
+                type: 'ai-learning',
+                renderMode: 'bare',
+                stage: '进行中',
+                current: '四阶段29个知识点：基础概念·机器学习·深度学习·LLM应用',
+                tasks: [],
+                review: '按阶段按钮切换，每个知识点含概念、示例、手写练习、AI 场景四层内容。',
+                contentUrl: 'ai-learning/ai-knowledge-tree.html?v=2.5.0'
+              },
+              {
+                name: 'AI 实战 Demo',
+                type: 'ai-learning',
+                renderMode: 'bare',
+                stage: '进行中',
+                current: '四阶段4个 Demo：数据评估工具·MNIST分类器·语义搜索·AI知识助手',
+                tasks: [],
+                review: '按阶段按钮切换，每个 Demo 含目标、功能、代码、测试用例、知识点映射。',
+                contentUrl: 'ai-learning/ai-demos.html?v=2.5.0'
+              }
+            ]
+          },
+          {
             name: '资讯', icon: '📰', iconBg: '#D1FAE5',
             items: [
               {
@@ -2691,62 +2731,7 @@ const workspaces = [
                 tasks: [],
                 review: 'AI 热点、政策、补贴资讯聚合。',
                 renderMode: 'content',
-                contentUrl: 'ai-learning/ai-news-digest.html?v=2.3.4'
-              }
-            ]
-          },
-          {
-            name: '学习', icon: '🧠', iconBg: '#E0F2FE',
-            items: [
-              {
-                name: '完整学习路线图',
-                type: 'ai-learning',
-                stage: '已生成',
-                current: '4 阶段战略视图',
-                tasks: [],
-                review: '把阶段计划与整体方案整合为一张路线图。',
-                renderMode: 'content',
-                contentUrl: '能力提升/full-learning-roadmap.html?v=2.3.4'
-              },
-              {
-                name: '武汉理工自考 + AI 转型学习方案',
-                type: 'ai-learning',
-                stage: '已生成',
-                current: '整体方案文档',
-                tasks: [],
-                review: '包含时间分配、10 周冲刺计划、AI 集训方向及资讯追踪说明。',
-                renderMode: 'content',
-                contentUrl: 'ai-learning/ai-learning-plan.html?v=2.3.4'
-              },
-              {
-                name: '每日执行计划',
-                type: 'ai-learning',
-                renderMode: 'bare',
-                stage: '已生成',
-                current: '8.11–10.24 每天 5 时段任务',
-                tasks: [],
-                review: '把 10 周冲刺细化到每天每个时段。',
-                contentUrl: 'ai-learning/daily-plan.html?v=2.3.4'
-              },
-              {
-                name: 'AI 学习规划师',
-                type: 'ai-learning',
-                renderMode: 'bare',
-                stage: '可用',
-                current: '根据进度生成跨科目学习计划',
-                tasks: [],
-                review: '统筹 Python、AI、备考科目进度，生成可直接复制到 AI 工具的提示词。',
-                contentUrl: 'ai-learning/ai-roles-hub.html?mode=global&v=2.3.4'
-              },
-              {
-                name: 'AI 帮我复盘代码',
-                type: 'ai-learning',
-                stage: '可用',
-                current: '粘贴代码即可 Review',
-                tasks: [],
-                review: '粘贴 Python 代码，AI 检查 bug、提优化、解释算法复杂度。',
-                renderMode: 'content',
-                contentUrl: 'ai-learning/ai-code-review.html?v=2.3.4'
+                contentUrl: 'ai-learning/ai-news-digest.html?v=2.5.0'
               }
             ]
           }
