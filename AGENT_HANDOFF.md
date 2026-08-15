@@ -2,7 +2,7 @@
 
 > 把本文档直接交给新 Agent，并告诉他当前任务即可开始工作。文档末尾「v2.5.0 后续建议」列出待办优先级。
 
-> **⚠ 重要：v2.0.0 至 v2.5.0 变更已提交 Git**（commit `af398ff`）。工作区仅剩 AI News Digest 定时任务产物和 study-plan-optimization 临时文件未跟踪。**禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未跟踪的工作。
+> **⚠ 重要：v2.0.0 至 v2.5.0 变更已提交 Git**（最新 commit `54133e8`）。工作区仅剩 AI News Digest 定时任务产物和 study-plan-optimization 临时文件未跟踪。**禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未跟踪的工作。
 
 ---
 
