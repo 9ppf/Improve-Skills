@@ -4,10 +4,26 @@
 
 ---
 
+## v2.1.0
+
+**发布时间**：2026-08-15（北京时间）
+
+### 2026-08-15 — 背诵卡测验模式 + 学习方案优化
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | 新增「测验模式」：背诵模式/测验模式切换按钮；AI 出题（调用 `/api/chat` 根据卡片定义生成填空/选择/简答题）；AI 不可用时自动降级为本地模板出题；答题后显示对错反馈和参考答案；答对卡片升级、答错降级为"不会"，统计实时更新；修复 AI 出题请求格式（`messages` 数组 + `stream:false` + `model:deepseek-chat` + 正确解析 `choices[0].message.content`） |
+| `dev_server.py` | 新增 `--host` 参数，默认 `0.0.0.0` 监听所有网络接口，启动时打印局域网访问地址，支持手机直接访问 |
+| `data/modules/self-study.json` | 4 个科目背诵卡 contentUrl 增加 `&v=2.1.1` 版本参数，解决浏览器缓存导致 iframe 加载旧页面的问题 |
+| `study-plan-optimization/study-plan-optimization.html` | 新增：学习方案科学性优化改进方案报告（5 项基础改进 + 3 项用户增强） |
+| `study-plan-optimization/feature-demo.html` | 新增：功能 Demo 页面（背诵卡测验模式 + Python AI 场景 + AI 岗位规划），用于确认后再更新到工作台 |
+
+---
+
 ## v2.0.0
 
 **发布时间**：2026-08-14（北京时间）
-**最新 commit**：`待提交`（v2.0.0 变更尚未提交 Git）
+**最新 commit**：`35ff961`
 
 ### 2026-08-14 — v2.0.0 功能增强与约束体系升级
 

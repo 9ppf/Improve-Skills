@@ -376,6 +376,204 @@
       margin-right: 0.4rem;
     }
 
+    /* 测验模式 */
+    .recite-mode-toggle {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .recite-mode-btn {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      border: 2px solid var(--rule);
+      background: #fff;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .recite-mode-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .recite-mode-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .quiz-generate-bar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .quiz-generate-btn {
+      padding: 0.55rem 1.2rem;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .quiz-generate-btn:hover { opacity: 0.9; }
+    .quiz-generate-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .quiz-gen-status {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .quiz-gen-status.error { color: var(--coral); }
+    .quiz-gen-status.success { color: var(--green); }
+
+    .quiz-card {
+      background: #fff;
+      border: 2px solid var(--rule);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    .quiz-card.correct { border-color: var(--green); }
+    .quiz-card.wrong { border-color: var(--coral); }
+    .quiz-type-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+    .quiz-type-badge.fill { background: var(--bg3, rgba(139,92,246,0.08)); color: var(--accent); }
+    .quiz-type-badge.choice { background: #dbeafe; color: #2563eb; }
+    .quiz-type-badge.short { background: #fef3c7; color: var(--amber); }
+    .quiz-chapter-tag {
+      font-size: 0.72rem;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .quiz-question-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+    .quiz-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: var(--font);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .quiz-input:focus { border-color: var(--accent); }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: all 0.15s;
+    }
+    .quiz-option:hover { border-color: var(--accent); background: rgba(139,92,246,0.04); }
+    .quiz-option.selected { border-color: var(--accent); background: rgba(139,92,246,0.08); }
+    .quiz-option.correct-answer { border-color: var(--green); background: rgba(5,150,105,0.06); }
+    .quiz-option.wrong-answer { border-color: var(--coral); background: rgba(225,29,72,0.06); }
+    .quiz-option input { accent-color: var(--accent); }
+    .quiz-textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-family: var(--font);
+      resize: vertical;
+      outline: none;
+    }
+    .quiz-textarea:focus { border-color: var(--accent); }
+    .quiz-submit-btn {
+      margin-top: 0.75rem;
+      padding: 0.45rem 1.1rem;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .quiz-submit-btn:hover { opacity: 0.9; }
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.correct {
+      background: rgba(5,150,105,0.06);
+      border-left: 3px solid var(--green);
+    }
+    .quiz-feedback.wrong {
+      background: rgba(225,29,72,0.06);
+      border-left: 3px solid var(--coral);
+    }
+    .quiz-feedback-title {
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .quiz-feedback-answer {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .quiz-loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .quiz-loading .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--rule);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .quiz-empty {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     @media (max-width: 640px) {
       body { padding: 1.5rem 0.9rem; }
       .recite-add-form { grid-template-columns: 1fr; }
@@ -387,6 +585,11 @@
     <div class="recite-view-tabs">
       <button class="recite-view-btn active" data-view="today" id="btnViewToday">📌 今日任务</button>
       <button class="recite-view-btn" data-view="total" id="btnViewTotal">📚 总任务</button>
+    </div>
+
+    <div class="recite-mode-toggle">
+      <button class="recite-mode-btn active" id="btnModeRecite">📖 背诵模式</button>
+      <button class="recite-mode-btn" id="btnModeQuiz">✏️ 测验模式</button>
     </div>
 
     <div class="recite-section" id="sectionStats">
@@ -430,6 +633,18 @@
       </div>
       <p class="recite-hint">💡 点击卡片翻转查看答案 · 章节内按不会→不熟→掌握排列</p>
       <div class="recite-card-grid" id="cardGrid"></div>
+    </div>
+
+    <div class="recite-section" id="sectionQuiz" style="display:none;">
+      <h2>✏️ 测验练习</h2>
+      <p class="recite-hint">AI 根据当前卡片定义自动生成题目 · 做错的题自动降级卡片掌握度</p>
+      <div class="quiz-generate-bar">
+        <button class="quiz-generate-btn" id="quizGenBtn" onclick="generateQuiz()">⚡ AI 出题</button>
+        <span class="quiz-gen-status" id="quizGenStatus"></span>
+      </div>
+      <div id="quizContainer">
+        <div class="quiz-empty">点击「AI 出题」按钮，根据当前卡片生成测验题</div>
+      </div>
     </div>
   </article>
 
@@ -872,6 +1087,255 @@
     document.getElementById('filterChapter').addEventListener('change', renderCards);
     document.getElementById('filterMastery').addEventListener('change', renderCards);
     document.getElementById('addCardBtn').addEventListener('click', addCard);
+
+    /* ===== 测验模式 ===== */
+    var currentMode = 'recite';
+    var quizQuestions = [];
+
+    function switchMode(mode) {
+      currentMode = mode;
+      var btnRecite = document.getElementById('btnModeRecite');
+      var btnQuiz = document.getElementById('btnModeQuiz');
+      var sectionCards = document.getElementById('sectionCards');
+      var sectionQuiz = document.getElementById('sectionQuiz');
+      var sectionAdd = document.getElementById('sectionAdd');
+
+      if (mode === 'recite') {
+        btnRecite.classList.add('active');
+        btnQuiz.classList.remove('active');
+        sectionCards.style.display = '';
+        sectionQuiz.style.display = 'none';
+        sectionAdd.style.display = '';
+      } else {
+        btnRecite.classList.remove('active');
+        btnQuiz.classList.add('active');
+        sectionCards.style.display = 'none';
+        sectionQuiz.style.display = '';
+        sectionAdd.style.display = 'none';
+      }
+    }
+
+    function getQuizCards() {
+      var cards = getCards(currentSubject);
+      if (currentView === 'today') cards = cards.filter(isTodayCard);
+      return cards.slice(0, 10);
+    }
+
+    function generateQuiz() {
+      var cards = getQuizCards();
+      if (cards.length === 0) {
+        document.getElementById('quizGenStatus').textContent = '没有可用的卡片';
+        document.getElementById('quizGenStatus').className = 'quiz-gen-status error';
+        return;
+      }
+
+      var btn = document.getElementById('quizGenBtn');
+      var status = document.getElementById('quizGenStatus');
+      btn.disabled = true;
+      status.textContent = '正在生成题目...';
+      status.className = 'quiz-gen-status';
+
+      var container = document.getElementById('quizContainer');
+      container.innerHTML = '<div class="quiz-loading"><span class="spinner"></span>AI 正在根据卡片定义生成题目...</div>';
+
+      var cardData = cards.map(function(c) {
+        return { chapter: c.chapter, question: c.question, answer: c.answer, hint: c.hint, id: c.id };
+      });
+
+      var prompt = '你是自考出题专家。根据以下知识点卡片，生成测验题。\n\n' +
+        '要求：\n' +
+        '1. 每张卡片生成1道题，共' + cardData.length + '道\n' +
+        '2. 题型混合：填空题、选择题、简答题\n' +
+        '3. 选择题给4个选项，标注正确答案的索引(0-3)\n' +
+        '4. 填空题用______标注空位，给出正确答案\n' +
+        '5. 简答题给出参考答案要点\n\n' +
+        '必须返回纯JSON数组，格式：\n' +
+        '[{"type":"fill","chapter":"章节","question":"题目","answer":"正确答案","cardId":卡片ID},\n' +
+        ' {"type":"choice","chapter":"章节","question":"题目","options":["A","B","C","D"],"correctIndex":0,"cardId":卡片ID},\n' +
+        ' {"type":"short","chapter":"章节","question":"题目","answer":"参考答案","cardId":卡片ID}]\n\n' +
+        '知识点卡片：\n' + JSON.stringify(cardData, null, 2);
+
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function() { controller.abort(); }, 60000);
+
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: prompt }],
+          model: 'deepseek-chat',
+          stream: false,
+          max_tokens: 4000
+        }),
+        signal: controller.signal
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function(data) {
+        clearTimeout(timeoutId);
+        var text = '';
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+          text = data.choices[0].message.content || '';
+        } else if (data.response) {
+          text = data.response;
+        } else if (data.error) {
+          throw new Error(data.error);
+        }
+        var jsonMatch = text.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+          quizQuestions = JSON.parse(jsonMatch[0]);
+          renderQuiz();
+          status.textContent = '已生成 ' + quizQuestions.length + ' 道题';
+          status.className = 'quiz-gen-status success';
+        } else {
+          throw new Error('AI 返回格式异常');
+        }
+      })
+      .catch(function(err) {
+        clearTimeout(timeoutId);
+        status.textContent = 'AI 生成失败，使用本地出题';
+        status.className = 'quiz-gen-status error';
+        generateLocalQuiz(cards);
+      })
+      .finally(function() {
+        btn.disabled = false;
+      });
+    }
+
+    function generateLocalQuiz(cards) {
+      quizQuestions = cards.map(function(c, i) {
+        if (i % 3 === 0) {
+          var keyTerm = c.answer.split(/[，。、：\n]/)[0].trim();
+          if (keyTerm.length > 2) {
+            var blanked = c.question.replace(keyTerm, '______');
+            if (blanked === c.question) {
+              blanked = c.question + '（提示：' + (c.hint || keyTerm) + '）';
+            }
+            return { type: 'fill', chapter: c.chapter, question: blanked, answer: keyTerm, cardId: c.id };
+          }
+          return { type: 'short', chapter: c.chapter, question: c.question, answer: c.answer, cardId: c.id };
+        } else if (i % 3 === 1) {
+          return { type: 'short', chapter: c.chapter, question: c.question, answer: c.answer, cardId: c.id };
+        } else {
+          return { type: 'fill', chapter: c.chapter, question: c.question + '（填入核心概念）', answer: c.answer.split('\n')[0], cardId: c.id };
+        }
+      });
+      renderQuiz();
+    }
+
+    function renderQuiz() {
+      var container = document.getElementById('quizContainer');
+      if (quizQuestions.length === 0) {
+        container.innerHTML = '<div class="quiz-empty">暂无题目</div>';
+        return;
+      }
+
+      container.innerHTML = quizQuestions.map(function(q, i) {
+        var typeLabel = q.type === 'fill' ? '填空题' : (q.type === 'choice' ? '选择题' : '简答题');
+        var html = '<div class="quiz-card" id="quiz-q' + i + '">' +
+          '<span class="quiz-type-badge ' + q.type + '">' + typeLabel + '</span>' +
+          '<div class="quiz-chapter-tag">' + (q.chapter || '未分类') + '</div>' +
+          '<div class="quiz-question-text">' + (q.question || '').replace(/</g, '&lt;') + '</div>';
+
+        if (q.type === 'fill') {
+          html += '<input type="text" class="quiz-input" placeholder="输入你的答案..." id="quiz-input-' + i + '">' +
+            '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'fill\')">提交答案</button>';
+        } else if (q.type === 'choice') {
+          html += '<div class="quiz-options" id="quiz-options-' + i + '">';
+          (q.options || []).forEach(function(opt, oi) {
+            html += '<label class="quiz-option" onclick="selectQuizOption(' + i + ',' + oi + ')">' +
+              '<input type="radio" name="quiz-q' + i + '" value="' + oi + '">' +
+              String.fromCharCode(65 + oi) + '. ' + (opt || '').replace(/</g, '&lt;') +
+              '</label>';
+          });
+          html += '</div>';
+          html += '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'choice\')">提交答案</button>';
+        } else {
+          html += '<textarea class="quiz-textarea" placeholder="输入你的回答..." id="quiz-input-' + i + '"></textarea>' +
+            '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'short\')">提交答案</button>';
+        }
+
+        html += '<div class="quiz-feedback" id="quiz-feedback-' + i + '">' +
+          '<div class="quiz-feedback-title"></div>' +
+          '<div class="quiz-feedback-answer"></div>' +
+          '</div></div>';
+        return html;
+      }).join('');
+    }
+
+    function selectQuizOption(qi, oi) {
+      var options = document.querySelectorAll('#quiz-options-' + qi + ' .quiz-option');
+      options.forEach(function(opt) { opt.classList.remove('selected'); });
+      options[oi].classList.add('selected');
+      options[oi].querySelector('input').checked = true;
+    }
+
+    function checkQuizAnswer(qi, type) {
+      var q = quizQuestions[qi];
+      var feedback = document.getElementById('quiz-feedback-' + qi);
+      var card = document.getElementById('quiz-q' + qi);
+      var isCorrect = false;
+
+      if (type === 'fill') {
+        var input = document.getElementById('quiz-input-' + qi).value.trim();
+        if (!input) { alert('请输入答案'); return; }
+        var answer = (q.answer || '').toLowerCase();
+        var userAns = input.toLowerCase();
+        isCorrect = answer.indexOf(userAns) >= 0 || userAns.indexOf(answer) >= 0;
+      } else if (type === 'choice') {
+        var selected = document.querySelector('#quiz-options-' + qi + ' input:checked');
+        if (!selected) { alert('请选择一个答案'); return; }
+        var selectedIdx = parseInt(selected.value);
+        isCorrect = selectedIdx === (q.correctIndex || 0);
+        var options = document.querySelectorAll('#quiz-options-' + qi + ' .quiz-option');
+        options.forEach(function(opt) { opt.classList.remove('correct-answer', 'wrong-answer'); });
+        options[q.correctIndex || 0].classList.add('correct-answer');
+        if (!isCorrect) options[selectedIdx].classList.add('wrong-answer');
+      } else {
+        var text = document.getElementById('quiz-input-' + qi).value.trim();
+        if (!text || text.length < 10) { alert('请输入至少 10 个字的回答'); return; }
+        var refAns = (q.answer || '').toLowerCase();
+        var userText = text.toLowerCase();
+        var keywords = refAns.split(/[\s,，。、；;：:（）()]+/).filter(function(w) { return w.length > 1; });
+        var matchCount = 0;
+        keywords.forEach(function(kw) { if (userText.indexOf(kw) >= 0) matchCount++; });
+        isCorrect = matchCount >= Math.max(2, Math.ceil(keywords.length * 0.3));
+      }
+
+      if (isCorrect) {
+        card.classList.add('correct');
+        feedback.className = 'quiz-feedback show correct';
+        feedback.querySelector('.quiz-feedback-title').textContent = '✅ 回答正确！';
+        feedback.querySelector('.quiz-feedback-answer').textContent = '参考答案：' + (q.answer || '');
+        updateCardMasteryFromQuiz(q.cardId, true);
+      } else {
+        card.classList.add('wrong');
+        feedback.className = 'quiz-feedback show wrong';
+        feedback.querySelector('.quiz-feedback-title').textContent = '❌ 答案不正确';
+        feedback.querySelector('.quiz-feedback-answer').textContent = '参考答案：' + (q.answer || '');
+        updateCardMasteryFromQuiz(q.cardId, false);
+      }
+    }
+
+    function updateCardMasteryFromQuiz(cardId, correct) {
+      if (!cardId) return;
+      var cards = getCards(currentSubject);
+      var c = cards.find(function(x) { return x.id === cardId; });
+      if (!c) return;
+      if (correct) {
+        if (c.mastery === 'unknown') c.mastery = 'unsure';
+        else if (c.mastery === 'unsure') c.mastery = 'known';
+      } else {
+        c.mastery = 'unknown';
+      }
+      saveData();
+      renderStats();
+    }
+
+    document.getElementById('btnModeRecite').addEventListener('click', function() { switchMode('recite'); });
+    document.getElementById('btnModeQuiz').addEventListener('click', function() { switchMode('quiz'); });
 
     loadData();
     loadPresetCards();

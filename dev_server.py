@@ -276,9 +276,19 @@ def _port_in_use(port: int) -> bool:
         return sock.connect_ex(('localhost', port)) == 0
 
 
-def _start_http_server(port: int) -> ThreadingHTTPServer:
+def _get_lan_ip() -> str:
+    """Return the LAN IP address of this machine, or empty string if unavailable."""
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(('8.8.8.8', 80))
+            return s.getsockname()[0]
+    except Exception:
+        return ''
+
+
+def _start_http_server(host: str, port: int) -> ThreadingHTTPServer:
     """Start a custom HTTP server that serves static files and proxies AI API calls."""
-    server = ThreadingHTTPServer(('localhost', port), WorkbenchHandler)
+    server = ThreadingHTTPServer((host, port), WorkbenchHandler)
     server.daemon_threads = True
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
@@ -287,6 +297,7 @@ def _start_http_server(port: int) -> ThreadingHTTPServer:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description='Workbench development server with hot reload.')
+    parser.add_argument('--host', default='0.0.0.0', help='Bind host (default: 0.0.0.0 for LAN access)')
     parser.add_argument('--port', type=int, default=DEFAULT_PORT, help='HTTP server port')
     parser.add_argument('--no-build', action='store_true', help='Skip the initial build')
     args = parser.parse_args()
@@ -311,10 +322,13 @@ def main() -> int:
     observer.schedule(handler, str(ROOT), recursive=True)
     observer.start()
 
-    server = _start_http_server(args.port)
+    server = _start_http_server(args.host, args.port)
 
     encoded_name = '%E6%AD%A4%E5%88%BB%E4%BE%BF%E6%98%AF%E6%98%A5%E5%A4%A9.html'
+    lan_ip = _get_lan_ip()
     print(f'[dev] serving at http://localhost:{args.port}/Workbench/{encoded_name}')
+    if args.host == '0.0.0.0' and lan_ip:
+        print(f'[dev] LAN access: http://{lan_ip}:{args.port}/Workbench/{encoded_name}')
     print('[dev] press Ctrl+C to stop')
 
     try:
