@@ -4,6 +4,64 @@
 
 ---
 
+## v2.4.0
+
+**发布时间**：2026-08-15（北京时间）
+
+### 2026-08-15 — 工作台风格统一 + Python 模块功能优化
+
+| 文件 | 更新内容 |
+|---|---|
+| `templates/workbench.html` | 新增 renderMode 机制（bare/content/默认三种模式）；bare 模式直接显示 iframe 无外层包装；content 模式保留标题去除 tabs；renderItemView 函数按 renderMode 决定渲染方式 |
+| `data/modules/python.json` | 三个页面设为 `renderMode: bare`；contentUrl 版本参数更新至 `v=2.4.0` |
+| `data/modules/ai-learning.json` | 4个页面添加 `renderMode: content`（ai-news-digest/full-learning-roadmap/ai-learning-plan/ai-code-review） |
+| `data/modules/self-study.json` | 6个页面添加 `renderMode: content`（各科目知识框架、真题与错题、复盘总结） |
+| `data/modules/ability.json` | 页面 renderMode 配置更新 |
+| `data/modules/ai-roles.json` | 页面 renderMode 配置更新 |
+| `Workbench/Python基础/python-knowledge-tree.html` | 新增手写练习答案折叠（默认隐藏+展开/收起按钮）；新增代码一键复制（hover显示复制按钮+已复制反馈+execCommand降级）；新增 Demo 应用区域（DEMO_MAP 映射表+绿色卡片样式）；新增进度摘要写入 localStorage（`py_kp_progress`）；新增缓存控制 meta 标签；修复 IIFE 作用域导致 onclick 函数不可访问的 bug（改用 addEventListener） |
+| `Workbench/Python基础/python-demos.html` | 知识点映射表新增「掌握」列（读取 `py_kp_detail_v1` localStorage 显示 ✓/—）；新增缓存控制 meta 标签 |
+| `Workbench/Python基础/python-learning-loop.html` | 接入真实数据：读取 `py_kp_progress` localStorage 显示总体进度条+各阶段进度条+掌握百分比；无数据时降级显示静态数值；新增缓存控制 meta 标签 |
+| `Workbench/此刻便是春天.html` | 重建产物（随源码更新） |
+| `Workbench/ai-learning/ai-news-digest.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/ai-learning/full-learning-roadmap.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/ai-learning/ai-learning-plan.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/ai-learning/ai-code-review.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/ai-learning/ai-roles-hub.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/ai-learning/daily-plan.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/能力提升/full-learning-roadmap.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/自考学习/复盘总结/复盘总结-章节复盘.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/自考学习/未考科目/00015英语（二）/00015英语（二）-知识框架与学习计划.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/自考学习/未考科目/00023高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/自考学习/真题练习/真题练习-真题与错题本.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `Workbench/read/2019.html` ~ `Workbench/read/2026.html` | 风格统一（蓝色主题、移除页面级 header） |
+| `AGENT_HANDOFF.md` | 版本更新至 v2.4.0；新增 v2.4.0 更新章节 |
+| `工作台搭建总结.md` | 版本更新至 v2.4.0；补充 v2.4.0 版本记录 |
+
+---
+
+## v2.3.0
+
+**发布时间**：2026-08-15（北京时间）
+
+### 2026-08-15 — Python 学习内容重组（2页面 + 阶段按钮切换）
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/Python基础/python-knowledge-tree.html` | 重写为「知识点详解」页面：四阶段（语法基础/数据结构/常用库/AI Python）阶段按钮切换；29个知识点卡片（概念/代码示例/手写练习/AI场景四层内容）；搜索过滤、进度跟踪、展开折叠交互 |
+| `Workbench/Python基础/python-demos.html` | 重写为「Demo实战」页面：四阶段按钮切换；4个Demo详细设计（Prompt模板引擎/LLM上下文管理器/LLM API客户端/真题数据分析仪表盘），每个含目标/功能/文件结构/完整代码/测试用例/知识点映射 |
+| `Workbench/Python基础/python-learning-loop.html` | 重写为「学习闭环」页面：新增四阶段路线图（阶段/周次/知识点数/Demo名称）；保留五步闭环流程图；新增阶段选择器和阶段筛选；记录支持阶段标签；数据迁移v1→v2 |
+| `data/modules/python.json` | 页面重命名：树形知识架构→知识点详解、小闭环Demo→Demo实战、闭环流程→学习闭环；更新描述匹配新内容 |
+| `Workbench/此刻便是春天.html` | 重建产物（随源码更新） |
+| `AGENT_HANDOFF.md` | 版本更新至 v2.3.0；新增 v2.3.0 更新章节；更新目录结构描述 |
+| `工作台搭建总结.md` | 版本更新至 v2.3.0；补充 v2.3.0 版本记录 |
+
+---
+
 ## v2.2.0
 
 **发布时间**：2026-08-15（北京时间）

@@ -11,31 +11,34 @@
       "iconBg": "green-soft",
       "items": [
         {
-          "name": "树形知识架构",
+          "name": "知识点详解",
           "type": "python",
+          "renderMode": "bare",
           "stage": "进行中",
-          "current": "按语法/数据结构/常用库/面向 AI 的 Python 组织",
+          "current": "四阶段29个知识点：语法基础·数据结构·常用库·AI Python",
           "tasks": [],
-          "review": "可勾选的 Python 知识树，面向 AI 应用方向。",
-          "contentUrl": "Python基础/python-knowledge-tree.html"
+          "review": "按阶段按钮切换，每个知识点含概念、示例、手写练习、AI 场景四层内容。",
+          "contentUrl": "Python基础/python-knowledge-tree.html?v=2.4.0"
         },
         {
-          "name": "小闭环 Demo",
+          "name": "Demo 实战",
           "type": "python",
+          "renderMode": "bare",
           "stage": "进行中",
-          "current": "学完即做 Demo",
+          "current": "四阶段4个 Demo：模板引擎·上下文管理器·API客户端·数据仪表盘",
           "tasks": [],
-          "review": "每个知识点对应一个小 Demo，如真题解析器、错题本导入导出、新闻抓取脚本。",
-          "contentUrl": "Python基础/python-demos.html"
+          "review": "按阶段按钮切换，每个 Demo 含目标、功能、文件结构、代码、测试用例、知识点映射。",
+          "contentUrl": "Python基础/python-demos.html?v=2.4.0"
         },
         {
-          "name": "闭环流程",
+          "name": "学习闭环",
           "type": "python",
+          "renderMode": "bare",
           "stage": "进行中",
           "current": "学习目标 → 代码练习 → Demo → GitHub → 复盘",
           "tasks": [],
-          "review": "每个知识点完成 5 步闭环，进度自动反馈到知识树。",
-          "contentUrl": "Python基础/python-learning-loop.html"
+          "review": "四阶段学习路径与闭环流程，进度自动反馈到知识树。",
+          "contentUrl": "Python基础/python-learning-loop.html?v=2.4.0"
         }
       ]
     }

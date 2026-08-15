@@ -25,7 +25,7 @@
               "current": "已整理目录与知识框架",
               "tasks": [],
               "review": "掌握约 20%，优先建立系统主线，重点攻克数据表示、指令系统、存储系统。",
-              "contentUrl": "自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html"
+              "contentUrl": "自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html?v=2.3.4"
             },
             {
               "name": "真题与错题",
@@ -34,7 +34,8 @@
               "current": "按年份/题型分类练习",
               "tasks": [],
               "review": "计算机系统原理真题练习与错题管理。",
-              "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13015"
+              "renderMode": "content",
+              "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13015&v=2.3.4"
             },
             {
               "name": "背诵与简答",
@@ -44,7 +45,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "计算机系统原理核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.2.1"
+              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.3.4"
             },
             {
               "name": "复盘总结",
@@ -53,7 +54,8 @@
               "current": "章节复盘与错题反思",
               "tasks": [],
               "review": "计算机系统原理章节复盘总结。",
-              "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13015"
+              "renderMode": "content",
+              "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13015&v=2.3.4"
             },
             {
               "name": "AI助手",
@@ -63,7 +65,7 @@
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
               "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
-              "contentUrl": "ai-learning/ai-roles-hub.html?subject=13015"
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=13015&v=2.3.4"
             }
           ]
         },
@@ -82,7 +84,7 @@
               "current": "已整理目录与知识框架",
               "tasks": [],
               "review": "掌握约 40%，优先串讲逻辑推理、集合关系、代数图论三大板块。",
-              "contentUrl": "自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html"
+              "contentUrl": "自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html?v=2.3.4"
             },
             {
               "name": "真题与错题",
@@ -91,7 +93,8 @@
               "current": "按年份/题型分类练习",
               "tasks": [],
               "review": "离散数学真题练习与错题管理。",
-              "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=02324"
+              "renderMode": "content",
+              "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=02324&v=2.3.4"
             },
             {
               "name": "背诵与简答",
@@ -101,7 +104,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "离散数学核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.2.1"
+              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.3.4"
             },
             {
               "name": "复盘总结",
@@ -110,7 +113,8 @@
               "current": "章节复盘与错题反思",
               "tasks": [],
               "review": "离散数学章节复盘总结。",
-              "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=02324"
+              "renderMode": "content",
+              "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=02324&v=2.3.4"
             },
             {
               "name": "AI助手",
@@ -120,7 +124,7 @@
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
               "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
-              "contentUrl": "ai-learning/ai-roles-hub.html?subject=02324"
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=02324&v=2.3.4"
             }
           ]
         },
@@ -139,7 +143,7 @@
               "current": "已整理目录与知识框架",
               "tasks": [],
               "review": "10 月考试科目之一，学位课，分数需 ≥70。先用网课建立整体框架，再刷真题。",
-              "contentUrl": "自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html"
+              "contentUrl": "自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html?v=2.3.4"
             },
             {
               "name": "真题与错题",
@@ -148,7 +152,8 @@
               "current": "按年份/题型分类练习",
               "tasks": [],
               "review": "数据结构与算法真题练习与错题管理。",
-              "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13003"
+              "renderMode": "content",
+              "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13003&v=2.3.4"
             },
             {
               "name": "背诵与简答",
@@ -158,7 +163,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "数据结构与算法核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.2.1"
+              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.3.4"
             },
             {
               "name": "复盘总结",
@@ -167,7 +172,8 @@
               "current": "章节复盘与错题反思",
               "tasks": [],
               "review": "数据结构与算法章节复盘总结。",
-              "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13003"
+              "renderMode": "content",
+              "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13003&v=2.3.4"
             },
             {
               "name": "AI助手",
@@ -177,7 +183,7 @@
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
               "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
-              "contentUrl": "ai-learning/ai-roles-hub.html?subject=13003"
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=13003&v=2.3.4"
             }
           ]
         }
@@ -203,7 +209,7 @@
               "current": "已整理知识框架与学习计划",
               "tasks": [],
               "review": "长期科目，现阶段每天 30–45 分钟保持输入，重点积累词汇和阅读。",
-              "contentUrl": "自考学习/未考科目/00015英语（二）/00015英语（二）-知识框架与学习计划.html"
+              "contentUrl": "自考学习/未考科目/00015英语（二）/00015英语（二）-知识框架与学习计划.html?v=2.3.4"
             },
             {
               "name": "背诵与简答",
@@ -213,7 +219,7 @@
               "current": "阅读判断技巧 + 高频词汇",
               "tasks": [],
               "review": "英语（二）阅读判断技巧与高频词汇背诵。",
-              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=en&v=2.2.1"
+              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=en&v=2.3.4"
             },
             {
               "name": "AI助手",
@@ -223,7 +229,7 @@
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
               "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
-              "contentUrl": "ai-learning/ai-roles-hub.html?subject=00015"
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=00015&v=2.3.4"
             }
           ]
         },
@@ -242,7 +248,7 @@
               "current": "已整理知识框架与学习计划",
               "tasks": [],
               "review": "长期科目，先建立微积分、线性代数、概率论三大板块框架，配合教材例题逐步推进。",
-              "contentUrl": "自考学习/未考科目/00023高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.html"
+              "contentUrl": "自考学习/未考科目/00023高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.html?v=2.3.4"
             },
             {
               "name": "AI助手",
@@ -252,7 +258,7 @@
               "current": "针对本科目生成学习计划、出题、讲错题",
               "tasks": [],
               "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。",
-              "contentUrl": "ai-learning/ai-roles-hub.html?subject=00023"
+              "contentUrl": "ai-learning/ai-roles-hub.html?subject=00023&v=2.3.4"
             }
           ]
         }

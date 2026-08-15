@@ -17,7 +17,7 @@
           "current": "拆解目标、制定计划、调整节奏",
           "tasks": [],
           "review": "例：把系统原理第 3 章拆成 3 天任务。",
-          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global",
+          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global&v=2.3.4",
           "renderMode": "bare"
         },
         {
@@ -27,7 +27,7 @@
           "current": "OCR 校对、生成框架、整理错题",
           "tasks": [],
           "review": "例：把真题截图转成文字并指出 OCR 错误。",
-          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global",
+          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global&v=2.3.4",
           "renderMode": "bare"
         },
         {
@@ -37,7 +37,7 @@
           "current": "分析错因、举一反三",
           "tasks": [],
           "review": "例：这道题我为什么错？再出 3 道。",
-          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global",
+          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global&v=2.3.4",
           "renderMode": "bare"
         },
         {
@@ -47,7 +47,7 @@
           "current": "抓取 AI 热点、政策、补贴",
           "tasks": [],
           "review": "例：本周上海 AI 补贴资讯有哪些？",
-          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global",
+          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global&v=2.3.4",
           "renderMode": "bare"
         },
         {
@@ -57,7 +57,7 @@
           "current": "检查 Python 实现、提优化建议",
           "tasks": [],
           "review": "例：帮我看看这段快排代码。",
-          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global",
+          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global&v=2.3.4",
           "renderMode": "bare"
         },
         {
@@ -67,7 +67,7 @@
           "current": "提醒偏差、建议调整策略",
           "tasks": [],
           "review": "例：我这周落后了，怎么调整？",
-          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global",
+          "contentUrl": "ai-learning/ai-roles-hub.html?mode=global&v=2.3.4",
           "renderMode": "bare"
         }
       ]
