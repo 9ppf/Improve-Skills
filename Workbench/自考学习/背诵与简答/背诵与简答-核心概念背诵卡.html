@@ -456,6 +456,9 @@
     .quiz-type-badge.fill { background: var(--bg3, rgba(139,92,246,0.08)); color: var(--accent); }
     .quiz-type-badge.choice { background: #dbeafe; color: #2563eb; }
     .quiz-type-badge.short { background: #fef3c7; color: var(--amber); }
+    .quiz-type-badge.calculate { background: #fce7f3; color: #db2777; }
+    .quiz-type-badge.explain { background: #ecfdf5; color: #059669; }
+    .quiz-type-badge.apply { background: #fff7ed; color: #ea580c; }
     .quiz-chapter-tag {
       font-size: 0.72rem;
       color: var(--accent);
@@ -574,6 +577,88 @@
       font-size: 0.9rem;
     }
 
+    .quiz-bank-stats {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .quiz-bank-stat {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      background: var(--bg3, rgba(139,92,246,0.06));
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .quiz-bank-stat strong { color: var(--accent); font-size: 1rem; }
+    .quiz-bank-clear-btn {
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--coral);
+      background: #fff;
+      color: var(--coral);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-bank-clear-btn:hover { background: var(--coral); color: #fff; }
+    .quiz-bank-item {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .quiz-bank-item.correct { border-left: 4px solid var(--green); }
+    .quiz-bank-item.wrong { border-left: 4px solid var(--coral); }
+    .quiz-bank-item.unanswered { border-left: 4px solid var(--rule); }
+    .quiz-bank-meta {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .quiz-bank-date { font-size: 0.72rem; color: var(--muted); }
+    .quiz-bank-user-answer {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      padding: 0.4rem 0.6rem;
+      background: var(--bg3, rgba(139,92,246,0.04));
+      border-radius: 6px;
+    }
+    .quiz-bank-ref-answer {
+      font-size: 0.82rem;
+      color: var(--green);
+      margin-top: 0.3rem;
+      padding: 0.4rem 0.6rem;
+      background: rgba(5,150,105,0.06);
+      border-radius: 6px;
+    }
+    .quiz-bank-filter {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .quiz-bank-filter-btn {
+      padding: 0.35rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--rule);
+      background: #fff;
+      color: var(--muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-bank-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .quiz-bank-filter-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border-color: var(--accent);
+    }
+
     @media (max-width: 640px) {
       body { padding: 1.5rem 0.9rem; }
       .recite-add-form { grid-template-columns: 1fr; }
@@ -590,6 +675,7 @@
     <div class="recite-mode-toggle">
       <button class="recite-mode-btn active" id="btnModeRecite">📖 背诵模式</button>
       <button class="recite-mode-btn" id="btnModeQuiz">✏️ 测验模式</button>
+      <button class="recite-mode-btn" id="btnModeBank">📚 题库</button>
     </div>
 
     <div class="recite-section" id="sectionStats">
@@ -637,14 +723,22 @@
 
     <div class="recite-section" id="sectionQuiz" style="display:none;">
       <h2>✏️ 测验练习</h2>
-      <p class="recite-hint">AI 根据当前卡片定义自动生成题目 · 做错的题自动降级卡片掌握度</p>
+      <p class="recite-hint">AI 根据今日卡片自动出题 · 题目累计显示并持久化到题库 · 做错的题自动降级掌握度</p>
       <div class="quiz-generate-bar">
         <button class="quiz-generate-btn" id="quizGenBtn" onclick="generateQuiz()">⚡ AI 出题</button>
         <span class="quiz-gen-status" id="quizGenStatus"></span>
       </div>
       <div id="quizContainer">
-        <div class="quiz-empty">点击「AI 出题」按钮，根据当前卡片生成测验题</div>
+        <div class="quiz-empty">点击「AI 出题」按钮，根据今日卡片生成测验题</div>
       </div>
+    </div>
+
+    <div class="recite-section" id="sectionBank" style="display:none;">
+      <h2>📚 题库</h2>
+      <p class="recite-hint">所有已生成的测验题自动保存在此 · 可用于复盘错题和回顾知识点</p>
+      <div class="quiz-bank-stats" id="quizBankStats"></div>
+      <button class="quiz-bank-clear-btn" onclick="clearQuizBank()">🗑 清空题库</button>
+      <div id="quizBankContainer" style="margin-top:1rem;"></div>
     </div>
   </article>
 
@@ -1090,35 +1184,67 @@
 
     /* ===== 测验模式 ===== */
     var currentMode = 'recite';
+    var QUIZ_BANK_KEY = 'recite-quiz-bank';
     var quizQuestions = [];
+    var QUIZ_TYPE_LABELS = {
+      fill: '填空题', choice: '选择题', short: '简答题',
+      calculate: '计算题', explain: '名词解释题', apply: '综合应用题'
+    };
+    var bankFilter = 'all';
+
+    function loadQuizBank() {
+      try {
+        var stored = localStorage.getItem(QUIZ_BANK_KEY);
+        if (stored) quizQuestions = JSON.parse(stored);
+      } catch(e) { quizQuestions = []; }
+    }
+
+    function saveQuizBank() {
+      try {
+        localStorage.setItem(QUIZ_BANK_KEY, JSON.stringify(quizQuestions));
+      } catch(e) {}
+    }
 
     function switchMode(mode) {
       currentMode = mode;
       var btnRecite = document.getElementById('btnModeRecite');
       var btnQuiz = document.getElementById('btnModeQuiz');
+      var btnBank = document.getElementById('btnModeBank');
       var sectionCards = document.getElementById('sectionCards');
       var sectionQuiz = document.getElementById('sectionQuiz');
+      var sectionBank = document.getElementById('sectionBank');
       var sectionAdd = document.getElementById('sectionAdd');
+      var sectionStats = document.getElementById('sectionStats');
+
+      btnRecite.classList.remove('active');
+      btnQuiz.classList.remove('active');
+      btnBank.classList.remove('active');
+      sectionCards.style.display = 'none';
+      sectionQuiz.style.display = 'none';
+      sectionBank.style.display = 'none';
+      sectionAdd.style.display = 'none';
 
       if (mode === 'recite') {
         btnRecite.classList.add('active');
-        btnQuiz.classList.remove('active');
         sectionCards.style.display = '';
-        sectionQuiz.style.display = 'none';
         sectionAdd.style.display = '';
-      } else {
-        btnRecite.classList.remove('active');
+        sectionStats.style.display = '';
+      } else if (mode === 'quiz') {
         btnQuiz.classList.add('active');
-        sectionCards.style.display = 'none';
         sectionQuiz.style.display = '';
-        sectionAdd.style.display = 'none';
+        sectionStats.style.display = '';
+        renderQuiz();
+      } else if (mode === 'bank') {
+        btnBank.classList.add('active');
+        sectionBank.style.display = '';
+        renderQuizBank();
       }
     }
 
     function getQuizCards() {
       var cards = getCards(currentSubject);
       if (currentView === 'today') cards = cards.filter(isTodayCard);
-      return cards.slice(0, 10);
+      return cards;
     }
 
     function generateQuiz() {
@@ -1136,7 +1262,11 @@
       status.className = 'quiz-gen-status';
 
       var container = document.getElementById('quizContainer');
-      container.innerHTML = '<div class="quiz-loading"><span class="spinner"></span>AI 正在根据卡片定义生成题目...</div>';
+      var loadingEl = document.createElement('div');
+      loadingEl.className = 'quiz-loading';
+      loadingEl.id = 'quizLoading';
+      loadingEl.innerHTML = '<span class="spinner"></span>AI 正在根据今日卡片生成题目...';
+      container.appendChild(loadingEl);
 
       var cardData = cards.map(function(c) {
         return { chapter: c.chapter, question: c.question, answer: c.answer, hint: c.hint, id: c.id };
@@ -1145,14 +1275,18 @@
       var prompt = '你是自考出题专家。根据以下知识点卡片，生成测验题。\n\n' +
         '要求：\n' +
         '1. 每张卡片生成1道题，共' + cardData.length + '道\n' +
-        '2. 题型混合：填空题、选择题、简答题\n' +
+        '2. 题型混合：填空题(fill)、选择题(choice)、简答题(short)、计算题(calculate)、名词解释题(explain)、综合应用题(apply)\n' +
         '3. 选择题给4个选项，标注正确答案的索引(0-3)\n' +
         '4. 填空题用______标注空位，给出正确答案\n' +
-        '5. 简答题给出参考答案要点\n\n' +
+        '5. 简答题/名词解释题/综合应用题给出参考答案要点\n' +
+        '6. 计算题给出计算过程和最终结果\n\n' +
         '必须返回纯JSON数组，格式：\n' +
         '[{"type":"fill","chapter":"章节","question":"题目","answer":"正确答案","cardId":卡片ID},\n' +
         ' {"type":"choice","chapter":"章节","question":"题目","options":["A","B","C","D"],"correctIndex":0,"cardId":卡片ID},\n' +
-        ' {"type":"short","chapter":"章节","question":"题目","answer":"参考答案","cardId":卡片ID}]\n\n' +
+        ' {"type":"short","chapter":"章节","question":"题目","answer":"参考答案","cardId":卡片ID},\n' +
+        ' {"type":"calculate","chapter":"章节","question":"题目","answer":"计算过程和结果","cardId":卡片ID},\n' +
+        ' {"type":"explain","chapter":"章节","question":"题目","answer":"名词解释","cardId":卡片ID},\n' +
+        ' {"type":"apply","chapter":"章节","question":"题目","answer":"参考答案","cardId":卡片ID}]\n\n' +
         '知识点卡片：\n' + JSON.stringify(cardData, null, 2);
 
       var controller = new AbortController();
@@ -1165,7 +1299,7 @@
           messages: [{ role: 'user', content: prompt }],
           model: 'deepseek-chat',
           stream: false,
-          max_tokens: 4000
+          max_tokens: 8000
         }),
         signal: controller.signal
       })
@@ -1175,6 +1309,8 @@
       })
       .then(function(data) {
         clearTimeout(timeoutId);
+        var el = document.getElementById('quizLoading');
+        if (el) el.remove();
         var text = '';
         if (data.choices && data.choices[0] && data.choices[0].message) {
           text = data.choices[0].message.content || '';
@@ -1185,9 +1321,19 @@
         }
         var jsonMatch = text.match(/\[[\s\S]*\]/);
         if (jsonMatch) {
-          quizQuestions = JSON.parse(jsonMatch[0]);
+          var newQuestions = JSON.parse(jsonMatch[0]);
+          var now = Date.now();
+          newQuestions.forEach(function(q, i) {
+            q.qid = now + '-' + i;
+            q.createdAt = new Date().toISOString();
+            q.subject = currentSubject;
+            q.userAnswer = null;
+            q.isCorrect = null;
+          });
+          quizQuestions = quizQuestions.concat(newQuestions);
+          saveQuizBank();
           renderQuiz();
-          status.textContent = '已生成 ' + quizQuestions.length + ' 道题';
+          status.textContent = '已累计 ' + quizQuestions.length + ' 道题（本次新增 ' + newQuestions.length + ' 道）';
           status.className = 'quiz-gen-status success';
         } else {
           throw new Error('AI 返回格式异常');
@@ -1195,6 +1341,8 @@
       })
       .catch(function(err) {
         clearTimeout(timeoutId);
+        var el2 = document.getElementById('quizLoading');
+        if (el2) el2.remove();
         status.textContent = 'AI 生成失败，使用本地出题';
         status.className = 'quiz-gen-status error';
         generateLocalQuiz(cards);
@@ -1205,43 +1353,72 @@
     }
 
     function generateLocalQuiz(cards) {
-      quizQuestions = cards.map(function(c, i) {
-        if (i % 3 === 0) {
+      var now = Date.now();
+      var newQuestions = cards.map(function(c, i) {
+        var mod = i % 6;
+        var q = { cardId: c.id, chapter: c.chapter, qid: now + '-' + i, createdAt: new Date().toISOString(), subject: currentSubject, userAnswer: null, isCorrect: null };
+        if (mod === 0) {
           var keyTerm = c.answer.split(/[，。、：\n]/)[0].trim();
           if (keyTerm.length > 2) {
             var blanked = c.question.replace(keyTerm, '______');
-            if (blanked === c.question) {
-              blanked = c.question + '（提示：' + (c.hint || keyTerm) + '）';
-            }
-            return { type: 'fill', chapter: c.chapter, question: blanked, answer: keyTerm, cardId: c.id };
+            if (blanked === c.question) blanked = c.question + '（提示：' + (c.hint || keyTerm) + '）';
+            q.type = 'fill'; q.question = blanked; q.answer = keyTerm;
+          } else {
+            q.type = 'short'; q.question = c.question; q.answer = c.answer;
           }
-          return { type: 'short', chapter: c.chapter, question: c.question, answer: c.answer, cardId: c.id };
-        } else if (i % 3 === 1) {
-          return { type: 'short', chapter: c.chapter, question: c.question, answer: c.answer, cardId: c.id };
+        } else if (mod === 1) {
+          q.type = 'explain'; q.question = '解释概念：' + c.question; q.answer = c.answer;
+        } else if (mod === 2) {
+          q.type = 'short'; q.question = c.question; q.answer = c.answer;
+        } else if (mod === 3) {
+          q.type = 'calculate'; q.question = c.question + '（请给出计算过程）'; q.answer = c.answer;
+        } else if (mod === 4) {
+          q.type = 'apply'; q.question = '综合应用：' + c.question + ' 请结合实际场景分析。'; q.answer = c.answer;
         } else {
-          return { type: 'fill', chapter: c.chapter, question: c.question + '（填入核心概念）', answer: c.answer.split('\n')[0], cardId: c.id };
+          q.type = 'fill'; q.question = c.question + '（填入核心概念）'; q.answer = c.answer.split('\n')[0];
         }
+        return q;
       });
+      quizQuestions = quizQuestions.concat(newQuestions);
+      saveQuizBank();
       renderQuiz();
     }
 
     function renderQuiz() {
       var container = document.getElementById('quizContainer');
-      if (quizQuestions.length === 0) {
-        container.innerHTML = '<div class="quiz-empty">暂无题目</div>';
+
+      var pending = quizQuestions.map(function(q, i) {
+        return { q: q, idx: i };
+      }).filter(function(item) {
+        return item.q.isCorrect === null;
+      }).sort(function(a, b) {
+        var ta = a.q.createdAt ? new Date(a.q.createdAt).getTime() : 0;
+        var tb = b.q.createdAt ? new Date(b.q.createdAt).getTime() : 0;
+        return tb - ta;
+      });
+
+      if (pending.length === 0) {
+        if (quizQuestions.length === 0) {
+          container.innerHTML = '<div class="quiz-empty">暂无题目，点击上方「AI 出题」按钮生成</div>';
+        } else {
+          container.innerHTML = '<div class="quiz-empty">所有题目已答完，可在「📚 题库」中查看答题记录</div>';
+        }
         return;
       }
 
-      container.innerHTML = quizQuestions.map(function(q, i) {
-        var typeLabel = q.type === 'fill' ? '填空题' : (q.type === 'choice' ? '选择题' : '简答题');
+      container.innerHTML = pending.map(function(item) {
+        var q = item.q;
+        var i = item.idx;
+        var typeLabel = QUIZ_TYPE_LABELS[q.type] || '简答题';
         var html = '<div class="quiz-card" id="quiz-q' + i + '">' +
           '<span class="quiz-type-badge ' + q.type + '">' + typeLabel + '</span>' +
           '<div class="quiz-chapter-tag">' + (q.chapter || '未分类') + '</div>' +
           '<div class="quiz-question-text">' + (q.question || '').replace(/</g, '&lt;') + '</div>';
 
-        if (q.type === 'fill') {
+        if (q.type === 'fill' || q.type === 'calculate') {
           html += '<input type="text" class="quiz-input" placeholder="输入你的答案..." id="quiz-input-' + i + '">' +
-            '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'fill\')">提交答案</button>';
+            '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'' + q.type + '\')">提交答案</button>' +
+            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div></div>';
         } else if (q.type === 'choice') {
           html += '<div class="quiz-options" id="quiz-options-' + i + '">';
           (q.options || []).forEach(function(opt, oi) {
@@ -1251,16 +1428,15 @@
               '</label>';
           });
           html += '</div>';
-          html += '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'choice\')">提交答案</button>';
+          html += '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'choice\')">提交答案</button>' +
+            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div></div>';
         } else {
           html += '<textarea class="quiz-textarea" placeholder="输入你的回答..." id="quiz-input-' + i + '"></textarea>' +
-            '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'short\')">提交答案</button>';
+            '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'' + q.type + '\')">提交答案</button>' +
+            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div></div>';
         }
 
-        html += '<div class="quiz-feedback" id="quiz-feedback-' + i + '">' +
-          '<div class="quiz-feedback-title"></div>' +
-          '<div class="quiz-feedback-answer"></div>' +
-          '</div></div>';
+        html += '</div>';
         return html;
       }).join('');
     }
@@ -1277,10 +1453,12 @@
       var feedback = document.getElementById('quiz-feedback-' + qi);
       var card = document.getElementById('quiz-q' + qi);
       var isCorrect = false;
+      var userInput = '';
 
-      if (type === 'fill') {
+      if (type === 'fill' || type === 'calculate') {
         var input = document.getElementById('quiz-input-' + qi).value.trim();
         if (!input) { alert('请输入答案'); return; }
+        userInput = input;
         var answer = (q.answer || '').toLowerCase();
         var userAns = input.toLowerCase();
         isCorrect = answer.indexOf(userAns) >= 0 || userAns.indexOf(answer) >= 0;
@@ -1288,6 +1466,7 @@
         var selected = document.querySelector('#quiz-options-' + qi + ' input:checked');
         if (!selected) { alert('请选择一个答案'); return; }
         var selectedIdx = parseInt(selected.value);
+        userInput = String.fromCharCode(65 + selectedIdx);
         isCorrect = selectedIdx === (q.correctIndex || 0);
         var options = document.querySelectorAll('#quiz-options-' + qi + ' .quiz-option');
         options.forEach(function(opt) { opt.classList.remove('correct-answer', 'wrong-answer'); });
@@ -1296,6 +1475,7 @@
       } else {
         var text = document.getElementById('quiz-input-' + qi).value.trim();
         if (!text || text.length < 10) { alert('请输入至少 10 个字的回答'); return; }
+        userInput = text;
         var refAns = (q.answer || '').toLowerCase();
         var userText = text.toLowerCase();
         var keywords = refAns.split(/[\s,，。、；;：:（）()]+/).filter(function(w) { return w.length > 1; });
@@ -1303,6 +1483,10 @@
         keywords.forEach(function(kw) { if (userText.indexOf(kw) >= 0) matchCount++; });
         isCorrect = matchCount >= Math.max(2, Math.ceil(keywords.length * 0.3));
       }
+
+      q.userAnswer = userInput;
+      q.isCorrect = isCorrect;
+      saveQuizBank();
 
       if (isCorrect) {
         card.classList.add('correct');
@@ -1317,6 +1501,88 @@
         feedback.querySelector('.quiz-feedback-answer').textContent = '参考答案：' + (q.answer || '');
         updateCardMasteryFromQuiz(q.cardId, false);
       }
+    }
+
+    function renderQuizBank() {
+      var container = document.getElementById('quizBankContainer');
+      var statsEl = document.getElementById('quizBankStats');
+
+      if (quizQuestions.length === 0) {
+        statsEl.innerHTML = '';
+        container.innerHTML = '<div class="quiz-empty">题库为空，在测验模式中出题后会自动保存到此处</div>';
+        return;
+      }
+
+      var total = quizQuestions.length;
+      var answered = quizQuestions.filter(function(q) { return q.isCorrect !== null; }).length;
+      var correct = quizQuestions.filter(function(q) { return q.isCorrect === true; }).length;
+      var wrong = quizQuestions.filter(function(q) { return q.isCorrect === false; }).length;
+      var unanswered = total - answered;
+      var rate = answered > 0 ? Math.round(correct / answered * 100) : 0;
+
+      statsEl.innerHTML =
+        '<div class="quiz-bank-stat">总题数 <strong>' + total + '</strong></div>' +
+        '<div class="quiz-bank-stat">已答 <strong>' + answered + '</strong></div>' +
+        '<div class="quiz-bank-stat">正确 <strong>' + correct + '</strong></div>' +
+        '<div class="quiz-bank-stat">错误 <strong>' + wrong + '</strong></div>' +
+        '<div class="quiz-bank-stat">正确率 <strong>' + rate + '%</strong></div>';
+
+      var filterHtml = '<div class="quiz-bank-filter">' +
+        '<button class="quiz-bank-filter-btn' + (bankFilter === 'all' ? ' active' : '') + '" onclick="setBankFilter(\'all\')">全部 (' + total + ')</button>' +
+        '<button class="quiz-bank-filter-btn' + (bankFilter === 'wrong' ? ' active' : '') + '" onclick="setBankFilter(\'wrong\')">错题 (' + wrong + ')</button>' +
+        '<button class="quiz-bank-filter-btn' + (bankFilter === 'correct' ? ' active' : '') + '" onclick="setBankFilter(\'correct\')">正确 (' + correct + ')</button>' +
+        '<button class="quiz-bank-filter-btn' + (bankFilter === 'unanswered' ? ' active' : '') + '" onclick="setBankFilter(\'unanswered\')">未答 (' + unanswered + ')</button>' +
+        '</div>';
+
+      var filtered = quizQuestions.filter(function(q) {
+        if (bankFilter === 'correct') return q.isCorrect === true;
+        if (bankFilter === 'wrong') return q.isCorrect === false;
+        if (bankFilter === 'unanswered') return q.isCorrect === null;
+        return true;
+      }).sort(function(a, b) {
+        var ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        var tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return tb - ta;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = filterHtml + '<div class="quiz-empty">该分类下暂无题目</div>';
+        return;
+      }
+
+      container.innerHTML = filterHtml + filtered.map(function(q) {
+        var typeLabel = QUIZ_TYPE_LABELS[q.type] || '简答题';
+        var statusClass = q.isCorrect === true ? 'correct' : (q.isCorrect === false ? 'wrong' : 'unanswered');
+        var dateStr = q.createdAt ? new Date(q.createdAt).toLocaleString('zh-CN', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+
+        var html = '<div class="quiz-bank-item ' + statusClass + '">' +
+          '<div class="quiz-bank-meta">' +
+            '<span class="quiz-type-badge ' + q.type + '">' + typeLabel + '</span>' +
+            '<span class="quiz-chapter-tag">' + (q.chapter || '未分类') + '</span>' +
+            '<span class="quiz-bank-date">' + dateStr + '</span>' +
+          '</div>' +
+          '<div class="quiz-question-text">' + (q.question || '').replace(/</g, '&lt;') + '</div>';
+
+        if (q.userAnswer) {
+          html += '<div class="quiz-bank-user-answer">你的答案：' + (q.userAnswer || '').replace(/</g, '&lt;') + '</div>';
+        }
+        html += '<div class="quiz-bank-ref-answer">参考答案：' + (q.answer || '').replace(/</g, '&lt;') + '</div>';
+        html += '</div>';
+        return html;
+      }).join('');
+    }
+
+    function setBankFilter(filter) {
+      bankFilter = filter;
+      renderQuizBank();
+    }
+
+    function clearQuizBank() {
+      if (!confirm('确定清空题库？所有已生成的题目和答题记录将被删除。')) return;
+      quizQuestions = [];
+      saveQuizBank();
+      renderQuizBank();
+      if (currentMode === 'quiz') renderQuiz();
     }
 
     function updateCardMasteryFromQuiz(cardId, correct) {
@@ -1336,9 +1602,11 @@
 
     document.getElementById('btnModeRecite').addEventListener('click', function() { switchMode('recite'); });
     document.getElementById('btnModeQuiz').addEventListener('click', function() { switchMode('quiz'); });
+    document.getElementById('btnModeBank').addEventListener('click', function() { switchMode('bank'); });
 
     loadData();
     loadPresetCards();
+    loadQuizBank();
     switchSubject(currentSubject);
   </script>
 </body>
