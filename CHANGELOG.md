@@ -17,6 +17,7 @@
 | `data/modules/self-study.json` | 4 个科目背诵卡 contentUrl 增加 `&v=2.1.1` 版本参数，解决浏览器缓存导致 iframe 加载旧页面的问题 |
 | `study-plan-optimization/study-plan-optimization.html` | 新增：学习方案科学性优化改进方案报告（5 项基础改进 + 3 项用户增强） |
 | `study-plan-optimization/feature-demo.html` | 新增：功能 Demo 页面（背诵卡测验模式 + Python AI 场景 + AI 岗位规划），用于确认后再更新到工作台 |
+| `AGENT_HANDOFF.md` | 版本更新至 v2.1.0；新增「v2.1.0 更新内容」章节（测验模式、手机访问、优化报告、经验教训、后续建议）；更新提交状态为已提交 |
 
 ---
 
