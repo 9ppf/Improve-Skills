@@ -2721,6 +2721,31 @@ const workspaces = [
             ]
           },
           {
+            name: '岗位突击', icon: '🎯', iconBg: '#FCE7F3',
+            items: [
+              {
+                name: '岗位技能图谱',
+                type: 'ai-learning',
+                renderMode: 'bare',
+                stage: '进行中',
+                current: '四阶段25个知识点：17入门(能做项目)+8精进(面试加分)，含3个简历级项目',
+                tasks: [],
+                review: '入门级知识点标注项目产出和简历写法，精进级为面试突击用。目标：考完即投简历。',
+                contentUrl: 'ai-learning/job-skill-tree.html?v=2.6.0'
+              },
+              {
+                name: '学习闭环',
+                type: 'ai-learning',
+                renderMode: 'bare',
+                stage: '进行中',
+                current: '四阶段路线图 + 五步闭环 + 真实进度 + 项目追踪',
+                tasks: [],
+                review: '读取 localStorage job_kp_detail_v1 显示各阶段掌握度，追踪3个简历项目进度。',
+                contentUrl: 'ai-learning/job-learning-loop.html?v=2.6.0'
+              }
+            ]
+          },
+          {
             name: '资讯', icon: '📰', iconBg: '#D1FAE5',
             items: [
               {
