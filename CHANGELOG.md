@@ -16,6 +16,8 @@
 | `Workbench/能力提升/能力提升-学习驾驶舱.html` | 学习计划时间调整：数据结构从Week 3提前到Week 2启动(4周→5周)；离散数学9章匀到Week 1-5(Week 5从3章减到2章，Ch7图论提前到Week 4)；AI项目3从Week 6提前到Week 5启动(Week 6只做完善)；阶段日期同步调整(初级8/18-9/21, 中间9/22-10/5, 冲刺10/6-10/24)；SCHEDULE_VERSION升至v2.6.3 |
 | `data/modules/ability.json` | 学习驾驶舱contentUrl版本号更新至v=2.6.3 |
 | `Workbench/此刻便是春天.html` | 重建产物（随源码更新） |
+| `AGENT_HANDOFF.md` | 版本更新至 v2.7.0；新增 v2.7.0 版本记录 |
+| `工作台搭建总结.md` | 版本更新至 v2.7.0；新增 v2.7.0 版本记录 |
 
 ---
 
