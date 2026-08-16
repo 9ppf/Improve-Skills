@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>00015 英语（二）· 备考指南</title>
+<style>
+:root {
+  --bg: #f8fafc;
+  --bg2: rgba(255,255,255,0.72);
+  --ink: #1e293b;
+  --muted: #64748b;
+  --rule: #e2e8f0;
+  --accent: #2563eb;
+  --accent2: #8b5cf6;
+  --font: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --max: 860px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.75;padding:1.5rem 1rem}
+article.page{max-width:var(--max);margin:0 auto}
+
+.en-section{background:var(--bg2);border:1px solid rgba(37,99,235,0.10);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 4px 20px rgba(15,23,42,0.04)}
+.en-section h2{font-size:1.2rem;font-weight:700;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--rule);border-left:4px solid var(--accent);padding-left:0.75rem}
+.en-section h3{font-size:1.05rem;font-weight:650;margin:1.25rem 0 0.75rem;color:var(--accent)}
+.en-section p{margin-bottom:0.75rem}
+
+/* 题型卡片 */
+.qtype-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1rem}
+.qtype-card{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:1rem 1.25rem;transition:box-shadow 0.2s}
+.qtype-card:hover{box-shadow:0 4px 12px rgba(37,99,235,0.12)}
+.qtype-card .qt-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-size:0.85rem;font-weight:700;margin-right:0.5rem}
+.qtype-card .qt-name{font-weight:650;font-size:1rem}
+.qtype-card .qt-score{display:inline-block;background:#eff6ff;color:var(--accent);border-radius:6px;padding:0.15rem 0.6rem;font-size:0.85rem;font-weight:600;margin-top:0.5rem}
+.qtype-card .qt-diff{display:inline-block;margin-left:0.4rem;font-size:0.85rem;color:var(--muted)}
+.qtype-card .qt-strategy{margin-top:0.6rem;font-size:0.9rem;color:var(--muted);line-height:1.6}
+
+/* 分值分布条 */
+.score-bar-wrap{margin-top:1rem}
+.score-bar{display:flex;height:40px;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.score-bar .seg{display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:600;color:#fff}
+.score-bar .seg-read{background:linear-gradient(135deg,#2563eb,#3b82f6);flex:40}
+.score-bar .seg-cloze{background:linear-gradient(135deg,#8b5cf6,#a78bfa);flex:30}
+.score-bar .seg-write{background:linear-gradient(135deg,#f59e0b,#fbbf24);flex:30}
+.score-legend{display:flex;gap:1.5rem;margin-top:0.75rem;flex-wrap:wrap}
+.score-legend span{display:flex;align-items:center;gap:0.4rem;font-size:0.88rem;color:var(--muted)}
+.score-legend .dot{width:10px;height:10px;border-radius:50%}
+
+/* 学习路线 */
+.roadmap-table{width:100%;border-collapse:collapse;margin-top:1rem}
+.roadmap-table th,.roadmap-table td{padding:0.6rem 0.8rem;text-align:left;border-bottom:1px solid var(--rule);font-size:0.9rem}
+.roadmap-table th{background:#f1f5f9;font-weight:600;color:var(--muted)}
+.roadmap-table td:first-child{font-weight:600;color:var(--accent);white-space:nowrap}
+.roadmap-table .rm-focus{font-weight:600}
+
+/* 策略列表 */
+.strategy-list{list-style:none;padding:0}
+.strategy-list li{padding:0.6rem 0;border-bottom:1px dashed var(--rule);display:flex;gap:0.75rem;align-items:flex-start}
+.strategy-list li:last-child{border-bottom:none}
+.strategy-list .str-icon{flex-shrink:0;width:24px;height:24px;border-radius:6px;background:#eff6ff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700}
+.strategy-list .str-text{font-size:0.92rem;line-height:1.6}
+.strategy-list .str-text b{color:var(--accent)}
+
+@media(max-width:640px){
+  .qtype-grid{grid-template-columns:1fr}
+  .score-bar{height:32px;font-size:0.75rem}
+  .roadmap-table{font-size:0.82rem}
+}
+</style>
+</head>
+<body>
+<article class="page">
+
+  <div class="en-section">
+    <h2>七种题型分析</h2>
+    <p>英语（二）共7大题，满分100分，考试时间150分钟。按技能分为三类：阅读（40分）、完形（30分）、写作（30分）。</p>
+    <div class="qtype-grid">
+      <div class="qtype-card">
+        <div><span class="qt-num">1</span><span class="qt-name">阅读判断</span></div>
+        <span class="qt-score">10分</span><span class="qt-diff">难度：★★☆</span>
+        <div class="qt-strategy">判断 True/False/Not Given，关键在于区分 False 和 Not Given。先读题再定位原文。</div>
+      </div>
+      <div class="qtype-card">
+        <div><span class="qt-num">2</span><span class="qt-name">阅读选择</span></div>
+        <span class="qt-score">10分</span><span class="qt-diff">难度：★★★</span>
+        <div class="qt-strategy">四选一，重点考同义替换和推理判断。定位法 + 排除法组合使用。</div>
+      </div>
+      <div class="qtype-card">
+        <div><span class="qt-num">3</span><span class="qt-name">概括大意 + 补全句子</span></div>
+        <span class="qt-score">10分</span><span class="qt-diff">难度：★★☆</span>
+        <div class="qt-strategy">前半题选段落大意，后半题补全句子。关键词匹配是核心技巧。</div>
+      </div>
+      <div class="qtype-card">
+        <div><span class="qt-num">4</span><span class="qt-name">填句补文</span></div>
+        <span class="qt-score">10分</span><span class="qt-diff">难度：★★★</span>
+        <div class="qt-strategy">从6个句子中选5个填入空缺，考查逻辑衔接和上下文推理。关注代词、连词线索。</div>
+      </div>
+      <div class="qtype-card">
+        <div><span class="qt-num">5</span><span class="qt-name">填词补文</span></div>
+        <span class="qt-score">15分</span><span class="qt-diff">难度：★★☆</span>
+        <div class="qt-strategy">从12个词中选10个填空，考查词性和语法。先判词性再匹配。</div>
+      </div>
+      <div class="qtype-card">
+        <div><span class="qt-num">6</span><span class="qt-name">完形补文</span></div>
+        <span class="qt-score">15分</span><span class="qt-diff">难度：★★★★</span>
+        <div class="qt-strategy">根据上下文填写单词的正确形式（派生词），考查词汇变形和语法。需掌握常见词缀。</div>
+      </div>
+      <div class="qtype-card">
+        <div><span class="qt-num">7</span><span class="qt-name">短文写作</span></div>
+        <span class="qt-score">30分</span><span class="qt-diff">难度：★★★</span>
+        <div class="qt-strategy">150词左右，多为议论文或应用文。背模板 + 练句型 + 限时写作。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="en-section">
+    <h2>分值分布</h2>
+    <div class="score-bar-wrap">
+      <div class="score-bar">
+        <div class="seg seg-read">阅读 40分</div>
+        <div class="seg seg-cloze">完形 30分</div>
+        <div class="seg seg-write">写作 30分</div>
+      </div>
+      <div class="score-legend">
+        <span><span class="dot" style="background:#2563eb"></span>阅读类：判断+选择+概括+填句</span>
+        <span><span class="dot" style="background:#8b5cf6"></span>完形类：填词+完形补文</span>
+        <span><span class="dot" style="background:#f59e0b"></span>写作：短文写作</span>
+      </div>
+    </div>
+    <p style="margin-top:1rem;color:var(--muted);font-size:0.9rem">策略：阅读和完形占70分，是得分基本盘；写作占30分，背好模板可稳拿18-20分。重点突破完形补文（难度最高、分值最高单项之一）。</p>
+  </div>
+
+  <div class="en-section">
+    <h2>10周学习路线</h2>
+    <table class="roadmap-table">
+      <thead>
+        <tr><th>周次</th><th>词汇</th><th>题型训练</th><th>真题/写作</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Week 1-2</td><td>核心800词启动</td><td>阅读判断入门</td><td>—</td></tr>
+        <tr><td>Week 3-4</td><td>核心800词复习 + 重点1200词启动</td><td>阅读选择 + 概括大意 + 填句补文</td><td>—</td></tr>
+        <tr><td>Week 5-6</td><td>重点1200词复习</td><td>填词补文 + 完形补文</td><td>作文模板背诵（第一轮）</td></tr>
+        <tr><td>Week 7</td><td>高频词总复习</td><td>真题片段专项</td><td>作文模板背诵（第二轮）+ 仿写</td></tr>
+        <tr><td>Week 8</td><td>错题词汇</td><td>—</td><td>真题模拟 1 套 + 作文限时练</td></tr>
+        <tr><td>Week 9</td><td>高频词终刷</td><td>—</td><td>真题模拟 2 套</td></tr>
+        <tr><td>Week 10</td><td>考前速记</td><td>—</td><td>作文模板终记 + 状态调整</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="en-section">
+    <h2>备考策略</h2>
+    <ul class="strategy-list">
+      <li>
+        <span class="str-icon">1</span>
+        <span class="str-text"><b>词汇先行</b>：每天30分钟词汇，用间隔重复法（SM-2），核心词表800词优先。词汇是所有题型的基础。</span>
+      </li>
+      <li>
+        <span class="str-icon">2</span>
+        <span class="str-text"><b>阅读重定位</b>：阅读题不需要完全读懂文章，关键是快速定位答案区间。先读题目，划关键词，回原文定位。</span>
+      </li>
+      <li>
+        <span class="str-icon">3</span>
+        <span class="str-text"><b>完形重词法</b>：填词补文先判词性（名/动/形/副），完形补文重点掌握派生词（-tion/-ment/-ness/-ful/-less等词缀）。</span>
+      </li>
+      <li>
+        <span class="str-icon">4</span>
+        <span class="str-text"><b>作文背模板</b>：准备5类模板（观点论述/问题解决/现象分析/图表描述/书信），每类背1个框架+10个高分句型，考前限时仿写3-5篇。</span>
+      </li>
+      <li>
+        <span class="str-icon">5</span>
+        <span class="str-text"><b>真题要精做</b>：至少做3-5套真题，每套做完后逐题分析错因，记录到错题本。真题是最准确的难度参考。</span>
+      </li>
+      <li>
+        <span class="str-icon">6</span>
+        <span class="str-text"><b>时间分配</b>：考试150分钟，建议阅读60分钟、完形45分钟、写作35分钟、检查10分钟。平时练习就要计时。</span>
+      </li>
+    </ul>
+  </div>
+
+</article>
+</body>
+</html>
