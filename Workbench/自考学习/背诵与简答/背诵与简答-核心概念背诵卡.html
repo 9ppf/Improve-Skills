@@ -552,6 +552,150 @@
       color: var(--muted);
       line-height: 1.6;
     }
+    .quiz-ask-ai-btn {
+      margin-top: 0.5rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-ask-ai-btn:hover { background: var(--accent); color: #fff; }
+    .quiz-ai-chat {
+      margin-top: 0.75rem;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
+    }
+    .quiz-ai-chat.show { display: block; }
+    .quiz-ai-header-copy {
+      font-size: 0.7rem; padding: 0.15rem 0.5rem;
+      border: 1px solid var(--rule); background: rgba(255,255,255,0.8);
+      color: var(--muted); border-radius: 4px; cursor: pointer;
+      transition: all 0.2s; font-weight: 400;
+    }
+    .quiz-ai-header-copy:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .quiz-ai-header-copy.copied { background: var(--green); color: #fff; border-color: var(--green); }
+    .quiz-ai-header-right { display: flex; align-items: center; gap: 0.4rem; }
+    .quiz-ai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      background: #f8f9fe;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .quiz-ai-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 0;
+    }
+    .quiz-ai-close:hover { color: var(--coral); }
+    .quiz-ai-messages {
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 0.75rem;
+    }
+    .quiz-ai-msg { margin-bottom: 0.6rem; }
+    .quiz-ai-msg .msg-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .quiz-ai-msg.msg-user { margin-left: 2rem; }
+    .quiz-ai-msg.msg-user .msg-content {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px 10px 4px 10px;
+      white-space: pre-wrap;
+      font-size: 0.83rem;
+      line-height: 1.6;
+    }
+    .quiz-ai-msg.msg-ai { margin-right: 2rem; }
+    .quiz-ai-msg.msg-ai .msg-content {
+      background: #f1f5f9;
+      padding: 0.6rem 0.85rem;
+      border-radius: 10px 10px 10px 4px;
+      white-space: pre-wrap;
+      font-size: 0.83rem;
+      line-height: 1.6;
+    }
+    .quiz-ai-msg.typing .msg-content { color: var(--muted); }
+    .quiz-ai-msg.typing .msg-content::after {
+      content: ' ●';
+      animation: quiz-ai-blink 1s infinite;
+    }
+    @keyframes quiz-ai-blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+    .quiz-ai-msg.error .msg-content { color: var(--coral); }
+    .msg-content .md-p { margin: 0.3rem 0; line-height: 1.7; }
+    .msg-content .md-h2 { font-size: 1.05rem; font-weight: 700; margin: 0.6rem 0 0.3rem; color: var(--accent); }
+    .msg-content .md-h3 { font-size: 0.98rem; font-weight: 700; margin: 0.5rem 0 0.25rem; color: var(--ink); }
+    .msg-content .md-h4 { font-size: 0.9rem; font-weight: 600; margin: 0.4rem 0 0.2rem; color: var(--ink); }
+    .msg-content .md-list { margin: 0.3rem 0; padding-left: 1.2rem; }
+    .msg-content .md-list li { margin: 0.2rem 0; line-height: 1.7; }
+    .msg-content .md-code-block {
+      background: #1e293b; color: #e2e8f0; padding: 0.6rem 0.8rem;
+      border-radius: 6px; overflow-x: auto; margin: 0.5rem 0; font-size: 0.8rem;
+    }
+    .msg-content .md-code-inline {
+      background: rgba(37,99,235,0.08); color: var(--accent);
+      padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.85rem;
+    }
+    .msg-content .md-math-block {
+      text-align: center; padding: 0.5rem; margin: 0.4rem 0;
+      background: rgba(139,92,246,0.06); border-radius: 6px;
+      font-family: 'Cambria Math', 'Times New Roman', serif; font-size: 0.95rem;
+      color: var(--accent2); overflow-x: auto;
+    }
+    .msg-content .md-math-inline {
+      font-family: 'Cambria Math', 'Times New Roman', serif;
+      color: var(--accent2); font-style: italic;
+    }
+    .msg-content strong { font-weight: 700; }
+    .msg-content em { font-style: italic; }
+    .quiz-ai-input-wrap {
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.5rem 0.75rem;
+      border-top: 1px solid var(--rule);
+    }
+    .quiz-ai-input {
+      flex: 1;
+      padding: 0.4rem 0.6rem;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-family: var(--font);
+      outline: none;
+      resize: none;
+    }
+    .quiz-ai-input:focus { border-color: var(--accent); }
+    .quiz-ai-input:disabled { background: #f8f9fa; }
+    .quiz-ai-send {
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .quiz-ai-send:disabled { opacity: 0.5; cursor: not-allowed; }
     .quiz-loading {
       text-align: center;
       padding: 2rem;
@@ -635,6 +779,55 @@
       padding: 0.4rem 0.6rem;
       background: rgba(5,150,105,0.06);
       border-radius: 6px;
+    }
+    .quiz-bank-attempts {
+      font-size: 0.72rem;
+      color: var(--accent2);
+      background: rgba(139,92,246,0.08);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .quiz-bank-ai-tag {
+      font-size: 0.72rem;
+      color: var(--green);
+      background: rgba(5,150,105,0.08);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .quiz-bank-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+    .quiz-redo-btn {
+      font-size: 0.78rem;
+      padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(37,99,235,0.25);
+      background: rgba(37,99,235,0.06);
+      color: var(--accent);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-redo-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    .quiz-bank-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .quiz-bank-options .quiz-option {
+      cursor: default;
+      font-size: 0.85rem;
+      padding: 0.4rem 0.65rem;
+    }
+    .quiz-bank-options .quiz-option:hover {
+      border-color: var(--rule);
+      background: transparent;
     }
     .quiz-bank-filter {
       display: flex;
@@ -1173,6 +1366,12 @@
 
     function switchSubject(subject) {
       currentSubject = subject;
+      QUIZ_BANK_KEY = 'recite-quiz-bank-' + currentSubject;
+      QUIZ_AI_KEY = 'recite-quiz-ai-' + currentSubject;
+      quizQuestions = [];
+      quizAIConversations = {};
+      loadQuizBank();
+      quizAIConversations = loadQuizAI();
       renderAll();
     }
 
@@ -1184,7 +1383,8 @@
 
     /* ===== 测验模式 ===== */
     var currentMode = 'recite';
-    var QUIZ_BANK_KEY = 'recite-quiz-bank';
+    var QUIZ_BANK_KEY = 'recite-quiz-bank-' + currentSubject;
+    var QUIZ_AI_KEY = 'recite-quiz-ai-' + currentSubject;
     var quizQuestions = [];
     var QUIZ_TYPE_LABELS = {
       fill: '填空题', choice: '选择题', short: '简答题',
@@ -1203,6 +1403,47 @@
       try {
         localStorage.setItem(QUIZ_BANK_KEY, JSON.stringify(quizQuestions));
       } catch(e) {}
+    }
+
+    function loadQuizAI() {
+      try {
+        var stored = localStorage.getItem(QUIZ_AI_KEY);
+        if (!stored) return {};
+        var raw = JSON.parse(stored);
+        var mapped = {};
+        quizQuestions.forEach(function(q, i) {
+          if (q.qid && raw[q.qid]) {
+            mapped[i] = raw[q.qid];
+          }
+        });
+        return mapped;
+      } catch(e) { return {}; }
+    }
+
+    function saveQuizAI(qi) {
+      try {
+        var stored = localStorage.getItem(QUIZ_AI_KEY);
+        var raw = stored ? JSON.parse(stored) : {};
+        var q = quizQuestions[qi];
+        if (!q || !q.qid) return;
+        if (quizAIConversations[qi] && quizAIConversations[qi].length > 0) {
+          raw[q.qid] = quizAIConversations[qi];
+        } else {
+          delete raw[q.qid];
+        }
+        localStorage.setItem(QUIZ_AI_KEY, JSON.stringify(raw));
+      } catch(e) {}
+    }
+
+    function hasQuizAI(qi) {
+      var q = quizQuestions[qi];
+      if (!q || !q.qid) return false;
+      try {
+        var stored = localStorage.getItem(QUIZ_AI_KEY);
+        if (!stored) return false;
+        var raw = JSON.parse(stored);
+        return !!raw[q.qid];
+      } catch(e) { return false; }
     }
 
     function switchMode(mode) {
@@ -1418,7 +1659,7 @@
         if (q.type === 'fill' || q.type === 'calculate') {
           html += '<input type="text" class="quiz-input" placeholder="输入你的答案..." id="quiz-input-' + i + '">' +
             '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'' + q.type + '\')">提交答案</button>' +
-            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div></div>';
+            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div><button class="quiz-ask-ai-btn" onclick="askAIAboutQuiz(' + i + ')">🤖 问 AI</button><div class="quiz-ai-chat" id="quiz-ai-chat-' + i + '"><div class="quiz-ai-header"><span>AI 答疑</span><div class="quiz-ai-header-right"><button class="quiz-ai-header-copy" onclick="copyQuizAIConversation(' + i + ', this)">复制</button><button class="quiz-ai-close" onclick="closeQuizAI(' + i + ')">×</button></div></div><div class="quiz-ai-messages" id="quiz-ai-msgs-' + i + '"></div><div class="quiz-ai-input-wrap"><textarea class="quiz-ai-input" id="quiz-ai-input-' + i + '" placeholder="输入追问..." rows="1"></textarea><button class="quiz-ai-send" id="quiz-ai-send-' + i + '" onclick="sendQuizAIFollowUp(' + i + ')">发送</button></div></div></div>';
         } else if (q.type === 'choice') {
           html += '<div class="quiz-options" id="quiz-options-' + i + '">';
           (q.options || []).forEach(function(opt, oi) {
@@ -1429,11 +1670,11 @@
           });
           html += '</div>';
           html += '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'choice\')">提交答案</button>' +
-            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div></div>';
+            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div><button class="quiz-ask-ai-btn" onclick="askAIAboutQuiz(' + i + ')">🤖 问 AI</button><div class="quiz-ai-chat" id="quiz-ai-chat-' + i + '"><div class="quiz-ai-header"><span>AI 答疑</span><div class="quiz-ai-header-right"><button class="quiz-ai-header-copy" onclick="copyQuizAIConversation(' + i + ', this)">复制</button><button class="quiz-ai-close" onclick="closeQuizAI(' + i + ')">×</button></div></div><div class="quiz-ai-messages" id="quiz-ai-msgs-' + i + '"></div><div class="quiz-ai-input-wrap"><textarea class="quiz-ai-input" id="quiz-ai-input-' + i + '" placeholder="输入追问..." rows="1"></textarea><button class="quiz-ai-send" id="quiz-ai-send-' + i + '" onclick="sendQuizAIFollowUp(' + i + ')">发送</button></div></div></div>';
         } else {
           html += '<textarea class="quiz-textarea" placeholder="输入你的回答..." id="quiz-input-' + i + '"></textarea>' +
             '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'' + q.type + '\')">提交答案</button>' +
-            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div></div>';
+            '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div><button class="quiz-ask-ai-btn" onclick="askAIAboutQuiz(' + i + ')">🤖 问 AI</button><div class="quiz-ai-chat" id="quiz-ai-chat-' + i + '"><div class="quiz-ai-header"><span>AI 答疑</span><div class="quiz-ai-header-right"><button class="quiz-ai-header-copy" onclick="copyQuizAIConversation(' + i + ', this)">复制</button><button class="quiz-ai-close" onclick="closeQuizAI(' + i + ')">×</button></div></div><div class="quiz-ai-messages" id="quiz-ai-msgs-' + i + '"></div><div class="quiz-ai-input-wrap"><textarea class="quiz-ai-input" id="quiz-ai-input-' + i + '" placeholder="输入追问..." rows="1"></textarea><button class="quiz-ai-send" id="quiz-ai-send-' + i + '" onclick="sendQuizAIFollowUp(' + i + ')">发送</button></div></div></div>';
         }
 
         html += '</div>';
@@ -1503,6 +1744,330 @@
       }
     }
 
+    var quizAIConversations = {};
+
+    function copyTextToClipboard(text, btn) {
+      function done() {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 1500);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function() {
+          fallbackCopy(text); done();
+        });
+      } else {
+        fallbackCopy(text); done();
+      }
+    }
+
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    function copyQuizAIConversation(qi, btn) {
+      var conv = quizAIConversations[qi];
+      if (!conv) return;
+      var lines = [];
+      conv.forEach(function(msg) {
+        if (msg.role === 'system') return;
+        if (msg.role === 'user') {
+          lines.push('【我的问题】');
+          lines.push(msg.content);
+        } else {
+          lines.push('【AI 解答】');
+          lines.push(msg.content);
+        }
+        lines.push('');
+      });
+      copyTextToClipboard(lines.join('\n'), btn);
+    }
+
+    function renderMarkdown(text) {
+      if (!text) return '';
+      var html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      html = html.replace(/```([\s\S]*?)```/g, function(m, code) {
+        return '<pre class="md-code-block"><code>' + code.trim() + '</code></pre>';
+      });
+      html = html.replace(/`([^`\n]+)`/g, '<code class="md-code-inline">$1</code>');
+      html = html.replace(/\[\s*([\s\S]*?)\s*\]/g, function(m, formula) {
+        return '<div class="md-math-block">' + formula.trim() + '</div>';
+      });
+      html = html.replace(/\\\(([^)]+)\)\\\)/g, function(m, formula) {
+        return '<span class="md-math-inline">' + formula.trim() + '</span>';
+      });
+      html = html.replace(/\\\(([^)]+)\)/g, function(m, formula) {
+        return '<span class="md-math-inline">' + formula.trim() + '</span>';
+      });
+      var lines = html.split('\n');
+      var out = [];
+      var inUl = false, inOl = false;
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        var ulMatch = line.match(/^\s*[\-\*]\s+(.*)/);
+        var olMatch = line.match(/^\s*\d+\.\s+(.*)/);
+        if (ulMatch) {
+          if (inOl) { out.push('</ol>'); inOl = false; }
+          if (!inUl) { out.push('<ul class="md-list">'); inUl = true; }
+          out.push('<li>' + ulMatch[1] + '</li>');
+        } else if (olMatch) {
+          if (inUl) { out.push('</ul>'); inUl = false; }
+          if (!inOl) { out.push('<ol class="md-list">'); inOl = true; }
+          out.push('<li>' + olMatch[1] + '</li>');
+        } else {
+          if (inUl) { out.push('</ul>'); inUl = false; }
+          if (inOl) { out.push('</ol>'); inOl = false; }
+          line = line.replace(/^###\s+(.*)/, '<h4 class="md-h4">$1</h4>');
+          line = line.replace(/^##\s+(.*)/, '<h3 class="md-h3">$1</h3>');
+          line = line.replace(/^#\s+(.*)/, '<h2 class="md-h2">$1</h2>');
+          if (line.trim() === '') {
+            out.push('');
+          } else if (!line.match(/^<h[234]/) && !line.match(/^<pre/)) {
+            line = '<p class="md-p">' + line + '</p>';
+          }
+          out.push(line);
+        }
+      }
+      if (inUl) out.push('</ul>');
+      if (inOl) out.push('</ol>');
+      html = out.join('\n');
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      return html;
+    }
+
+    function askAIAboutQuiz(qi, pfx) {
+      pfx = pfx || 'quiz';
+      var chatEl = document.getElementById(pfx + '-ai-chat-' + qi);
+      chatEl.classList.add('show');
+
+      if (quizAIConversations[qi]) {
+        var msgsEl = document.getElementById(pfx + '-ai-msgs-' + qi);
+        if (msgsEl && msgsEl.children.length === 0) {
+          renderQuizAIMessages(qi, pfx);
+        }
+        document.getElementById(pfx + '-ai-input-' + qi).focus();
+        return;
+      }
+
+      var saved = loadQuizAI();
+      if (saved[qi]) {
+        quizAIConversations[qi] = saved[qi];
+        renderQuizAIMessages(qi, pfx);
+        document.getElementById(pfx + '-ai-input-' + qi).focus();
+        return;
+      }
+
+      var q = quizQuestions[qi];
+      var typeLabel = QUIZ_TYPE_LABELS[q.type] || '练习题';
+      var prompt = '我正在做一道' + typeLabel + '，做完后对解析有疑惑，请帮我详细讲解。\n\n' +
+        '【题目】\n' + (q.question || '') + '\n\n';
+      if (q.options && q.options.length > 0) {
+        prompt += '【选项】\n';
+        q.options.forEach(function(opt, oi) {
+          prompt += String.fromCharCode(65 + oi) + '. ' + opt + '\n';
+        });
+        prompt += '\n';
+      }
+      if (q.userAnswer) {
+        prompt += '【我的答案】\n' + q.userAnswer + '\n\n';
+      }
+      prompt += '【参考答案/解析】\n' + (q.answer || '无') + '\n\n';
+      prompt += '请基于以上信息，用通俗易懂的方式给我详细讲解这道题的解题思路和关键步骤。';
+
+      quizAIConversations[qi] = [
+        { role: 'system', content: '你是一位耐心的自考辅导老师，擅长用通俗易懂的方式讲解题目。请分步骤、详细地解析，特别关注计算过程和推理逻辑。如果学生答案有误，指出错在哪里。' },
+        { role: 'user', content: prompt }
+      ];
+
+      var inputEl = document.getElementById(pfx + '-ai-input-' + qi);
+      inputEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendQuizAIFollowUp(qi, pfx);
+        }
+      });
+
+      sendQuizAIRequest(qi, pfx);
+    }
+
+    function renderQuizAIMessages(qi, pfx) {
+      pfx = pfx || 'quiz';
+      var msgsEl = document.getElementById(pfx + '-ai-msgs-' + qi);
+      if (!msgsEl || !quizAIConversations[qi]) return;
+      msgsEl.innerHTML = '';
+      quizAIConversations[qi].forEach(function(msg) {
+        if (msg.role === 'system') return;
+        var msgEl = document.createElement('div');
+        msgEl.className = 'quiz-ai-msg ' + (msg.role === 'user' ? 'msg-user' : 'msg-ai');
+        var labelEl = document.createElement('div');
+        labelEl.className = 'msg-label';
+        labelEl.textContent = msg.role === 'user' ? '我' : 'AI 助手';
+        var contentEl = document.createElement('div');
+        contentEl.className = 'msg-content';
+        contentEl.innerHTML = msg.role === 'user' ? (msg.content || '').replace(/</g, '&lt;').replace(/\n/g, '<br>') : renderMarkdown(msg.content);
+        msgEl.appendChild(labelEl);
+        msgEl.appendChild(contentEl);
+        msgsEl.appendChild(msgEl);
+      });
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+
+      var inputEl = document.getElementById(pfx + '-ai-input-' + qi);
+      if (inputEl && !inputEl._bound) {
+        inputEl._bound = true;
+        inputEl.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendQuizAIFollowUp(qi, pfx);
+          }
+        });
+      }
+    }
+
+    function sendQuizAIRequest(qi, pfx) {
+      pfx = pfx || 'quiz';
+      var msgsEl = document.getElementById(pfx + '-ai-msgs-' + qi);
+      var sendBtn = document.getElementById(pfx + '-ai-send-' + qi);
+      var inputEl = document.getElementById(pfx + '-ai-input-' + qi);
+
+      var msgEl = document.createElement('div');
+      msgEl.className = 'quiz-ai-msg msg-ai typing';
+      var labelEl = document.createElement('div');
+      labelEl.className = 'msg-label';
+      labelEl.textContent = 'AI 助手';
+      var contentEl = document.createElement('div');
+      contentEl.className = 'msg-content';
+      contentEl.textContent = '正在思考...';
+      msgEl.appendChild(labelEl);
+      msgEl.appendChild(contentEl);
+      msgsEl.appendChild(msgEl);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+
+      sendBtn.disabled = true;
+      sendBtn.textContent = '...';
+      inputEl.disabled = true;
+
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: quizAIConversations[qi],
+          model: 'deepseek-v4-flash',
+          stream: true,
+          max_tokens: 3000
+        })
+      }).then(function(response) {
+        if (!response.ok) {
+          return response.json().then(function(err) {
+            throw new Error(err.error || ('HTTP ' + response.status));
+          });
+        }
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder();
+        var fullText = '';
+
+        function readChunk() {
+          reader.read().then(function(result) {
+            if (result.done) {
+              msgEl.classList.remove('typing');
+              if (fullText) {
+                quizAIConversations[qi].push({ role: 'assistant', content: fullText });
+              }
+              saveQuizAI(qi);
+              sendBtn.disabled = false;
+              sendBtn.textContent = '发送';
+              inputEl.disabled = false;
+              inputEl.focus();
+              return;
+            }
+            var chunk = decoder.decode(result.value, { stream: true });
+            var lines = chunk.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+              var line = lines[i].trim();
+              if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+                try {
+                  var parsed = JSON.parse(line.slice(6));
+                  if (parsed.error) {
+                    msgEl.classList.remove('typing');
+                    msgEl.classList.add('error');
+                    contentEl.textContent = '❌ ' + parsed.error;
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = '发送';
+                    inputEl.disabled = false;
+                    return;
+                  }
+                  var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta;
+                  if (delta && delta.content) {
+                    if (contentEl.textContent === '正在思考...') {
+                      contentEl.textContent = '';
+                    }
+                    fullText += delta.content;
+                    contentEl.innerHTML = renderMarkdown(fullText);
+                  }
+                } catch (e) { }
+              }
+            }
+            if (fullText) { msgEl.classList.remove('typing'); }
+            msgsEl.scrollTop = msgsEl.scrollHeight;
+            readChunk();
+          });
+        }
+        readChunk();
+      }).catch(function(err) {
+        msgEl.classList.remove('typing');
+        msgEl.classList.add('error');
+        var msg = err.message || '';
+        if (msg.indexOf('Failed to fetch') !== -1 || msg.indexOf('NetworkError') !== -1) {
+          contentEl.textContent = '❌ 无法连接服务器，请确认 dev_server.py 正在运行。';
+        } else {
+          contentEl.textContent = '❌ ' + msg;
+        }
+        sendBtn.disabled = false;
+        sendBtn.textContent = '发送';
+        inputEl.disabled = false;
+      });
+    }
+
+    function sendQuizAIFollowUp(qi, pfx) {
+      pfx = pfx || 'quiz';
+      var inputEl = document.getElementById(pfx + '-ai-input-' + qi);
+      var text = inputEl.value.trim();
+      if (!text) return;
+
+      var msgsEl = document.getElementById(pfx + '-ai-msgs-' + qi);
+      var msgEl = document.createElement('div');
+      msgEl.className = 'quiz-ai-msg msg-user';
+      var labelEl = document.createElement('div');
+      labelEl.className = 'msg-label';
+      labelEl.textContent = '我';
+      var contentEl = document.createElement('div');
+      contentEl.className = 'msg-content';
+      contentEl.textContent = text;
+      msgEl.appendChild(labelEl);
+      msgEl.appendChild(contentEl);
+      msgsEl.appendChild(msgEl);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+
+      quizAIConversations[qi].push({ role: 'user', content: text });
+      inputEl.value = '';
+      sendQuizAIRequest(qi, pfx);
+    }
+
+    function closeQuizAI(qi, pfx) {
+      pfx = pfx || 'quiz';
+      document.getElementById(pfx + '-ai-chat-' + qi).classList.remove('show');
+    }
+
     function renderQuizBank() {
       var container = document.getElementById('quizBankContainer');
       var statsEl = document.getElementById('quizBankStats');
@@ -1551,22 +2116,59 @@
       }
 
       container.innerHTML = filterHtml + filtered.map(function(q) {
+        var qi = quizQuestions.indexOf(q);
         var typeLabel = QUIZ_TYPE_LABELS[q.type] || '简答题';
         var statusClass = q.isCorrect === true ? 'correct' : (q.isCorrect === false ? 'wrong' : 'unanswered');
         var dateStr = q.createdAt ? new Date(q.createdAt).toLocaleString('zh-CN', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+
+        var attemptCount = q.attempts ? q.attempts.length : 0;
+        var attemptBadge = attemptCount > 0
+          ? '<span class="quiz-bank-attempts">已重做 ' + attemptCount + ' 次</span>'
+          : '';
+        var hasAI = hasQuizAI(qi);
+        var aiBadge = hasAI
+          ? '<span class="quiz-bank-ai-tag">💬 有答疑</span>'
+          : '';
 
         var html = '<div class="quiz-bank-item ' + statusClass + '">' +
           '<div class="quiz-bank-meta">' +
             '<span class="quiz-type-badge ' + q.type + '">' + typeLabel + '</span>' +
             '<span class="quiz-chapter-tag">' + (q.chapter || '未分类') + '</span>' +
             '<span class="quiz-bank-date">' + dateStr + '</span>' +
+            attemptBadge + aiBadge +
           '</div>' +
           '<div class="quiz-question-text">' + (q.question || '').replace(/</g, '&lt;') + '</div>';
+
+        if (q.type === 'choice' && q.options && q.options.length > 0) {
+          html += '<div class="quiz-bank-options">';
+          q.options.forEach(function(opt, oi) {
+            var isCorrectOpt = oi === (q.correctIndex || 0);
+            var isUserChoice = q.userAnswer === String.fromCharCode(65 + oi);
+            var optCls = isCorrectOpt ? 'correct-answer' : (isUserChoice ? 'wrong-answer' : '');
+            html += '<div class="quiz-option ' + optCls + '">' + String.fromCharCode(65 + oi) + '. ' + (opt || '').replace(/</g, '&lt;') + '</div>';
+          });
+          html += '</div>';
+        }
 
         if (q.userAnswer) {
           html += '<div class="quiz-bank-user-answer">你的答案：' + (q.userAnswer || '').replace(/</g, '&lt;') + '</div>';
         }
         html += '<div class="quiz-bank-ref-answer">参考答案：' + (q.answer || '').replace(/</g, '&lt;') + '</div>';
+        var hasAnswered = q.userAnswer !== null && q.userAnswer !== undefined;
+        var actionLabel = hasAnswered ? '🔄 重做' : '✏️ 练习';
+        var aiLabel = hasAI ? '💬 查看答疑' : '🤖 问 AI';
+        html += '<div class="quiz-bank-actions">' +
+          '<button class="quiz-redo-btn" onclick="redoQuizQuestion(' + qi + ')">' + actionLabel + '</button>' +
+          '<button class="quiz-ask-ai-btn" onclick="askAIAboutQuiz(' + qi + ',\'quiz-bank\')">' + aiLabel + '</button>' +
+        '</div>' +
+          '<div class="quiz-ai-chat" id="quiz-bank-ai-chat-' + qi + '">' +
+            '<div class="quiz-ai-header"><span>AI 答疑</span><div class="quiz-ai-header-right"><button class="quiz-ai-header-copy" onclick="copyQuizAIConversation(' + qi + ', this)">复制</button><button class="quiz-ai-close" onclick="closeQuizAI(' + qi + ',\'quiz-bank\')">×</button></div></div>' +
+            '<div class="quiz-ai-messages" id="quiz-bank-ai-msgs-' + qi + '"></div>' +
+            '<div class="quiz-ai-input-wrap">' +
+              '<textarea class="quiz-ai-input" id="quiz-bank-ai-input-' + qi + '" placeholder="输入追问..." rows="1"></textarea>' +
+              '<button class="quiz-ai-send" id="quiz-bank-ai-send-' + qi + '" onclick="sendQuizAIFollowUp(' + qi + ',\'quiz-bank\')">发送</button>' +
+            '</div>' +
+          '</div>';
         html += '</div>';
         return html;
       }).join('');
@@ -1583,6 +2185,32 @@
       saveQuizBank();
       renderQuizBank();
       if (currentMode === 'quiz') renderQuiz();
+    }
+
+    function redoQuizQuestion(qi) {
+      var q = quizQuestions[qi];
+      if (!q) return;
+      if (!q.attempts) q.attempts = [];
+      if (q.userAnswer !== null && q.userAnswer !== undefined) {
+        q.attempts.push({
+          answer: q.userAnswer,
+          isCorrect: q.isCorrect,
+          date: new Date().toISOString()
+        });
+        q.userAnswer = null;
+        q.isCorrect = null;
+        saveQuizBank();
+      }
+      switchMode('quiz');
+      setTimeout(function() {
+        var el = document.getElementById('quiz-q' + qi);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.style.transition = 'box-shadow 0.3s';
+          el.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.3)';
+          setTimeout(function() { el.style.boxShadow = ''; }, 2000);
+        }
+      }, 100);
     }
 
     function updateCardMasteryFromQuiz(cardId, correct) {
