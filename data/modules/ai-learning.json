@@ -28,7 +28,7 @@
           "current": "四阶段4个 Demo：数据评估工具·MNIST分类器·语义搜索·AI知识助手",
           "tasks": [],
           "review": "按阶段按钮切换，每个 Demo 含目标、功能、代码、测试用例、知识点映射。",
-          "contentUrl": "ai-learning/ai-demos.html?v=2.5.0"
+          "contentUrl": "ai-learning/ai-demos.html?v=2.10.0"
         }
       ]
     },
@@ -45,7 +45,7 @@
           "current": "四阶段25个知识点：17入门(能做项目)+8精进(面试加分)，含3个简历级项目",
           "tasks": [],
           "review": "入门级知识点标注项目产出和简历写法，精进级为面试突击用。目标：考完即投简历。",
-          "contentUrl": "ai-learning/job-skill-tree.html?v=2.6.0"
+          "contentUrl": "ai-learning/job-skill-tree.html?v=2.10.0"
         },
         {
           "name": "学习闭环",

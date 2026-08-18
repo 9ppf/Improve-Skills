@@ -352,7 +352,28 @@
         '</table>' +
       '</div>';
 
+      if (JOB_DEMO_MAP[d.stage]) {
+        html += '<div class="demo-block-label" style="color:#8b5cf6">🎯 关联岗位技能</div><div style="display:flex;gap:0.3rem;flex-wrap:wrap">' +
+          JOB_DEMO_MAP[d.stage].map(function(j) {
+            return '<span style="padding:2px 8px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:4px;font-size:0.75rem;color:#8b5cf6;cursor:pointer" onclick="navigateToJobTree('+j.id+')">KP'+j.id+': '+j.t+'</span>';
+          }).join('') + '</div>';
+      }
+
+      html += '</div>';
       demoContent.innerHTML = html;
+    }
+
+    var JOB_DEMO_MAP = {
+      1: [{id:1, t:"Python工程化"}, {id:4, t:"Prompt工程实践"}],
+      2: [{id:13, t:"Agent记忆与多轮对话"}],
+      3: [{id:2, t:"FastAPI接口开发"}, {id:3, t:"LLM API调用"}],
+      4: [{id:17, t:"项目3：AI错题分析平台"}]
+    };
+
+    function navigateToJobTree(kpId) {
+      try {
+        window.parent.postMessage({ action: 'navigate', module: 'ai-learning', page: 'job-skill-tree.html', kpId: kpId }, '*');
+      } catch(e) { console.log('navigate failed:', e); }
     }
 
     renderTabs();

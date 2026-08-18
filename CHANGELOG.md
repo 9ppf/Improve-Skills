@@ -4,6 +4,25 @@
 
 ---
 
+## v2.10.0
+
+**发布时间**：2026-08-18 12:50（北京时间）
+
+### 2026-08-18 — 岗位技能图谱教学指引扩展（方案A：guide字段+今日任务版块+双向关联）
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/ai-learning/job-skill-tree.html` | KP1-4新增guide字段（tutorial教程跟学+practice渐进练习+completion完成验证+关联跳转）；新增今日任务版块（读取WEEK_DATA判断当前周次→匹配KP→渲染教学指引）；新增AI_WEEKLY_TASKS数据+getCurrentWeek/renderTodayPanel/renderTodayGuide函数；新增renderKpGuide函数在KP卡片中渲染学习指引层；新增完成验证逻辑（localStorage `ai_kp_guide_progress`+checkbox+verify按钮）；新增navigateToModule跨iframe跳转函数 |
+| `Workbench/Python基础/python-knowledge-tree.html` | 新增JOB_KP_MAP（5个Python知识点关联岗位技能KP）；卡片底部新增「关联岗位技能」标签，点击跳转到岗位技能图谱 |
+| `Workbench/Python基础/python-demos.html` | 新增JOB_DEMO_MAP（4个Demo关联岗位技能KP）；Demo卡片底部新增「关联岗位技能」标签 |
+| `Workbench/ai-learning/ai-demos.html` | 新增JOB_AI_DEMO_MAP（2个AI Demo关联岗位技能KP）；Demo卡片底部新增「关联岗位技能」标签 |
+| `templates/workbench.html` | 新增postMessage监听器，处理子iframe跨模块导航请求（action:navigate→查找目标项→selectItem+发送highlightKp消息） |
+| `data/modules/ai-learning.json` | job-skill-tree.html和ai-demos.html contentUrl版本号更新至v=2.10.0 |
+| `data/modules/python.json` | python-knowledge-tree.html和python-demos.html contentUrl版本号更新至v=2.10.0 |
+| `Workbench/此刻便是春天.html` | 重建产物（随源码更新） |
+
+---
+
 ## v2.9.0
 
 **发布时间**：2026-08-18 03:00（北京时间）

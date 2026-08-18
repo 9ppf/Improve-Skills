@@ -2666,7 +2666,7 @@ const workspaces = [
                 current: '四阶段29个知识点：语法基础·数据结构·常用库·AI Python',
                 tasks: [],
                 review: '按阶段按钮切换，每个知识点含概念、示例、手写练习、AI 场景四层内容。',
-                contentUrl: 'Python基础/python-knowledge-tree.html?v=2.4.0'
+                contentUrl: 'Python基础/python-knowledge-tree.html?v=2.10.0'
               },
               {
                 name: 'Demo 实战',
@@ -2676,7 +2676,7 @@ const workspaces = [
                 current: '四阶段4个 Demo：模板引擎·上下文管理器·API客户端·数据仪表盘',
                 tasks: [],
                 review: '按阶段按钮切换，每个 Demo 含目标、功能、文件结构、代码、测试用例、知识点映射。',
-                contentUrl: 'Python基础/python-demos.html?v=2.4.0'
+                contentUrl: 'Python基础/python-demos.html?v=2.10.0'
               },
               {
                 name: '学习闭环',
@@ -2716,7 +2716,7 @@ const workspaces = [
                 current: '四阶段4个 Demo：数据评估工具·MNIST分类器·语义搜索·AI知识助手',
                 tasks: [],
                 review: '按阶段按钮切换，每个 Demo 含目标、功能、代码、测试用例、知识点映射。',
-                contentUrl: 'ai-learning/ai-demos.html?v=2.5.0'
+                contentUrl: 'ai-learning/ai-demos.html?v=2.10.0'
               }
             ]
           },
@@ -2731,7 +2731,7 @@ const workspaces = [
                 current: '四阶段25个知识点：17入门(能做项目)+8精进(面试加分)，含3个简历级项目',
                 tasks: [],
                 review: '入门级知识点标注项目产出和简历写法，精进级为面试突击用。目标：考完即投简历。',
-                contentUrl: 'ai-learning/job-skill-tree.html?v=2.6.0'
+                contentUrl: 'ai-learning/job-skill-tree.html?v=2.10.0'
               },
               {
                 name: '学习闭环',
@@ -3831,6 +3831,51 @@ function renderTree() {
 
     renderTree();
     selectFirstItem();
+
+    // 跨 iframe 导航：子页面通过 postMessage 请求切换模块
+    window.addEventListener('message', function(e) {
+      if (!e.data || e.data.action !== 'navigate') return;
+      var mod = e.data.module;
+      var page = e.data.page;
+      var kpId = e.data.kpId;
+      // 在模块数据中查找对应页面
+      var found = null;
+      for (var catKey in modules) {
+        var cat = modules[catKey];
+        if (cat.items) {
+          for (var i = 0; i < cat.items.length; i++) {
+            var it = cat.items[i];
+            if (it.contentUrl && it.contentUrl.indexOf(page) !== -1) {
+              found = it;
+              break;
+            }
+            if (it.subItems) {
+              for (var j = 0; j < it.subItems.length; j++) {
+                var sub = it.subItems[j];
+                if (sub.contentUrl && sub.contentUrl.indexOf(page) !== -1) {
+                  found = sub;
+                  break;
+                }
+              }
+            }
+            if (found) break;
+          }
+        }
+        if (found) break;
+      }
+      if (found) {
+        selectItem(found.id);
+        // 如果有 kpId，延迟发送给目标 iframe
+        if (kpId) {
+          setTimeout(function() {
+            var frame = document.querySelector('.content-frame');
+            if (frame && frame.contentWindow) {
+              frame.contentWindow.postMessage({ action: 'highlightKp', kpId: kpId }, '*');
+            }
+          }, 300);
+        }
+      }
+    });
 
     // 实时进度：用户切换回工作台标签页或定期刷新侧边栏
     document.addEventListener('visibilitychange', function() {

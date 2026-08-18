@@ -18,7 +18,7 @@
           "current": "四阶段29个知识点：语法基础·数据结构·常用库·AI Python",
           "tasks": [],
           "review": "按阶段按钮切换，每个知识点含概念、示例、手写练习、AI 场景四层内容。",
-          "contentUrl": "Python基础/python-knowledge-tree.html?v=2.4.0"
+          "contentUrl": "Python基础/python-knowledge-tree.html?v=2.10.0"
         },
         {
           "name": "Demo 实战",
@@ -28,7 +28,7 @@
           "current": "四阶段4个 Demo：模板引擎·上下文管理器·API客户端·数据仪表盘",
           "tasks": [],
           "review": "按阶段按钮切换，每个 Demo 含目标、功能、文件结构、代码、测试用例、知识点映射。",
-          "contentUrl": "Python基础/python-demos.html?v=2.4.0"
+          "contentUrl": "Python基础/python-demos.html?v=2.10.0"
         },
         {
           "name": "学习闭环",

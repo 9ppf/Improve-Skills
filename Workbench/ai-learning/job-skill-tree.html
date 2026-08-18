@@ -76,6 +76,46 @@
     .kp-project .resume-line::before{content:'简历: ';font-weight:700;font-style:normal;color:var(--green)}
 
     .kp-note{font-size:0.8rem;color:var(--orange);background:var(--orange-soft);border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:0.4rem 0.6rem;margin-top:0.4rem}
+
+  /* === 今日任务版块 === */
+  .today-panel{display:flex;gap:1rem;margin-bottom:1.5rem;background:#fff;border:1px solid var(--ai-border,#e2e8f0);border-radius:14px;overflow:hidden}
+  .today-tasks{flex:0 0 220px;padding:1rem;background:linear-gradient(135deg,#eff6ff,#f5f3ff);border-right:1px solid #e2e8f0}
+  .today-tasks h3{font-size:0.85rem;color:#64748b;margin:0 0 0.6rem;font-weight:600}
+  .today-task-item{padding:0.6rem 0.8rem;margin-bottom:0.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all 0.2s}
+  .today-task-item:hover{border-color:#2563eb;box-shadow:0 2px 8px rgba(37,99,235,0.1)}
+  .today-task-item.active{border-color:#2563eb;background:#eff6ff}
+  .today-task-item .tt-stage{font-size:0.7rem;color:#8b5cf6;font-weight:600;margin-bottom:0.2rem}
+  .today-task-item .tt-title{font-size:0.8rem;color:#1e293b;line-height:1.4}
+  .today-task-item .tt-time{font-size:0.7rem;color:#64748b;margin-top:0.2rem}
+  .today-empty{padding:2rem 1rem;text-align:center;color:#94a3b8;font-size:0.85rem}
+  .today-guide{flex:1;padding:1rem;max-height:500px;overflow-y:auto}
+  .today-guide h3{font-size:0.85rem;color:#64748b;margin:0 0 0.6rem;font-weight:600}
+  .guide-section{margin-bottom:1rem}
+  .guide-section h4{font-size:0.8rem;color:#2563eb;margin:0 0 0.4rem;font-weight:600;display:flex;align-items:center;gap:0.3rem}
+  .guide-prereq{list-style:none;padding:0;margin:0}
+  .guide-prereq li{padding:0.3rem 0;font-size:0.78rem;color:#64748b;display:flex;align-items:flex-start;gap:0.3rem}
+  .guide-prereq li::before{content:"☑";color:#16a34a;flex-shrink:0}
+  .guide-step{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem;margin-bottom:0.5rem}
+  .guide-step .gs-why{font-size:0.78rem;color:#1e293b;margin-bottom:0.3rem;line-height:1.5}
+  .guide-step .gs-cmd{font-family:'JetBrains Mono',Consolas,monospace;font-size:0.75rem;background:#1e293b;color:#4ade80;padding:0.3rem 0.5rem;border-radius:4px;margin:0.3rem 0;word-break:break-all}
+  .guide-step .gs-meaning{font-size:0.72rem;color:#8b5cf6;margin:0.2rem 0;line-height:1.4}
+  .guide-step .gs-error{font-size:0.72rem;color:#ea580c;background:#fff7ed;padding:0.2rem 0.4rem;border-radius:4px;margin-top:0.2rem;line-height:1.4}
+  .guide-practice{background:#f0fdf4;border:1px solid #dcfce7;border-radius:8px;padding:0.6rem;margin-bottom:0.5rem}
+  .guide-practice .gp-step{font-size:0.75rem;color:#1e293b;margin-bottom:0.3rem;line-height:1.5}
+  .guide-practice .gp-label{font-weight:600;color:#16a34a}
+  .guide-completion{background:#fefce8;border:1px solid #fef08a;border-radius:8px;padding:0.6rem}
+  .guide-completion .gc-item{font-size:0.75rem;color:#1e293b;display:flex;align-items:center;gap:0.3rem;margin-bottom:0.2rem}
+  .guide-completion .gc-check{width:16px;height:16px;cursor:pointer}
+  .guide-completion .gc-verify{margin-top:0.4rem;padding:0.3rem 0.8rem;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer}
+  .guide-completion .gc-verify:hover{background:#1d4ed8}
+  .guide-jump{display:flex;gap:0.5rem;margin-top:0.6rem;flex-wrap:wrap}
+  .guide-jump a{padding:0.3rem 0.6rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;font-size:0.72rem;color:#2563eb;cursor:pointer;text-decoration:none;transition:all 0.2s}
+  .guide-jump a:hover{background:#eff6ff;border-color:#2563eb}
+  .kp-guide-layer{margin:0.6rem 0;padding:0.8rem;background:#fafafa;border:1px solid #e2e8f0;border-radius:10px}
+  .kp-guide-layer h3{font-size:0.8rem;color:#2563eb;margin:0 0 0.5rem}
+  .kp-guide-toggle{cursor:pointer;color:#2563eb;font-size:0.75rem;font-weight:600}
+  .kp-guide-content{display:none;margin-top:0.5rem}
+  .kp-guide-content.show{display:block}
   </style>
 </head>
 <body>
@@ -90,6 +130,10 @@
       <div class="ai-progress-bar"><div class="ai-progress-fill" id="progressFill" style="width:0%"></div></div>
       <b id="progressText">0/17</b>
     </div>
+  </div>
+  <div class="today-panel" id="todayPanel" style="display:none">
+    <div class="today-tasks" id="todayTasks"><h3>📌 今日AI任务</h3></div>
+    <div class="today-guide" id="todayGuide"><h3>📚 教学指引</h3><p style="color:#94a3b8;font-size:0.8rem">点击左侧任务查看教学指引</p></div>
   </div>
   <div class="stage-tabs" id="stageTabs"></div>
   <div class="kp-list" id="kpList"></div>
@@ -113,7 +157,22 @@
      code:"# 创建虚拟环境\npython -m venv venv\nvenv\\Scripts\\activate  # Windows\nsource venv/bin/activate  # Mac/Linux\n\n# 安装依赖\npip install fastapi uvicorn openai chromadb langchain python-dotenv\npip freeze > requirements.txt\n\n# 项目结构\n# my_ai_app/\n# ├── app/\n# │   ├── main.py          # FastAPI入口\n# │   ├── routers/         # 路由\n# │   ├── services/        # 业务逻辑\n# │   └── config.py        # 配置\n# ├── tests/\n# ├── requirements.txt\n# └── .env                 # API Key",
      e:"创建一个Python项目，包含虚拟环境、requirements.txt、.env文件和基本目录结构，用FastAPI写一个返回JSON的hello接口。",
      ec:"# 1. 创建项目\nmkdir my_ai_app && cd my_ai_app\npython -m venv venv\nsource venv/bin/activate\n\n# 2. 安装依赖\npip install fastapi uvicorn python-dotenv\npip freeze > requirements.txt\n\n# 3. .env文件\nAPI_KEY=sk-xxxxx\nMODEL=deepseek-chat\n\n# 4. app/main.py\nfrom fastapi import FastAPI\nfrom dotenv import load_dotenv\nload_dotenv()\napp = FastAPI()\n\n@app.get('/hello')\ndef hello():\n    return {'msg': 'Hello, AI!'}\n\n# 5. 运行: uvicorn app.main:app --reload",
-     a:"在实际AI项目中，工程化是基础。部署RAG服务需要用venv隔离依赖、用.env管理API Key、用requirements.txt锁定版本。面试时提到这些细节能体现工程素养。"},
+     a:"在实际AI项目中，工程化是基础。部署RAG服务需要用venv隔离依赖、用.env管理API Key、用requirements.txt锁定版本。面试时提到这些细节能体现工程素养。",
+     guide:{
+       prereq:["Python 3.9+ 已安装（终端运行 python --version 验证）","VS Code 或 PyCharm 已安装并配置Python解释器","终端可正常执行 pip 命令（运行 pip --version 验证）"],
+       tutorial:[
+         {why:"虚拟环境隔离项目依赖，避免不同项目的包版本冲突。比如项目A需要FastAPI 0.100，项目B需要0.80，没有虚拟环境会互相覆盖",cmd:"python -m venv venv",meaning:"python=Python解释器, -m=运行模块, venv=虚拟环境模块, 最后的venv=目录名（可自定义，但约定俗成叫venv）",error:"如果报错 python not found：检查PATH是否包含Python安装路径；如果报错 No module named venv：需安装 pip install virtualenv 后用 python -m virtualenv venv"},
+         {why:"激活虚拟环境后，pip安装的包只影响当前项目，不影响系统全局环境",cmd:"venv\\Scripts\\activate",meaning:"Windows激活命令，venv是上一步创建的目录名；Mac/Linux用 source venv/bin/activate",error:"如果PowerShell报执行策略错误：运行 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned；如果报找不到路径：确认在项目根目录下执行（venv文件夹所在目录）"},
+         {why:"安装项目需要的第三方库。fastapi=Web框架，uvicorn=ASGI服务器（运行FastAPI用），python-dotenv=读取.env环境变量文件",cmd:"pip install fastapi uvicorn python-dotenv",meaning:"pip=包管理工具, install=安装, 后面跟包名列表（空格分隔多个包）",error:"如果报 pip not found：检查Python安装时是否勾选了Add to PATH；如果网络超时：换源安装 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple fastapi uvicorn python-dotenv"},
+         {why:"锁定当前项目的所有依赖版本，方便其他人或部署时安装完全相同的环境。这是工程化的基本要求",cmd:"pip freeze > requirements.txt",meaning:"pip freeze=列出所有已安装包及版本, >=重定向到文件，生成requirements.txt",error:"如果文件为空：确认虚拟环境已激活（终端前缀有(venv)），且上一步pip install成功；如果包含太多包：这是正常的，每个依赖可能有自己的子依赖"},
+         {why:".env文件存放API Key等敏感信息，不能提交到Git（.gitignore中排除）。这样代码和数据分离，更安全",cmd:"echo API_KEY=sk-xxxxx > .env",meaning:"echo=输出文本, >=重定向到文件。实际使用时把sk-xxxxx换成真实的API Key",error:"如果文件编码错误：用VS Code打开.env，确保编码为UTF-8无BOM；如果Python读不到：确认python-dotenv已安装且代码中调用了load_dotenv()"}
+       ],
+       steps:["python -m venv venv","venv\\Scripts\\activate","pip install fastapi uvicorn python-dotenv","pip freeze > requirements.txt","echo API_KEY=sk-xxxxx > .env"],
+       pyKp:["09 模块与包","08 异常处理"],pyDemo:1,aiDemo:null,
+       practice:{mimic:"复制KP的code示例中项目结构部分，手动创建对应目录和文件。然后在终端依次执行虚拟环境创建、激活、安装依赖的命令，观察每步输出",modify:"将pip install的包列表中加入openai（LLM API库），重新执行安装，然后再次pip freeze > requirements.txt，对比文件变化——新增了openai及其子依赖",create:"从零创建一个新项目：1)mkdir my_project && cd my_project  2)创建虚拟环境  3)安装fastapi+uvicorn  4)创建requirements.txt  5)创建.env写入API_KEY  6)创建app/main.py写一个hello接口  7)运行uvicorn app.main:app --reload验证"},
+       completion:{criteria:[{type:"file",check:"venv/",desc:"venv目录已创建（虚拟环境）"},{type:"file",check:"requirements.txt",desc:"依赖清单文件存在"},{type:"file",check:".env",desc:"环境变量文件已创建"},{type:"output",check:"pip list | findstr fastapi",desc:"fastapi已安装"}],storageKey:"ai_kp_guide_progress"},
+       estTime:"1.5h",prereqKp:[]
+     }},
 
     {id:2,s:1,t:"FastAPI接口开发",tag:"后端",level:"入门",
      project:"AI对话API服务",
@@ -122,7 +181,22 @@
      code:"from fastapi import FastAPI, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\nfrom typing import AsyncGenerator\n\napp = FastAPI(title='AI Chat API')\napp.add_middleware(CORSMiddleware, allow_origins=['*'])\n\nclass ChatRequest(BaseModel):\n    message: str\n    model: str = 'deepseek-chat'\n\nclass ChatResponse(BaseModel):\n    reply: str\n    usage: dict\n\n@app.post('/api/chat', response_model=ChatResponse)\nasync def chat(req: ChatRequest):\n    # 调用LLM\n    reply = await call_llm(req.message, req.model)\n    return ChatResponse(reply=reply, usage={'tokens': 100})\n\n@app.post('/api/chat/stream')\nasync def chat_stream(req: ChatRequest):\n    async def generate() -> AsyncGenerator[str, None]:\n        async for chunk in stream_llm(req.message):\n            yield f'data: {chunk}\\n\\n'\n    from fastapi.responses import StreamingResponse\n    return StreamingResponse(generate(), media_type='text/event-stream')",
      e:"用FastAPI实现一个带CORS中间件的聊天API，POST /api/chat接收message返回reply，并实现一个流式接口 /api/chat/stream。",
      ec:"# app/main.py\nfrom fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom fastapi.responses import StreamingResponse\nfrom pydantic import BaseModel\nimport asyncio\n\napp = FastAPI()\napp.add_middleware(CORSMiddleware, allow_origins=['*'])\n\nclass ChatRequest(BaseModel):\n    message: str\n\n@app.post('/api/chat')\nasync def chat(req: ChatRequest):\n    return {'reply': f'Echo: {req.message}'}\n\n@app.post('/api/chat/stream')\nasync def chat_stream(req: ChatRequest):\n    async def gen():\n        words = req.message.split()\n        for w in words:\n            await asyncio.sleep(0.1)\n            yield f'data: {w}\\n\\n'\n    return StreamingResponse(gen(), media_type='text/event-stream')\n\n# 测试: uvicorn app.main:app --reload",
-     a:"AI应用的标配后端框架。RAG系统的文档上传接口、问答接口、Agent的工具调用接口都可以用FastAPI实现。面试时展示Swagger文档和流式输出是加分项。"},
+     a:"AI应用的标配后端框架。RAG系统的文档上传接口、问答接口、Agent的工具调用接口都可以用FastAPI实现。面试时展示Swagger文档和流式输出是加分项。",
+     guide:{
+       prereq:["已完成KP1（Python工程化）：虚拟环境已创建，fastapi和uvicorn已安装","Python基础：知道def定义函数、知道dict(字典)数据结构","终端可正常执行uvicorn命令"],
+       tutorial:[
+         {why:"创建FastAPI应用入口。FastAPI用装饰器@app.get或@app.post定义路由——访问URL时执行对应函数",cmd:"echo from fastapi import FastAPI > app.py && echo app = FastAPI() >> app.py",meaning:"from fastapi import FastAPI=导入FastAPI类, app=FastAPI()=创建应用实例, 后续所有路由都注册到app上",error:"如果报错 No module named fastapi：确认虚拟环境已激活且pip install fastapi成功；如果用VS Code报红波浪线：选择Python解释器为venv中的python"},
+         {why:"定义第一个API接口。@app.get('/')表示当用户用GET方法访问根路径/时，执行下面的函数",cmd:'echo @app.get("/hello") >> app.py && echo def hello(): >> app.py && echo     return {"msg": "Hello!"} >> app.py',meaning:"@app.get('/hello')=路由装饰器, def hello()=处理函数, return返回Python字典（FastAPI自动转为JSON响应）",error:"如果运行后访问404：确认URL路径是/hello不是/；如果返回不是JSON：FastAPI自动将dict转为JSON，确认没有手动json.dumps"},
+         {why:"启动开发服务器。--reload参数让代码修改后自动重启，开发时非常方便",cmd:"uvicorn app:app --reload --port 8000",meaning:"uvicorn=ASGI服务器, app:app=文件名app.py中的app变量, --reload=热重载, --port=端口号",error:"如果报错 Address already in use：端口被占用，换 --port 8001；如果访问不了：确认防火墙允许，浏览器访问 http://127.0.0.1:8000/hello"},
+         {why:"FastAPI自动生成API文档，这是它的核心优势之一。不用手写文档，访问特定URL即可看到交互式文档",cmd:"浏览器打开 http://127.0.0.1:8000/docs",meaning:"/docs=Swagger UI文档, /redoc=ReDoc文档（另一种风格）。可以在线测试API接口",error:"如果页面空白：确认服务正在运行（终端没有报错）；如果接口没显示：确认路由函数已正确定义且服务已重启"},
+         {why:"Pydantic模型定义请求体结构，自动验证用户输入。比如要求message字段必须是字符串，传数字会报错提示",cmd:"echo from pydantic import BaseModel >> app.py && echo class ChatRequest(BaseModel): >> app.py && echo     message: str >> app.py",meaning:"BaseModel=Pydantic基类, class=定义类, message: str=message字段必须是字符串类型。FastAPI自动验证请求体",error:"如果POST请求报422：这是FastAPI的验证错误，请求体不符合ChatRequest定义。检查Content-Type: application/json和body格式"}
+       ],
+       steps:["from fastapi import FastAPI; app = FastAPI()","@app.get('/hello'); def hello(): return {'msg': 'Hello!'}","uvicorn app:app --reload --port 8000","浏览器访问 http://127.0.0.1:8000/docs","from pydantic import BaseModel; class ChatRequest(BaseModel): message: str"],
+       pyKp:["05 函数定义","06 列表/字典"],pyDemo:3,aiDemo:null,
+       practice:{mimic:"复制KP的code示例中的FastAPI基础代码到app.py，运行uvicorn app:app --reload，浏览器访问/docs查看自动文档，测试/hello接口",modify:"将hello接口的返回值从{'msg': 'Hello!'}改为{'msg': '你好，AI！', 'time': '2026-08-18'}，保存后浏览器刷新（--reload自动重启），观察返回变化",create:"用FastAPI写两个接口：1)GET /now 返回当前时间  2)POST /echo 接收JSON体{message: 'xxx'} 返回{reply: '你说的是: xxx'}。用/docs测试两个接口"},
+       completion:{criteria:[{type:"url",check:"http://127.0.0.1:8000/docs",desc:"Swagger文档可访问"},{type:"url",check:"http://127.0.0.1:8000/hello",desc:"hello接口返回JSON"},{type:"output",check:"uvicorn app:app --reload 启动无报错",desc:"服务可正常启动"}],storageKey:"ai_kp_guide_progress"},
+       estTime:"2h",prereqKp:[1]
+     }},
 
     {id:3,s:1,t:"LLM API调用",tag:"LLM",level:"入门",
      project:"AI对话API服务",
@@ -131,7 +205,22 @@
      code:"import os\nfrom openai import OpenAI\nfrom dotenv import load_dotenv\nload_dotenv()\n\n# DeepSeek兼容OpenAI SDK\nclient = OpenAI(\n    api_key=os.getenv('DEEPSEEK_API_KEY'),\n    base_url='https://api.deepseek.com'\n)\n\n# 1. 基础调用\ndef chat(message, model='deepseek-chat'):\n    resp = client.chat.completions.create(\n        model=model,\n        messages=[{'role':'user','content':message}],\n        temperature=0.7,\n        max_tokens=1000\n    )\n    return resp.choices[0].message.content\n\n# 2. 流式输出\ndef chat_stream(message, model='deepseek-chat'):\n    stream = client.chat.completions.create(\n        model=model,\n        messages=[{'role':'user','content':message}],\n        stream=True\n    )\n    for chunk in stream:\n        delta = chunk.choices[0].delta.content\n        if delta:\n            yield delta\n\n# 3. 多轮对话\ndef multi_turn(messages, model='deepseek-chat'):\n    resp = client.chat.completions.create(\n        model=model,\n        messages=messages\n    )\n    return resp.choices[0].message.content\n\n# 使用\nprint(chat('什么是RAG?'))\nfor chunk in chat_stream('讲个笑话'):\n    print(chunk, end='', flush=True)",
      e:"封装一个LLM客户端类，支持: 1)单轮对话 2)流式输出 3)多轮对话 4)自动统计Token用量 5)错误重试(最多3次)。",
      ec:"import os, time\nfrom openai import OpenAI\n\nclass LLMClient:\n    def __init__(self, api_key=None, base_url=None, model='deepseek-chat'):\n        self.client = OpenAI(\n            api_key=api_key or os.getenv('DEEPSEEK_API_KEY'),\n            base_url=base_url or 'https://api.deepseek.com'\n        )\n        self.model = model\n        self.total_tokens = 0\n    \n    def chat(self, message, retry=3):\n        for i in range(retry):\n            try:\n                resp = self.client.chat.completions.create(\n                    model=self.model,\n                    messages=[{'role':'user','content':message}]\n                )\n                self.total_tokens += resp.usage.total_tokens\n                return resp.choices[0].message.content\n            except Exception as e:\n                if i == retry - 1:\n                    raise e\n                time.sleep(2 ** i)\n    \n    def stream(self, message):\n        stream = self.client.chat.completions.create(\n            model=self.model,\n            messages=[{'role':'user','content':message}],\n            stream=True\n        )\n        for chunk in stream:\n            delta = chunk.choices[0].delta.content\n            if delta:\n                yield delta",
-     a:"这是所有AI应用的基础。无论是RAG问答、Agent对话还是代码审查，底层都是LLM API调用。掌握流式输出和错误重试是生产级应用的基本要求。"},
+     a:"这是所有AI应用的基础。无论是RAG问答、Agent对话还是代码审查，底层都是LLM API调用。掌握流式输出和错误重试是生产级应用的基本要求。",
+     guide:{
+       prereq:["已完成KP1（Python工程化）：虚拟环境已创建","已完成KP2（FastAPI接口开发）：知道如何创建.py文件并运行","已有DeepSeek API Key（在.env文件中配置）","Python基础：知道def定义函数、import导入模块"],
+       tutorial:[
+         {why:"安装OpenAI SDK。DeepSeek API兼容OpenAI接口格式，所以用openai库就能调用DeepSeek——这是行业惯例，学会一个库就能调用多家模型",cmd:"pip install openai python-dotenv",meaning:"openai=OpenAI官方Python SDK（也兼容DeepSeek）, python-dotenv=读取.env环境变量",error:"如果报错 pip not found：确认虚拟环境已激活；如果安装很慢：用清华源 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple openai python-dotenv"},
+         {why:"创建LLM调用脚本。先从最简单的单轮对话开始——发送一个问题，接收一个回答",cmd:"echo from openai import OpenAI > llm_test.py && echo from dotenv import load_dotenv >> llm_test.py && echo load_dotenv() >> llm_test.py && echo import os >> llm_test.py",meaning:"from openai import OpenAI=导入SDK, from dotenv import load_dotenv=导入.env读取器, load_dotenv()=加载.env文件, import os=系统模块（读取环境变量用）",error:"如果报错 No module named dotenv：确认pip install python-dotenv（包名是python-dotenv，不是dotenv）"},
+         {why:"创建API客户端。DeepSeek使用和OpenAI相同的接口格式，只需改base_url和api_key。这就是为什么学了openai库就能调用DeepSeek",cmd:'echo client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com") >> llm_test.py',meaning:"OpenAI()=创建客户端, api_key=从.env读取密钥, base_url=DeepSeek的API地址（不用OpenAI默认地址）",error:"如果报错 AuthenticationError：检查.env文件中DEEPSEEK_API_KEY=sk-xxx格式正确（没有多余空格）；如果报连接超时：检查网络或使用代理"},
+         {why:"调用LLM生成回答。messages列表中的role='user'表示用户消息，content是问题内容。temperature控制随机性（0=确定性，1=创造性）",cmd:'echo resp = client.chat.completions.create(model="deepseek-chat", messages=[{"role":"user","content":"什么是RAG?"}], temperature=0.7, max_tokens=1000) >> llm_test.py',meaning:"client.chat.completions.create=调用对话接口, model=模型名, messages=对话历史列表, temperature=0.7(适中), max_tokens=最多生成1000token",error:"如果报错 model not found：确认模型名是deepseek-chat（不是gpt-3.5-turbo）；如果报 rate limit：API调用太频繁，等几秒重试"},
+         {why:"提取LLM返回的回答。API返回的是嵌套对象，需要通过choices[0].message.content逐层取出文本",cmd:"echo print(resp.choices[0].message.content) >> llm_test.py && python llm_test.py",meaning:"resp=完整响应对象, choices=候选回答列表(通常只有1个), [0]=取第一个, message=消息对象, content=文本内容",error:"如果输出为空：可能content是None，检查resp.usage.total_tokens是否>0确认API正常返回；如果报IndexError：choices为空，检查API返回的错误信息"}
+       ],
+       steps:["pip install openai python-dotenv","from openai import OpenAI; from dotenv import load_dotenv; load_dotenv(); import os","client = OpenAI(api_key=os.getenv('DEEPSEEK_API_KEY'), base_url='https://api.deepseek.com')","resp = client.chat.completions.create(model='deepseek-chat', messages=[{'role':'user','content':'什么是RAG?'}])","print(resp.choices[0].message.content)"],
+       pyKp:["05 函数定义","08 异常处理"],pyDemo:3,aiDemo:null,
+       practice:{mimic:"复制KP的code示例中基础调用部分到llm_test.py，替换.env中的API Key为真实值，运行 python llm_test.py，观察LLM返回的回答",modify:"将temperature从0.7改为0.0（确定性输出），运行两次相同的程序，对比输出是否完全一致；再改为1.0（创造性），对比输出变化",create:"封装一个chat函数 def chat(question, model='deepseek-chat'): ，接收问题返回回答。调用这个函数问3个不同的问题，打印每个回答和Token用量"},
+       completion:{criteria:[{type:"file",check:"llm_test.py",desc:"LLM调用脚本已创建"},{type:"output",check:"python llm_test.py 输出非空文本",desc:"LLM正常返回回答"},{type:"output",check:"resp.usage.total_tokens > 0",desc:"Token计量正常"}],storageKey:"ai_kp_guide_progress"},
+       estTime:"1.5h",prereqKp:[1,2]
+     }},
 
     {id:4,s:1,t:"Prompt工程实践",tag:"LLM",level:"入门",
      project:"AI对话API服务",
@@ -140,7 +229,22 @@
      code:"# 1. 角色设定\nprompt_role = '你是一位资深Python工程师，擅长代码审查。'\n\n# 2. Few-shot 示例\nprompt_fewshot = '''任务: 将句子分类为正面/负面/中性\n\n示例:\n输入: 这电影太精彩了 -> 正面\n输入: 服务态度很差 -> 负面\n输入: 今天星期三 -> 中性\n\n输入: 价格还算合理 ->'''\n\n# 3. Chain-of-Thought\nprompt_cot = '''问题: 商店打8折后再打9折,相当于打几折?\n请一步步思考:\n1. 原价是1\n2. 打8折后: 1 * 0.8 = 0.8\n3. 再打9折: 0.8 * 0.9 = 0.72\n\n问题: 先涨10%再打9折,相当于原价的多少?'''\n\n# 4. 结构化输出\nprompt_json = '''分析以下文本情感,以JSON输出:\n文本: 这个产品很好用\n\n输出格式:\n{\"sentiment\": \"正面\", \"score\": 0.9, \"keywords\": [\"好用\"]}'''\n\n# 实际使用\nfrom openai import OpenAI\nclient = OpenAI(api_key='sk-xxx', base_url='https://api.deepseek.com')\nresp = client.chat.completions.create(\n    model='deepseek-chat',\n    messages=[{'role':'system','content':prompt_role},\n              {'role':'user','content':prompt_json}]\n)\nprint(resp.choices[0].message.content)",
      e:"设计一个Prompt，让LLM将自然语言转换为SQL查询。要求: 1)设定角色 2)提供表结构 3)给出2个Few-shot示例 4)要求结构化输出。",
      ec:"prompt = '''你是一位SQL专家。请将自然语言转换为SQL查询。\n\n数据库表:\n- students(id, name, age, grade)\n- scores(id, student_id, subject, score)\n\n示例:\n问: 查询年龄大于18岁的学生\n答: SELECT name FROM students WHERE age > 18\n\n问: 查询数学成绩前3名\n答: SELECT s.name, sc.score FROM students s JOIN scores sc ON s.id = sc.student_id WHERE sc.subject = '数学' ORDER BY sc.score DESC LIMIT 3\n\n问: 统计每个班级的平均分\n答:'''  \n\n# 关键要素: 角色设定 + 表结构 + Few-shot + 留空让模型补全",
-     a:"Prompt工程是使用LLM最重要的技能。RAG系统中检索到的上下文如何组装成Prompt、Agent的指令如何设计，都依赖Prompt工程能力。"},
+     a:"Prompt工程是使用LLM最重要的技能。RAG系统中检索到的上下文如何组装成Prompt、Agent的指令如何设计，都依赖Prompt工程能力。",
+     guide:{
+       prereq:["已完成KP3（LLM API调用）：能成功调用DeepSeek API并获取回答","Python基础：知道字符串可以用+拼接、可以用三引号写多行字符串","终端可运行python命令"],
+       tutorial:[
+         {why:"角色设定是Prompt工程的第一步。给LLM一个身份，它会以这个身份的专业水平和视角来回答。不设定角色时LLM回答比较泛，设定后更聚焦",cmd:"echo prompt = '你是一位资深Python工程师，擅长代码审查。请审查以下代码的安全隐患。' > prompt_test.py",meaning:"prompt=变量名存储提示词, '你是一位...'=角色设定, 后半句=具体任务描述",error:"这个步骤不会报错，它只是定义一个字符串变量。报错会出现在下一步调用API时"},
+         {why:"Few-shot示例是用例子教LLM你期望的输出格式。比单纯描述更有效——LLM从例子中学习模式，比从规则中学习更准确",cmd:"echo few_shot = '任务: 将句子分类为正面/负面/中性' >> prompt_test.py",meaning:"few_shot=变量名, 任务描述=告诉LLM要做什么, 后面会跟示例",error:"如果三引号嵌套出错：Python中三引号可以定义多行字符串，注意不要在字符串内部出现相同的引号"},
+         {why:"思维链(CoT)引导LLM分步推理。对于数学/逻辑问题，直接给答案容易出错，引导它一步步思考准确率大幅提升",cmd:"echo cot_prompt = '问题: 商店打8折后再打9折,相当于打几折? 请一步步思考' >> prompt_test.py",meaning:"CoT=Chain of Thought, 关键是写'请一步步思考'或'1. 2. 3.'引导分步",error:"这个步骤只是定义字符串变量，不会报错"},
+         {why:"结构化输出要求LLM返回JSON等格式，方便程序解析。比如要求返回JSON，程序可以直接json.loads解析",cmd:"echo json_prompt = '分析文本情感,以JSON输出: {sentiment: 正面, score: 0.9}' >> prompt_test.py",meaning:"JSON输出=要求LLM返回JSON格式, 给出格式示例让LLM模仿",error:"如果LLM返回的JSON无法解析：在prompt中强调'只输出JSON，不要其他文字'；如果LLM不遵循格式：用DeepSeek的response_format参数强制JSON"},
+         {why:"将四种技巧组合使用。实际应用中，一个好Prompt通常同时包含角色设定+Few-shot+CoT+结构化输出，而不是单独使用",cmd:"python prompt_test.py",meaning:"运行脚本测试不同Prompt的效果。可以对比有/没有角色设定、有/没有Few-shot时LLM回答的质量差异",error:"如果报错 NameError：确认所有变量都已定义；如果LLM回答质量差：尝试调整temperature（0.3更稳定）或在prompt中增加更多示例"}
+       ],
+       steps:["prompt = '你是一位资深Python工程师，擅长代码审查。'","few_shot = '任务: 将句子分类...示例: 输入: 太精彩了 -> 正面...'","cot_prompt = '问题: ...请一步步思考: 1. ... 2. ...'","json_prompt = '分析文本情感,以JSON输出: {sentiment: ...}'","组合使用: system=prompt_role + user=json_prompt + 调用API"],
+       pyKp:["02 字符串操作"],pyDemo:1,aiDemo:null,
+       practice:{mimic:"复制KP的code示例中4种Prompt到prompt_test.py，用KP3的LLM调用函数分别测试每种Prompt，观察LLM输出的差异（角色设定vs无角色、Few-shot vs 无示例）",modify:"修改Few-shot示例中的分类标签（正面/负面/中性 → 喜爱/厌恶/平淡），运行后观察LLM是否按新标签输出。再修改CoT问题为'先涨10%再打9折相当于原价的多少'，观察LLM分步推理过程",create:"设计一个自然语言转SQL的Prompt，要求：1)设定角色'你是SQL专家'  2)提供students和scores两表结构  3)给2个Few-shot示例  4)要求输出SQL语句。测试问题：'统计每个班级的平均分'"},
+       completion:{criteria:[{type:"file",check:"prompt_test.py",desc:"Prompt测试脚本已创建"},{type:"output",check:"4种Prompt均能获得LLM回答",desc:"LLM正常响应"},{type:"output",check:"JSON格式输出可被json.loads解析",desc:"结构化输出有效"}],storageKey:"ai_kp_guide_progress"},
+       estTime:"1h",prereqKp:[3]
+     }},
 
     // ===== Stage 2: RAG系统 =====
     {id:5,s:2,t:"文本向量化",tag:"RAG",level:"入门",
@@ -370,7 +474,7 @@
       html+='<div class="kp-body">';
 
       // 概念
-      html+='<div class="kp-layer"><h3>📖 概念</h3><p>'+k.c+'</p></div>';
+      html+='<div class="kp-layer"><h3>📖 概念</h3><p>'+k.c+'</p></div>';if(k.guide){html+=renderKpGuide(k);}
 
       // 代码
       if(k.code){
@@ -489,6 +593,282 @@
   renderStageTabs();
   renderKpList();
   updateProgress();
+
+  // ═══════════════════════════════════════════════════════════
+  // AI 周任务数据 + 今日任务版块 + 教学指引
+  // ═══════════════════════════════════════════════════════════
+
+  var AI_WEEKLY_TASKS=[
+    {week:1,dates:'8/18 — 8/24',tasks:[
+      {text:'岗位Stage1：Python工程化(venv/pip/项目结构) + FastAPI接口开发',stage:1,kpIds:[1,2]},
+      {text:'岗位Stage1：LLM API调用(流式输出/错误重试) + Prompt工程(角色/Few-shot/CoT)',stage:1,kpIds:[3,4]}
+    ]},
+    {week:2,dates:'8/25 — 8/31',tasks:[
+      {text:'岗位Stage2：文本向量化(Embedding) + 向量数据库(Chroma CRUD)',stage:2,kpIds:[5,6]}
+    ]},
+    {week:3,dates:'9/1 — 9/7',tasks:[
+      {text:'岗位Stage2：RAG评估优化(召回率/幻觉检测) + 项目1：AI对话API服务',stage:2,kpIds:[8,9]}
+    ]},
+    {week:4,dates:'9/8 — 9/14',tasks:[
+      {text:'岗位Stage3：LangChain框架(Chain/Memory) + Function Calling',stage:3,kpIds:[10,11]}
+    ]},
+    {week:5,dates:'9/15 — 9/21',tasks:[
+      {text:'岗位Stage3：Agent架构(ReAct) + 项目2：知识库问答机器人',stage:3,kpIds:[12,13]},
+      {text:'项目3启动：AI错题分析平台（需求分析+架构设计）',stage:4,kpIds:[17]}
+    ]},
+    {week:6,dates:'9/22 — 9/28',tasks:[
+      {text:'岗位Stage4：Docker部署 + 项目3完善（整合RAG+Agent）',stage:4,kpIds:[15,16,17]}
+    ]},
+    {week:7,dates:'9/29 — 10/5',tasks:[
+      {text:'岗位项目完善 + GitHub commit + 简历项目整理',stage:4,kpIds:[]}
+    ]},
+    {week:8,dates:'10/6 — 10/12',tasks:[
+      {text:'面试理论突击(Stage5)：ML/DL概念 + Transformer + 注意力机制',stage:5,kpIds:[18,19,20,21]}
+    ]},
+    {week:9,dates:'10/13 — 10/19',tasks:[
+      {text:'简历定稿 + 面试模拟 + 岗位投递准备',stage:5,kpIds:[]}
+    ]},
+    {week:10,dates:'10/20 — 10/24',tasks:[
+      {text:'面试准备收尾 + 项目Demo演练',stage:5,kpIds:[]}
+    ]}
+  ];
+
+  function getCurrentWeek(){
+    var now=new Date();
+    var m=now.getMonth()+1,d=now.getDate();
+    for(var i=0;i<AI_WEEKLY_TASKS.length;i++){
+      var w=AI_WEEKLY_TASKS[i];
+      var parts=w.dates.split(' — ');
+      var s=parts[0].split('/'),e=parts[1].split('/');
+      var sM=parseInt(s[0]),sD=parseInt(s[1]),eM=parseInt(e[0]),eD=parseInt(e[1]);
+      if(m===sM&&d>=sD||m===eM&&d<=eD||(m>sM&&m<eM)){
+        return w;
+      }
+    }
+    return null;
+  }
+
+  function renderTodayPanel(){
+    var week=getCurrentWeek();
+    var panel=document.getElementById('todayPanel');
+    var tasksEl=document.getElementById('todayTasks');
+    var guideEl=document.getElementById('todayGuide');
+    if(!week||!week.tasks||week.tasks.length===0){
+      panel.style.display='none';
+      return;
+    }
+    panel.style.display='flex';
+    var html='<h3>📌 今日AI任务（'+week.dates+'）</h3>';
+    var allKps=[];
+    week.tasks.forEach(function(t){
+      t.kpIds.forEach(function(id){allKps.push(id);});
+    });
+    if(allKps.length===0){
+      html+='<div class="today-empty">本周无具体知识点任务<br>去阶段Tab看看吧 🎯</div>';
+    }else{
+      week.tasks.forEach(function(t,i){
+        var kps=t.kpIds.map(function(id){var k=KP.find(function(x){return x.id===id});return k?k.t:'';}).filter(Boolean);
+        html+='<div class="today-task-item'+(i===0?' active':'')+'" data-task-idx="'+i+'">';
+        html+='<div class="tt-stage">Stage '+t.stage+'</div>';
+        html+='<div class="tt-title">'+kps.join(' + ')+'</div>';
+        var totalTime=t.kpIds.reduce(function(sum,id){var k=KP.find(function(x){return x.id===id});return sum+(k&&k.guide?parseFloat(k.guide.estTime)||0:0);},0);
+        html+='<div class="tt-time">预估 '+totalTime+'h</div>';
+        html+='</div>';
+      });
+    }
+    tasksEl.innerHTML=html;
+    if(allKps.length>0) renderTodayGuide(week.tasks[0]);
+    // bind click
+    var items=tasksEl.querySelectorAll('.today-task-item');
+    items.forEach(function(item){
+      item.addEventListener('click',function(){
+        items.forEach(function(x){x.classList.remove('active');});
+        this.classList.add('active');
+        var idx=parseInt(this.getAttribute('data-task-idx'));
+        renderTodayGuide(week.tasks[idx]);
+      });
+    });
+  }
+
+  function renderTodayGuide(task){
+    var el=document.getElementById('todayGuide');
+    if(!task||!task.kpIds||task.kpIds.length===0){
+      el.innerHTML='<h3>📚 教学指引</h3><p style="color:#94a3b8;font-size:0.8rem">本周无具体知识点教学指引</p>';
+      return;
+    }
+    var html='<h3>📚 教学指引</h3>';
+    task.kpIds.forEach(function(id){
+      var k=KP.find(function(x){return x.id===id});
+      if(!k||!k.guide){return;}
+      var g=k.guide;
+      html+='<div class="guide-section">';
+      html+='<h4>🎯 KP'+k.id+': '+k.t+'</h4>';
+
+      // 环境准备
+      if(g.prereq&&g.prereq.length){
+        html+='<div class="guide-section"><h4>📝 环境准备</h4><ul class="guide-prereq">';
+        g.prereq.forEach(function(p){html+='<li>'+p+'</li>';});
+        html+='</ul></div>';
+      }
+
+      // 教程步骤
+      if(g.tutorial&&g.tutorial.length){
+        html+='<div class="guide-section"><h4>📖 教程步骤</h4>';
+        g.tutorial.forEach(function(step,i){
+          html+='<div class="guide-step">';
+          html+='<div class="gs-why"><b>步骤'+(i+1)+':</b> '+step.why+'</div>';
+          html+='<div class="gs-cmd">'+step.cmd+'</div>';
+          html+='<div class="gs-meaning">💡 '+step.meaning+'</div>';
+          if(step.error) html+='<div class="gs-error">⚠️ '+step.error+'</div>';
+          html+='</div>';
+        });
+        html+='</div>';
+      }
+
+      // 渐进练习
+      if(g.practice){
+        html+='<div class="guide-section"><h4>🎯 渐进练习</h4><div class="guide-practice">';
+        html+='<div class="gp-step"><span class="gp-label">1.模仿:</span> '+g.practice.mimic+'</div>';
+        html+='<div class="gp-step"><span class="gp-label">2.修改:</span> '+g.practice.modify+'</div>';
+        html+='<div class="gp-step"><span class="gp-label">3.独立:</span> '+g.practice.create+'</div>';
+        html+='</div></div>';
+      }
+
+      // 完成验证
+      if(g.completion&&g.completion.criteria){
+        var progress=getGuideProgress(id);
+        html+='<div class="guide-section"><h4>✅ 完成验证</h4><div class="guide-completion" id="gc-'+id+'">';
+        g.completion.criteria.forEach(function(c,i){
+          var checked=progress.criteria&&progress.criteria[i]?'checked':'';
+          html+='<div class="gc-item"><input type="checkbox" class="gc-check" data-kp="'+id+'" data-idx="'+i+'" '+checked+'> <span>'+c.desc+'</span></div>';
+        });
+        var allDone=progress.completed;
+        html+='<button class="gc-verify" data-kp="'+id+'" '+(allDone?'disabled style="opacity:0.5"':'')+'>'+(allDone?'✅ 已完成':'验证完成')+'</button>';
+        html+='</div></div>';
+      }
+
+      // 跳转
+      html+='<div class="guide-jump">';
+      if(g.pyKp&&g.pyKp.length){
+        html+='<a onclick="navigateToModule(\'python\',\'python-knowledge-tree.html\')">📖 Python基础: '+g.pyKp.join(', ')+'</a>';
+      }
+      if(g.pyDemo){
+        html+='<a onclick="navigateToModule(\'python\',\'python-demos.html\')">💻 Python Demo '+g.pyDemo+'</a>';
+      }
+      if(g.aiDemo){
+        html+='<a onclick="navigateToModule(\'ai-learning\',\'ai-demos.html\')">🤖 AI Demo '+g.aiDemo+'</a>';
+      }
+      html+='</div>';
+
+      // 预估时间
+      html+='<div style="font-size:0.72rem;color:#64748b;margin-top:0.4rem">⏱ 预估 '+g.estTime+'</div>';
+
+      html+='</div>';
+    });
+    el.innerHTML=html;
+    // bind checkboxes
+    el.querySelectorAll('.gc-check').forEach(function(cb){
+      cb.addEventListener('change',function(){
+        var kpId=parseInt(this.getAttribute('data-kp'));
+        var idx=parseInt(this.getAttribute('data-idx'));
+        updateGuideProgress(kpId,idx,this.checked);
+      });
+    });
+    // bind verify button
+    el.querySelectorAll('.gc-verify').forEach(function(btn){
+      if(btn.disabled) return;
+      btn.addEventListener('click',function(){
+        var kpId=parseInt(this.getAttribute('data-kp'));
+        verifyGuide(kpId);
+      });
+    });
+  }
+
+  function getGuideProgress(kpId){
+    try{
+      var raw=localStorage.getItem('ai_kp_guide_progress');
+      var data=raw?JSON.parse(raw):{};
+      return data[kpId]||{completed:false,criteria:[]};
+    }catch(e){return{completed:false,criteria:[]};}
+  }
+
+  function updateGuideProgress(kpId,idx,checked){
+    try{
+      var raw=localStorage.getItem('ai_kp_guide_progress');
+      var data=raw?JSON.parse(raw):{};
+      if(!data[kpId]) data[kpId]={completed:false,criteria:[]};
+      if(!data[kpId].criteria) data[kpId].criteria=[];
+      data[kpId].criteria[idx]=checked;
+      localStorage.setItem('ai_kp_guide_progress',JSON.stringify(data));
+    }catch(e){}
+  }
+
+  function verifyGuide(kpId){
+    var k=KP.find(function(x){return x.id===kpId});
+    if(!k||!k.guide||!k.guide.completion) return;
+    var progress=getGuideProgress(kpId);
+    var criteria=k.guide.completion.criteria;
+    var allChecked=true;
+    for(var i=0;i<criteria.length;i++){
+      if(!progress.criteria||!progress.criteria[i]){allChecked=false;break;}
+    }
+    if(allChecked){
+      try{
+        var raw=localStorage.getItem('ai_kp_guide_progress');
+        var data=raw?JSON.parse(raw):{};
+        data[kpId]=data[kpId]||{};
+        data[kpId].completed=true;
+        data[kpId].completedAt=new Date().toISOString();
+        localStorage.setItem('ai_kp_guide_progress',JSON.stringify(data));
+      }catch(e){}
+      var btn=document.querySelector('.gc-verify[data-kp="'+kpId+'"]');
+      if(btn){btn.textContent='✅ 已完成';btn.disabled=true;btn.style.opacity='0.5';}
+    }else{
+      alert('请先完成所有验证项（勾选全部checkbox）');
+    }
+  }
+
+  function navigateToModule(module,page){
+    try{
+      window.parent.postMessage({action:'navigate',module:module,page:page},'*');
+    }catch(e){
+      console.log('navigate failed:',e);
+    }
+  }
+
+  // 渲染知识点卡片中的guide层
+  function renderKpGuide(k){
+    if(!k.guide) return '';
+    var g=k.guide;
+    var html='<div class="kp-guide-layer">';
+    html+='<h3 style="cursor:pointer" onclick="this.nextElementSibling.classList.toggle(\'show\')">📚 学习指引（点击展开/收起）</h3>';
+    html+='<div class="kp-guide-content">';
+    // 环境准备
+    if(g.prereq&&g.prereq.length){
+      html+='<div><b>📝 环境准备:</b> '+g.prereq.join(' | ')+'</div>';
+    }
+    // 快速步骤
+    if(g.steps&&g.steps.length){
+      html+='<div style="margin-top:0.4rem"><b>⚡ 快速步骤:</b><pre style="font-size:0.72rem;background:#1e293b;color:#4ade80;padding:0.4rem;border-radius:4px;overflow-x:auto;margin:0.3rem 0">'+g.steps.join('\n')+'</pre></div>';
+    }
+    // 渐进练习
+    if(g.practice){
+      html+='<div style="margin-top:0.4rem"><b>🎯 练习:</b> ';
+      html+='<span style="font-size:0.75rem">①模仿 ②修改 ③独立</span></div>';
+    }
+    // 关联
+    html+='<div style="margin-top:0.4rem;font-size:0.75rem">';
+    if(g.pyKp&&g.pyKp.length) html+='<span style="color:#8b5cf6">📖 Python: '+g.pyKp.join(', ')+'</span> ';
+    if(g.pyDemo) html+='<span style="color:#ea580c">💻 Demo'+g.pyDemo+'</span> ';
+    html+='<span style="color:#64748b">⏱ '+g.estTime+'</span>';
+    html+='</div>';
+    html+='</div></div>';
+    return html;
+  }
+
+  // 初始化
+  renderTodayPanel();
+
 })();
 </script>
 </body>

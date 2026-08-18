@@ -1040,6 +1040,51 @@ function renderTree() {
     renderTree();
     selectFirstItem();
 
+    // 跨 iframe 导航：子页面通过 postMessage 请求切换模块
+    window.addEventListener('message', function(e) {
+      if (!e.data || e.data.action !== 'navigate') return;
+      var mod = e.data.module;
+      var page = e.data.page;
+      var kpId = e.data.kpId;
+      // 在模块数据中查找对应页面
+      var found = null;
+      for (var catKey in modules) {
+        var cat = modules[catKey];
+        if (cat.items) {
+          for (var i = 0; i < cat.items.length; i++) {
+            var it = cat.items[i];
+            if (it.contentUrl && it.contentUrl.indexOf(page) !== -1) {
+              found = it;
+              break;
+            }
+            if (it.subItems) {
+              for (var j = 0; j < it.subItems.length; j++) {
+                var sub = it.subItems[j];
+                if (sub.contentUrl && sub.contentUrl.indexOf(page) !== -1) {
+                  found = sub;
+                  break;
+                }
+              }
+            }
+            if (found) break;
+          }
+        }
+        if (found) break;
+      }
+      if (found) {
+        selectItem(found.id);
+        // 如果有 kpId，延迟发送给目标 iframe
+        if (kpId) {
+          setTimeout(function() {
+            var frame = document.querySelector('.content-frame');
+            if (frame && frame.contentWindow) {
+              frame.contentWindow.postMessage({ action: 'highlightKp', kpId: kpId }, '*');
+            }
+          }, 300);
+        }
+      }
+    });
+
     // 实时进度：用户切换回工作台标签页或定期刷新侧边栏
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) { renderTree(); if (activeItemId) renderItemView(); }

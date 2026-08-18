@@ -518,6 +518,20 @@
       29: { demo: "数据分析仪表盘", use: "采集考试时间表等外部数据" }
     };
 
+    var JOB_KP_MAP = {
+      2:  [{ id: 4, t: "Prompt工程实践" }],
+      5:  [{ id: 2, t: "FastAPI接口开发" }, { id: 3, t: "LLM API调用" }],
+      6:  [{ id: 2, t: "FastAPI接口开发" }],
+      8:  [{ id: 1, t: "Python工程化" }, { id: 3, t: "LLM API调用" }],
+      9:  [{ id: 1, t: "Python工程化" }]
+    };
+
+    function navigateToJobTree(kpId) {
+      try {
+        window.parent.postMessage({ action: 'navigate', module: 'ai-learning', page: 'job-skill-tree.html', kpId: kpId }, '*');
+      } catch(e) { console.log('navigate failed:', e); }
+    }
+
     var currentStage = 1;
     var stageTabs = document.getElementById("stageTabs");
     var stageBanner = document.getElementById("stageBanner");
@@ -621,6 +635,7 @@
             '</div>' +
             '<div class="kp-layer ai"><h3>&#129302; AI 场景</h3><p>' + k.a + '</p></div>' +
             (DEMO_MAP[k.id] ? '<div class="kp-layer demo"><h3>&#128640; Demo 应用</h3><span class="kp-demo-badge">' + DEMO_MAP[k.id].demo + '</span><p class="kp-demo-use">' + DEMO_MAP[k.id].use + '</p></div>' : '') +
+            (JOB_KP_MAP[k.id] ? '<div class="kp-layer" style="border-top:1px dashed #cbd5e1;padding-top:0.5rem"><h3 style="color:#8b5cf6">🎯 关联岗位技能</h3>' + JOB_KP_MAP[k.id].map(function(j){return '<span style="display:inline-block;padding:2px 8px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:4px;font-size:0.75rem;color:#8b5cf6;cursor:pointer;margin-right:0.3rem" onclick="navigateToJobTree('+j.id+')">KP'+j.id+': '+j.t+'</span>'}).join('') + '</div>' : '') +
           '</div>' +
         '</div>';
       }).join("");

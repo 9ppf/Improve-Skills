@@ -290,6 +290,7 @@
           '<div class="demo-section"><h3>💻 核心代码</h3><div class="demo-code-block"><button class="demo-copy-btn">复制</button><pre class="demo-code">' + hl(d.code) + '</pre></div></div>' +
           '<div class="demo-section"><h3>🧪 测试用例</h3><div class="demo-test"><p>需要通过的测试：</p><ul>' + d.tests.map(function(t) { return "<li>" + t + "</li>"; }).join("") + '</ul></div></div>' +
           '<div class="demo-section"><h3>🔗 知识点映射</h3><div class="demo-kp-map">' + kpChips + '</div></div>' +
+          (JOB_AI_DEMO_MAP[d.s] ? '<div class="demo-section"><h3 style="color:#8b5cf6">🎯 关联岗位技能</h3><div style="display:flex;gap:0.3rem;flex-wrap:wrap">' + JOB_AI_DEMO_MAP[d.s].map(function(j){return '<span style="padding:2px 8px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:4px;font-size:0.75rem;color:#8b5cf6;cursor:pointer" onclick="navigateToJobTree('+j.id+')">KP'+j.id+': '+j.t+'</span>'}).join('') + '</div></div>' : '') +
         '</div>' +
       '</div>';
     }).join("");
@@ -332,6 +333,17 @@
       toggle.textContent = "展开 ▼";
     }
   };
+
+  var JOB_AI_DEMO_MAP = {
+    3: [{id:8, t:"RAG Pipeline构建"}],
+    4: [{id:10, t:"LangChain框架"}, {id:12, t:"Agent架构(ReAct)"}]
+  };
+
+  function navigateToJobTree(kpId) {
+    try {
+      window.parent.postMessage({ action: 'navigate', module: 'ai-learning', page: 'job-skill-tree.html', kpId: kpId }, '*');
+    } catch(e) { console.log('navigate failed:', e); }
+  }
 
   renderStageTabs();
   renderDemos();
