@@ -40,6 +40,51 @@
   height: calc(100vh - 60px);
   min-height: 600px;
 }
+/* 番茄钟悬浮按钮 */
+.pomo-float {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 30px;
+  font-family: var(--font, "PingFang SC", "Microsoft YaHei", sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  user-select: none;
+  border: 1px solid var(--rule, #e2e8f0);
+}
+.pomo-float.idle {
+  background: var(--surface, #fff);
+  color: var(--muted, #64748b);
+}
+.pomo-float.idle:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+.pomo-float.active {
+  background: linear-gradient(135deg, #2563eb, #8b5cf6);
+  color: #fff;
+  border-color: transparent;
+  animation: pomoPulse 2s ease-in-out infinite;
+}
+.pomo-float.active.break {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+@keyframes pomoPulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+  50% { box-shadow: 0 4px 20px rgba(37, 99, 235, 0.55); }
+}
+.pomo-float-icon { font-size: 1.05rem; line-height: 1; }
+.pomo-float-time { font-family: "JetBrains Mono", Consolas, monospace; font-size: 0.9rem; }
+.pomo-float-label { font-size: 0.72rem; opacity: 0.9; }
   </style>
 <script>
 (function() {
@@ -105,8 +150,12 @@
     </main>
   </div>
 
+  <!-- 番茄钟悬浮按钮 -->
+  <div class="pomo-float idle" id="pomoFloat" onclick="openPomodoro()" title="番茄钟">🍅</div>
+
   <script>
 // <!-- reading-constants-begin -->
+
 
 
 
@@ -2573,6 +2622,26 @@
 const workspaces = [
 // <!-- workspaces-array-begin -->
       {
+        id: 'tasks', name: '番茄钟', icon: '🍅', iconBg: '#FCE7F3',
+        categories: [
+          {
+            name: '今日计划', icon: '📋', iconBg: '#FCE7F3',
+            items: [
+              {
+                name: '番茄任务闹钟',
+                type: 'pomodoro-timer',
+                renderMode: 'bare',
+                stage: '实时',
+                current: '按时段倒计时 + 浏览器通知提醒',
+                tasks: [],
+                review: '读取 study-plan.json 每日计划，按7个时段生成任务卡片，支持番茄钟计时模式（25/5或50/5）和浏览器通知闹钟，时间到自动弹窗+声音提醒。',
+                contentUrl: '番茄钟/番茄钟.html?v=1.2.0'
+              }
+            ]
+          }
+        ]
+      },
+      {
         id: 'ability', name: '能力提升', icon: '🚀', iconBg: '#22D3EE',
         categories: [
           {
@@ -2586,7 +2655,7 @@ const workspaces = [
                 current: '驾驶舱 / 综合完成度 / 学习路线 三合一',
                 tasks: [],
                 review: '页面内含三个 Tab：驾驶舱（本周计划、考试倒计时、模块进度）、综合完成度（各科目+Python+AI 进度条）、学习路线（战略路线图）。',
-                contentUrl: '能力提升/能力提升-学习驾驶舱.html?v=2.6.3'
+                contentUrl: '能力提升/能力提升-学习驾驶舱.html?v=3.3.1'
               }
             ]
           },
@@ -2617,19 +2686,19 @@ const workspaces = [
                 name: '计算机系统原理',
                 icon: '💻',
                 iconBg: '#E0F2FE',
-                items: [{"code": "13015", "name": "知识框架", "type": "self-study", "renderMode": "content", "exam": "2026.10", "stage": "串讲中", "current": "已整理目录与知识框架", "tasks": [], "review": "掌握约 20%，优先建立系统主线，重点攻克数据表示、指令系统、存储系统。", "contentUrl": "自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html?v=2.3.4"}, {"name": "真题与错题", "type": "self-study", "stage": "待填充", "current": "按年份/题型分类练习", "tasks": [], "review": "计算机系统原理真题练习与错题管理。", "renderMode": "content", "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13015&v=2.3.4"}, {"name": "背诵与简答", "type": "self-study", "renderMode": "bare", "stage": "待填充", "current": "正面问题 · 背面答案", "tasks": [], "review": "计算机系统原理核心概念与简答题背诵。", "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.9.0"}, {"name": "复盘总结", "type": "self-study", "stage": "待填充", "current": "章节复盘与错题反思", "tasks": [], "review": "计算机系统原理章节复盘总结。", "renderMode": "content", "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13015&v=2.3.4"}, {"name": "AI助手", "type": "ai-role", "renderMode": "bare", "stage": "可用", "current": "针对本科目生成学习计划、出题、讲错题", "tasks": [], "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。", "contentUrl": "ai-learning/ai-roles-hub.html?subject=13015&v=2.3.4"}]
+                items: [{"code": "13015", "name": "知识框架", "type": "self-study", "renderMode": "content", "exam": "2026.10", "stage": "串讲中", "current": "已整理目录与知识框架", "tasks": [], "review": "掌握约 20%，优先建立系统主线，重点攻克数据表示、指令系统、存储系统。", "contentUrl": "自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html?v=2.3.4"}, {"name": "真题与错题", "type": "self-study", "stage": "第二阶段", "current": "按年份/题型分类练习", "tasks": [], "review": "计算机系统原理真题练习与错题管理。", "renderMode": "content", "hidden": true, "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13015&v=2.3.4"}, {"name": "背诵与简答", "type": "self-study", "renderMode": "bare", "stage": "待填充", "current": "正面问题 · 背面答案", "tasks": [], "review": "计算机系统原理核心概念与简答题背诵。", "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.15.0"}, {"name": "复盘总结", "type": "self-study", "stage": "待填充", "current": "章节复盘与错题反思", "tasks": [], "review": "计算机系统原理章节复盘总结。", "renderMode": "content", "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13015&v=2.3.4"}, {"name": "AI助手", "type": "ai-role", "renderMode": "bare", "stage": "可用", "current": "针对本科目生成学习计划、出题、讲错题", "tasks": [], "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。", "contentUrl": "ai-learning/ai-roles-hub.html?subject=13015&v=2.3.4"}]
               },
               {
                 name: '离散数学',
                 icon: '🔢',
                 iconBg: '#EDE9FE',
-                items: [{"code": "02324", "name": "知识框架", "type": "self-study", "renderMode": "content", "exam": "2026.10", "stage": "串讲中", "current": "已整理目录与知识框架", "tasks": [], "review": "掌握约 40%，优先串讲逻辑推理、集合关系、代数图论三大板块。", "contentUrl": "自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html?v=2.3.4"}, {"name": "真题与错题", "type": "self-study", "stage": "待填充", "current": "按年份/题型分类练习", "tasks": [], "review": "离散数学真题练习与错题管理。", "renderMode": "content", "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=02324&v=2.3.4"}, {"name": "背诵与简答", "type": "self-study", "renderMode": "bare", "stage": "待填充", "current": "正面问题 · 背面答案", "tasks": [], "review": "离散数学核心概念与简答题背诵。", "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.9.0"}, {"name": "复盘总结", "type": "self-study", "stage": "待填充", "current": "章节复盘与错题反思", "tasks": [], "review": "离散数学章节复盘总结。", "renderMode": "content", "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=02324&v=2.3.4"}, {"name": "AI助手", "type": "ai-role", "renderMode": "bare", "stage": "可用", "current": "针对本科目生成学习计划、出题、讲错题", "tasks": [], "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。", "contentUrl": "ai-learning/ai-roles-hub.html?subject=02324&v=2.3.4"}]
+                items: [{"code": "02324", "name": "知识框架", "type": "self-study", "renderMode": "content", "exam": "2026.10", "stage": "串讲中", "current": "已整理目录与知识框架", "tasks": [], "review": "掌握约 40%，优先串讲逻辑推理、集合关系、代数图论三大板块。", "contentUrl": "自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html?v=2.3.4"}, {"name": "真题与错题", "type": "self-study", "stage": "第二阶段", "current": "按年份/题型分类练习", "tasks": [], "review": "离散数学真题练习与错题管理。", "renderMode": "content", "hidden": true, "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=02324&v=2.3.4"}, {"name": "背诵与简答", "type": "self-study", "renderMode": "bare", "stage": "待填充", "current": "正面问题 · 背面答案", "tasks": [], "review": "离散数学核心概念与简答题背诵。", "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.12.1"}, {"name": "复盘总结", "type": "self-study", "stage": "待填充", "current": "章节复盘与错题反思", "tasks": [], "review": "离散数学章节复盘总结。", "renderMode": "content", "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=02324&v=2.3.4"}, {"name": "AI助手", "type": "ai-role", "renderMode": "bare", "stage": "可用", "current": "针对本科目生成学习计划、出题、讲错题", "tasks": [], "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。", "contentUrl": "ai-learning/ai-roles-hub.html?subject=02324&v=2.3.4"}]
               },
               {
                 name: '数据结构与算法',
                 icon: '🌳',
                 iconBg: '#D1FAE5',
-                items: [{"code": "13003", "name": "知识框架", "type": "self-study", "renderMode": "content", "exam": "2026.10", "stage": "已整理框架", "current": "已整理目录与知识框架", "tasks": [], "review": "10 月考试科目之一，学位课，分数需 ≥70。先用网课建立整体框架，再刷真题。", "contentUrl": "自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html?v=2.3.4"}, {"name": "真题与错题", "type": "self-study", "stage": "待填充", "current": "按年份/题型分类练习", "tasks": [], "review": "数据结构与算法真题练习与错题管理。", "renderMode": "content", "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13003&v=2.3.4"}, {"name": "背诵与简答", "type": "self-study", "renderMode": "bare", "stage": "待填充", "current": "正面问题 · 背面答案", "tasks": [], "review": "数据结构与算法核心概念与简答题背诵。", "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.9.0"}, {"name": "复盘总结", "type": "self-study", "stage": "待填充", "current": "章节复盘与错题反思", "tasks": [], "review": "数据结构与算法章节复盘总结。", "renderMode": "content", "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13003&v=2.3.4"}, {"name": "AI助手", "type": "ai-role", "renderMode": "bare", "stage": "可用", "current": "针对本科目生成学习计划、出题、讲错题", "tasks": [], "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。", "contentUrl": "ai-learning/ai-roles-hub.html?subject=13003&v=2.3.4"}]
+                items: [{"code": "13003", "name": "知识框架", "type": "self-study", "renderMode": "content", "exam": "2026.10", "stage": "已整理框架", "current": "已整理目录与知识框架", "tasks": [], "review": "10 月考试科目之一，学位课，分数需 ≥70。先用网课建立整体框架，再刷真题。", "contentUrl": "自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html?v=2.3.4"}, {"name": "真题与错题", "type": "self-study", "stage": "第二阶段", "current": "按年份/题型分类练习", "tasks": [], "review": "数据结构与算法真题练习与错题管理。", "renderMode": "content", "hidden": true, "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13003&v=2.3.4"}, {"name": "背诵与简答", "type": "self-study", "renderMode": "bare", "stage": "待填充", "current": "正面问题 · 背面答案", "tasks": [], "review": "数据结构与算法核心概念与简答题背诵。", "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.12.1"}, {"name": "复盘总结", "type": "self-study", "stage": "待填充", "current": "章节复盘与错题反思", "tasks": [], "review": "数据结构与算法章节复盘总结。", "renderMode": "content", "contentUrl": "自考学习/复盘总结/复盘总结-章节复盘.html?subject=13003&v=2.3.4"}, {"name": "AI助手", "type": "ai-role", "renderMode": "bare", "stage": "可用", "current": "针对本科目生成学习计划、出题、讲错题", "tasks": [], "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。", "contentUrl": "ai-learning/ai-roles-hub.html?subject=13003&v=2.3.4"}]
               }
             ]
           },
@@ -2640,7 +2709,7 @@ const workspaces = [
                 name: '英语（二）',
                 icon: '🔤',
                 iconBg: '#D1FAE5',
-                items: [{"code": "00015", "name": "备考指南", "type": "self-study", "renderMode": "content", "exam": "待定", "stage": "基础积累", "current": "七种题型分析 + 分值分布 + 10周学习路线 + 备考策略", "tasks": [], "review": "英语（二）备考指南：7种题型（阅读40分+完形30分+写作30分），含分值分布图和10周学习路线。", "contentUrl": "自考学习/未考科目/00015英语（二）/00015英语（二）-备考指南.html?v=2.8.0"}, {"name": "词汇系统", "type": "self-study", "renderMode": "bare", "stage": "基础积累", "current": "高频词表 + 间隔重复(SM-2) + 每日测验 + 掌握度追踪", "tasks": [], "review": "英语（二）词汇系统：核心800+重点1200+拓展词，SM-2间隔重复算法，英译中/中译英选择测验，localStorage en_vocab_progress。", "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-词汇系统.html?v=2.8.0"}, {"name": "题型专项", "type": "self-study", "renderMode": "bare", "stage": "专项训练", "current": "7种题型分Tab：解题技巧 + 练习题 + 错题记录 + 正确率统计", "tasks": [], "review": "英语（二）题型专项：阅读判断/阅读选择/概括补全/填句补文/填词补文/完形补文/短文写作，每题型含技巧+练习+错题本(localStorage en_qtype_errors)。", "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-题型专项.html?v=2.8.0"}, {"name": "真题模拟", "type": "self-study", "renderMode": "bare", "stage": "冲刺模拟", "current": "按年份真题套卷 + 计时模拟 + 交卷评分 + 成绩记录", "tasks": [], "review": "英语（二）真题模拟：2023年10月等真题套卷，150分钟计时，自动评分，localStorage en_exam_scores。", "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-真题模拟.html?v=2.8.0"}, {"name": "作文模板", "type": "self-study", "renderMode": "bare", "stage": "专项训练", "current": "5类作文模板 + 高分句型 + 范文 + 万能句型库(20句) + 练习区", "tasks": [], "review": "英语（二）作文模板：观点论述/问题解决/现象分析/书信应用/万能句型，每类含结构框架+句型+范文+练习区(localStorage en_writing_practice)。", "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-作文模板.html?v=2.8.0"}, {"name": "AI助手", "type": "ai-role", "renderMode": "bare", "stage": "可用", "current": "针对本科目生成学习计划、出题、讲错题", "tasks": [], "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。", "contentUrl": "ai-learning/ai-roles-hub.html?subject=00015&v=2.8.0"}]
+                items: [{"code": "00015", "name": "备考指南", "type": "self-study", "renderMode": "content", "exam": "待定", "stage": "基础积累", "current": "七种题型分析 + 分值分布 + 10周学习路线 + 备考策略", "tasks": [], "review": "英语（二）备考指南：7种题型（阅读40分+完形30分+写作30分），含分值分布图和10周学习路线。", "contentUrl": "自考学习/未考科目/00015英语（二）/00015英语（二）-备考指南.html?v=2.8.0"}, {"name": "词汇系统", "type": "self-study", "renderMode": "bare", "stage": "基础积累", "current": "高频词表 + 间隔重复(SM-2) + 每日测验 + 掌握度追踪", "tasks": [], "review": "英语（二）词汇系统：核心800+重点1200+拓展词，SM-2间隔重复算法，英译中/中译英选择测验，localStorage en_vocab_progress。", "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-词汇系统.html?v=2.8.0"}, {"name": "题型专项", "type": "self-study", "renderMode": "bare", "stage": "专项训练", "current": "7种题型分Tab：解题技巧 + 练习题 + 错题记录 + 正确率统计", "tasks": [], "review": "英语（二）题型专项：阅读判断/阅读选择/概括补全/填句补文/填词补文/完形补文/短文写作，每题型含技巧+练习+错题本(localStorage en_qtype_errors)。", "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-题型专项.html?v=2.8.0"}, {"name": "真题模拟", "type": "self-study", "renderMode": "bare", "stage": "第二阶段", "current": "按年份真题套卷 + 计时模拟 + 交卷评分 + 成绩记录", "tasks": [], "review": "英语（二）真题模拟：2023年10月等真题套卷，150分钟计时，自动评分，localStorage en_exam_scores。", "hidden": true, "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-真题模拟.html?v=2.8.0"}, {"name": "作文模板", "type": "self-study", "renderMode": "bare", "stage": "专项训练", "current": "5类作文模板 + 高分句型 + 范文 + 万能句型库(20句) + 练习区", "tasks": [], "review": "英语（二）作文模板：观点论述/问题解决/现象分析/书信应用/万能句型，每类含结构框架+句型+范文+练习区(localStorage en_writing_practice)。", "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-作文模板.html?v=2.8.0"}, {"name": "AI助手", "type": "ai-role", "renderMode": "bare", "stage": "可用", "current": "针对本科目生成学习计划、出题、讲错题", "tasks": [], "review": "基于当前科目进度，让 AI 帮忙规划、出题、讲解。", "contentUrl": "ai-learning/ai-roles-hub.html?subject=00015&v=2.8.0"}]
               },
               {
                 name: '高等数学（工本）',
@@ -2731,7 +2800,7 @@ const workspaces = [
                 current: '四阶段25个知识点：17入门(能做项目)+8精进(面试加分)，含3个简历级项目',
                 tasks: [],
                 review: '入门级知识点标注项目产出和简历写法，精进级为面试突击用。目标：考完即投简历。',
-                contentUrl: 'ai-learning/job-skill-tree.html?v=2.10.0'
+                contentUrl: 'ai-learning/job-skill-tree.html?v=2.10.2'
               },
               {
                 name: '学习闭环',
@@ -2928,11 +2997,13 @@ const workspaces = [
     function countLeaves(items) {
       if (!Array.isArray(items)) return 0;
       return items.reduce((sum, item) => {
+        if (item.hidden) return sum;
         return sum + (isFolder(item) ? countLeaves(item.items) : 1);
       }, 0);
     }
 
     function hasVisibleDescendant(item) {
+      if (item.hidden) return false;
       if (!isFolder(item)) return matchesSearch(item);
       return item.items.some(hasVisibleDescendant);
     }
@@ -3087,7 +3158,7 @@ function renderTree() {
         return '<div class="tree-empty">暂无项目</div>';
       }
 
-      const visibleItems = searchQuery ? items.filter(item => matchesSearch(item) || hasVisibleDescendant(item)) : items;
+      const visibleItems = items.filter(item => !item.hidden && (searchQuery ? (matchesSearch(item) || hasVisibleDescendant(item)) : true));
       if (visibleItems.length === 0) return '';
 
       return visibleItems.map(item => {
@@ -3882,6 +3953,168 @@ function renderTree() {
       if (!document.hidden) { renderTree(); if (activeItemId) renderItemView(); }
     });
     setInterval(function() { updateSidebarProgress(); }, 3000);
+
+    // ========== 番茄钟悬浮按钮 ==========
+    // 在父页面运行，不受 iframe 切换影响，计时和通知持续工作
+    var POMO_SLOTS = [
+      { time: '08:00-10:50', startH: 8, startM: 0, endH: 10, endM: 50, label: '上午主科' },
+      { time: '14:00-15:30', startH: 14, startM: 0, endH: 15, endM: 30, label: '下午练习' },
+      { time: '15:30-16:00', startH: 15, startM: 30, endH: 16, endM: 0, label: '间隔复习' },
+      { time: '16:00-17:00', startH: 16, startM: 0, endH: 17, endM: 0, label: 'AI工程' },
+      { time: '19:30-20:30', startH: 19, startM: 30, endH: 20, endM: 30, label: 'AI学习' },
+      { time: '20:30-21:00', startH: 20, startM: 30, endH: 21, endM: 0, label: '英语' },
+      { time: '21:00-21:30', startH: 21, startM: 0, endH: 21, endM: 30, label: '复盘' }
+    ];
+
+    function isPomoPageLoaded() {
+      var frame = document.querySelector('.content-frame');
+      if (!frame || !frame.src) return false;
+      return frame.src.indexOf('番茄钟') !== -1;
+    }
+
+    function getPomoState() {
+      try {
+        var raw = localStorage.getItem('pomo_timer_state');
+        return raw ? JSON.parse(raw) : null;
+      } catch(e) { return null; }
+    }
+
+    function setPomoState(state) {
+      try { localStorage.setItem('pomo_timer_state', JSON.stringify(state)); } catch(e) {}
+    }
+
+    function clearPomoState() {
+      try { localStorage.removeItem('pomo_timer_state'); } catch(e) {}
+    }
+
+    function pomoNotify(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          var n = new Notification('🍅 ' + title, { body: body, tag: 'pomo-float' });
+          setTimeout(function() { n.close(); }, 10000);
+        } catch(e) {}
+      }
+    }
+
+    function pomoPlaySound() {
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var beep = function(freq, dur, delay) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+          gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + delay + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + dur);
+          osc.start(ctx.currentTime + delay);
+          osc.stop(ctx.currentTime + delay + dur);
+        };
+        beep(880, 0.15, 0);
+        beep(880, 0.15, 0.25);
+        beep(1100, 0.3, 0.5);
+      } catch(e) {}
+    }
+
+    function updatePomoFloat() {
+      var state = getPomoState();
+      var float = document.getElementById('pomoFloat');
+      if (!float) return;
+
+      if (!state || !state.isRunning || state.isPaused) {
+        float.className = 'pomo-float idle';
+        float.innerHTML = '<span class="pomo-float-icon">🍅</span>';
+        float.title = '番茄钟 - 点击打开';
+        return;
+      }
+
+      var now = Date.now();
+      var targetEnd = state.targetEndTime || 0;
+      var diffSec = Math.floor((targetEnd - now) / 1000);
+
+      if (diffSec <= 0) {
+        // 时间到
+        if (!isPomoPageLoaded()) {
+          // 番茄钟页面未加载，由悬浮按钮处理
+          handlePomoTimeout(state);
+        }
+        // 如果页面已加载，由页面处理，悬浮按钮等下一 tick 更新
+        return;
+      }
+
+      var min = Math.floor(diffSec / 60);
+      var sec = diffSec % 60;
+      var timeStr = String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+
+      var slot = POMO_SLOTS[state.slotIdx] || {};
+      var phaseLabel = state.pomoPhase === 'break' ? '休息' : '学习中';
+      var cls = 'pomo-float active' + (state.pomoPhase === 'break' ? ' break' : '');
+
+      float.className = cls;
+      float.innerHTML = '<span class="pomo-float-icon">🍅</span>' +
+        '<span class="pomo-float-time">' + timeStr + '</span>' +
+        '<span class="pomo-float-label">' + phaseLabel + '</span>';
+      float.title = (slot.label || '') + ' · ' + phaseLabel + ' · 剩余 ' + timeStr + '（点击查看详情）';
+    }
+
+    function handlePomoTimeout(state) {
+      var slot = POMO_SLOTS[state.slotIdx];
+      if (!slot) { clearPomoState(); return; }
+
+      // 检查是否超出时段
+      var now = new Date();
+      var curMin = now.getHours() * 60 + now.getMinutes();
+      var eMin = slot.endH * 60 + slot.endM;
+      if (curMin >= eMin) {
+        clearPomoState();
+        pomoNotify('时段结束', (slot.label || '') + ' 学习完成！');
+        pomoPlaySound();
+        return;
+      }
+
+      // 番茄阶段切换
+      if (state.pomoPhase === 'work') {
+        state.pomoPhase = 'break';
+        var breakMin = (state.mode === '50') ? 5 : 5;
+        state.targetEndTime = Date.now() + breakMin * 60 * 1000;
+        state.pomoWorkCycle = (state.pomoWorkCycle || 0) + 1;
+        setPomoState(state);
+        pomoNotify('番茄完成！', '休息 ' + breakMin + ' 分钟');
+        pomoPlaySound();
+      } else if (state.pomoPhase === 'break') {
+        state.pomoPhase = 'work';
+        var workMin = (state.mode === '50') ? 50 : 25;
+        state.targetEndTime = Date.now() + workMin * 60 * 1000;
+        setPomoState(state);
+        pomoNotify('休息结束', '继续学习，保持专注！');
+        pomoPlaySound();
+      }
+    }
+
+    function openPomodoro() {
+      for (var w = 0; w < workspaces.length; w++) {
+        var ws = workspaces[w];
+        if (ws.categories) {
+          for (var c = 0; c < ws.categories.length; c++) {
+            var cat = ws.categories[c];
+            if (cat.items) {
+              for (var i = 0; i < cat.items.length; i++) {
+                if (cat.items[i].contentUrl && cat.items[i].contentUrl.indexOf('番茄钟') !== -1) {
+                  selectItem(cat.items[i].id);
+                  return;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 启动悬浮按钮更新
+    setInterval(updatePomoFloat, 1000);
+    updatePomoFloat();
   </script>
 </body>
 </html>

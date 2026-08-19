@@ -4,6 +4,144 @@
 
 ---
 
+## v2.17.0
+
+**发布时间**：2026-08-19 20:30（北京时间）
+
+### 2026-08-19 — 背诵卡掌握进度+题库+AI答疑持久化到JSON文件
+
+| 文件 | 更新内容 |
+|---|---|
+| `dev_server.py` | 新增6个API端点：GET/POST `/api/mastery`（掌握进度，读写data/mastery-progress.json）；GET `/api/quiz-bank?subject=xxx` 和 POST `/api/quiz-bank`（题库，读写data/quiz-bank-{subject}.json）；GET `/api/quiz-ai?subject=xxx` 和 POST `/api/quiz-ai`（AI答疑对话，读写data/quiz-ai-{subject}.json）；POST端点接收{subject,data}格式 |
+| `data/mastery-progress.json` | 新建：掌握进度持久化文件，结构为{问题文本: 掌握状态}，初始为空{} |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | 掌握进度迁移到API读写：saveMastery同时写localStorage和POST /api/mastery；restoreMastery优先读window.__apiMastery（API加载），无则回退localStorage；题库迁移到API读写：loadQuizBank优先读window.__apiQuizBank，saveQuizBank同时写localStorage和POST /api/quiz-bank；测验AI对话迁移到API读写：loadQuizAI优先读window.__apiQuizAI，saveQuizAI同时写localStorage和POST /api/quiz-ai，hasQuizAI也优先查API数据；初始化流程并行fetch三个API（mastery/quiz-bank/quiz-ai）与三个JSON文件，API失败自动回退localStorage缓存 |
+| `data/modules/self-study.json` | 计算机系统原理背诵卡contentUrl版本号从v=2.14.0更新至v=2.15.0（绕过浏览器缓存） |
+
+---
+
+## v2.16.0
+
+**发布时间**：2026-08-19 19:30（北京时间）
+
+### 2026-08-19 — 计算机系统原理卡片补全43个遗漏知识点（39张→82张）
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/recite-cards-13015.json` | 新增43张概念背诵卡（def/ex/exam三字段），覆盖教材全部小节知识点：第1章+5张（发展历程、SISD/SIMD/MISD/MIMD分类、存储程序概念、软件系统层次、性能指标补充）；第2章+8张（定点数、补码加减与溢出、Booth算法、除法恢复/不恢复余数法、ALU与先行进位、浮点乘除、BCD编码、字符编码）；第3章+6张（指令格式、常用指令、条件转移指令、选择/循环机器级表示、数组机器级表示、有效地址计算）；第4章+8张（预处理、编译六阶段、汇编过程、程序头表PT_LOAD、ELF节详解、加载器工作过程、异常分类故障/陷阱/终止、中断向量表与处理过程）；第5章+9张（cache行/块/组、tag/index/offset划分、替换算法LRU/FIFO/随机/LFU、多级cache L1/L2/L3、写分配/写不分配、虚拟地址转换全过程、多级页表、页面替换算法OPT/LRU/FIFO/Clock、cache性能优化分裂cache/预取）；第6章+7张（I/O软件四层、块设备vs字符设备、总线结构单/双/三总线、总线仲裁链式/计数器/独立请求、通道控制方式、设备驱动程序、磁盘调度FCFS/SSTF/SCAN/C-SCAN）；总卡片数从39张增至82张 |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | DATA_VERSION从6升至7，检测到版本变化自动清除旧localStorage重新加载新JSON；新增MASTERY_KEY独立存储掌握进度（按问题文本映射），版本变化时先备份mastery再清除卡片数据，loadPresetCards加载新卡片后restoreMastery按问题文本恢复掌握状态，setMastery和测验评分函数均同步saveMastery——修复版本升级导致掌握进度丢失问题；fetch JSON添加?v=DATA_VERSION参数和cache:no-cache策略绕过浏览器缓存 |
+| `data/modules/self-study.json` | 计算机系统原理背诵卡contentUrl版本号从v=2.12.1更新至v=2.14.0（绕过浏览器缓存） |
+
+---
+
+## v2.15.0
+
+**发布时间**：2026-08-19 18:30（北京时间）
+
+### 2026-08-19 — 周计划topic字段补全背诵卡全部小节知识点
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/study-plan.json` | 周计划topic字段从简略概述（如"命题逻辑基本概念、命题公式、等值演算"）补全为覆盖背诵卡全部小节知识点的完整列表（如"命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式"）；三科共23个章节goal的topic字段全部更新，覆盖率从约30%提升至100%（144张背诵卡知识点全覆盖）；日计划dailyPlans中153个任务的topic字段同步更新，与周计划完全一致；日计划中138个练习任务（课后练习/半休间隔复习）从无章节补上对应章节（如系统原理第1周练习任务补上"第1章"），使日计划每行都显示章节标签；version升至v3.3.1 |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | SCHEDULE_VERSION从v3.2.0升至v3.3.1（自动清除旧localStorage）；WEEK_DATA内联数据23个topic字段同步更新 |
+| `data/modules/ability.json` | 学习驾驶舱contentUrl版本号从v=3.2.0更新至v=3.3.1 |
+
+---
+
+## v2.14.0
+
+**发布时间**：2026-08-19 17:00（北京时间）
+
+### 2026-08-19 — 周计划章节对齐教材 + 合并goal拆分
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/study-plan.json` | 周计划章节编号全面对齐教材：离散数学9章拆分（原Ch2谓词逻辑+Ch3集合论→Ch2推理理论+Ch3谓词逻辑+Ch4集合+Ch5关系与函数+Ch6代数系统+Ch7格与布尔代数+Ch8图论+Ch9图的应用，每章独立goal）；系统原理Ch5从W4 Ch4中拆分为独立goal；数据结构章节重编号（原Ch3树→Ch5树与二叉树、Ch4图→Ch6图结构、Ch5查找→Ch8查找、Ch6排序→Ch7内部排序），新增Ch4数组广义表和串，排序与查找调换至W5同年完成；dailyPlans周任务chapter字段同步修正；version升至v3.2.0 |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | SCHEDULE_VERSION从v3.1.0升至v3.2.0（自动清除旧localStorage）；WEEK_DATA内联数据同步更新为对齐后的章节 |
+| `data/modules/ability.json` | 学习驾驶舱contentUrl版本号从v=3.1.0更新至v=3.2.0 |
+
+---
+
+## v2.13.0
+
+**发布时间**：2026-08-19 16:00（北京时间）
+
+### 2026-08-19 — 周计划结构化 + 日计划分科目拆分 + 联动标记 + 完成状态写回JSON
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/study-plan.json` | 周计划goals从{tag,tagText,text,done}重构为{tag,subject,chapter,topic,done}：解析text提取章节(第X章/KPX/重难点突破/模拟考/考前冲刺)和知识点；dailyPlans任务从捆绑式"上午主科"拆分为每科目独立任务(3个概念+3个练习)，每个任务含subject+chapter+topic+done字段；补全被过滤的间隔复习和当日复盘任务；清理topic尾部冗余文字；version升至v3.1.0 |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | SCHEDULE_VERSION从v3.0.0升至v3.1.0（自动清除旧localStorage含ai_daily_plan）；WEEK_DATA内联数据同步重构为新格式；renderWeeks显示科目+章节(蓝色粗体)+知识点三列；aiGatherContext格式化输出使用subject/chapter/topic；三处AI提示词(generate/adjust/chat follow-up)全部更新：要求{tag,subject,chapter,topic,hours,done}格式、禁止"主科"模糊描述、每天11个任务(3概念+3练习+复习+py+ai+en+复盘)；renderDailyExecPlan显示科目+章节+知识点，新增done勾选框(.dp-exec-check)；distributeTasksToSlots按chapter非空区分概念(上午)vs练习(下午)；新增toggleTaskDone/checkLinkage/writeGoalToJSON三个函数实现联动标记：日任务全部完成→自动标记周计划对应goal完成→调用API写回JSON；toggleGoal也写回JSON；addGoal/saveGoal更新为新字段名；CSS新增.dp-exec-check/.dp-exec-chapter/.dp-exec-topic/.dp-task-chapter/.wk-goal-chapter样式；grid布局扩展为5列(时间+勾选+科目+章节+知识点) |
+| `dev_server.py` | 新增POST /api/update-plan端点：接收{week,subject,chapter,done}，在study-plan.json中匹配对应goal更新done字段并写回文件 |
+| `data/modules/ability.json` | 学习驾驶舱contentUrl版本号从v=3.0.0更新至v=3.1.0 |
+
+---
+
+## v2.12.0
+
+**发布时间**：2026-08-19 11:00（北京时间）
+
+### 2026-08-19 — 计算机系统原理+数据结构概念卡片补全 + 卡片正面间隔修复
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/recite-cards-13015.json` | 新建：计算机系统原理39张概念背诵卡JSON数据（def/ex/exam三字段），覆盖第1-6章（计算机系统概述/数据表示与运算/程序转换及机器级表示/可执行文件生成与加载/程序存储访问/I/O操作实现），作为PRESET_CARDS['13015']数据源 |
+| `data/recite-cards-13003.json` | 新建：数据结构48张概念背诵卡JSON数据（def/ex/exam三字段），覆盖第1-8章（绪论/线性表/栈和队列/数组广义表和串/树与二叉树/图结构/内部排序/查找），作为PRESET_CARDS['13003']数据源 |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | fetch加载逻辑重构：从单文件fetch改为Promise.all并行加载02324/13015/13003三个科目JSON，任一失败不影响其他科目加载；adjustCardHeights改为按当前可见面（正面/反面）动态设置min-height，不再取正反面最大值；flipCard翻转时动态切换inner高度为目标面高度——修复卡片正面间隔过大问题（原max逻辑导致正面留白）；DATA_VERSION从5升至6，loadData检测版本变化时自动清除localStorage旧数据——修复新旧格式卡片混合问题（旧版升级def/ex/exam时未升DATA_VERSION，导致localStorage残留旧answer格式卡片与新卡片混合显示） |
+| `data/modules/self-study.json` | 三个科目背诵卡contentUrl版本号从v=2.10.3→v=2.12.1（计算机系统原理/离散数学/数据结构），绕过浏览器缓存加载新HTML触发DATA_VERSION检测清除旧localStorage |
+
+---
+
+## v2.11.0
+
+**发布时间**：2026-08-19 01:30（北京时间）
+
+### 2026-08-19 — 番茄任务闹钟 + 离散数学概念背诵卡重构（def/ex/exam三字段 + JSON持久化 + 57张卡片）
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/番茄钟/番茄钟.html` | 新建：番茄任务闹钟页面，读取study-plan.json当日计划，按7个时段生成任务卡片；支持番茄钟计时模式（关闭/标准25-5/长番茄50-5）；浏览器Notification API通知提醒+Web Audio三声beep声音提醒；自动检测当前时段、倒计时显示、完成标记、下一项预览；完成状态持久化到localStorage（按日期隔离）；基于时间戳的计时器状态持久化（saveTimerState/clearTimerState/recoverTimer），页面切换/关闭后可恢复剩余时间 |
+| `templates/workbench.html` | 新增番茄钟悬浮按钮（pomo-float）：固定在右下角，在父页面运行不受iframe切换影响；每秒读取localStorage计时器状态，显示倒计时+阶段标签；计时中蓝紫渐变+脉冲动画，休息中绿色渐变；空闲态显示🍅图标；点击跳转番茄钟页面；番茄钟页面未加载时自动接管计时（阶段切换+通知+声音） |
+| `data/modules/tasks.json` | tasks模块从空占位符重写为番茄钟配置（番茄钟/番茄任务闹钟页面，renderMode:bare，contentUrl版本号v=1.1.0） |
+| `data/workbench.json` | tasks模块enabled从false改为true，description更新为番茄钟任务闹钟模块 |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | renderCards函数重构：支持def/ex/exam三字段渲染（定义/举例/考点分色标签），兼容旧answer字段回退；loadPresetCards函数增强：新增upgrade逻辑，已有卡片自动升级为def/ex/exam格式（保留mastery进度），新增卡片支持def/ex/exam字段；init改为异步fetch JSON后加载；新增CSS（recite-card-section/recite-section-label/def-label/ex-label/exam-label/recite-section-content，white-space:pre-line支持换行） |
+| `data/recite-cards-02324.json` | 新建：离散数学57张概念背诵卡JSON数据（54张原有卡片重构为def/ex/exam三字段+3张新增：命题变元/对偶式/范式），覆盖第1-9章全部知识点，作为PRESET_CARDS['02324']的数据源 |
+| `data/modules/self-study.json` | 三个科目背诵卡contentUrl版本号从v=2.9.0更新至v=2.10.3；4个真题/错题项（系统原理/离散数学/数据结构真题与错题+英语真题模拟）添加hidden:true字段暂时隐藏，stage改为"第二阶段"，等第二阶段再启用 |
+| `templates/workbench.html` | countLeaves/hasVisibleDescendant/renderItems三处新增hidden字段过滤逻辑，items中hidden:true的项目不显示在左侧树中 |
+
+---
+
+## v2.10.2
+
+**发布时间**：2026-08-19 00:30（北京时间）
+
+### 2026-08-19 — 前置学习关卡系统 + 统筹计划重设计 + JSON持久化
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/ai-learning/job-skill-tree.html` | KP1-4的guide.prereq从字符串数组改为结构化对象（type/title/mustLearn/estTime/concept/steps）；KP1新增终端基础/Python文件运行/pip概念3个前置关卡+2个env检查；KP2新增def函数/dict字典/class类3个前置关卡+KP1前置依赖；KP3新增import/try-except/os.getenv 3个前置关卡+KP1+KP2前置依赖；KP4新增三引号/字符串格式化/JSON 3个前置关卡+KP3前置依赖；重写renderTodayGuide函数支持前置关卡渲染（勾选框+展开内容+tutorial锁定/解锁）；新增updatePrereqProgress和updateTutorialLock函数；新增CSS样式（prereq卡片/must-learn状态/展开内容/tutorial锁定态） |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | SCHEDULE_VERSION从v2.6.3升至v3.0.0；WEEK_DATA全面重设计（英语降至5%只留单词+阅读判断，AI拆分为AI工程py标签+AI学习ai标签，数据结构第1周启动，新增Stage1阶段测试周，冲刺期AI暂停）；新增loadPlanFromJSON()函数异步从data/study-plan.json加载计划数据写入localStorage；init流程改为先渲染inline数据再异步加载JSON重新渲染；DP_EXEC_SLOTS从6个时段扩展为7个（新增15:30-16:00间隔复习）；distributeTasksToSlots适配7个时段；loadPlanFromJSON新增每日计划加载逻辑（匹配当日周次写入ai_daily_plan）；init流程新增renderDailyExecPlan()回调 |
+| `data/study-plan.json` | 新建：10周计划数据持久化文件（version/examDate/timeAllocation/dailySchedule/weeklyRhythm/subjectPriority/weeks数组），作为localStorage的数据源；新增dailyPlans数组：10周每日计划数据（按天×时段组织，含date/weekday/phase/tasks） |
+| `data/modules/ai-learning.json` | job-skill-tree.html contentUrl版本号更新至v=2.10.2 |
+| `data/modules/ability.json` | 学习驾驶舱contentUrl版本号从v=2.6.3→v=3.0.0 |
+| `AGENT_HANDOFF.md` | 补全v2.6.0-v2.10.1详细功能说明、经验教训、后续建议；更新localStorage Key表、目录结构、当前后续建议 |
+| `CHANGELOG.md` | v2.10.1表补充AGENT_HANDOFF.md变更记录 |
+
+---
+
+## v2.10.1
+
+**发布时间**：2026-08-18 21:00（北京时间）
+
+### 2026-08-18 — 方案A落地后改进修复（highlightKp监听+CSS修复+响应式）
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/ai-learning/job-skill-tree.html` | 新增highlightKp消息监听器（从Python/Demo页面反向跳转后自动切换Stage+展开KP+滚动定位+高亮闪烁）；修复renderTodayGuide中guide-section嵌套导致间距叠加（外层改为guide-kp-wrap）；新增今日任务版块响应式设计（@media窄屏垂直堆叠）；AI_WEEKLY_TASKS添加同步提醒注释 |
+| `data/modules/ai-learning.json` | job-skill-tree.html contentUrl版本号更新至v=2.10.1 |
+| `AGENT_HANDOFF.md` | 更新至v2.10.1状态：顶部Git状态警告更新（commit be6ea75）；版本表补充v2.10.1条目；目录结构补充6个新增文件（job-skill-tree/job-learning-loop/英语5页面）；localStorage Key表从10个扩充至24个；追加v2.6.0-v2.10.1共6个版本功能级详细章节；新增「当前后续建议」章节（14项分高中低优先级） |
+
+---
+
 ## v2.10.0
 
 **发布时间**：2026-08-18 12:50（北京时间）

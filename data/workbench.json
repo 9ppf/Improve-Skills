@@ -41,8 +41,8 @@
     {
       "id": "tasks",
       "file": "tasks.json",
-      "enabled": false,
-      "description": "日常任务模块（已禁用）"
+      "enabled": true,
+      "description": "番茄钟任务闹钟模块"
     },
     {
       "id": "ability",

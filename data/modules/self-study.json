@@ -30,11 +30,12 @@
             {
               "name": "真题与错题",
               "type": "self-study",
-              "stage": "待填充",
+              "stage": "第二阶段",
               "current": "按年份/题型分类练习",
               "tasks": [],
               "review": "计算机系统原理真题练习与错题管理。",
               "renderMode": "content",
+              "hidden": true,
               "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13015&v=2.3.4"
             },
             {
@@ -45,7 +46,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "计算机系统原理核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.9.0"
+              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.15.0"
             },
             {
               "name": "复盘总结",
@@ -89,11 +90,12 @@
             {
               "name": "真题与错题",
               "type": "self-study",
-              "stage": "待填充",
+              "stage": "第二阶段",
               "current": "按年份/题型分类练习",
               "tasks": [],
               "review": "离散数学真题练习与错题管理。",
               "renderMode": "content",
+              "hidden": true,
               "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=02324&v=2.3.4"
             },
             {
@@ -104,7 +106,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "离散数学核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.9.0"
+              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.12.1"
             },
             {
               "name": "复盘总结",
@@ -148,11 +150,12 @@
             {
               "name": "真题与错题",
               "type": "self-study",
-              "stage": "待填充",
+              "stage": "第二阶段",
               "current": "按年份/题型分类练习",
               "tasks": [],
               "review": "数据结构与算法真题练习与错题管理。",
               "renderMode": "content",
+              "hidden": true,
               "contentUrl": "自考学习/真题练习/真题练习-真题与错题本.html?subject=13003&v=2.3.4"
             },
             {
@@ -163,7 +166,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "数据结构与算法核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.9.0"
+              "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.12.1"
             },
             {
               "name": "复盘总结",
@@ -235,10 +238,11 @@
               "name": "真题模拟",
               "type": "self-study",
               "renderMode": "bare",
-              "stage": "冲刺模拟",
+              "stage": "第二阶段",
               "current": "按年份真题套卷 + 计时模拟 + 交卷评分 + 成绩记录",
               "tasks": [],
               "review": "英语（二）真题模拟：2023年10月等真题套卷，150分钟计时，自动评分，localStorage en_exam_scores。",
+              "hidden": true,
               "contentUrl": "自考学习/未考科目/00015英语（二）/英语（二）-真题模拟.html?v=2.8.0"
             },
             {

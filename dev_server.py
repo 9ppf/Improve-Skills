@@ -99,6 +99,14 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.path == '/api/chat':
             self._handle_chat()
+        elif self.path == '/api/update-plan':
+            self._handle_update_plan()
+        elif self.path == '/api/mastery':
+            self._handle_save_mastery()
+        elif self.path == '/api/quiz-bank':
+            self._handle_save_quiz('bank')
+        elif self.path == '/api/quiz-ai':
+            self._handle_save_quiz('ai')
         else:
             self.send_error(404, 'Not Found')
 
@@ -110,6 +118,12 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/api/health':
             self._handle_health()
+        elif self.path.startswith('/api/mastery'):
+            self._handle_load_mastery()
+        elif self.path.startswith('/api/quiz-bank'):
+            self._handle_load_quiz('bank')
+        elif self.path.startswith('/api/quiz-ai'):
+            self._handle_load_quiz('ai')
         else:
             super().do_GET()
 
@@ -124,6 +138,118 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def _handle_update_plan(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+
+        plan_path = ROOT / 'data' / 'study-plan.json'
+        try:
+            with open(plan_path, 'r', encoding='utf-8') as f:
+                plan = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            self._send_json(500, {'error': f'Cannot read study-plan.json: {e}'})
+            return
+
+        week_label = data.get('week', '')
+        subject = data.get('subject', '')
+        chapter = data.get('chapter', '')
+        done = data.get('done', False)
+
+        updated = False
+        for week in plan.get('weeks', []):
+            if week.get('week') != week_label:
+                continue
+            for goal in week.get('goals', []):
+                if goal.get('subject') == subject and goal.get('chapter') == chapter:
+                    goal['done'] = done
+                    updated = True
+                    break
+            if updated:
+                break
+
+        if not updated:
+            self._send_json(404, {'error': f'Goal not found: {week_label} / {subject} / {chapter}'})
+            return
+
+        try:
+            with open(plan_path, 'w', encoding='utf-8') as f:
+                json.dump(plan, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write study-plan.json: {e}'})
+            return
+
+        self._send_json(200, {'status': 'ok', 'updated': True})
+
+    def _handle_load_mastery(self):
+        path = ROOT / 'data' / 'mastery-progress.json'
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {}
+        self._send_json(200, data)
+
+    def _handle_save_mastery(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        path = ROOT / 'data' / 'mastery-progress.json'
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write: {e}'})
+            return
+        self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_quiz(self, kind):
+        from urllib.parse import urlparse, parse_qs
+        qs = parse_qs(urlparse(self.path).query)
+        subject = qs.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject parameter'})
+            return
+        filename = f'quiz-{kind}-{subject}.json'
+        path = ROOT / 'data' / filename
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = [] if kind == 'bank' else {}
+        self._send_json(200, data)
+
+    def _handle_save_quiz(self, kind):
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject field'})
+            return
+        content = data.get('data')
+        filename = f'quiz-{kind}-{subject}.json'
+        path = ROOT / 'data' / filename
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(content, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write: {e}'})
+            return
+        self._send_json(200, {'status': 'ok'})
 
     def _handle_chat(self):
         content_length = int(self.headers.get('Content-Length', 0))

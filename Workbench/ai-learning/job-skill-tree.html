@@ -79,43 +79,75 @@
 
   /* === 今日任务版块 === */
   .today-panel{display:flex;gap:1rem;margin-bottom:1.5rem;background:#fff;border:1px solid var(--ai-border,#e2e8f0);border-radius:14px;overflow:hidden}
-  .today-tasks{flex:0 0 220px;padding:1rem;background:linear-gradient(135deg,#eff6ff,#f5f3ff);border-right:1px solid #e2e8f0}
-  .today-tasks h3{font-size:0.85rem;color:#64748b;margin:0 0 0.6rem;font-weight:600}
-  .today-task-item{padding:0.6rem 0.8rem;margin-bottom:0.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all 0.2s}
+  .today-tasks{flex:0 0 240px;padding:1rem;background:linear-gradient(135deg,#eff6ff,#f5f3ff);border-right:1px solid #e2e8f0;overflow-x:hidden}
+  .today-tasks h3{font-size:0.8rem;color:#64748b;margin:0 0 0.6rem;font-weight:600}
+  .today-task-item{padding:0.6rem 0.8rem;margin-bottom:0.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all 0.2s;min-height:60px}
   .today-task-item:hover{border-color:#2563eb;box-shadow:0 2px 8px rgba(37,99,235,0.1)}
   .today-task-item.active{border-color:#2563eb;background:#eff6ff}
   .today-task-item .tt-stage{font-size:0.7rem;color:#8b5cf6;font-weight:600;margin-bottom:0.2rem}
   .today-task-item .tt-title{font-size:0.8rem;color:#1e293b;line-height:1.4}
   .today-task-item .tt-time{font-size:0.7rem;color:#64748b;margin-top:0.2rem}
   .today-empty{padding:2rem 1rem;text-align:center;color:#94a3b8;font-size:0.85rem}
-  .today-guide{flex:1;padding:1rem;max-height:500px;overflow-y:auto}
+  .today-guide{flex:1;padding:1rem;overflow-y:auto}
   .today-guide h3{font-size:0.85rem;color:#64748b;margin:0 0 0.6rem;font-weight:600}
-  .guide-section{margin-bottom:1rem}
-  .guide-section h4{font-size:0.8rem;color:#2563eb;margin:0 0 0.4rem;font-weight:600;display:flex;align-items:center;gap:0.3rem}
+  .guide-kp-wrap{border-left:3px solid #e2e8f0;padding-left:0.8rem;margin-bottom:1.5rem}
+  .guide-kp-wrap>h4{font-size:0.85rem;color:#1e293b;margin:0 0 0.8rem;font-weight:700}
+  .guide-section{margin-bottom:1.2rem}
+  .guide-section h4{font-size:0.8rem;color:#2563eb;margin:0 0 0.5rem;font-weight:600;display:flex;align-items:center;gap:0.3rem}
   .guide-prereq{list-style:none;padding:0;margin:0}
-  .guide-prereq li{padding:0.3rem 0;font-size:0.78rem;color:#64748b;display:flex;align-items:flex-start;gap:0.3rem}
+  .guide-prereq li{padding:0.3rem 0;font-size:0.78rem;color:#64748b;display:flex;align-items:flex-start;gap:0.3rem;line-height:1.5}
   .guide-prereq li::before{content:"☑";color:#16a34a;flex-shrink:0}
-  .guide-step{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem;margin-bottom:0.5rem}
-  .guide-step .gs-why{font-size:0.78rem;color:#1e293b;margin-bottom:0.3rem;line-height:1.5}
-  .guide-step .gs-cmd{font-family:'JetBrains Mono',Consolas,monospace;font-size:0.75rem;background:#1e293b;color:#4ade80;padding:0.3rem 0.5rem;border-radius:4px;margin:0.3rem 0;word-break:break-all}
-  .guide-step .gs-meaning{font-size:0.72rem;color:#8b5cf6;margin:0.2rem 0;line-height:1.4}
-  .guide-step .gs-error{font-size:0.72rem;color:#ea580c;background:#fff7ed;padding:0.2rem 0.4rem;border-radius:4px;margin-top:0.2rem;line-height:1.4}
-  .guide-practice{background:#f0fdf4;border:1px solid #dcfce7;border-radius:8px;padding:0.6rem;margin-bottom:0.5rem}
-  .guide-practice .gp-step{font-size:0.75rem;color:#1e293b;margin-bottom:0.3rem;line-height:1.5}
+  .guide-step{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.8rem;margin-bottom:0.6rem}
+  .guide-step .gs-why{font-size:0.78rem;color:#1e293b;margin-bottom:0.4rem;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
+  .guide-step .gs-cmd{font-family:'JetBrains Mono',Consolas,monospace;font-size:0.75rem;background:#1e293b;color:#4ade80;padding:0.4rem 0.6rem;border-radius:4px;margin:0.4rem 0;word-break:break-all;overflow-wrap:break-word}
+  .guide-step .gs-meaning{font-size:0.72rem;color:#8b5cf6;margin:0.3rem 0;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
+  .guide-step .gs-error{font-size:0.72rem;color:#ea580c;background:#fff7ed;padding:0.3rem 0.5rem;border-radius:4px;margin-top:0.3rem;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
+  .guide-practice{background:#f0fdf4;border:1px solid #dcfce7;border-radius:8px;padding:0.8rem;margin-bottom:0.6rem}
+  .guide-practice .gp-step{font-size:0.75rem;color:#1e293b;margin-bottom:0.4rem;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
   .guide-practice .gp-label{font-weight:600;color:#16a34a}
-  .guide-completion{background:#fefce8;border:1px solid #fef08a;border-radius:8px;padding:0.6rem}
-  .guide-completion .gc-item{font-size:0.75rem;color:#1e293b;display:flex;align-items:center;gap:0.3rem;margin-bottom:0.2rem}
-  .guide-completion .gc-check{width:16px;height:16px;cursor:pointer}
-  .guide-completion .gc-verify{margin-top:0.4rem;padding:0.3rem 0.8rem;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer}
+  .guide-completion{background:#fefce8;border:1px solid #fef08a;border-radius:8px;padding:0.8rem}
+  .guide-completion .gc-item{font-size:0.75rem;color:#1e293b;display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;line-height:1.5}
+  .guide-completion .gc-check{width:20px;height:20px;cursor:pointer;accent-color:#2563eb;flex-shrink:0}
+  .guide-completion .gc-verify{margin-top:0.6rem;padding:0.4rem 1rem;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:0.78rem;cursor:pointer}
   .guide-completion .gc-verify:hover{background:#1d4ed8}
-  .guide-jump{display:flex;gap:0.5rem;margin-top:0.6rem;flex-wrap:wrap}
-  .guide-jump a{padding:0.3rem 0.6rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;font-size:0.72rem;color:#2563eb;cursor:pointer;text-decoration:none;transition:all 0.2s}
+  .guide-completion .gc-verify:disabled{opacity:0.5;cursor:not-allowed}
+  .guide-jump{display:flex;gap:0.5rem;margin-top:0.8rem;flex-wrap:wrap}
+  .guide-jump a{padding:0.4rem 0.8rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;font-size:0.75rem;color:#2563eb;cursor:pointer;text-decoration:none;transition:all 0.2s}
   .guide-jump a:hover{background:#eff6ff;border-color:#2563eb}
+  /* 前置学习关卡 */
+  .prereq-list{display:flex;flex-direction:column;gap:0.6rem}
+  .prereq-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem 0.8rem;transition:all 0.2s}
+  .prereq-item.must-learn{border-left:3px solid #f59e0b;background:#fffbeb}
+  .prereq-item.must-learn.done{border-left-color:#16a34a;background:#f0fdf4}
+  .prereq-head{display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:#1e293b}
+  .prereq-head input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#f59e0b;flex-shrink:0}
+  .prereq-item.must-learn.done .prereq-head input[type=checkbox]{accent-color:#16a34a}
+  .prereq-title{flex:1;font-weight:600}
+  .prereq-time{font-size:0.68rem;color:#94a3b8;white-space:nowrap}
+  .prereq-expand{font-size:0.68rem;color:#2563eb;cursor:pointer;background:none;border:none;padding:0.2rem 0.4rem;border-radius:4px;transition:background 0.2s}
+  .prereq-expand:hover{background:#eff6ff}
+  .prereq-content{display:none;margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed #e2e8f0}
+  .prereq-content.show{display:block}
+  .prereq-concept{font-size:0.75rem;color:#475569;line-height:1.6;margin-bottom:0.5rem}
+  .prereq-steps{list-style:decimal;padding-left:1.2rem;margin:0}
+  .prereq-steps li{font-size:0.73rem;color:#1e293b;line-height:1.6;margin-bottom:0.3rem}
+  .prereq-steps code{font-family:'JetBrains Mono',Consolas,monospace;background:#1e293b;color:#e2e8f0;padding:0.1rem 0.4rem;border-radius:3px;font-size:0.7rem}
+  /* tutorial 锁定态 */
+  .guide-tutorial-locked{opacity:0.45;filter:grayscale(0.5);pointer-events:none;user-select:none}
+  .guide-lock-msg{text-align:center;font-size:0.75rem;color:#f59e0b;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:0.6rem;margin-bottom:0.8rem}
+  .guide-lock-msg.unlocked{display:none}
   .kp-guide-layer{margin:0.6rem 0;padding:0.8rem;background:#fafafa;border:1px solid #e2e8f0;border-radius:10px}
   .kp-guide-layer h3{font-size:0.8rem;color:#2563eb;margin:0 0 0.5rem}
   .kp-guide-toggle{cursor:pointer;color:#2563eb;font-size:0.75rem;font-weight:600}
   .kp-guide-content{display:none;margin-top:0.5rem}
   .kp-guide-content.show{display:block}
+
+  /* 响应式：窄屏垂直堆叠 */
+  @media(max-width:640px){
+    .today-panel{flex-direction:column}
+    .today-tasks{flex:0 0 auto;border-right:none;border-bottom:1px solid #e2e8f0}
+    .today-guide{max-height:400px}
+  }
   </style>
 </head>
 <body>
@@ -159,7 +191,19 @@
      ec:"# 1. 创建项目\nmkdir my_ai_app && cd my_ai_app\npython -m venv venv\nsource venv/bin/activate\n\n# 2. 安装依赖\npip install fastapi uvicorn python-dotenv\npip freeze > requirements.txt\n\n# 3. .env文件\nAPI_KEY=sk-xxxxx\nMODEL=deepseek-chat\n\n# 4. app/main.py\nfrom fastapi import FastAPI\nfrom dotenv import load_dotenv\nload_dotenv()\napp = FastAPI()\n\n@app.get('/hello')\ndef hello():\n    return {'msg': 'Hello, AI!'}\n\n# 5. 运行: uvicorn app.main:app --reload",
      a:"在实际AI项目中，工程化是基础。部署RAG服务需要用venv隔离依赖、用.env管理API Key、用requirements.txt锁定版本。面试时提到这些细节能体现工程素养。",
      guide:{
-       prereq:["Python 3.9+ 已安装（终端运行 python --version 验证）","VS Code 或 PyCharm 已安装并配置Python解释器","终端可正常执行 pip 命令（运行 pip --version 验证）"],
+       prereq:[
+        {type:"learn",title:"终端与命令行基础",mustLearn:true,estTime:"10min",
+         concept:"终端（Terminal/命令提示符）是你用文字命令操控电脑的工具，不是鼠标点按钮。开发者每天都用终端运行代码、安装工具、管理文件。学会它你才能执行 python 命令、pip install 等操作。",
+         steps:["打开终端：按 Win+R → 输入 cmd → 回车，会弹出一个黑色窗口","验证Python：输入 <code>python --version</code> → 回车，应显示 Python 3.9.x","验证pip：输入 <code>pip --version</code> → 回车，应显示 pip 版本号","切换目录：输入 <code>cd 文件夹路径</code> 可以进入指定文件夹（如 <code>cd Desktop</code> 进入桌面）","列出文件：输入 <code>dir</code> 可以查看当前文件夹里有哪些文件"]},
+        {type:"learn",title:"创建和运行Python文件",mustLearn:true,estTime:"10min",
+         concept:"Python代码写在 .py 文件里（比如 hello.py），然后在终端用 python hello.py 运行它。这是最基本的开发流程：写代码→保存→终端运行→看结果。",
+         steps:["在桌面上新建一个文本文件，重命名为 hello.py（注意扩展名是 .py 不是 .txt）","用记事本或VS Code打开它，输入 <code>print('Hello, World!')</code> 然后保存","打开终端，用 <code>cd Desktop</code> 切到桌面","运行 <code>python hello.py</code> → 终端应输出 Hello, World!","如果报错 'python' 不是内部命令：说明Python没加入PATH，重新安装时勾选 Add to PATH"]},
+        {type:"learn",title:"pip包管理概念",mustLearn:true,estTime:"5min",
+         concept:"pip 是Python的包管理工具，类似于手机的应用商店。你用 pip install 包名 来安装第三方库（如FastAPI、openai），安装后就能在代码中 import 使用。pip freeze 可以列出所有已安装的包。",
+         steps:["安装一个包：终端输入 <code>pip install requests</code> → 回车，等待安装完成","验证安装：输入 <code>python -c \"import requests; print('OK')\"</code> → 应输出 OK","查看已安装：输入 <code>pip list</code> → 会列出所有已安装的包和版本","卸载包（了解）：<code>pip uninstall requests</code> → 输入 y 确认卸载"]},
+        {type:"env",title:"Python 3.9+ 已安装",mustLearn:false,check:"终端运行 python --version 显示 3.9 以上版本"},
+        {type:"env",title:"VS Code 或 PyCharm 已安装",mustLearn:false,check:"能打开并编辑 .py 文件的编辑器"}
+       ],
        tutorial:[
          {why:"虚拟环境隔离项目依赖，避免不同项目的包版本冲突。比如项目A需要FastAPI 0.100，项目B需要0.80，没有虚拟环境会互相覆盖",cmd:"python -m venv venv",meaning:"python=Python解释器, -m=运行模块, venv=虚拟环境模块, 最后的venv=目录名（可自定义，但约定俗成叫venv）",error:"如果报错 python not found：检查PATH是否包含Python安装路径；如果报错 No module named venv：需安装 pip install virtualenv 后用 python -m virtualenv venv"},
          {why:"激活虚拟环境后，pip安装的包只影响当前项目，不影响系统全局环境",cmd:"venv\\Scripts\\activate",meaning:"Windows激活命令，venv是上一步创建的目录名；Mac/Linux用 source venv/bin/activate",error:"如果PowerShell报执行策略错误：运行 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned；如果报找不到路径：确认在项目根目录下执行（venv文件夹所在目录）"},
@@ -183,7 +227,19 @@
      ec:"# app/main.py\nfrom fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom fastapi.responses import StreamingResponse\nfrom pydantic import BaseModel\nimport asyncio\n\napp = FastAPI()\napp.add_middleware(CORSMiddleware, allow_origins=['*'])\n\nclass ChatRequest(BaseModel):\n    message: str\n\n@app.post('/api/chat')\nasync def chat(req: ChatRequest):\n    return {'reply': f'Echo: {req.message}'}\n\n@app.post('/api/chat/stream')\nasync def chat_stream(req: ChatRequest):\n    async def gen():\n        words = req.message.split()\n        for w in words:\n            await asyncio.sleep(0.1)\n            yield f'data: {w}\\n\\n'\n    return StreamingResponse(gen(), media_type='text/event-stream')\n\n# 测试: uvicorn app.main:app --reload",
      a:"AI应用的标配后端框架。RAG系统的文档上传接口、问答接口、Agent的工具调用接口都可以用FastAPI实现。面试时展示Swagger文档和流式输出是加分项。",
      guide:{
-       prereq:["已完成KP1（Python工程化）：虚拟环境已创建，fastapi和uvicorn已安装","Python基础：知道def定义函数、知道dict(字典)数据结构","终端可正常执行uvicorn命令"],
+       prereq:[
+        {type:"kp",title:"已完成 KP1 Python工程化",mustLearn:true,estTime:"—",check:"KP1 的完成验证全部勾选通过",kpId:1},
+        {type:"learn",title:"Python函数定义 def",mustLearn:true,estTime:"10min",
+         concept:"函数是一段可重复使用的代码块。用 def 函数名(参数): 定义，用 函数名() 调用。FastAPI的路由本质上就是函数，只是加了 @app.post() 装饰器修饰。",
+         steps:["创建 func.py，写 <code>def greet(name):</code>","下一行缩进4格写 <code>return 'Hello, ' + name</code>","调用：<code>print(greet('Alice'))</code>","终端运行 <code>python func.py</code> → 应输出 Hello, Alice","带默认值的参数：<code>def greet(name='Guest'):</code> → 不传参数时默认返回 Hello, Guest"]},
+        {type:"learn",title:"Python字典 dict",mustLearn:true,estTime:"8min",
+         concept:"字典是键值对集合，用花括号 {} 定义。FastAPI接口返回的JSON本质就是Python字典。dict在AI开发中无处不在：API响应、配置项、模型参数都是dict。",
+         steps:["创建 dict.py，写 <code>person = {'name': 'Alice', 'age': 25}</code>","访问：<code>print(person['name'])</code> → 输出 Alice","添加：<code>person['city'] = 'Beijing'</code>","遍历：<code>for k, v in person.items(): print(k, v)</code>","嵌套：<code>data = {'user': {'name': 'Bob'}, 'score': [90, 85]}</code> → <code>print(data['user']['name'])</code>"]},
+        {type:"learn",title:"Python类与 __init__",mustLearn:true,estTime:"12min",
+         concept:"类(class)是创建对象的模板。FastAPI用Pydantic的 BaseModel 类来定义请求/响应的数据结构。你不需要深入理解面向对象，但必须知道 class 怎么写、__init__ 是什么。",
+         steps:["创建 cls.py，写 <code>class Dog:</code>","下一行写 <code>def __init__(self, name):</code> → 这是构造函数，创建对象时自动调用","缩进写 <code>self.name = name</code> → 把传入的name存到对象上","创建对象：<code>d = Dog('Rex')</code>","访问属性：<code>print(d.name)</code> → 输出 Rex","FastAPI类比：<code>class ChatRequest(BaseModel): message: str</code> → 这就是继承BaseModel定义了一个数据类"]},
+        {type:"env",title:"fastapi 和 uvicorn 已安装",mustLearn:false,check:"终端运行 pip show fastapi 显示已安装"}
+       ],
        tutorial:[
          {why:"创建FastAPI应用入口。FastAPI用装饰器@app.get或@app.post定义路由——访问URL时执行对应函数",cmd:"echo from fastapi import FastAPI > app.py && echo app = FastAPI() >> app.py",meaning:"from fastapi import FastAPI=导入FastAPI类, app=FastAPI()=创建应用实例, 后续所有路由都注册到app上",error:"如果报错 No module named fastapi：确认虚拟环境已激活且pip install fastapi成功；如果用VS Code报红波浪线：选择Python解释器为venv中的python"},
          {why:"定义第一个API接口。@app.get('/')表示当用户用GET方法访问根路径/时，执行下面的函数",cmd:'echo @app.get("/hello") >> app.py && echo def hello(): >> app.py && echo     return {"msg": "Hello!"} >> app.py',meaning:"@app.get('/hello')=路由装饰器, def hello()=处理函数, return返回Python字典（FastAPI自动转为JSON响应）",error:"如果运行后访问404：确认URL路径是/hello不是/；如果返回不是JSON：FastAPI自动将dict转为JSON，确认没有手动json.dumps"},
@@ -207,7 +263,20 @@
      ec:"import os, time\nfrom openai import OpenAI\n\nclass LLMClient:\n    def __init__(self, api_key=None, base_url=None, model='deepseek-chat'):\n        self.client = OpenAI(\n            api_key=api_key or os.getenv('DEEPSEEK_API_KEY'),\n            base_url=base_url or 'https://api.deepseek.com'\n        )\n        self.model = model\n        self.total_tokens = 0\n    \n    def chat(self, message, retry=3):\n        for i in range(retry):\n            try:\n                resp = self.client.chat.completions.create(\n                    model=self.model,\n                    messages=[{'role':'user','content':message}]\n                )\n                self.total_tokens += resp.usage.total_tokens\n                return resp.choices[0].message.content\n            except Exception as e:\n                if i == retry - 1:\n                    raise e\n                time.sleep(2 ** i)\n    \n    def stream(self, message):\n        stream = self.client.chat.completions.create(\n            model=self.model,\n            messages=[{'role':'user','content':message}],\n            stream=True\n        )\n        for chunk in stream:\n            delta = chunk.choices[0].delta.content\n            if delta:\n                yield delta",
      a:"这是所有AI应用的基础。无论是RAG问答、Agent对话还是代码审查，底层都是LLM API调用。掌握流式输出和错误重试是生产级应用的基本要求。",
      guide:{
-       prereq:["已完成KP1（Python工程化）：虚拟环境已创建","已完成KP2（FastAPI接口开发）：知道如何创建.py文件并运行","已有DeepSeek API Key（在.env文件中配置）","Python基础：知道def定义函数、import导入模块"],
+       prereq:[
+        {type:"kp",title:"已完成 KP1 Python工程化",mustLearn:true,estTime:"—",check:"KP1 的完成验证全部勾选通过",kpId:1},
+        {type:"kp",title:"已完成 KP2 FastAPI接口开发",mustLearn:true,estTime:"—",check:"KP2 的完成验证全部勾选通过",kpId:2},
+        {type:"learn",title:"Python模块导入 import",mustLearn:true,estTime:"8min",
+         concept:"import 是引入外部库或模块的关键字。import os 引入系统模块，from dotenv import load_dotenv 从dotenv包中只导入load_dotenv函数。调用LLM API时需要 import openai 来引入SDK。",
+         steps:["创建 imp.py","写 <code>import os</code> → 引入Python内置的系统模块","使用：<code>print(os.getcwd())</code> → 输出当前工作目录","写 <code>from datetime import datetime</code> → 从datetime模块导入datetime类","使用：<code>print(datetime.now())</code> → 输出当前时间","理解区别：import os 用 os.xxx 访问；from os import getcwd 直接用 getcwd() 访问"]},
+        {type:"learn",title:"Python异常处理 try/except",mustLearn:true,estTime:"10min",
+         concept:"调用API可能会失败（网络超时、密钥错误、限流等），用 try/except 包裹可能出错的代码，except 中处理错误（重试或提示用户）。这是AI服务稳定性的关键。",
+         steps:["创建 err.py","写正常代码：<code>num = int('abc')</code> → 这会报错 ValueError","用try包裹：<code>try:\\n    num = int('abc')\\nexcept ValueError as e:\\n    print('出错了:', e)</code>","终端运行 → 应输出 '出错了: invalid literal for int() with base 10: 'abc''","循环重试：<code>for i in range(3): try: ... except: print(f'第{i+1}次重试')</code> → 这是API重试的基础模式"]},
+        {type:"learn",title:"Python环境变量 os.getenv",mustLearn:true,estTime:"5min",
+         concept:"API Key不能硬编码在代码中（不安全），而是存在.env文件中，通过 os.getenv() 读取。.env文件格式：DEEPSEEK_API_KEY=sk-xxx，python-dotenv库负责加载它。",
+         steps:["在项目根目录创建 .env 文件","写入 <code>DEEPSEEK_API_KEY=sk-你的key</code>（等号两边不要空格）","创建 env_test.py，写 <code>from dotenv import load_dotenv</code>","<code>load_dotenv()</code> → 加载.env文件","<code>import os; print(os.getenv('DEEPSEEK_API_KEY'))</code> → 应输出你的key","注意：.env文件必须在.gitignore中，不能提交到Git"]},
+        {type:"env",title:"已有 DeepSeek API Key",mustLearn:false,check:"在 .env 文件中配置了 DEEPSEEK_API_KEY=sk-xxx"}
+       ],
        tutorial:[
          {why:"安装OpenAI SDK。DeepSeek API兼容OpenAI接口格式，所以用openai库就能调用DeepSeek——这是行业惯例，学会一个库就能调用多家模型",cmd:"pip install openai python-dotenv",meaning:"openai=OpenAI官方Python SDK（也兼容DeepSeek）, python-dotenv=读取.env环境变量",error:"如果报错 pip not found：确认虚拟环境已激活；如果安装很慢：用清华源 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple openai python-dotenv"},
          {why:"创建LLM调用脚本。先从最简单的单轮对话开始——发送一个问题，接收一个回答",cmd:"echo from openai import OpenAI > llm_test.py && echo from dotenv import load_dotenv >> llm_test.py && echo load_dotenv() >> llm_test.py && echo import os >> llm_test.py",meaning:"from openai import OpenAI=导入SDK, from dotenv import load_dotenv=导入.env读取器, load_dotenv()=加载.env文件, import os=系统模块（读取环境变量用）",error:"如果报错 No module named dotenv：确认pip install python-dotenv（包名是python-dotenv，不是dotenv）"},
@@ -231,7 +300,19 @@
      ec:"prompt = '''你是一位SQL专家。请将自然语言转换为SQL查询。\n\n数据库表:\n- students(id, name, age, grade)\n- scores(id, student_id, subject, score)\n\n示例:\n问: 查询年龄大于18岁的学生\n答: SELECT name FROM students WHERE age > 18\n\n问: 查询数学成绩前3名\n答: SELECT s.name, sc.score FROM students s JOIN scores sc ON s.id = sc.student_id WHERE sc.subject = '数学' ORDER BY sc.score DESC LIMIT 3\n\n问: 统计每个班级的平均分\n答:'''  \n\n# 关键要素: 角色设定 + 表结构 + Few-shot + 留空让模型补全",
      a:"Prompt工程是使用LLM最重要的技能。RAG系统中检索到的上下文如何组装成Prompt、Agent的指令如何设计，都依赖Prompt工程能力。",
      guide:{
-       prereq:["已完成KP3（LLM API调用）：能成功调用DeepSeek API并获取回答","Python基础：知道字符串可以用+拼接、可以用三引号写多行字符串","终端可运行python命令"],
+       prereq:[
+        {type:"kp",title:"已完成 KP3 LLM API调用",mustLearn:true,estTime:"—",check:"KP3 的完成验证全部勾选通过",kpId:3},
+        {type:"learn",title:"Python三引号字符串",mustLearn:true,estTime:"5min",
+         concept:"三引号 ''' 或 \"\"\" 可以写多行字符串，在Prompt工程中用来写包含换行的复杂提示词。单引号 ' 只能写一行，三引号可以写任意行。",
+         steps:["创建 str.py","单行：<code>s1 = 'hello'</code> → 一行字符串","多行：<code>s2 = '''第一行\\n第二行\\n第三行'''</code> → 三引号可跨行","验证：<code>print(s2)</code> → 输出三行","Prompt实战：<code>prompt = '''你是一位Python专家\\n请分析以下代码：\\nprint(1)'''</code> → 这就是多行Prompt的写法"]},
+        {type:"learn",title:"Python字符串拼接与格式化",mustLearn:true,estTime:"8min",
+         concept:"字符串可以用 + 拼接，也可以用 f'...' 格式化（在字符串中嵌入变量）。Prompt中经常需要动态插入用户输入或检索结果，必须掌握字符串格式化。",
+         steps:["拼接：<code>s = '你好' + '世界'</code> → 字符串+字符串","f-string：<code>name='Alice'; s = f'你好,{name}'</code> → 变量嵌入","多变量：<code>age=25; s = f'{name}今年{age}岁'</code>","Prompt应用：<code>question = '什么是RAG?'; prompt = f'请详细解释：{question}'</code>","列表转字符串：<code>words = ['a','b','c']; s = '\\n'.join(words)</code> → 用换行连接列表项"]},
+        {type:"learn",title:"Python字典与JSON",mustLearn:true,estTime:"8min",
+         concept:"Prompt工程经常要求LLM输出JSON格式。Python字典和JSON长得很像但有关键区别：字典是Python对象，JSON是文本格式。用 json.dumps(dict) 把字典转JSON字符串，json.loads(json_str) 反过来。",
+         steps:["创建 json_test.py","定义字典：<code>result = {'sentiment': '正面', 'score': 0.9}</code>","转JSON字符串：<code>import json; s = json.dumps(result, ensure_ascii=False)</code>","打印：<code>print(s)</code> → 输出 {\"sentiment\": \"正面\", \"score\": 0.9}","反解析：<code>d = json.loads(s)</code> → JSON字符串转回字典","Prompt应用：要求LLM输出JSON，然后用json.loads解析结果"]},
+        {type:"env",title:"终端可运行 python 命令",mustLearn:false,check:"终端运行 python --version 正常显示版本号"}
+       ],
        tutorial:[
          {why:"角色设定是Prompt工程的第一步。给LLM一个身份，它会以这个身份的专业水平和视角来回答。不设定角色时LLM回答比较泛，设定后更聚焦",cmd:"echo prompt = '你是一位资深Python工程师，擅长代码审查。请审查以下代码的安全隐患。' > prompt_test.py",meaning:"prompt=变量名存储提示词, '你是一位...'=角色设定, 后半句=具体任务描述",error:"这个步骤不会报错，它只是定义一个字符串变量。报错会出现在下一步调用API时"},
          {why:"Few-shot示例是用例子教LLM你期望的输出格式。比单纯描述更有效——LLM从例子中学习模式，比从规则中学习更准确",cmd:"echo few_shot = '任务: 将句子分类为正面/负面/中性' >> prompt_test.py",meaning:"few_shot=变量名, 任务描述=告诉LLM要做什么, 后面会跟示例",error:"如果三引号嵌套出错：Python中三引号可以定义多行字符串，注意不要在字符串内部出现相同的引号"},
@@ -598,6 +679,8 @@
   // AI 周任务数据 + 今日任务版块 + 教学指引
   // ═══════════════════════════════════════════════════════════
 
+  // 注意：以下AI周任务数据需与学习驾驶舱WEEK_DATA中的AI任务保持同步
+  // 格式不同故未提取共享文件：WEEK_DATA用goals数组(含所有科目)，此处用tasks数组(含stage+kpIds)
   var AI_WEEKLY_TASKS=[
     {week:1,dates:'8/18 — 8/24',tasks:[
       {text:'岗位Stage1：Python工程化(venv/pip/项目结构) + FastAPI接口开发',stage:1,kpIds:[1,2]},
@@ -701,17 +784,54 @@
       var k=KP.find(function(x){return x.id===id});
       if(!k||!k.guide){return;}
       var g=k.guide;
-      html+='<div class="guide-section">';
+      html+='<div class="guide-kp-wrap" data-kp="'+id+'">';
       html+='<h4>🎯 KP'+k.id+': '+k.t+'</h4>';
 
-      // 环境准备
+      // 前置学习（新版结构化关卡）
+      var mustLearnCount=0,mustLearnDone=0;
+      var progress=getGuideProgress(id);
       if(g.prereq&&g.prereq.length){
-        html+='<div class="guide-section"><h4>📝 环境准备</h4><ul class="guide-prereq">';
-        g.prereq.forEach(function(p){html+='<li>'+p+'</li>';});
-        html+='</ul></div>';
+        html+='<div class="guide-section"><h4>📝 前置学习</h4><div class="prereq-list">';
+        g.prereq.forEach(function(p,idx){
+          if(typeof p==='string'){
+            html+='<div class="prereq-item"><div class="prereq-head"><input type="checkbox" data-kp="'+id+'" data-pidx="'+idx+'"> <span class="prereq-title">'+p+'</span></div></div>';
+          }else{
+            var isMust=p.mustLearn!==false;
+            var pCheck=progress.prereq&&progress.prereq[idx]?'checked':'';
+            if(isMust){mustLearnCount++;if(pCheck)mustLearnDone++;}
+            var doneCls=(isMust&&pCheck)?' must-learn done':(isMust?' must-learn':'');
+            html+='<div class="prereq-item'+doneCls+'">';
+            html+='<div class="prereq-head">';
+            html+='<input type="checkbox" data-kp="'+id+'" data-pidx="'+idx+'" '+(isMust?'':'')+' '+pCheck+'>';
+            html+='<span class="prereq-title">'+p.title+'</span>';
+            if(p.estTime) html+='<span class="prereq-time">'+p.estTime+'</span>';
+            if(p.check) html+='<span class="prereq-time">'+p.check+'</span>';
+            if(p.type==='learn') html+='<button class="prereq-expand">展开 ▼</button>';
+            html+='</div>';
+            if(p.type==='learn'){
+              html+='<div class="prereq-content">';
+              if(p.concept) html+='<div class="prereq-concept">'+p.concept+'</div>';
+              if(p.steps&&p.steps.length){
+                html+='<ol class="prereq-steps">';
+                p.steps.forEach(function(s){html+='<li>'+s+'</li>';});
+                html+='</ol>';
+              }
+              html+='</div>';
+            }
+            html+='</div>';
+          }
+        });
+        html+='</div></div>';
       }
 
-      // 教程步骤
+      // tutorial 锁定判断
+      var locked=mustLearnCount>0&&mustLearnDone<mustLearnCount;
+      if(locked){
+        html+='<div class="guide-lock-msg" data-kp="'+id+'">🔒 请先完成上方前置学习（勾选全部必须项），教程步骤将自动解锁</div>';
+      }
+
+      // 教程步骤 + 渐进练习（锁定态控制）
+      html+='<div class="guide-tutorial-area" data-kp="'+id+'"'+(locked?' style="opacity:0.45;pointer-events:none;user-select:none"':'')+'>';
       if(g.tutorial&&g.tutorial.length){
         html+='<div class="guide-section"><h4>📖 教程步骤</h4>';
         g.tutorial.forEach(function(step,i){
@@ -724,8 +844,6 @@
         });
         html+='</div>';
       }
-
-      // 渐进练习
       if(g.practice){
         html+='<div class="guide-section"><h4>🎯 渐进练习</h4><div class="guide-practice">';
         html+='<div class="gp-step"><span class="gp-label">1.模仿:</span> '+g.practice.mimic+'</div>';
@@ -733,16 +851,17 @@
         html+='<div class="gp-step"><span class="gp-label">3.独立:</span> '+g.practice.create+'</div>';
         html+='</div></div>';
       }
+      html+='</div>';
 
       // 完成验证
       if(g.completion&&g.completion.criteria){
-        var progress=getGuideProgress(id);
+        var prog2=getGuideProgress(id);
         html+='<div class="guide-section"><h4>✅ 完成验证</h4><div class="guide-completion" id="gc-'+id+'">';
         g.completion.criteria.forEach(function(c,i){
-          var checked=progress.criteria&&progress.criteria[i]?'checked':'';
+          var checked=prog2.criteria&&prog2.criteria[i]?'checked':'';
           html+='<div class="gc-item"><input type="checkbox" class="gc-check" data-kp="'+id+'" data-idx="'+i+'" '+checked+'> <span>'+c.desc+'</span></div>';
         });
-        var allDone=progress.completed;
+        var allDone=prog2.completed;
         html+='<button class="gc-verify" data-kp="'+id+'" '+(allDone?'disabled style="opacity:0.5"':'')+'>'+(allDone?'✅ 已完成':'验证完成')+'</button>';
         html+='</div></div>';
       }
@@ -766,7 +885,39 @@
       html+='</div>';
     });
     el.innerHTML=html;
-    // bind checkboxes
+
+    // bind prereq checkboxes
+    el.querySelectorAll('.prereq-item input[type=checkbox]').forEach(function(cb){
+      cb.addEventListener('change',function(){
+        var kpId=this.getAttribute('data-kp');
+        var pidx=parseInt(this.getAttribute('data-pidx'));
+        updatePrereqProgress(kpId,pidx,this.checked);
+        var item=this.closest('.prereq-item');
+        if(item&&item.classList.contains('must-learn')){
+          if(this.checked) item.classList.add('done');
+          else item.classList.remove('done');
+        }
+        updateTutorialLock(kpId);
+      });
+    });
+
+    // bind prereq expand buttons
+    el.querySelectorAll('.prereq-expand').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var content=this.closest('.prereq-item').querySelector('.prereq-content');
+        if(content){
+          if(content.classList.contains('show')){
+            content.classList.remove('show');
+            this.textContent='展开 ▼';
+          }else{
+            content.classList.add('show');
+            this.textContent='收起 ▲';
+          }
+        }
+      });
+    });
+
+    // bind completion checkboxes
     el.querySelectorAll('.gc-check').forEach(function(cb){
       cb.addEventListener('change',function(){
         var kpId=parseInt(this.getAttribute('data-kp'));
@@ -784,12 +935,40 @@
     });
   }
 
+  function updatePrereqProgress(kpId,pidx,checked){
+    try{
+      var raw=localStorage.getItem('ai_kp_guide_progress');
+      var data=raw?JSON.parse(raw):{};
+      if(!data[kpId]) data[kpId]={completed:false,criteria:[]};
+      if(!data[kpId].prereq) data[kpId].prereq=[];
+      data[kpId].prereq[pidx]=checked;
+      localStorage.setItem('ai_kp_guide_progress',JSON.stringify(data));
+    }catch(e){}
+  }
+
+  function updateTutorialLock(kpId){
+    var wrap=document.querySelector('.guide-kp-wrap[data-kp="'+kpId+'"]');
+    if(!wrap) return;
+    var mustBoxes=wrap.querySelectorAll('.prereq-item.must-learn input[type=checkbox]');
+    var allDone=true;
+    mustBoxes.forEach(function(cb){if(!cb.checked){allDone=false;}});
+    var lockMsg=wrap.querySelector('.guide-lock-msg');
+    var tutArea=wrap.querySelector('.guide-tutorial-area');
+    if(allDone){
+      if(lockMsg) lockMsg.classList.add('unlocked');
+      if(tutArea){tutArea.style.opacity='1';tutArea.style.pointerEvents='auto';tutArea.style.userSelect='auto';}
+    }else{
+      if(lockMsg) lockMsg.classList.remove('unlocked');
+      if(tutArea){tutArea.style.opacity='0.45';tutArea.style.pointerEvents='none';tutArea.style.userSelect='none';}
+    }
+  }
+
   function getGuideProgress(kpId){
     try{
       var raw=localStorage.getItem('ai_kp_guide_progress');
       var data=raw?JSON.parse(raw):{};
-      return data[kpId]||{completed:false,criteria:[]};
-    }catch(e){return{completed:false,criteria:[]};}
+      return data[kpId]||{completed:false,criteria:[],prereq:[]};
+    }catch(e){return{completed:false,criteria:[],prereq:[]};}
   }
 
   function updateGuideProgress(kpId,idx,checked){
@@ -865,6 +1044,31 @@
     html+='</div></div>';
     return html;
   }
+
+  // 跨iframe高亮：从Python/Demo页面跳转过来后定位到具体KP
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.action !== 'highlightKp') return;
+    var kpId = e.data.kpId;
+    if (!kpId) return;
+    var kp = KP.find(function(k) { return k.id === kpId; });
+    if (!kp) return;
+    // 切换到该KP所在的Stage
+    if (currentStage !== kp.s) {
+      selectStage(kp.s);
+    }
+    // 展开该KP卡片并滚动定位
+    setTimeout(function() {
+      var card = document.getElementById('kp-' + kpId);
+      if (card) {
+        card.classList.add('open');
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 临时高亮闪烁
+        card.style.transition = 'box-shadow 0.3s ease';
+        card.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.4)';
+        setTimeout(function() { card.style.boxShadow = ''; }, 2000);
+      }
+    }, 100);
+  });
 
   // 初始化
   renderTodayPanel();

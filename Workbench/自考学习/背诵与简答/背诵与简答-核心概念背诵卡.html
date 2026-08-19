@@ -151,13 +151,27 @@
     .recite-card-inner {
       position: relative;
       width: 100%;
-      transition: transform 0.5s;
+      transition: transform 0.5s, min-height 0.3s;
       transform-style: preserve-3d;
     }
     .recite-card.flipped .recite-card-inner {
       transform: rotateY(180deg);
     }
-    .recite-card-front,
+    .recite-card-front {
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 12px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      background: #fff;
+      border: 2px solid var(--rule);
+    }
     .recite-card-back {
       position: absolute;
       top: 0;
@@ -170,8 +184,7 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-    }
-    .recite-card-front {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(139, 92, 246, 0.08));
       background: #fff;
       border: 2px solid var(--rule);
     }
@@ -203,6 +216,37 @@
       font-size: 0.9rem;
       color: var(--ink);
       line-height: 1.7;
+      white-space: pre-line;
+    }
+    .recite-card-section {
+      margin-bottom: 0.6rem;
+    }
+    .recite-section-label {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.3rem;
+      margin-bottom: 0.2rem;
+    }
+    .def-label {
+      background: rgba(37, 99, 235, 0.12);
+      color: #2563eb;
+    }
+    .ex-label {
+      background: rgba(139, 92, 246, 0.12);
+      color: #7c3aed;
+    }
+    .exam-label {
+      background: rgba(234, 88, 12, 0.12);
+      color: #ea580c;
+    }
+    .recite-section-content {
+      font-size: 0.88rem;
+      color: var(--ink);
+      line-height: 1.65;
+      white-space: pre-line;
+      padding-left: 0.1rem;
     }
     .recite-card-chapter {
       font-size: 0.72rem;
@@ -937,11 +981,24 @@
 
   <script>
     var STORAGE_KEY = 'recite-cards-data';
-    var DATA_VERSION = 5;
+    var MASTERY_KEY = 'recite-cards-mastery';
+    var DATA_VERSION = 7;
     var VERSION_KEY = 'recite-cards-version';
     var urlParams = new URLSearchParams(window.location.search);
     var currentSubject = window.RECITE_SUBJECT || urlParams.get('subject') || '13015';
     var currentView = 'today';
+    window.__apiMastery = null;
+    window.__apiQuizBank = null;
+    window.__apiQuizAI = null;
+    function apiPost(url, data) {
+      try {
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).catch(function(e) {});
+      } catch(e) {}
+    }
     var allData = {};
 
     function getTodayChapterPrefix() {
@@ -1155,10 +1212,43 @@
       ]
     };
 
+    function saveMastery() {
+      try {
+        var masteryMap = {};
+        Object.keys(allData).forEach(function(subject) {
+          allData[subject].forEach(function(c) {
+            if (c.question && c.mastery) {
+              masteryMap[c.question] = c.mastery;
+            }
+          });
+        });
+        localStorage.setItem(MASTERY_KEY, JSON.stringify(masteryMap));
+        apiPost('/api/mastery', masteryMap);
+      } catch(e) {}
+    }
+    function restoreMastery() {
+      try {
+        var masteryMap = window.__apiMastery;
+        if (!masteryMap) {
+          var raw = localStorage.getItem(MASTERY_KEY);
+          if (!raw) return;
+          masteryMap = JSON.parse(raw);
+        }
+        if (!masteryMap || typeof masteryMap !== 'object') return;
+        Object.keys(allData).forEach(function(subject) {
+          allData[subject].forEach(function(c) {
+            if (c.question && masteryMap[c.question]) {
+              c.mastery = masteryMap[c.question];
+            }
+          });
+        });
+      } catch(e) {}
+    }
     function loadData() {
       try {
         var storedVersion = localStorage.getItem(VERSION_KEY);
         if (storedVersion !== String(DATA_VERSION)) {
+          saveMastery();
           localStorage.removeItem(STORAGE_KEY);
           localStorage.setItem(VERSION_KEY, String(DATA_VERSION));
           allData = {};
@@ -1179,22 +1269,37 @@
       var changed = false;
       Object.keys(PRESET_CARDS).forEach(function(subject) {
         var cards = getCards(subject);
-        var existingQs = {};
-        cards.forEach(function(c) { existingQs[c.question] = true; });
+        var existingMap = {};
+        cards.forEach(function(c) { existingMap[c.question] = c; });
         PRESET_CARDS[subject].forEach(function(p, i) {
-          if (!existingQs[p.question]) {
-            cards.push({
+          if (!existingMap[p.question]) {
+            var card = {
               id: Date.now() + i + Math.random(),
               chapter: p.chapter,
               question: p.question,
-              answer: p.answer,
               hint: p.hint || '',
               mastery: p.mastery || 'unknown'
-            });
+            };
+            if (p.def) card.def = p.def;
+            if (p.ex) card.ex = p.ex;
+            if (p.exam) card.exam = p.exam;
+            if (p.answer) card.answer = p.answer;
+            cards.push(card);
+            changed = true;
+          } else if (p.def && !existingMap[p.question].def) {
+            var existing = existingMap[p.question];
+            existing.def = p.def;
+            existing.ex = p.ex;
+            existing.exam = p.exam;
+            existing.chapter = p.chapter;
+            existing.hint = p.hint || existing.hint;
+            delete existing.answer;
             changed = true;
           }
         });
       });
+      if (changed) saveData();
+      restoreMastery();
       if (changed) saveData();
     }
     function getCards(subject) {
@@ -1258,18 +1363,27 @@
       }
 
       grid.innerHTML = filtered.map(function(c) {
+        var esc = function(s) { return s.replace(/</g, '&lt;'); };
+        var backContent = '';
+        if (c.def || c.ex || c.exam) {
+          if (c.def) backContent += '<div class="recite-card-section"><span class="recite-section-label def-label">📋 定义</span><div class="recite-section-content">' + esc(c.def) + '</div></div>';
+          if (c.ex) backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">💡 举例</span><div class="recite-section-content">' + esc(c.ex) + '</div></div>';
+          if (c.exam) backContent += '<div class="recite-card-section"><span class="recite-section-label exam-label">🎯 考点</span><div class="recite-section-content">' + esc(c.exam) + '</div></div>';
+        } else if (c.answer) {
+          backContent = '<div class="recite-card-answer">' + esc(c.answer) + '</div>';
+        }
         return '<div class="recite-card" id="card-' + c.id + '" onclick="flipCard(this)">' +
           '<div class="recite-card-inner">' +
           '<div class="recite-card-front">' +
           '<div class="recite-card-chapter">' + (c.chapter || '未分类') + '</div>' +
           '<div class="recite-card-label">问题</div>' +
-          '<div class="recite-card-question">' + c.question.replace(/</g, '&lt;') + '</div>' +
-          (c.hint ? '<div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem;">💡 ' + c.hint.replace(/</g, '&lt;') + '</div>' : '') +
+          '<div class="recite-card-question">' + esc(c.question) + '</div>' +
+          (c.hint ? '<div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem;">💡 ' + esc(c.hint) + '</div>' : '') +
           '<span class="recite-mastery ' + c.mastery + '">' + masteryLabel[c.mastery] + '</span>' +
           '</div>' +
           '<div class="recite-card-back">' +
           '<div class="recite-card-label">答案</div>' +
-          '<div class="recite-card-answer">' + c.answer.replace(/</g, '&lt;') + '</div>' +
+          backContent +
           '<div class="recite-card-actions" onclick="event.stopPropagation()">' +
           '<button class="recite-card-btn known' + (c.mastery === 'known' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'known\')"><span>✓ 掌握</span></button>' +
           '<button class="recite-card-btn unsure' + (c.mastery === 'unsure' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'unsure\')"><span>○ 不熟</span></button>' +
@@ -1284,18 +1398,21 @@
       document.querySelectorAll('.recite-card-inner').forEach(function(inner) {
         var front = inner.querySelector('.recite-card-front');
         var back = inner.querySelector('.recite-card-back');
-        if (front && back) {
-          inner.style.minHeight = '';
-          var frontH = front.scrollHeight;
-          var backH = back.scrollHeight;
-          var maxH = Math.max(frontH, backH, 120);
-          inner.style.minHeight = maxH + 'px';
-        }
+        var card = inner.closest('.recite-card');
+        if (!front || !back) return;
+        inner.style.minHeight = '';
+        var target = card && card.classList.contains('flipped') ? back : front;
+        inner.style.minHeight = target.scrollHeight + 'px';
       });
     }
 
     function flipCard(el) {
+      var inner = el.querySelector('.recite-card-inner');
+      var front = inner.querySelector('.recite-card-front');
+      var back = inner.querySelector('.recite-card-back');
       el.classList.toggle('flipped');
+      var target = el.classList.contains('flipped') ? back : front;
+      if (target) inner.style.minHeight = target.scrollHeight + 'px';
     }
 
     function scrollToCard(id) {
@@ -1310,7 +1427,7 @@
     function setMastery(id, mastery) {
       var cards = getCards(currentSubject);
       var c = cards.find(function(x) { return x.id === id; });
-      if (c) { c.mastery = mastery; saveData(); renderAll(); }
+      if (c) { c.mastery = mastery; saveMastery(); saveData(); renderAll(); }
     }
 
     function deleteCard(id) {
@@ -1394,22 +1511,31 @@
 
     function loadQuizBank() {
       try {
-        var stored = localStorage.getItem(QUIZ_BANK_KEY);
-        if (stored) quizQuestions = JSON.parse(stored);
+        if (window.__apiQuizBank) {
+          quizQuestions = window.__apiQuizBank;
+        } else {
+          var stored = localStorage.getItem(QUIZ_BANK_KEY);
+          if (stored) quizQuestions = JSON.parse(stored);
+        }
       } catch(e) { quizQuestions = []; }
     }
 
     function saveQuizBank() {
       try {
         localStorage.setItem(QUIZ_BANK_KEY, JSON.stringify(quizQuestions));
+        apiPost('/api/quiz-bank', { subject: currentSubject, data: quizQuestions });
       } catch(e) {}
     }
 
     function loadQuizAI() {
       try {
-        var stored = localStorage.getItem(QUIZ_AI_KEY);
-        if (!stored) return {};
-        var raw = JSON.parse(stored);
+        var raw = window.__apiQuizAI;
+        if (!raw) {
+          var stored = localStorage.getItem(QUIZ_AI_KEY);
+          if (!stored) return {};
+          raw = JSON.parse(stored);
+        }
+        if (!raw || typeof raw !== 'object') return {};
         var mapped = {};
         quizQuestions.forEach(function(q, i) {
           if (q.qid && raw[q.qid]) {
@@ -1432,6 +1558,7 @@
           delete raw[q.qid];
         }
         localStorage.setItem(QUIZ_AI_KEY, JSON.stringify(raw));
+        apiPost('/api/quiz-ai', { subject: currentSubject, data: raw });
       } catch(e) {}
     }
 
@@ -1439,9 +1566,12 @@
       var q = quizQuestions[qi];
       if (!q || !q.qid) return false;
       try {
-        var stored = localStorage.getItem(QUIZ_AI_KEY);
-        if (!stored) return false;
-        var raw = JSON.parse(stored);
+        var raw = window.__apiQuizAI;
+        if (!raw) {
+          var stored = localStorage.getItem(QUIZ_AI_KEY);
+          if (!stored) return false;
+          raw = JSON.parse(stored);
+        }
         return !!raw[q.qid];
       } catch(e) { return false; }
     }
@@ -2224,6 +2354,7 @@
       } else {
         c.mastery = 'unknown';
       }
+      saveMastery();
       saveData();
       renderStats();
     }
@@ -2233,9 +2364,40 @@
     document.getElementById('btnModeBank').addEventListener('click', function() { switchMode('bank'); });
 
     loadData();
-    loadPresetCards();
     loadQuizBank();
-    switchSubject(currentSubject);
+    var cardSources = [
+      ['02324', '../../../data/recite-cards-02324.json?v=' + DATA_VERSION],
+      ['13015', '../../../data/recite-cards-13015.json?v=' + DATA_VERSION],
+      ['13003', '../../../data/recite-cards-13003.json?v=' + DATA_VERSION]
+    ];
+    var apiCalls = [
+      fetch('/api/mastery', { cache: 'no-cache' })
+        .then(function(r) { return r.json(); })
+        .then(function(d) { window.__apiMastery = d; })
+        .catch(function(e) {}),
+      fetch('/api/quiz-bank?subject=' + currentSubject, { cache: 'no-cache' })
+        .then(function(r) { return r.json(); })
+        .then(function(d) { window.__apiQuizBank = d; })
+        .catch(function(e) {}),
+      fetch('/api/quiz-ai?subject=' + currentSubject, { cache: 'no-cache' })
+        .then(function(r) { return r.json(); })
+        .then(function(d) { window.__apiQuizAI = d; })
+        .catch(function(e) {})
+    ];
+    Promise.all(cardSources.map(function(src) {
+      return fetch(src[1], { cache: 'no-cache' })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data && Array.isArray(data) && data.length > 0) {
+            PRESET_CARDS[src[0]] = data;
+          }
+        })
+        .catch(function(e) {});
+    }).concat(apiCalls)).finally(function() {
+      loadPresetCards();
+      loadQuizBank();
+      switchSubject(currentSubject);
+    });
   </script>
 </body>
 </html>

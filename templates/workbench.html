@@ -39,6 +39,51 @@
   height: calc(100vh - 60px);
   min-height: 600px;
 }
+/* 番茄钟悬浮按钮 */
+.pomo-float {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 30px;
+  font-family: var(--font, "PingFang SC", "Microsoft YaHei", sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  user-select: none;
+  border: 1px solid var(--rule, #e2e8f0);
+}
+.pomo-float.idle {
+  background: var(--surface, #fff);
+  color: var(--muted, #64748b);
+}
+.pomo-float.idle:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  transform: translateY(-2px);
+}
+.pomo-float.active {
+  background: linear-gradient(135deg, #2563eb, #8b5cf6);
+  color: #fff;
+  border-color: transparent;
+  animation: pomoPulse 2s ease-in-out infinite;
+}
+.pomo-float.active.break {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+@keyframes pomoPulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+  50% { box-shadow: 0 4px 20px rgba(37, 99, 235, 0.55); }
+}
+.pomo-float-icon { font-size: 1.05rem; line-height: 1; }
+.pomo-float-time { font-family: "JetBrains Mono", Consolas, monospace; font-size: 0.9rem; }
+.pomo-float-label { font-size: 0.72rem; opacity: 0.9; }
   </style>
 {{ theme_script }}
 </head>
@@ -76,6 +121,9 @@
       </div>
     </main>
   </div>
+
+  <!-- 番茄钟悬浮按钮 -->
+  <div class="pomo-float idle" id="pomoFloat" onclick="openPomodoro()" title="番茄钟">🍅</div>
 
   <script>
 // <!-- reading-constants-begin -->
@@ -136,11 +184,13 @@ const workspaces = [
     function countLeaves(items) {
       if (!Array.isArray(items)) return 0;
       return items.reduce((sum, item) => {
+        if (item.hidden) return sum;
         return sum + (isFolder(item) ? countLeaves(item.items) : 1);
       }, 0);
     }
 
     function hasVisibleDescendant(item) {
+      if (item.hidden) return false;
       if (!isFolder(item)) return matchesSearch(item);
       return item.items.some(hasVisibleDescendant);
     }
@@ -295,7 +345,7 @@ function renderTree() {
         return '<div class="tree-empty">暂无项目</div>';
       }
 
-      const visibleItems = searchQuery ? items.filter(item => matchesSearch(item) || hasVisibleDescendant(item)) : items;
+      const visibleItems = items.filter(item => !item.hidden && (searchQuery ? (matchesSearch(item) || hasVisibleDescendant(item)) : true));
       if (visibleItems.length === 0) return '';
 
       return visibleItems.map(item => {
@@ -1090,6 +1140,168 @@ function renderTree() {
       if (!document.hidden) { renderTree(); if (activeItemId) renderItemView(); }
     });
     setInterval(function() { updateSidebarProgress(); }, 3000);
+
+    // ========== 番茄钟悬浮按钮 ==========
+    // 在父页面运行，不受 iframe 切换影响，计时和通知持续工作
+    var POMO_SLOTS = [
+      { time: '08:00-10:50', startH: 8, startM: 0, endH: 10, endM: 50, label: '上午主科' },
+      { time: '14:00-15:30', startH: 14, startM: 0, endH: 15, endM: 30, label: '下午练习' },
+      { time: '15:30-16:00', startH: 15, startM: 30, endH: 16, endM: 0, label: '间隔复习' },
+      { time: '16:00-17:00', startH: 16, startM: 0, endH: 17, endM: 0, label: 'AI工程' },
+      { time: '19:30-20:30', startH: 19, startM: 30, endH: 20, endM: 30, label: 'AI学习' },
+      { time: '20:30-21:00', startH: 20, startM: 30, endH: 21, endM: 0, label: '英语' },
+      { time: '21:00-21:30', startH: 21, startM: 0, endH: 21, endM: 30, label: '复盘' }
+    ];
+
+    function isPomoPageLoaded() {
+      var frame = document.querySelector('.content-frame');
+      if (!frame || !frame.src) return false;
+      return frame.src.indexOf('番茄钟') !== -1;
+    }
+
+    function getPomoState() {
+      try {
+        var raw = localStorage.getItem('pomo_timer_state');
+        return raw ? JSON.parse(raw) : null;
+      } catch(e) { return null; }
+    }
+
+    function setPomoState(state) {
+      try { localStorage.setItem('pomo_timer_state', JSON.stringify(state)); } catch(e) {}
+    }
+
+    function clearPomoState() {
+      try { localStorage.removeItem('pomo_timer_state'); } catch(e) {}
+    }
+
+    function pomoNotify(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          var n = new Notification('🍅 ' + title, { body: body, tag: 'pomo-float' });
+          setTimeout(function() { n.close(); }, 10000);
+        } catch(e) {}
+      }
+    }
+
+    function pomoPlaySound() {
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var beep = function(freq, dur, delay) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+          gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + delay + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + dur);
+          osc.start(ctx.currentTime + delay);
+          osc.stop(ctx.currentTime + delay + dur);
+        };
+        beep(880, 0.15, 0);
+        beep(880, 0.15, 0.25);
+        beep(1100, 0.3, 0.5);
+      } catch(e) {}
+    }
+
+    function updatePomoFloat() {
+      var state = getPomoState();
+      var float = document.getElementById('pomoFloat');
+      if (!float) return;
+
+      if (!state || !state.isRunning || state.isPaused) {
+        float.className = 'pomo-float idle';
+        float.innerHTML = '<span class="pomo-float-icon">🍅</span>';
+        float.title = '番茄钟 - 点击打开';
+        return;
+      }
+
+      var now = Date.now();
+      var targetEnd = state.targetEndTime || 0;
+      var diffSec = Math.floor((targetEnd - now) / 1000);
+
+      if (diffSec <= 0) {
+        // 时间到
+        if (!isPomoPageLoaded()) {
+          // 番茄钟页面未加载，由悬浮按钮处理
+          handlePomoTimeout(state);
+        }
+        // 如果页面已加载，由页面处理，悬浮按钮等下一 tick 更新
+        return;
+      }
+
+      var min = Math.floor(diffSec / 60);
+      var sec = diffSec % 60;
+      var timeStr = String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+
+      var slot = POMO_SLOTS[state.slotIdx] || {};
+      var phaseLabel = state.pomoPhase === 'break' ? '休息' : '学习中';
+      var cls = 'pomo-float active' + (state.pomoPhase === 'break' ? ' break' : '');
+
+      float.className = cls;
+      float.innerHTML = '<span class="pomo-float-icon">🍅</span>' +
+        '<span class="pomo-float-time">' + timeStr + '</span>' +
+        '<span class="pomo-float-label">' + phaseLabel + '</span>';
+      float.title = (slot.label || '') + ' · ' + phaseLabel + ' · 剩余 ' + timeStr + '（点击查看详情）';
+    }
+
+    function handlePomoTimeout(state) {
+      var slot = POMO_SLOTS[state.slotIdx];
+      if (!slot) { clearPomoState(); return; }
+
+      // 检查是否超出时段
+      var now = new Date();
+      var curMin = now.getHours() * 60 + now.getMinutes();
+      var eMin = slot.endH * 60 + slot.endM;
+      if (curMin >= eMin) {
+        clearPomoState();
+        pomoNotify('时段结束', (slot.label || '') + ' 学习完成！');
+        pomoPlaySound();
+        return;
+      }
+
+      // 番茄阶段切换
+      if (state.pomoPhase === 'work') {
+        state.pomoPhase = 'break';
+        var breakMin = (state.mode === '50') ? 5 : 5;
+        state.targetEndTime = Date.now() + breakMin * 60 * 1000;
+        state.pomoWorkCycle = (state.pomoWorkCycle || 0) + 1;
+        setPomoState(state);
+        pomoNotify('番茄完成！', '休息 ' + breakMin + ' 分钟');
+        pomoPlaySound();
+      } else if (state.pomoPhase === 'break') {
+        state.pomoPhase = 'work';
+        var workMin = (state.mode === '50') ? 50 : 25;
+        state.targetEndTime = Date.now() + workMin * 60 * 1000;
+        setPomoState(state);
+        pomoNotify('休息结束', '继续学习，保持专注！');
+        pomoPlaySound();
+      }
+    }
+
+    function openPomodoro() {
+      for (var w = 0; w < workspaces.length; w++) {
+        var ws = workspaces[w];
+        if (ws.categories) {
+          for (var c = 0; c < ws.categories.length; c++) {
+            var cat = ws.categories[c];
+            if (cat.items) {
+              for (var i = 0; i < cat.items.length; i++) {
+                if (cat.items[i].contentUrl && cat.items[i].contentUrl.indexOf('番茄钟') !== -1) {
+                  selectItem(cat.items[i].id);
+                  return;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 启动悬浮按钮更新
+    setInterval(updatePomoFloat, 1000);
+    updatePomoFloat();
   </script>
 </body>
 </html>

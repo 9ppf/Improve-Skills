@@ -788,6 +788,7 @@ article.dash-page {
   color: var(--muted);
 }
 .wk-goal-simple .wk-tag { flex-shrink: 0; }
+.wk-goal-simple .wk-goal-chapter { flex-shrink: 0; font-weight: 600; color: #2563eb; min-width: 3.5rem; }
 .wk-goal-simple .wk-goal-text { flex: 1; }
 
 .wk-check {
@@ -1124,6 +1125,7 @@ article.dash-page {
 .dp-tag-en { background: #ec4899; }
 .dp-tag-review { background: #64748b; }
 .dp-task-text { flex: 1; font-size: 0.82rem; line-height: 1.5; }
+.dp-task-chapter { flex-shrink: 0; font-weight: 600; color: #2563eb; font-size: 0.78rem; white-space: nowrap; }
 .dp-task-hours {
   flex-shrink: 0;
   font-size: 0.72rem;
@@ -1177,14 +1179,47 @@ article.dash-page {
 
 .dp-exec-row {
   display: grid;
-  grid-template-columns: 90px 70px 1fr;
-  gap: 0.6rem;
+  grid-template-columns: 85px 22px 68px 72px 1fr;
+  gap: 0.5rem;
   padding: 0.4rem 0;
   border-bottom: 1px dashed var(--rule);
   font-size: 0.85rem;
   align-items: center;
 }
 .dp-exec-row:last-child { border-bottom: none; }
+.dp-exec-row.done { opacity: 0.5; }
+.dp-exec-row.done .dp-exec-topic { text-decoration: line-through; }
+.dp-exec-check {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--rule);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.dp-exec-check:hover { border-color: #2563eb; }
+.dp-exec-check.checked {
+  background: #2563eb;
+  border-color: #2563eb;
+  position: relative;
+}
+.dp-exec-check.checked::after {
+  content: '✓';
+  color: #fff;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.dp-exec-chapter {
+  font-weight: 600;
+  color: #2563eb;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.dp-exec-topic { font-size: 0.82rem; }
 .dp-exec-row .dp-exec-time {
   color: var(--muted);
   font-family: var(--font-mono, "JetBrains Mono", Consolas, monospace);
@@ -1226,8 +1261,9 @@ article.dash-page {
 
 @media (max-width: 640px) {
   .dp-exec-row {
-    grid-template-columns: 75px 60px 1fr;
-    font-size: 0.8rem;
+    grid-template-columns: 70px 20px 56px 60px 1fr;
+    font-size: 0.78rem;
+    gap: 0.35rem;
   }
 }
 
@@ -1965,7 +2001,7 @@ function renderCards() {
 // ---------- Week Overview (周任务概览) ----------
 var SCHEDULE_STORAGE_KEY = 'schedule_data';
 var SCHEDULE_VERSION_KEY = 'schedule_data_version';
-var SCHEDULE_VERSION = 'v2.6.3'; // 更新计划数据时递增此版本号，自动清除旧缓存
+var SCHEDULE_VERSION = 'v3.3.1'; // 更新计划数据时递增此版本号，自动清除旧缓存
 
 // 三阶段：0=初级(第1-5周) 1=中间(第6-7周) 2=冲刺(第8-10周)
 var PHASE_RANGES = [
@@ -1977,109 +2013,108 @@ var currentPhase = 0;
 var PHASE_OVERRIDE_KEY = 'schedule_phase_override';
 
 var WEEK_DATA = [
-  // ===== 初级阶段（第1-5周）— 自考60% + AI20% + 英语10% + 休息10% =====
   { week: '第1周', dates: '8/18 — 8/24', badge: '起点', phase: 0, isCurrent: true,
     goals: [
-      { tag: 'core', tagText: '系统原理', text: '第1章：冯·诺依曼结构、程序执行、系统层次结构、性能评价', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '第1章：命题逻辑基本概念、命题公式、等值演算', done: false },
-      { tag: 'ai', tagText: 'AI', text: '岗位Stage1：Python工程化(venv/pip/项目结构) + FastAPI接口开发', done: false },
-      { tag: 'ai', tagText: 'AI', text: '岗位Stage1：LLM API调用(流式输出/错误重试) + Prompt工程(角色/Few-shot/CoT)', done: false },
-      { tag: 'en', tagText: '英语', text: '单词 150 个 + 阅读判断 1 篇', done: false }
-    ],
-    milestone: '里程碑：系统原理第1章 + 离散数学第1章 + 岗位Stage1入门'
+      { tag: 'core', subject: '系统原理', chapter: '第1章', topic: '冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第1章', topic: '命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '第1章', topic: '数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度', done: false },
+      { tag: 'py', subject: 'AI工程', chapter: 'KP1', topic: 'Python工程化：venv/pip/项目结构 + 前置学习关卡', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: '', topic: '小甲鱼Python入门 第1-5集（变量/字符串/列表/函数/模块）', done: false },
+      { tag: 'en', subject: '英语', chapter: '', topic: '单词 100 个 + 阅读判断 1 篇', done: false },
+    ]
   },
-  { week: '第2周', dates: '8/25 — 8/31', badge: '', phase: 0, isCurrent: false,
+  { week: '第2周', dates: '8/25 — 8/31', phase: 0,
     goals: [
-      { tag: 'core', tagText: '系统原理', text: '第2章：数制编码、IEEE 754、ALU、乘除运算 + 第1章间隔复习', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '第2章：谓词逻辑、第3章：集合论 + 第1章间隔复习', done: false },
-      { tag: 'key', tagText: '数据结构', text: '第1章：线性表 + 栈/队列（提前启动，学位课重点）', done: false },
-      { tag: 'ai', tagText: 'AI', text: '岗位Stage2：文本向量化(Embedding) + 向量数据库(Chroma CRUD)', done: false },
-      { tag: 'en', tagText: '英语', text: '单词 150 个 + 完形填空 1 篇', done: false }
-    ],
-    milestone: '里程碑：系统原理第1-2章 + 离散数学第1-3章 + 数据结构提前启动 + 岗位Stage2开始'
+      { tag: 'core', subject: '系统原理', chapter: '第2章', topic: '真值和机器数、补码、IEEE 754浮点数、大小端方式、标志位(ZF/SF/CF/OF)、浮点加减运算', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第2章', topic: '有效推理、推理的基本规则、常用的推理定律、归谬法、CP规则、用真值表法判断推理有效性、相容', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第3章', topic: '个体词、量词否定规则、约束变量和自由变量、前束范式、谓词逻辑的推理规则、论域、谓词公式的解释', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '第2章', topic: '线性表、顺序表、单链表、循环链表、顺序表和链表', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '第3章', topic: '栈、队列、栈应用、双端队列', done: false },
+      { tag: 'py', subject: 'AI工程', chapter: 'KP2', topic: 'def函数/dict字典/class类', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: '', topic: '小甲鱼Python入门 第6-10集（文件/异常/模块/类）', done: false },
+      { tag: 'en', subject: '英语', chapter: '', topic: '单词 100 个 + 阅读判断 1 篇', done: false },
+    ]
   },
-  { week: '第3周', dates: '9/1 — 9/7', badge: '', phase: 0, isCurrent: false,
+  { week: '第3周', dates: '9/1 — 9/7', phase: 0,
     goals: [
-      { tag: 'core', tagText: '系统原理', text: '第3章：IA-32 指令系统、寻址方式、过程调用、x86-64 + 间隔复习', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '第4章：关系、第5章：函数 + 第1-3章间隔复习', done: false },
-      { tag: 'key', tagText: '数据结构', text: '第2章：树（二叉树/BST/堆）+ 第1章间隔复习', done: false },
-      { tag: 'ai', tagText: 'AI', text: '岗位Stage2：RAG评估优化(召回率/幻觉检测) + 项目1：AI对话API服务', done: false },
-      { tag: 'en', tagText: '英语', text: '单词 150 个 + 阅读判断 2 篇', done: false }
-    ],
-    milestone: '里程碑：系统原理第3章 + 数据结构第2章 + 岗位项目1完成'
+      { tag: 'core', subject: '系统原理', chapter: '第3章', topic: 'CISC与RISC、IA-32通用寄存器、IA-32寻址方式、栈帧与过程调用、AT&T与Intel汇编格式、LEA指令', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第4章', topic: '集合的定义和表示方法、集合的基本运算、幂集、笛卡尔积、集合的基数', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第5章', topic: '二元关系、关系的五个基本性质、关系的闭包、等价关系、划分、偏序关系、函数', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '第4章', topic: '多维数组的存储方式、特殊矩阵压缩存储、广义表、串的模式匹配、KMP算法中next数组', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '第5章', topic: '树的基本术语、二叉树重要性质、满二叉树和完全二叉树、二叉树遍历方式、线索二叉树、堆、树/森林与二叉树转换、哈夫曼树和哈夫曼编码', done: false },
+      { tag: 'py', subject: 'AI工程', chapter: 'KP3', topic: 'import/try-except/os.getenv', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: '', topic: '小甲鱼Python入门 第11-15集（面向对象/装饰器/迭代器）', done: false },
+      { tag: 'en', subject: '英语', chapter: '', topic: '单词 100 个 + 阅读判断 1 篇', done: false },
+    ]
   },
-  { week: '第4周', dates: '9/8 — 9/14', badge: '', phase: 0, isCurrent: false,
+  { week: '第4周', dates: '9/8 — 9/14', phase: 0,
     goals: [
-      { tag: 'core', tagText: '系统原理', text: '第4章：预处理/编译/链接、ELF + 第5章：CPU 数据通路 + 间隔复习', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '第6章：代数系统 + 第7章：图论 + 间隔复习', done: false },
-      { tag: 'key', tagText: '数据结构', text: '第3章：图（BFS/DFS）+ 第1-2章间隔复习', done: false },
-      { tag: 'ai', tagText: 'AI', text: '岗位Stage3：LangChain框架(Chain/Memory) + Function Calling', done: false },
-      { tag: 'en', tagText: '英语', text: '单词 150 个 + 完形填空 2 篇', done: false }
-    ],
-    milestone: '里程碑：系统原理第4-5章 + 离散数学第6-7章 + 数据结构第3章 + 岗位Stage3开始'
+      { tag: 'core', subject: '系统原理', chapter: '第4章', topic: 'C程序编译流程、ELF格式、符号解析与重定位、静态与动态链接、程序与进程、异常与中断、指令流水线', done: false },
+      { tag: 'core', subject: '系统原理', chapter: '第5章', topic: '存储器层次结构、局部性原理、SRAM和DRAM、cache映射方式、cache写策略、虚拟存储、TLB、cache平均访问时间', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第6章', topic: '代数系统、半群、子群、同态和同构', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第7章', topic: '格、分配格、布尔代数', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '第6章', topic: '图的基本术语、图的邻接矩阵和邻接表、DFS和BFS、最小生成树的Prim和Kruskal算法、Dijkstra和Floyd算法、拓扑排序、关键路径', done: false },
+      { tag: 'py', subject: 'AI工程', chapter: 'KP4', topic: '三引号/字符串格式化/JSON', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: 'Stage1', topic: 'MVP项目搭建', done: false },
+      { tag: 'en', subject: '英语', chapter: '', topic: '单词 100 个 + 阅读判断 1 篇', done: false },
+    ]
   },
-  { week: '第5周', dates: '9/15 — 9/21', badge: '', phase: 0, isCurrent: false,
+  { week: '第5周', dates: '9/15 — 9/21', badge: '阶段测', phase: 0,
     goals: [
-      { tag: 'core', tagText: '系统原理', text: '第6章：总线与 I/O、中断 + 全册错题二刷 + 间隔复习', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '第8章：树、第9章：组合数学 + 间隔复习', done: false },
-      { tag: 'key', tagText: '数据结构', text: '第4章：排序算法 + 间隔复习', done: false },
-      { tag: 'ai', tagText: 'AI', text: '岗位Stage3：Agent架构(ReAct) + 项目2：知识库问答机器人', done: false },
-      { tag: 'ai', tagText: 'AI', text: '项目3启动：AI错题分析平台（需求分析+架构设计）', done: false },
-      { tag: 'en', tagText: '英语', text: '单词 150 个 + 阅读判断 2 篇', done: false }
-    ],
-    milestone: '里程碑：三科章节全部梳理完成 + 岗位项目2完成 + 项目3启动'
+      { tag: 'core', subject: '系统原理', chapter: '第6章', topic: 'I/O子系统层次、用户级与系统级I/O、I/O控制方式、I/O端口编址方式、中断处理过程、DMA、VFS', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第8章', topic: '图的基本概念和术语、握手定理、连通图、欧拉图和哈密顿图、二部图、树', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '第9章', topic: '生成树、有根树、平面图、图的着色、有向无环图', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '第7章', topic: '稳定排序、直接插入排序、希尔排序、起泡排序、快速排序、堆排序、归并排序和基数排序', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '第8章', topic: '平均查找长度、折半查找、分块查找、二叉排序树、平衡二叉树、哈希表', done: false },
+      { tag: 'py', subject: 'AI工程', chapter: '', topic: 'KP1-4复习 + 小项目', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: 'Stage1', topic: 'MVP项目完善', done: false },
+      { tag: 'en', subject: '英语', chapter: '', topic: '单词 100 个 + 阅读判断 1 篇', done: false },
+    ]
   },
-  // ===== 中间阶段（第6-7周）=====
-  { week: '第6周', dates: '9/22 — 9/28', badge: '中间', phase: 1, isCurrent: false,
+  { week: '第6周', dates: '9/22 — 9/28', badge: '中间', phase: 1,
     goals: [
-      { tag: 'key', tagText: '数据结构', text: '第5章：查找（二分/哈希）— 章节收尾 + 间隔复习', done: false },
-      { tag: 'core', tagText: '系统原理', text: '重点：CPU 数据通路 + 流水线 + 指令系统 难点突破 + 真题 2 套', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '全册错题一刷 + 重点：谓词逻辑推理 + 图论证明 难点突破 + 真题 2 套', done: false },
-      { tag: 'ai', tagText: 'AI', text: '岗位Stage4：Docker部署 + 项目3完善（整合RAG+Agent）', done: false },
-      { tag: 'en', tagText: '英语', text: '单词 150 个 + 阅读判断 2 篇 + 完形 1 篇', done: false }
-    ],
-    milestone: '里程碑：三科重点难点攻克 + 真题分类练手 + 岗位项目3完成'
+      { tag: 'core', subject: '系统原理', chapter: '重难点突破', topic: 'CPU数据通路 + 流水线 + 指令系统 + 真题2套', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '重难点突破', topic: '谓词逻辑推理 + 格与布尔代数 + 真题2套', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '重难点突破', topic: '树/图综合应用 + 排序/查找综合 + 真题2套', done: false },
+      { tag: 'py', subject: 'AI工程', chapter: '', topic: 'AI工程化复习', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: 'Stage2', topic: 'API对接', done: false },
+      { tag: 'en', subject: '英语', chapter: '', topic: '单词 100 个 + 阅读判断 1 篇', done: false },
+    ]
   },
-  { week: '第7周', dates: '9/29 — 10/5', badge: '', phase: 1, isCurrent: false,
+  { week: '第7周', dates: '9/29 — 10/5', phase: 1,
     goals: [
-      { tag: 'key', tagText: '数据结构', text: '重点：排序算法实现 + 图遍历应用 + 真题 2 套 + 间隔复习', done: false },
-      { tag: 'core', tagText: '系统原理', text: '真题 3 套 + 错题三刷 + 知识框架图整理', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '真题 3 套 + 错题三刷 + 知识框架图整理', done: false },
-      { tag: 'ai', tagText: 'AI', text: '岗位项目完善 + GitHub commit + 简历项目整理', done: false },
-      { tag: 'en', tagText: '英语', text: '真题 2 套 + 作文模板背诵', done: false }
-    ],
-    milestone: '里程碑：三科真题完成 + 知识框架图 + 岗位项目定稿 + 简历可投'
+      { tag: 'core', subject: '系统原理', chapter: '真题训练', topic: '系统原理真题2套 + 错题三刷', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '真题训练', topic: '离散数学真题2套 + 错题三刷', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '真题训练', topic: '数据结构真题2套 + 错题三刷', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: 'Stage2', topic: 'API完善', done: false },
+      { tag: 'en', subject: '英语', chapter: '', topic: '单词 100 个 + 阅读判断 1 篇', done: false },
+      { tag: 'review', subject: '复盘', chapter: '', topic: '知识框架图整理', done: false },
+    ]
   },
-  // ===== 冲刺阶段（第8-10周）=====
-  { week: '第8周', dates: '10/6 — 10/12', badge: '冲刺', phase: 2, isCurrent: false,
+  { week: '第8周', dates: '10/6 — 10/12', badge: '冲刺', phase: 2,
     goals: [
-      { tag: 'core', tagText: '系统原理', text: '模拟考 2 套 + 高频考点背诵 + 错题四刷 + 间隔复习', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '模拟考 2 套 + 高频考点背诵 + 错题四刷 + 间隔复习', done: false },
-      { tag: 'key', tagText: '数据结构', text: '模拟考 1 套 + 高频考点背诵 + 间隔复习', done: false },
-      { tag: 'ai', tagText: 'AI', text: '面试理论突击(Stage5)：ML/DL概念 + Transformer + 注意力机制', done: false },
-      { tag: 'en', tagText: '英语', text: '作文模板默写 + 阅读技巧巩固 + 高频词汇', done: false }
-    ],
-    milestone: '里程碑：全部科目模拟考开始 + 高频考点背诵 + 面试理论突击'
+      { tag: 'core', subject: '系统原理', chapter: '模拟考', topic: '高频考点背诵 + 错题四刷', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '模拟考', topic: '高频考点背诵 + 错题四刷', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '模拟考', topic: '高频考点背诵 + 间隔复习', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: '', topic: '暂停（自考冲刺优先）', done: false },
+      { tag: 'en', subject: '英语', chapter: '', topic: '单词 100 个 + 阅读判断 1 篇', done: false },
+    ]
   },
-  { week: '第9周', dates: '10/13 — 10/19', badge: '', phase: 2, isCurrent: false,
+  { week: '第9周', dates: '10/13 — 10/19', phase: 2,
     goals: [
-      { tag: 'core', tagText: '系统原理', text: '模拟考 3 套 + 查漏补缺 + 串讲笔记', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '模拟考 3 套 + 查漏补缺 + 串讲笔记', done: false },
-      { tag: 'key', tagText: '数据结构', text: '模拟考 2 套 + 查漏补缺 + 串讲笔记', done: false },
-      { tag: 'ai', tagText: 'AI', text: '简历定稿 + 面试模拟 + 岗位投递准备', done: false },
-      { tag: 'en', tagText: '英语', text: '模拟考 2 套 + 高频词汇复习 + 作文练习', done: false }
-    ],
-    milestone: '里程碑：三科模拟考完成 + 串讲笔记定稿 + 简历投递'
+      { tag: 'core', subject: '系统原理', chapter: '模拟考', topic: '查漏补缺 + 串讲笔记', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '模拟考', topic: '查漏补缺 + 串讲笔记', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '模拟考', topic: '查漏补缺 + 串讲笔记', done: false },
+      { tag: 'ai', subject: 'AI学习', chapter: '', topic: '暂停（自考冲刺优先）', done: false },
+    ]
   },
-  { week: '第10周', dates: '10/20 — 10/24', badge: '考试', phase: 2, isCurrent: false,
+  { week: '第10周', dates: '10/20 — 10/24', badge: '考试', phase: 2,
     goals: [
-      { tag: 'core', tagText: '系统原理', text: '考前冲刺：错题终刷 + 考点速记 + 状态调整', done: false },
-      { tag: 'core2', tagText: '离散数学', text: '考前冲刺：错题终刷 + 考点速记 + 状态调整', done: false },
-      { tag: 'key', tagText: '数据结构', text: '考前冲刺：错题终刷 + 考点速记 + 状态调整', done: false },
-      { tag: 'ai', tagText: 'AI', text: '面试准备收尾 + 项目Demo演练', done: false },
-      { tag: 'en', tagText: '英语', text: '考前冲刺：作文模板终记 + 高频词汇终刷', done: false }
-    ],
-    milestone: '里程碑：10/20–10/24 考试周，全力冲刺 + 考完即投简历'
+      { tag: 'core', subject: '系统原理', chapter: '考前冲刺', topic: '错题终刷 + 考点速记 + 状态调整', done: false },
+      { tag: 'core2', subject: '离散数学', chapter: '考前冲刺', topic: '错题终刷 + 考点速记 + 状态调整', done: false },
+      { tag: 'key', subject: '数据结构', chapter: '考前冲刺', topic: '错题终刷 + 考点速记 + 状态调整', done: false },
+      { tag: 'review', subject: '复盘', chapter: '', topic: '考前状态调整', done: false },
+    ]
   }
 ];
 
@@ -2096,6 +2131,7 @@ function loadWeekData() {
   var savedVersion = localStorage.getItem(SCHEDULE_VERSION_KEY);
   if (savedVersion !== SCHEDULE_VERSION) {
     localStorage.removeItem(SCHEDULE_STORAGE_KEY);
+    try { localStorage.removeItem('ai_daily_plan'); } catch(e) {}
     localStorage.setItem(SCHEDULE_VERSION_KEY, SCHEDULE_VERSION);
   }
   var saved = safeParse(SCHEDULE_STORAGE_KEY, null);
@@ -2105,6 +2141,40 @@ function loadWeekData() {
 
 function saveWeekData(data) {
   safeSave(SCHEDULE_STORAGE_KEY, data);
+}
+
+// 异步从 data/study-plan.json 加载计划数据（source of truth），写入 localStorage 缓存
+function loadPlanFromJSON() {
+  return fetch('../../data/study-plan.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data && data.weeks && Array.isArray(data.weeks) && data.weeks.length > 0) {
+        safeSave(SCHEDULE_STORAGE_KEY, data.weeks);
+        localStorage.setItem(SCHEDULE_VERSION_KEY, SCHEDULE_VERSION);
+      }
+      // 加载每日计划数据到 localStorage（按当前日期匹配周次）
+      if (data && data.dailyPlans && Array.isArray(data.dailyPlans) && data.dailyPlans.length > 0) {
+        var today = new Date();
+        var todayStr = (today.getMonth() + 1) + '/' + today.getDate();
+        var matched = null;
+        for (var i = 0; i < data.dailyPlans.length; i++) {
+          var dp = data.dailyPlans[i];
+          if (dp.days && dp.days.some(function(d) { return d.date === todayStr; })) {
+            matched = dp;
+            break;
+          }
+        }
+        if (!matched) matched = data.dailyPlans[0];
+        if (matched && matched.days && matched.days.length > 0) {
+          try {
+            localStorage.setItem('ai_daily_plan', JSON.stringify(matched));
+          } catch(e) {}
+        }
+      }
+    })
+    .catch(function(e) {
+      // JSON 文件不可用，使用 inline WEEK_DATA（loadWeekData 会处理）
+    });
 }
 
 // 按日期自动选择阶段，可被 localStorage 手动覆盖
@@ -2152,14 +2222,17 @@ function renderWeeks() {
     if (week.badge) html += '<span class="wk-week-badge">' + escapeHtml(week.badge) + '</span>';
     html += escapeHtml(week.week) + '</div><div class="wk-week-dates">' + escapeHtml(week.dates) + '</div></div>';
     html += '<div class="wk-week-progress"><div class="pct">' + pct + '%</div><div class="label">' + doneCount + '/' + totalCount + ' 项</div></div></div>';
-    // 简洁列表：仅显示科目标签 + 章节名，无编辑/删除按钮
+    // 简洁列表：科目标签 + 章节 + 知识点
     html += '<div class="wk-goals wk-goals-simple">';
     week.goals.forEach(function(goal, gi) {
-      var shortText = goal.text.replace(/^第\d+章\s*/, '').replace(/\s*[+＋]\s*/g, ' · ');
+      var goalSubject = goal.subject || goal.tagText || '';
+      var goalChapter = goal.chapter || '';
+      var goalTopic = goal.topic || goal.text || '';
       html += '<div class="wk-goal-simple' + (goal.done ? ' done' : '') + '">';
       html += '<div class="wk-check' + (goal.done ? ' checked' : '') + '" onclick="toggleGoal(' + wi + ',' + gi + ')"></div>';
-      html += '<span class="wk-tag ' + (TAG_CLASS[goal.tag] || 'wk-tag-core') + '">' + escapeHtml(goal.tagText) + '</span>';
-      html += '<span class="wk-goal-text">' + escapeHtml(shortText) + '</span>';
+      html += '<span class="wk-tag ' + (TAG_CLASS[goal.tag] || 'wk-tag-core') + '">' + escapeHtml(goalSubject) + '</span>';
+      if (goalChapter) html += '<span class="wk-goal-chapter">' + escapeHtml(goalChapter) + '</span>';
+      html += '<span class="wk-goal-text">' + escapeHtml(goalTopic) + '</span>';
       html += '</div>';
     });
     html += '</div>';
@@ -2208,7 +2281,9 @@ function aiGatherContext() {
     pythonProgress: pyDone + '/29',
     currentWeeks: currentWeeks.map(function(w) {
       return w.week + '(' + w.dates + '): ' + w.goals.map(function(g) {
-        return g.tagText + '-' + (g.done ? '✓' : '✗') + g.text;
+        var ch = g.chapter || '';
+        var tp = g.topic || g.text || '';
+        return (g.subject || g.tagText || '') + ' ' + ch + ' ' + (g.done ? '✓' : '✗') + ' ' + tp;
       }).join('; ');
     }).join('\n')
   };
@@ -2433,17 +2508,23 @@ function aiGenerate() {
   var systemPrompt = '你是一位专业的自考学习规划师。你的任务是根据学生当前的学习进度，生成下一周的逐日学习计划（每天具体学什么知识点）。' +
     '注意：不要照搬已有计划，而是根据已掌握的章节和未完成的任务，生成具体的、可执行的每日任务。' +
     '比如学生已掌握系统原理第1章，就生成第2章的任务；已掌握离散数学第1-3章，就生成第4章的任务。' +
-    '【重要规则】每天必须包含AI学习内容（Python工程化已并入AI，占比约20%），不能遗漏。每天4-5个任务。' +
-    '【时间分配】自考主科60% + AI学习20%（含Python工程化） + 英语10% + 复盘休息10%。' +
+    '【重要规则】每天必须包含AI学习内容（Python工程化已并入AI，占比约25%），不能遗漏。每天8-11个任务。' +
+    '【时间分配】自考主科60% + AI学习25%（含Python工程化） + 英语5% + 复盘休息10%。' +
     '【难度分配】根据各科章节难度灵活分配时间：简单章节（如概述、入门概念）可缩短至1h或合并两章学习；困难章节（如复杂算法、证明推导）分配2-3h。' +
     '例如离散数学第1章命题逻辑较简单可1h完成，第3章集合论较难可分配2h。' +
     '【科学方法】采用间隔重复（后续章节穿插前面章节复习）和交错学习（同一天混合不同科目），提高长期记忆保持率。' +
+    '【任务结构】每个任务必须包含：tag(科目标签)、subject(科目名)、chapter(章节，如"第1章")、topic(具体知识点)、hours(时长)、done(false)。' +
+    '禁止使用"主科"等模糊描述，必须明确科目名和章节号。' +
+    '上午主科时段(08:00-10:50)拆分为3个独立任务，每个科目一个，分别标注subject和chapter。' +
+    '下午练习时段(14:00-15:30)也拆分为3个独立任务，每个科目一个。' +
     '你必须返回纯 JSON 格式，不要包含 markdown 代码块标记。' +
-    'JSON 格式：{ action:\'generate\', days:[{date:\'8/14\',weekday:\'周四\',tasks:[{tag,tagText,text,hours:2}]}], summary:\'文字总结，说明为什么这样安排\' }。' +
+    'JSON 格式：{ action:\'generate\', days:[{date:\'8/18\',weekday:\'周一\',tasks:[{tag,subject,chapter,topic,hours,done}]}], summary:\'文字总结\' }。' +
     'tag 可选值：core(系统原理),core2(离散数学),key(数据结构),py(AI工程),ai(AI学习),en(英语),review(整理复盘)。' +
-    '每天5-6个任务，必须覆盖ai和review。py和ai均计入AI学习时间（合计约20%）。review任务固定为"整理当日笔记 + 错题回顾 + 次日计划确认"，hours为1。' +
-    '其他任务描述要具体到章节和小节，如"1.3 数据表示方法（原码、反码、补码）+ 1.4 IEEE 754 浮点数格式"。' +
-    'hours为预计学习时长（小时），根据章节难度灵活设定。生成7天的计划（本周一到周日）。';
+    'subject 对应值：系统原理、离散数学、数据结构、AI工程、AI学习、英语、复盘。' +
+    'chapter 示例："第1章"、"KP1"、"Stage1"、"重难点突破"、"模拟考"。无章节时填空字符串。' +
+    'topic 要具体到知识点，如"冯·诺依曼结构、程序执行、系统层次结构"。' +
+    '每天11个任务：3个上午概念(core/core2/key各1)+3个下午练习+1个间隔复习(review)+1个AI工程(py)+1个AI学习(ai)+1个英语(en)+1个复盘(review)。' +
+    'hours为预计学习时长（小时）。生成7天的计划（本周一到周日）。';
   var userPrompt = '当前阶段：' + ctx.phaseName + '（phase=' + ctx.phase + '）\n' +
     '阶段完成率：' + ctx.completionRate + '（' + ctx.doneGoals + '/' + ctx.totalGoals + '）\n' +
     '科目掌握情况：' + ctx.subjects + '\n' +
@@ -2485,14 +2566,16 @@ function aiAdjust() {
   document.getElementById('aiDailyPlan').innerHTML = '';
   var ctx = aiGatherContext();
   var systemPrompt = '你是一位专业的自考学习规划师。请根据学生已完成和未完成的任务，调整后续逐日学习计划。' +
-    '【重要规则】每天必须包含AI学习内容（Python工程化已并入AI，占比约20%）。每天4-5个任务。' +
-    '【时间分配】自考主科60% + AI学习20%（含Python工程化） + 英语10% + 复盘休息10%。' +
+    '【重要规则】每天必须包含AI学习内容（Python工程化已并入AI，占比约25%）。每天8-11个任务。' +
+    '【时间分配】自考主科60% + AI学习25%（含Python工程化） + 英语5% + 复盘休息10%。' +
     '【难度分配】根据各科章节难度灵活分配时间：简单章节可缩短至1h或合并两章学习；困难章节分配2-3h。' +
     '【科学方法】采用间隔重复（后续章节穿插前面章节复习）和交错学习（同一天混合不同科目）。' +
+    '【任务结构】每个任务必须包含：tag、subject(科目名)、chapter(章节)、topic(知识点)、hours、done(false)。' +
+    '禁止使用"主科"等模糊描述。上午和下午时段各拆分为3个独立任务(每科目一个)。' +
     '你必须返回纯 JSON 格式，不要包含 markdown 代码块标记。' +
-    'JSON 格式：{ action:\'adjust\', days:[{date,weekday,tasks:[{tag,tagText,text,hours}]}], summary:\'调整说明\' }。' +
+    'JSON 格式：{ action:\'adjust\', days:[{date,weekday,tasks:[{tag,subject,chapter,topic,hours,done}]}], summary:\'调整说明\' }。' +
     'tag 可选值：core(系统原理),core2(离散数学),key(数据结构),py(AI工程),ai(AI学习),en(英语),review(整理复盘)。' +
-    '每天5-6个任务，必须覆盖ai和review。py和ai均计入AI学习时间（合计约20%）。review任务固定为"整理当日笔记 + 错题回顾 + 次日计划确认"，hours为1。' +
+    '每天11个任务：3个上午概念+3个下午练习+1个间隔复习+1个AI工程+1个AI学习+1个英语+1个复盘。' +
     '针对未完成任务，请重新安排到后续日期，并适当调整内容。' +
     'hours为预计学习时长（小时），根据章节难度灵活设定。';
   var userPrompt = '当前阶段：' + ctx.phaseName + '（phase=' + ctx.phase + '）\n' +
@@ -2620,8 +2703,9 @@ function renderDailyPlan(result) {
         var taskDiv = document.createElement('div');
         taskDiv.className = 'dp-task';
         var tagClass = 'dp-tag-' + (task.tag || 'core');
-        taskDiv.innerHTML = '<span class="dp-tag ' + tagClass + '">' + escapeHtml(task.tagText || task.tag || '') + '</span>' +
-          '<span class="dp-task-text">' + escapeHtml(task.text || '') + '</span>' +
+        taskDiv.innerHTML = '<span class="dp-tag ' + tagClass + '">' + escapeHtml(task.subject || task.tagText || task.tag || '') + '</span>' +
+          (task.chapter ? '<span class="dp-task-chapter">' + escapeHtml(task.chapter) + '</span>' : '') +
+          '<span class="dp-task-text">' + escapeHtml(task.topic || task.text || '') + '</span>' +
           '<span class="dp-task-hours">' + (task.hours || '') + 'h</span>';
         dayDiv.appendChild(taskDiv);
       });
@@ -2632,12 +2716,13 @@ function renderDailyPlan(result) {
 
 // 4e-2. 每日执行计划：从 AI 逐日计划细化到小时级时段
 var DP_EXEC_SLOTS = [
-  { time: '08:00–11:30', hours: 3.5, tags: ['core','core2','key'], label: '自考主科' },
-  { time: '14:00–16:00', hours: 2,   tags: ['core','core2','key'], label: '自考主科' },
-  { time: '16:30–17:30', hours: 1,   tags: ['py'], label: 'AI工程' },
+  { time: '08:00–10:50', hours: 2.8, tags: ['core','core2','key'], label: '上午主科（番茄法）' },
+  { time: '14:00–15:30', hours: 1.5, tags: ['core','core2','key'], label: '下午练习/真题' },
+  { time: '15:30–16:00', hours: 0.5, tags: ['review'], label: '间隔复习' },
+  { time: '16:00–17:00', hours: 1,   tags: ['py'], label: 'AI工程' },
   { time: '19:30–20:30', hours: 1,   tags: ['ai'], label: 'AI学习' },
-  { time: '20:30–21:30', hours: 1,   tags: ['en'], label: '英语' },
-  { time: '22:00–23:00', hours: 1,   tags: ['review'], label: '整理复盘' }
+  { time: '20:30–21:00', hours: 0.5, tags: ['en'], label: '英语' },
+  { time: '21:00–21:30', hours: 0.5, tags: ['review'], label: '当日复盘' }
 ];
 
 function renderDailyExecPlan() {
@@ -2672,7 +2757,7 @@ function renderDailyExecPlan() {
   html += '<span class="dp-exec-tag review">复盘</span>';
   html += '</div>';
 
-  saved.days.forEach(function(day) {
+  saved.days.forEach(function(day, dayIdx) {
     var isToday = day.date === todayStr;
     var dayClass = isToday ? 'dp-exec-day today' : 'dp-exec-day';
 
@@ -2682,12 +2767,16 @@ function renderDailyExecPlan() {
     if (isToday) html += '<span class="dp-exec-badge">今天</span>';
     html += '</div>';
 
-    // 将任务分配到时段
-    var slots = distributeTasksToSlots(day.tasks || []);
+    var dayTasks = (day.tasks || []).map(function(t, i) {
+      var copy = {};
+      for (var k in t) copy[k] = t[k];
+      copy._origIdx = i;
+      return copy;
+    });
+    var slots = distributeTasksToSlots(dayTasks);
 
     slots.forEach(function(slot) {
       if (slot.tasks.length === 0) {
-        // 空时段显示休息
         html += '<div class="dp-exec-row">';
         html += '<span class="dp-exec-time">' + slot.time + '</span>';
         html += '<span class="dp-exec-tag rest">休息</span>';
@@ -2695,25 +2784,27 @@ function renderDailyExecPlan() {
         html += '</div>';
       } else {
         slot.tasks.forEach(function(t, idx) {
-          html += '<div class="dp-exec-row">';
+          var taskDone = t.done || false;
+          html += '<div class="dp-exec-row' + (taskDone ? ' done' : '') + '">';
           if (idx === 0) {
             html += '<span class="dp-exec-time">' + slot.time + '</span>';
           } else {
             html += '<span class="dp-exec-time"></span>';
           }
-          html += '<span class="dp-exec-tag ' + (t.tag || 'core') + '">' + escapeHtml(t.tagText || t.tag || '') + '</span>';
-          html += '<span>' + escapeHtml(t.text || '') + (t.hours ? ' (' + t.hours + 'h)' : '') + '</span>';
+          html += '<div class="dp-exec-check' + (taskDone ? ' checked' : '') + '" onclick="toggleTaskDone(' + dayIdx + ',' + t._origIdx + ')"></div>';
+          html += '<span class="dp-exec-tag ' + (t.tag || 'core') + '">' + escapeHtml(t.subject || t.tagText || t.tag || '') + '</span>';
+          if (t.chapter) html += '<span class="dp-exec-chapter">' + escapeHtml(t.chapter) + '</span>';
+          html += '<span class="dp-exec-topic">' + escapeHtml(t.topic || t.text || '') + (t.hours ? ' (' + t.hours + 'h)' : '') + '</span>';
           html += '</div>';
         });
       }
     });
 
-    // 今日产出
     var outputs = [];
     (day.tasks || []).forEach(function(t) {
       if (t.tag === 'py') outputs.push('Python 代码 commit');
       else if (t.tag === 'en') outputs.push('单词背诵记录');
-      else outputs.push((t.tagText || t.tag || '') + '笔记/手绘图');
+      else outputs.push((t.subject || t.tagText || t.tag || '') + '笔记/手绘图');
     });
     if (outputs.length) {
       html += '<div class="dp-exec-output"><strong>今日产出：</strong>' + escapeHtml(outputs.join('、')) + '</div>';
@@ -2725,14 +2816,14 @@ function renderDailyExecPlan() {
   container.innerHTML = html;
 }
 
-// 将 AI 每日任务分配到 5 个固定时段
+// 将每日任务分配到 7 个固定时段（8h新方案）
 function distributeTasksToSlots(tasks) {
   var slots = DP_EXEC_SLOTS.map(function(s) {
     return { time: s.time, hours: s.hours, tags: s.tags, label: s.label, tasks: [] };
   });
 
-  // 按科目分组
-  var mainTasks = []; // core, core2, key
+  var conceptTasks = [];
+  var practiceTasks = [];
   var pyTasks = [];
   var aiTasks = [];
   var enTasks = [];
@@ -2741,7 +2832,10 @@ function distributeTasksToSlots(tasks) {
 
   tasks.forEach(function(t) {
     var tag = t.tag || 'core';
-    if (tag === 'core' || tag === 'core2' || tag === 'key') mainTasks.push(t);
+    if (tag === 'core' || tag === 'core2' || tag === 'key') {
+      if (t.chapter) conceptTasks.push(t);
+      else practiceTasks.push(t);
+    }
     else if (tag === 'py') pyTasks.push(t);
     else if (tag === 'ai') aiTasks.push(t);
     else if (tag === 'en') enTasks.push(t);
@@ -2749,38 +2843,21 @@ function distributeTasksToSlots(tasks) {
     else otherTasks.push(t);
   });
 
-  // 上午（slot[0]）和下午（slot[1]）分配主科任务
-  if (mainTasks.length > 0) {
-    // 第一个主科 → 上午
-    slots[0].tasks.push(mainTasks[0]);
-    // 第二个主科 → 下午
-    if (mainTasks.length > 1) {
-      slots[1].tasks.push(mainTasks[1]);
-    }
-    // 更多主科任务也放上午
-    for (var i = 2; i < mainTasks.length; i++) {
-      slots[0].tasks.push(mainTasks[i]);
-    }
-  }
+  conceptTasks.forEach(function(t) { slots[0].tasks.push(t); });
+  practiceTasks.forEach(function(t) { slots[1].tasks.push(t); });
+  pyTasks.forEach(function(t) { slots[3].tasks.push(t); });
+  aiTasks.forEach(function(t) { slots[4].tasks.push(t); });
+  enTasks.forEach(function(t) { slots[5].tasks.push(t); });
 
-  // Python → slot[2]
-  pyTasks.forEach(function(t) { slots[2].tasks.push(t); });
+  reviewTasks.forEach(function(t, idx) {
+    if (idx === 0) slots[2].tasks.push(t);
+    else slots[6].tasks.push(t);
+  });
 
-  // AI → slot[3]
-  aiTasks.forEach(function(t) { slots[3].tasks.push(t); });
-
-  // 英语 → slot[4]
-  enTasks.forEach(function(t) { slots[4].tasks.push(t); });
-
-  // 复盘 → slot[5]
-  reviewTasks.forEach(function(t) { slots[5].tasks.push(t); });
-
-  // 如果没有复盘任务，自动生成默认复盘
   if (reviewTasks.length === 0) {
-    slots[5].tasks.push({ tag: 'review', tagText: '复盘', text: '整理当日笔记 + 错题回顾 + 次日计划确认', hours: 1 });
+    slots[6].tasks.push({ tag: 'review', subject: '复盘', chapter: '', topic: '整理当日笔记 + 错题回顾 + 次日计划确认', hours: 0.5, done: false });
   }
 
-  // 其他任务放到上午
   otherTasks.forEach(function(t) { slots[0].tasks.push(t); });
 
   return slots;
@@ -2863,9 +2940,10 @@ function aiSendMessage() {
     aiConvHistory = [
       { role: 'system', content: '你是一位专业的自考学习规划师。请根据学生的情况，用中文回复。' +
         '如果学生要求生成或调整计划，请返回纯 JSON 格式（不要 markdown 代码块标记）。' +
-        'JSON 格式：{ action:\'generate|adjust\', days:[{date,weekday,tasks:[{tag,tagText,text,hours}]}], summary:\'文字总结\' }。' +
+        'JSON 格式：{ action:\'generate|adjust\', days:[{date,weekday,tasks:[{tag,subject,chapter,topic,hours,done}]}], summary:\'文字总结\' }。' +
         'tag 可选值：core(系统原理),core2(离散数学),key(数据结构),py(AI工程),ai(AI学习),en(英语),review(整理复盘)。' +
-        '每天5-6个任务，必须包含ai和review。py和ai均计入AI学习时间（合计约20%）。hours根据章节难度灵活设定。' +
+        '每个任务必须包含subject(科目名)、chapter(章节)、topic(知识点)。禁止用"主科"等模糊描述。' +
+        '每天11个任务：3个上午概念+3个下午练习+1个间隔复习+1个AI工程+1个AI学习+1个英语+1个复盘。hours根据章节难度灵活设定。' +
         '当前阶段：' + ctx.phaseName + '，完成率：' + ctx.completionRate + '，科目掌握：' + ctx.subjects + '，Python进度：' + ctx.pythonProgress }
     ];
   }
@@ -2910,10 +2988,73 @@ function aiSendMessage() {
   });
 }
 
+function writeGoalToJSON(weekLabel, subject, chapter, done) {
+  fetch('../../api/update-plan', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ week: weekLabel, subject: subject, chapter: chapter, done: done })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.error) console.warn('writeGoalToJSON:', d.error);
+  }).catch(function(e) {
+    console.warn('writeGoalToJSON failed:', e);
+  });
+}
+
 function toggleGoal(wi, gi) {
   var data = loadWeekData();
   if (data[wi] && data[wi].goals[gi]) {
-    data[wi].goals[gi].done = !data[wi].goals[gi].done;
+    var goal = data[wi].goals[gi];
+    goal.done = !goal.done;
+    saveWeekData(data);
+    renderWeeks();
+    writeGoalToJSON(data[wi].week, goal.subject || goal.tagText, goal.chapter || '', goal.done);
+  }
+}
+
+function toggleTaskDone(dayIdx, taskIdx) {
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem('ai_daily_plan')); } catch(e) {}
+  if (!saved || !saved.days || !saved.days[dayIdx] || !saved.days[dayIdx].tasks) return;
+  var task = saved.days[dayIdx].tasks[taskIdx];
+  if (!task) return;
+  task.done = !task.done;
+  try { localStorage.setItem('ai_daily_plan', JSON.stringify(saved)); } catch(e) {}
+  renderDailyExecPlan();
+  checkLinkage(task.subject, task.chapter);
+}
+
+function checkLinkage(subject, chapter) {
+  if (!subject || !chapter) return;
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem('ai_daily_plan')); } catch(e) {}
+  if (!saved || !saved.days) return;
+
+  var allDone = true;
+  var hasMatch = false;
+  saved.days.forEach(function(day) {
+    (day.tasks || []).forEach(function(t) {
+      if (t.subject === subject && t.chapter === chapter) {
+        hasMatch = true;
+        if (!t.done) allDone = false;
+      }
+    });
+  });
+  if (!hasMatch) return;
+
+  var data = loadWeekData();
+  var changed = false;
+  data.forEach(function(week) {
+    week.goals.forEach(function(goal) {
+      if ((goal.subject || goal.tagText) === subject && goal.chapter === chapter) {
+        if (goal.done !== allDone) {
+          goal.done = allDone;
+          changed = true;
+          writeGoalToJSON(week.week, subject, chapter, allDone);
+        }
+      }
+    });
+  });
+  if (changed) {
     saveWeekData(data);
     renderWeeks();
   }
@@ -2928,7 +3069,7 @@ function saveGoal(el, wi, gi) {
   el.contentEditable = 'false';
   var data = loadWeekData();
   if (data[wi] && data[wi].goals[gi]) {
-    data[wi].goals[gi].text = el.textContent.trim();
+    data[wi].goals[gi].topic = el.textContent.trim();
     saveWeekData(data);
   }
 }
@@ -2945,7 +3086,7 @@ function deleteGoal(wi, gi) {
 function addGoal(wi) {
   var data = loadWeekData();
   if (data[wi]) {
-    data[wi].goals.push({ tag: 'en', tagText: '英语', text: '新目标（双击编辑）', done: false });
+    data[wi].goals.push({ tag: 'en', subject: '英语', chapter: '', topic: '新目标（双击编辑）', done: false });
     saveWeekData(data);
     renderWeeks();
   }
@@ -2964,7 +3105,13 @@ loadSelfStudyData().then(function() {
   renderPlanning();
   renderWeeks();
   restoreConvHistory();
-  renderDailyExecPlan(); // 渲染每日执行计划
+  renderDailyExecPlan();
+  // 异步从 JSON 文件加载最新计划数据，加载后重新渲染
+  loadPlanFromJSON().then(function() {
+    renderWeeks();
+    renderPlanning();
+    renderDailyExecPlan();
+  });
 }).catch(function(err) {
   console.error('初始化失败，使用降级渲染', err);
   renderPlanning();

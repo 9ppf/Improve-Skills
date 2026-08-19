@@ -1,8 +1,8 @@
 # 此刻便是春天工作台 —— Agent 交接文档
 
-> 把本文档直接交给新 Agent，并告诉他当前任务即可开始工作。文档末尾「v2.5.0 后续建议」列出待办优先级。
+> 把本文档直接交给新 Agent，并告诉他当前任务即可开始工作。文档末尾「当前后续建议」列出待办优先级。
 
-> **⚠ 重要：v2.0.0 至 v2.5.0 变更已提交 Git**（最新 commit `54133e8`）。工作区仅剩 AI News Digest 定时任务产物和 study-plan-optimization 临时文件未跟踪。**禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未跟踪的工作。
+> **⚠ 重要：v2.0.0 至 v2.17.0 变更即将提交 Git**。工作区有多个已修改和未跟踪文件（含 recite-cards JSON、study-plan.json、mastery-progress.json 等持久化数据文件，以及 tmp/ 下临时脚本）。**禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未提交的工作。
 
 ---
 
@@ -22,14 +22,23 @@
 | v2.8.0 | 2026-08-17 | 英语（二）模块全面重设计：备考指南+词汇系统(SM-2算法)+题型专项(7种)+真题模拟(计时评分)+作文模板(5类) |
 | v2.9.0 | 2026-08-18 | 背诵卡测验题库多项功能增强：AI答疑(流式对话)+markdown渲染+对话持久化(测验↔题库共享)+复制按钮+重做功能+题库跨科目隔离修复 |
 | v2.10.0 | 2026-08-18 | 岗位技能图谱教学指引扩展：KP1-4新增guide字段(tutorial+practice+completion)+今日任务版块(自动匹配周次)+Python/Demo双向关联+跨iframe导航(postMessage) |
+| v2.10.1 | 2026-08-18 | 方案A落地后改进修复：highlightKp消息监听器(跨iframe跳转后自动定位高亮)+guide-section嵌套CSS修复+今日任务版块响应式设计 |
+| v2.10.2 | 2026-08-19 | 前置学习关卡系统+统筹计划重设计+JSON持久化：study-plan.json新建(10周计划数据源)、岗位技能图谱KP1-4前置关卡结构化、学习驾驶舱7时段扩展 |
+| v2.11.0 | 2026-08-19 | 番茄任务闹钟+离散数学概念背诵卡重构(def/ex/exam三字段+57张卡片+JSON持久化)+真题错题模块hidden隐藏 |
+| v2.12.0 | 2026-08-19 | 计算机系统原理(39张)+数据结构(48张)概念卡片补全+卡片正面间隔修复+DATA_VERSION升级清除旧缓存 |
+| v2.13.0 | 2026-08-19 | 周计划结构化(subject+chapter+topic)+日计划分科目拆分+联动标记(日任务完成→周计划自动标记)+完成状态写回JSON(/api/update-plan) |
+| v2.14.0 | 2026-08-19 | 周计划章节对齐教材：离散数学9章拆分(Ch3/5/7独立)+系统原理Ch5拆分+数据结构重编号(Ch6/7/8正确)+新增Ch4数组广义表 |
+| v2.15.0 | 2026-08-19 | 周计划topic补全背诵卡知识点(覆盖率100%)+日计划chapter补全(138个练习任务)+日计划topic同步周计划 |
+| v2.16.0 | 2026-08-19 | 系统原理卡片扩充39→82张(补全43个遗漏知识点)+DATA_VERSION升至7+fetch加cache:no-cache+MASTERY_KEY独立存储(版本变化保留掌握进度) |
+| v2.17.0 | 2026-08-19 | 掌握进度+题库+AI答疑持久化到JSON文件：dev_server.py新增6个API端点(mastery/quiz-bank/quiz-ai)、data/下新增持久化文件、localStorage降级为缓存(API失败回退) |
 
-> **当前版本：v2.10.0** — 详见下方「v2.10.0 更新内容」章节。
+> **当前版本：v2.17.0** — 详见 `CHANGELOG.md` v2.17.0 章节。
 
 ---
 
 ## 项目一句话描述
 
-一个 Python 构建的静态 HTML 个人工作台，聚合「能力提升」「自考学习」「Python 基础」「AI 学习」「AI 助手角色」与「阅读资料」六大模块，主题可切换，支持本地热重载预览。v2.5.0 新增：AI 学习模块重设计（知识图谱 29 知识点 + 实战 Demo 4 个）；AI 代码复盘迁移至能力提升模块。
+一个 Python 构建的静态 HTML 个人工作台，聚合「能力提升」「自考学习」「Python 基础」「AI 学习」「AI 助手角色」与「阅读资料」六大模块，主题可切换，支持本地热重载预览。v2.17.0 当前状态：背诵卡掌握进度+题库+AI答疑持久化到JSON文件（dev_server.py提供6个API端点）、系统原理卡片扩充至82张（三科共187张）、周计划章节对齐教材且topic覆盖全部背诵卡知识点。
 
 ---
 
@@ -54,13 +63,18 @@
 ```
 e:\TraeWorkToDo\
 ├── build.py                          # 核心构建脚本
-├── dev_server.py                     # 本地预览 + 热重载 + AI API 代理（/api/chat 端点）
+├── dev_server.py                     # 本地预览 + 热重载 + AI API 代理 + 数据持久化API
+│                                     #   /api/chat — AI对话代理（流式SSE）
+│                                     #   /api/update-plan — 周计划写回study-plan.json
+│                                     #   GET/POST /api/mastery — 掌握进度读写data/mastery-progress.json
+│                                     #   GET/POST /api/quiz-bank?subject=xxx — 题库读写data/quiz-bank-{subject}.json
+│                                     #   GET/POST /api/quiz-ai?subject=xxx — AI答疑读写data/quiz-ai-{subject}.json
 ├── requirements.txt                  # Python 依赖：libsass, watchdog
 ├── .env                              # API Key 存储（已加入 .gitignore，不入版本控制）
 ├── .gitignore                        # Git 忽略规则
 ├── .gitattributes                    # Git LFS 与属性配置
 ├── AGENT_HANDOFF.md                  # 本文档
-├── CHANGELOG.md                      # 变更日志（当前版本 v2.5.0）
+├── CHANGELOG.md                      # 变更日志（当前版本 v2.14.0）
 ├── 文件说明.md                        # 项目文件用途说明
 ├── 项目约束总览.md                     # 所有规范的索引入口
 ├── 文件约束隐患与规避方案.md             # 已知隐患与规避方案（13 条）
@@ -74,6 +88,17 @@ e:\TraeWorkToDo\
 │
 ├── data/                               # 全局配置与模块数据
 │   ├── workbench.json                  # 主题与模块注册表
+│   ├── study-plan.json                 # 周计划+日计划数据源（10周，含subject/chapter/topic/done字段）
+│   ├── mastery-progress.json           # 背诵卡掌握进度持久化（{问题文本: 掌握状态}）
+│   ├── quiz-bank-13015.json            # 系统原理测验题库持久化
+│   ├── quiz-bank-02324.json            # 离散数学测验题库持久化
+│   ├── quiz-bank-13003.json            # 数据结构测验题库持久化
+│   ├── quiz-ai-13015.json              # 系统原理AI答疑对话持久化
+│   ├── quiz-ai-02324.json              # 离散数学AI答疑对话持久化
+│   ├── quiz-ai-13003.json              # 数据结构AI答疑对话持久化
+│   ├── recite-cards-02324.json         # 离散数学57张概念背诵卡（def/ex/exam三字段）
+│   ├── recite-cards-13015.json         # 系统原理82张概念背诵卡
+│   ├── recite-cards-13003.json         # 数据结构48张概念背诵卡
 │   └── modules/
 │       ├── ability.json                # 能力提升
 │       ├── self-study.json             # 自考学习
@@ -81,7 +106,7 @@ e:\TraeWorkToDo\
 │       ├── ai-learning.json            # AI 学习
 │       ├── ai-roles.json                # AI 助手角色
 │       ├── reading.json                # 阅读资料
-│       └── tasks.json                  # 任务模块（已禁用）
+│       └── tasks.json                  # 任务模块（番茄钟任务闹钟）
 │
 ├── templates/
 │   └── workbench.html                # HTML 模板（{{ placeholder }}）
@@ -104,6 +129,8 @@ e:\TraeWorkToDo\
 │   ├── ai-learning/                  # AI 学习相关页面
 │   │   ├── ai-knowledge-tree.html          # AI 知识图谱（四阶段29个知识点：概念/代码/练习/AI场景）
 │   │   ├── ai-demos.html                   # AI 实战 Demo（四阶段4个Demo：目标/功能/代码/测试/知识点映射）
+│   │   ├── job-skill-tree.html             # 岗位技能图谱（四阶段25个知识点：17入门+8精进，含guide教学指引+今日任务版块）
+│   │   ├── job-learning-loop.html          # 岗位学习闭环（四阶段路线图+五步闭环+3简历项目追踪）
 │   │   ├── ai-news-digest.html             # AI 资讯周报展示页
 │   │   ├── ai-news-data.json               # 资讯周报数据（定时任务更新）
 │   │   ├── ai-code-review.html             # AI 帮我复盘代码（已迁移至能力提升模块，文件保留）
@@ -130,6 +157,12 @@ e:\TraeWorkToDo\
 │   │   │   └── 复盘总结-章节复盘.html       # 章节复盘总结（每章总结/错题反思/改进计划，URL 参数 ?subject=XXX 预选科目）
 │   │   └── 未考科目/
 │   │       ├── 00015英语（二）/
+│   │       │   ├── 00015英语（二）-备考指南.html    # 七种题型分析+分值分布+10周学习路线+备考策略
+│   │       │   ├── 英语（二）-词汇系统.html         # 高频词表+SM-2间隔重复+闪卡+测验+掌握度追踪
+│   │       │   ├── 英语（二）-题型专项.html          # 7种题型分Tab：解题技巧+练习题+错题记录+正确率
+│   │       │   ├── 英语（二）-真题模拟.html          # 按年份真题套卷+150分钟计时+交卷评分+成绩记录
+│   │       │   ├── 英语（二）-作文模板.html          # 5类作文模板+高分句型+范文+万能句型库+练习区
+│   │       │   └── 00015英语（二）-知识框架与学习计划.html  # 旧版知识框架页（已被备考指南替代）
 │   │       └── 00023高等数学（工本）/
 │   ├── read/                         # 阅读原始 HTML（2019 ~ 2026）
 │   └── 工作台迁移方案/               # 历史说明文档
@@ -198,7 +231,7 @@ python build.py --confirm
 
 ---
 
-## AI API 代理架构
+## AI API 代理架构与数据持久化
 
 浏览器中的 AI 功能（AI 统筹规划师、AI 学习规划师）**不直接调用 AI API**，而是通过本地 `dev_server.py` 的 `/api/chat` 端点代理：
 
@@ -213,24 +246,58 @@ python build.py --confirm
   - `Workbench/能力提升/能力提升-学习驾驶舱.html` — AI 统筹规划师（对话式生成每日学习计划）。
   - `Workbench/ai-learning/ai-roles-hub.html` — AI 学习规划师（提示词生成 + 直接生成模式）。
 
+### 数据持久化 API（v2.17.0 新增）
+
+除 AI 对话代理外，`dev_server.py` 还提供数据持久化端点，将用户学习进度从 localStorage 迁移到 JSON 文件，**跨浏览器、跨 Agent 不丢失**：
+
+| 端点 | 方法 | 用途 | 持久化文件 |
+|---|---|---|---|
+| `/api/mastery` | GET | 读取掌握进度 | `data/mastery-progress.json` |
+| `/api/mastery` | POST | 写入掌握进度（body = {问题: 状态}） | `data/mastery-progress.json` |
+| `/api/quiz-bank?subject=xxx` | GET | 读取题库 | `data/quiz-bank-{subject}.json` |
+| `/api/quiz-bank` | POST | 写入题库（body = {subject, data}） | `data/quiz-bank-{subject}.json` |
+| `/api/quiz-ai?subject=xxx` | GET | 读取AI答疑对话 | `data/quiz-ai-{subject}.json` |
+| `/api/quiz-ai` | POST | 写入AI答疑（body = {subject, data}） | `data/quiz-ai-{subject}.json` |
+
+**读写策略**：
+- **写入**：localStorage + API 双写（API fire-and-forget 不阻塞用户操作）
+- **读取**：优先 API，API 失败回退 localStorage
+- **dev_server.py 未运行时**：自动降级为纯 localStorage 模式，功能正常但跨浏览器不保留
+- **启动命令**：`python dev_server.py`（默认端口 8000，`--host 0.0.0.0` 支持局域网访问）
+
 ---
 
 ## localStorage Key 一览
 
 新 Agent 添加功能时需避免与已有 Key 冲突：
 
-| Key | 用途 | 写入文件 |
-|---|---|---|
-| `ai_daily_plan` | AI 统筹规划师生成的每日计划 | 能力提升-学习驾驶舱.html |
-| `ai_conversation` | AI 统筹规划师对话历史（20 条截断） | 能力提升-学习驾驶舱.html |
-| `self_study_weeks` | 统筹计划（按周×科目） | 能力提升-学习驾驶舱.html |
-| `recite-cards-data` | 背诵卡数据（按科目） | 背诵与简答-核心概念背诵卡.html |
-| `recite-cards-version` | 背诵卡数据版本（当前 = 5） | 背诵与简答-核心概念背诵卡.html |
-| `exam-questions-data` | 真题与错题数据（按科目） | 真题练习-真题与错题本.html |
-| `py_knowledge_tree_v1` | Python 知识树勾选状态 | python-knowledge-tree.html |
-| `py_learning_loops_v1` | Python 闭环学习记录 | python-learning-loop.html |
-| `ss_mastery_{科目代码}` | 科目掌握进度（如 ss_mastery_13015） | 各科目知识框架页 |
-| `ss_active_tab_{科目代码}` | 科目当前 Tab（如 ss_active_tab_13003） | 各科目知识框架页 |
+| Key | 用途 | 写入文件 | 文件持久化 |
+|---|---|---|---|
+| `ai_daily_plan` | AI 统筹规划师生成的每日计划 | 能力提升-学习驾驶舱.html | — |
+| `ai_conversation` | AI 统筹规划师对话历史（20 条截断） | 能力提升-学习驾驶舱.html | — |
+| `self_study_weeks` | 统筹计划（按周×科目） | 能力提升-学习驾驶舱.html | — |
+| `schedule_data` | 周任务数据缓存（含版本检查 SCHEDULE_VERSION） | 能力提升-学习驾驶舱.html | study-plan.json (通过/api/update-plan) |
+| `recite-cards-data` | 背诵卡数据（按科目） | 背诵与简答-核心概念背诵卡.html | data/recite-cards-*.json |
+| `recite-cards-version` | 背诵卡数据版本（当前 = 7） | 背诵与简答-核心概念背诵卡.html | — |
+| `recite-cards-mastery` | 掌握进度（按问题文本映射，独立于卡片数据） | 背诵与简答-核心概念背诵卡.html | data/mastery-progress.json (通过/api/mastery) |
+| `recite-quiz-bank-{subject}` | 测验题库（按科目隔离，如 recite-quiz-bank-13015） | 背诵与简答-核心概念背诵卡.html | data/quiz-bank-{subject}.json (通过/api/quiz-bank) |
+| `recite-quiz-ai-{subject}` | 测验AI答疑对话（按科目+题目隔离） | 背诵与简答-核心概念背诵卡.html | data/quiz-ai-{subject}.json (通过/api/quiz-ai) |
+| `exam-questions-data` | 真题与错题数据（按科目） | 真题练习-真题与错题本.html | — |
+| `py_knowledge_tree_v1` | Python 知识树勾选状态 | python-knowledge-tree.html | — |
+| `py_kp_progress` | Python 知识点进度摘要（总数/已掌握） | python-knowledge-tree.html | — |
+| `py_kp_detail_v1` | Python 知识点详细掌握状态（逐个） | python-knowledge-tree.html | — |
+| `py_learning_loops_v1` | Python 闭环学习记录 | python-learning-loop.html | — |
+| `ai_kp_detail_v1` | AI 知识图谱知识点掌握状态 | ai-knowledge-tree.html | — |
+| `ai_kp_progress` | AI 知识点进度摘要 | ai-knowledge-tree.html | — |
+| `job_kp_detail_v1` | 岗位技能图谱知识点掌握状态 | job-skill-tree.html | — |
+| `ai_kp_guide_progress` | 岗位技能guide完成验证（KP1-4） | job-skill-tree.html | — |
+| `job_project_detail_v1` | 岗位3个简历项目追踪 | job-learning-loop.html | — |
+| `en_vocab_progress` | 英语词汇掌握度追踪 | 英语（二）-词汇系统.html | — |
+| `en_qtype_errors` | 英语题型错题记录 | 英语（二）-题型专项.html | — |
+| `en_exam_scores` | 英语真题成绩记录 | 英语（二）-真题模拟.html | — |
+| `en_writing_practice` | 英语作文练习记录 | 英语（二）-作文模板.html | — |
+| `ss_mastery_{科目代码}` | 科目掌握进度（如 ss_mastery_13015） | 各科目知识框架页 | — |
+| `ss_active_tab_{科目代码}` | 科目当前 Tab（如 ss_active_tab_13003） | 各科目知识框架页 | — |
 
 ---
 
@@ -742,3 +809,274 @@ AI 学习
 4. **移动端适配** — 已支持手机访问但无响应式适配。
 5. **AI 知识图谱内容补充** — 29个知识点的代码示例和手写练习答案可根据实际学习进度逐步补充和修正。
 6. **AI Demo 代码实现** — 4个Demo目前为设计文档+伪代码，后续可在实际 Python 环境中创建项目并实现。
+
+---
+
+## v2.6.0 更新内容（2026-08-16）
+
+> 文件级变更明细详见 `CHANGELOG.md` v2.6.0 章节。本节记录功能级上下文与后续建议。
+
+### 1. AI 学习新增「岗位突击」模块
+
+**背景**：用户的目标是自考后立即转型 AI 岗位，需要在学习阶段就同步准备岗位技能和简历级项目。因此在 AI 学习模块新增「岗位突击」分类，将岗位技能与学习路径结构化关联。
+
+**岗位技能图谱**（`job-skill-tree.html`）：
+- 四阶段 25 个知识点：Stage 1 基础工程（4 个）、Stage 2 AI 服务开发（6 个）、Stage 3 模型应用（7 个）、Stage 4 部署运维（4 个）+ 面试精进（4 个，Stage 4 合并）
+- 入门级知识点（17 个）标注项目产出和简历写法；精进级（8 个）标注面试突击要点
+- 每知识点含概念、代码示例、手写练习（含答案折叠）、项目场景
+- 阶段按钮切换、搜索、进度跟踪（localStorage `job_kp_detail_v1`）、代码一键复制
+
+**岗位学习闭环**（`job-learning-loop.html`）：
+- 考试倒计时（与学习驾驶舱共用考试日期 2026.10）
+- 总进度：入门 17 知识点 + 3 个简历项目
+- 四阶段路线图（进度条联动 `job_kp_detail_v1`）
+- 五步闭环：学→练→复→测→迭
+- 3 个简历项目追踪（任务清单+进度条，localStorage `job_project_detail_v1`）
+
+### 2. 学习驾驶舱 WEEK_DATA 重设计
+
+应用科学学习方案重新设计周任务数据：
+- **AI 学习时间提至 20%**（Python 并入 AI），时间分配：自考 60% + AI 20% + 英语 10% + 复盘 10%
+- **间隔重复**：后续章节穿插"间隔复习"周
+- **交错学习**：同周混合多科目，避免连续只学一科
+- **数据结构第 2 周提前启动**（学位课重点）
+- 标签更新：py →"AI工程"，ai →"AI学习"
+- `SCHEDULE_VERSION = 'v2.6.2'`，版本不匹配时清除 localStorage `schedule_data` 旧缓存
+
+### 3. v2.6.0 经验教训
+
+- **数据缓存版本控制**：周任务数据缓存在浏览器 `localStorage['schedule_data']`，修改 WEEK_DATA 后旧缓存会导致用户看到旧计划。通过 `SCHEDULE_VERSION` 版本检查机制解决——版本不匹配时自动清除缓存。
+- **localStorage Key 独立**：岗位技能图谱的 `job_kp_detail_v1` 与 Python 模块的 `py_kp_detail_v1` 独立，避免不同模块进度数据混淆。
+
+### 4. v2.6.0 后续建议
+
+1. ~~**岗位技能图谱 guide 字段**~~ — ✅ 已在 v2.10.0 实现（KP1-4 先做样板）。
+2. **岗位技能图谱 KP5-25 内容补充** — Stage 2-4 的知识点内容可根据学习进度逐步深化。
+3. **简历项目实际开发** — 3 个简历项目目前为任务清单设计，尚未实际创建项目并编码。
+
+---
+
+## v2.7.0 更新内容（2026-08-17）
+
+> 文件级变更明细详见 `CHANGELOG.md` v2.7.0 章节。本节记录功能级上下文与后续建议。
+
+### 1. 学习驾驶舱按钮样式统一
+
+- 顶部按钮和阶段按钮统一尺寸（padding/圆角/字号）和 hover 上浮效果
+- AI 场景按钮间距增大（gap 0.5→0.75rem）
+- 修复隐藏标题残留 `margin-top: 1rem`（标题移除后外边距未清理留下空白）
+- 清理废弃 `.dash-header` 相关 CSS
+- 修复多余 `</div>` 标签
+
+### 2. 学习计划时间调整
+
+| 调整项 | 原方案 | 新方案 | 理由 |
+|---|---|---|---|
+| 数据结构 | Week 3 启动，4 周完成 | Week 2 启动，5 周完成 | 学位课，分数需 ≥70，需更多时间 |
+| 离散数学 | Week 1-4，Week 5 只做 3 章 | 匀到 Week 1-5，Week 5 减到 2 章（Ch7 图论提前到 Week 4） | 避免后期负担过重 |
+| AI 项目 3 | Week 6 启动 | Week 5 启动，Week 6 只做完善 | 提前启动留出冲刺期缓冲 |
+
+阶段日期同步调整：初级 8/18-9/21、中间 9/22-10/5、冲刺 10/6-10/24。`SCHEDULE_VERSION` 升至 v2.6.3。
+
+### 3. v2.7.0 经验教训
+
+- **HTML 结构改动后必须检查残留**：标题隐藏后残留 `margin-top` 造成空白，移除包裹层时遗留多余 `</div>` 标签。这类问题需在浏览器中实际查看才能发现。
+- **contentUrl 版本号需同步更新**：修改内容页后工作台加载 URL 仍为旧版本号，浏览器直接使用缓存。需在 `contentUrl` 中更新版本参数。
+
+---
+
+## v2.8.0 更新内容（2026-08-17）
+
+> 文件级变更明细详见 `CHANGELOG.md` v2.8.0 章节。本节记录功能级上下文与后续建议。
+
+### 1. 英语（二）模块全面重设计
+
+**背景**：英语（二）原模块只有 3 个子项（知识框架、背诵卡、AI助手），内容过于简略且不适合语言学习。用户决定按题型组织结构，从 3 项扩展为 6 项。
+
+**新模块结构**：
+
+| 子项 | 文件 | 核心功能 | localStorage |
+|---|---|---|---|
+| 备考指南 | 00015英语（二）-备考指南.html | 七种题型分析（卡片+分值+难度+策略）、分值分布图（阅读40/完形30/写作30）、10周学习路线、备考策略 | — |
+| 词汇系统 | 英语（二）-词汇系统.html | 高频词表（核心+重点+拓展）、SM-2 间隔重复算法、闪卡学习模式（4级评分）、中英互译选择测验、词表搜索 | `en_vocab_progress` |
+| 题型专项 | 英语（二）-题型专项.html | 7种题型 Tab 切换（阅读判断/阅读选择/概括补全/填句补文/填词补文/完形补文/短文写作），每题型含解题技巧+练习题+错题记录+正确率统计 | `en_qtype_errors` |
+| 真题模拟 | 英语（二）-真题模拟.html | 按年份真题套卷列表、150分钟计时器、选择题答题+交卷评分、分题型得分统计 | `en_exam_scores` |
+| 作文模板 | 英语（二）-作文模板.html | 5类 Tab（观点论述/问题解决/现象分析/书信应用/万能句型），每类含结构框架+高分句型+范文+练习区（词数统计），万能句型库20句 | `en_writing_practice` |
+| AI助手 | （复用 ai-roles-hub.html?subject=00015） | 针对英语科目生成学习计划、出题、讲错题 | — |
+
+### 2. 设计决策
+
+- **按题型组织而非理科科目模板**：英语学习不适合"知识框架→真题→背诵"的自考理科模板，改为按题型专项训练+词汇+作文的结构。
+- **SM-2 间隔重复算法**：词汇系统采用 SuperMemo-2 算法实现科学的间隔重复记忆，而非简单的翻卡背诵。
+- **旧版知识框架页保留**：`00015英语（二）-知识框架与学习计划.html` 保留在磁盘但被备考指南替代。
+
+### 3. v2.8.0 后续建议
+
+1. **词汇数据扩充** — 高频词表目前为核心+重点+拓展词，可根据实际考试大纲继续补充。
+2. **真题模拟套卷补充** — 目前真题套卷数量有限，需逐步添加历年真题。
+3. **作文练习 AI 评分** — 目前作文练习区只有词数统计，可考虑接入 AI 评分。
+
+---
+
+## v2.9.0 更新内容（2026-08-18）
+
+> 文件级变更明细详见 `CHANGELOG.md` v2.9.0 章节。本节记录功能级上下文与后续建议。
+
+### 1. 背诵卡测验题库多项功能增强
+
+本版本是对 v2.1.0-v2.2.0 背诵卡测验模式的重大增强，涉及多个子版本迭代（v2.8.1 → v2.9.0）。
+
+**AI 答疑功能**（v2.8.1/v2.8.3）：
+- 测验模式答题反馈区新增「🤖 问 AI」按钮，点击展开迷你对话区
+- 自动将题目+用户答案+参考答案作为上下文发送给 AI，流式输出详细讲解
+- 支持追问对话（Enter 发送/Shift+Enter 换行），每题独立对话上下文
+- 题库模式也支持「问 AI」，测验↔题库共享对话记录
+
+**对话持久化**（v2.8.6/v2.9.0）：
+- AI 答疑对话持久化到 `localStorage['recite-quiz-ai-{subject}']`（按科目+题目 qid 存储）
+- 页面刷新后自动恢复历史对话
+- 有答疑的题目显示「💬 有答疑」绿色徽章
+- 按钮文字动态切换：有记录显示「💬 查看答疑」、无记录显示「🤖 问 AI」
+
+**Markdown 渲染**（v2.8.7）：
+- AI 回复支持 markdown 渲染：加粗/标题/列表/代码块/数学公式
+
+**复制功能**（v2.8.8/v2.9.0）：
+- AI 答疑 header 新增「复制」按钮，复制完整对话记录（含【我的问题】【AI 解答】标记）
+- 复制按钮移入 header 两端对齐，移除每条消息上的复制按钮
+
+**重做功能**（v2.8.4/v2.8.5）：
+- 题库每道已答题目新增「🔄 重做」按钮
+- 点击后保存当前答题记录到 `attempts` 数组，重置题目状态
+- 题库元数据区显示「已重做 X 次」徽章
+- 所有题目均显示按钮：已答显示「重做」、未答显示「练习」，点击自动切换测验模式并高亮定位
+
+**跨科目隔离修复**（v2.8.2）：
+- 修复 `QUIZ_BANK_KEY` 未按科目隔离的 bug：从固定值 `recite-quiz-bank` 改为 `recite-quiz-bank-{subject}`
+
+### 2. v2.9.0 经验教训
+
+- **AI 答疑对话上下文设计**：每题独立对话上下文，避免不同题目的讨论互相干扰。对话按 qid 存储，切换科目时同步更新 key。
+- **题库跨科目隔离**：v2.1.0 的 `recite-quiz-bank` 是全局 key，导致切换科目后题目混淆。v2.8.2 修复为按科目隔离，但需注意旧数据迁移。
+- **Markdown 渲染安全性**：AI 回复内容直接插入 DOM 时需注意 XSS 风险，使用正则转换而非 innerHTML 直接赋值。
+
+---
+
+## v2.10.0 更新内容（2026-08-18）
+
+> 文件级变更明细详见 `CHANGELOG.md` v2.10.0 章节。本节记录功能级上下文与后续建议。
+
+### 1. 岗位技能图谱教学指引扩展（方案A）
+
+**背景**：用户发现每日学习计划（如创建 venv、pip 安装依赖、标准项目结构）与岗位技能图谱内容脱节——计划是具体步骤但缺少教学指导，用户作为 Python 初学者不知道"怎么学"。用户选择扩展岗位技能图谱的 guide 字段（方案A），为每个知识点添加教学指引，并在页面顶部新增「今日任务」版块，自动匹配当前周次的学习计划并展示对应 KP 的教学指引。
+
+**guide 字段结构**（KP1-4 已完成，作为样板）：
+
+```
+guide: {
+  prereq: "前置条件",
+  tutorial: "教程跟学（步骤化指引）",
+  practice: "渐进练习（从易到难）",
+  completion: "完成验证（自动检测条件）",
+  relatedKp: "关联 Python 知识点 / Demo",
+  estimated: "预估时间"
+}
+```
+
+**今日任务版块**：
+- 页面顶部新增「今日任务」区域
+- `getCurrentWeek()` 解析 `WEEK_DATA` 的 `dates` 字段（如 '8/18 — 8/24'），用 `new Date()` 判断当前周次
+- `renderTodayPanel()` 匹配当前周次任务到对应 KP
+- `renderTodayGuide()` 渲染每个 KP 的教学指引卡片
+- 支持点击 KP 卡片切换教学指引详情
+
+**Python/Demo 双向关联**：
+- `python-knowledge-tree.html` 新增 `JOB_KP_MAP`（5 个 Python 知识点关联岗位技能 KP），卡片底部新增「关联岗位技能」标签
+- `python-demos.html` 新增 `JOB_DEMO_MAP`（4 个 Demo 关联岗位技能 KP）
+- `ai-demos.html` 新增 `JOB_AI_DEMO_MAP`（2 个 AI Demo 关联岗位技能 KP）
+- 点击关联标签触发跨 iframe 导航
+
+**跨 iframe 导航**：
+- `templates/workbench.html` 新增 `postMessage` 监听器
+- 子 iframe 发送 `{ action: 'navigate', module, item, kpId }` → 工作台查找目标项 → `selectItem` 切换 → 发送 `highlightKp` 消息
+- 目标页面收到 `highlightKp` 消息后自动切换 Stage + 展开 KP + 滚动定位 + 高亮闪烁
+
+### 2. v2.10.0 经验教训
+
+- **JS 中 `</script>` 标签未转义**：岗位技能图谱页面中 Vue 代码示例包含 `</script>` 标签，HTML 解析器误认为当前 script 块结束，导致后续代码丢失。需将 `</script>` 转义为 `<\/script>` 或拆分字符串。
+- **跨 iframe 通信需双向监听**：工作台向子 iframe 发送 `highlightKp` 消息后，子 iframe 需有对应的 `message` 事件监听器才能响应。v2.10.1 修复了 job-skill-tree.html 缺少监听器的问题。
+- **guide-section 类名嵌套**：`renderTodayGuide` 中外层和内层都使用 `.guide-section` 类名，导致 CSS 规则叠加，间距翻倍。v2.10.1 修复为外层改用 `.guide-kp-wrap`。
+
+### 3. v2.10.0 后续建议
+
+1. **KP5-25 guide 字段** — 目前仅 KP1-4 有教学指引，KP5-25 需按学习进度逐步编写。Stage 1 样板制作流程已记录，可复用。
+2. **今日任务按时段分组** — 当前所有 KP 任务混在一起显示，用户希望按课程表时段分组（AI工程 16:30-17:30、AI学习 19:30-20:30），让任务和课表直接对应。
+3. **AI_WEEKLY_TASKS 与 WEEK_DATA 数据重复** — `job-skill-tree.html` 有一份 `AI_WEEKLY_TASKS` 数据与学习驾驶舱的 `WEEK_DATA` 重复，需统一为引用同一数据源。
+
+---
+
+## v2.10.1 更新内容（2026-08-18）
+
+> 文件级变更明细详见 `CHANGELOG.md` v2.10.1 章节。本版本为 v2.10.0 落地后的改进修复。
+
+### 1. 改进修复内容
+
+| 修复项 | 问题描述 | 修复方式 |
+|---|---|---|
+| highlightKp 消息监听 | `job-skill-tree.html` 缺少 `highlightKp` 消息监听器，从 Python/Demo 页面反向跳转后无法自动定位/高亮 KP | 新增 `message` 事件监听器，收到 `highlightKp` 后自动切换 Stage + 展开 KP + 滚动定位 + 高亮闪烁 |
+| guide-section CSS 嵌套 | `renderTodayGuide` 中外层和内层都使用 `.guide-section` 类名，CSS margin 叠加导致间距过大 | 外层改为 `.guide-kp-wrap`，避免类名冲突 |
+| 今日任务响应式 | `.today-panel` 在窄屏设备上布局错乱 | 新增 `@media` 响应式样式，窄屏下垂直堆叠 |
+| AI_WEEKLY_TASKS 注释 | `AI_WEEKLY_TASKS` 数据与 `WEEK_DATA` 重复，缺少同步提醒 | 添加注释提醒两处数据需同步更新 |
+
+### 2. v2.10.1 经验教训
+
+- **跨 iframe 通信需双向验证**：工作台发送消息后，必须确认目标 iframe 有对应的监听器。仅在工作台端发送消息而不在目标页面接收，会导致导航后无响应。
+- **CSS 类名避免嵌套重复**：同一函数渲染的 HTML 中外层和内层容器不应使用相同类名，否则 CSS 规则会叠加导致样式异常。
+
+---
+
+## v2.15.0 ~ v2.17.0 更新内容（2026-08-19）
+
+> 文件级变更明细详见 `CHANGELOG.md` 对应版本章节。
+
+### 功能摘要
+
+| 版本 | 核心变更 |
+|---|---|
+| v2.15.0 | 周计划topic补全背诵卡全部知识点（覆盖率100%）；日计划138个练习任务补全chapter字段；日计划topic同步周计划 |
+| v2.16.0 | 系统原理卡片扩充39→82张（补全43个遗漏知识点：运算方法、指令详解、cache替换算法、多级页表、总线结构等）；DATA_VERSION升至7；fetch加cache:no-cache和?v=参数绕过浏览器缓存；新增MASTERY_KEY独立存储掌握进度（版本变化时先备份再清除卡片数据，加载后按问题文本恢复） |
+| v2.17.0 | 掌握进度+题库+AI答疑持久化到JSON文件：dev_server.py新增6个API端点（GET/POST /api/mastery、GET/POST /api/quiz-bank、GET/POST /api/quiz-ai）；data/下新增mastery-progress.json、quiz-bank-{subject}.json、quiz-ai-{subject}.json；localStorage降级为缓存（API失败自动回退）；初始化流程并行fetch三个API与三个JSON文件 |
+
+### v2.17.0 经验教训
+
+- **localStorage 不适合存储关键用户数据**：浏览器清缓存、换端口、换协议、换浏览器都会丢失。项目已将周计划、掌握进度、题库、AI答疑全部迁移到JSON文件持久化。
+- **版本变化时需保护用户进度**：DATA_VERSION升级会清除localStorage，必须在清除前备份掌握进度，加载新数据后按问题文本恢复。
+- **浏览器缓存导致数据不更新**：fetch JSON时需加`?v=版本号`参数和`cache: 'no-cache'`策略，否则浏览器返回旧缓存。
+- **API 双写策略**：写入时同时写localStorage和API文件（fire-and-forget），读取时优先API、失败回退localStorage。dev_server.py未运行时自动降级为纯localStorage模式。
+
+---
+
+## 当前后续建议（v2.17.0 状态）
+
+> 以下为截至 v2.17.0 的待办优先级，供新 Agent 参考。
+
+### 高优先级
+
+1. **AI_WEEKLY_TASKS 与 WEEK_DATA 统一** — `job-skill-tree.html` 的 `AI_WEEKLY_TASKS` 数据与学习驾驶舱的 `WEEK_DATA` 重复，需统一数据源避免不一致。
+2. **KP5-25 guide 字段编写** — 目前仅 Stage 1 的 KP1-4 有教学指引，KP5-25 待编写。Stage 1 样板制作流程已记录，后续可复用模板。
+3. **番茄钟与study-plan.json联动验证** — 番茄钟读取study-plan.json当日计划生成任务卡片，需验证写回功能（完成状态持久化）。
+
+### 中优先级
+
+4. **清理临时脚本** — `tmp/` 下有check_sections.py、fix_topics.py等临时脚本，已加入.gitignore，但可考虑整理或删除。
+5. **清理备份文件** — Workbench 根目录有备份文件，自考学习目录有 `_备份_` 目录，应清理。
+6. **移动端响应式适配** — 已支持手机访问但大部分页面无响应式适配，侧边栏/卡片在手机上体验不佳。
+7. **其他localStorage数据迁移** — Python/AI知识点掌握状态、英语进度等仍在localStorage，如需跨浏览器保留可参照v2.17.0方案迁移。
+
+### 低优先级
+
+8. **Python 知识点手写练习验证** — 29 个知识点的手写练习代码尚未在 Python 环境中实际运行验证。
+9. **Demo 代码实测** — Python 4 个 Demo 和 AI 4 个 Demo 的完整代码已内嵌页面，但尚未在实际环境中创建项目并运行测试。
+10. **AI 知识图谱内容补充** — 29 个知识点的代码示例和手写练习答案可根据实际学习进度逐步补充和修正。
+11. **AI Demo 代码实现** — 4 个 Demo 目前为设计文档+伪代码，后续可在实际 Python 环境中创建项目并实现。
+12. **简历项目实际开发** — 岗位技能图谱的 3 个简历项目目前为任务清单设计，尚未实际创建项目并编码。

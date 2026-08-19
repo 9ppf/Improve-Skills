@@ -1,9 +1,26 @@
 {
   "id": "tasks",
-  "name": "任务",
-  "icon": "✅",
-  "iconBg": "tasks-soft",
-  "editable": true,
-  "categories": [],
-  "_note": "该模块目前仍由工作台 HTML 内嵌数据驱动，待后续迁移到此 JSON。"
+  "name": "番茄钟",
+  "icon": "🍅",
+  "iconBg": "coral-soft",
+  "editable": false,
+  "categories": [
+    {
+      "name": "今日计划",
+      "icon": "📋",
+      "iconBg": "coral-soft",
+      "items": [
+        {
+          "name": "番茄任务闹钟",
+          "type": "pomodoro-timer",
+          "renderMode": "bare",
+          "stage": "实时",
+          "current": "按时段倒计时 + 浏览器通知提醒",
+          "tasks": [],
+          "review": "读取 study-plan.json 每日计划，按7个时段生成任务卡片，支持番茄钟计时模式（25/5或50/5）和浏览器通知闹钟，时间到自动弹窗+声音提醒。",
+          "contentUrl": "番茄钟/番茄钟.html?v=1.2.0"
+        }
+      ]
+    }
+  ]
 }
