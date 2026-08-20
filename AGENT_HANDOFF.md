@@ -487,10 +487,12 @@ python build.py --confirm
 
 ---
 
-## v1.0.0 状态（2026-08-12 ~ 2026-08-13）
+## v1.0.0 状态（2026-08-12 ~ 2026-08-13，归档）
 
-- 工作台已从单一「阅读资料」模块扩展为 6 大模块：能力提升、自考学习、Python 基础、AI 学习、AI 助手角色、阅读资料。
-- `data/workbench.json` 已注册全部 6 个模块；`tasks` 模块已禁用。
+> ⚠ 本节为 v1.0.0 历史快照，模块数量等信息已过时。当前模块数见「项目一句话描述」。
+
+- 工作台已从单一「阅读资料」模块扩展为 6 大模块：能力提升、自考学习、Python 基础、AI 学习、AI 助手角色、阅读资料。（v2.18.0 新增「今日学习」后为 7 大模块）
+- `data/workbench.json` 已注册全部 6 个模块；`tasks` 模块已禁用。（当前为 7 个模块）
 - `build.py` 与 `templates/workbench.html` 已扩展为支持任意模块的 `contentUrl` iframe 加载与阅读内容内联渲染。
 - 已修复 Python 3.9 兼容性（将 `int | None` 改为 `Optional[int]`）并安装 `libsass`、`watchdog`。
 - Node.js 环境说明：Node.js 通过 NVM 安装（v14.19.0，路径 `C:\nvm-nodejs\nodejs\`），用户终端可直接使用。v1.0.0 时因 TRAE Shell 环境 PATH 不含 NVM 路径而误判为未安装，v2.0.0 已确认实际可用。`build.py` 与 `validate_workbench.py` 保留降级保护：找不到 node 时跳过 JS 语法校验并打印警告，不报错退出。
@@ -534,6 +536,7 @@ python build.py --confirm
 - `.gitignore` / `.gitattributes` 是否包含必要规则。
 - **目录结构同步（v2.0.0 扩展）**：扫描根目录、styles/、Workbench 各模块（含 HTML/JSON 文件）、data/modules/、templates/、.trae/skills/、transformers/，对比 AGENT_HANDOFF.md 是否已列出。
 - **CHANGELOG 变更覆盖（v2.0.0 新增）**：通过 `git diff HEAD --name-only` 获取已修改文件，对比 CHANGELOG.md 最新版本表格，报告未记录的变更。
+- **版本一致性校验（v2.18.1 新增）**：`check_summary_version_sync()` 比较 `工作台搭建总结.md` 的「当前文档版本」与 CHANGELOG.md 最新版本号，不一致时警告。
 - **Git pre-commit hook（v2.0.0 新增）**：`.git/hooks/pre-commit` 在提交前自动运行 `validate_workbench.py`，校验失败则阻止提交（可用 `--no-verify` 跳过，不推荐）。
 
 ---
@@ -585,11 +588,11 @@ python build.py --confirm
 ### v1.0.0 后续建议（部分已在 v2.0.0 完成）
 
 1. **验证 AI 助手实际效果** — 打开 `Workbench/此刻便是春天.html`，依次检查 AI 学习规划师、科目 AI 助手、学习驾驶舱。v2.0.0 已验证 AI 统筹规划师功能正常。
-2. **填充真题与背诵内容** — ~~背诵卡目前是空框架~~ v2.0.0 已内置 13015（86 张）和 en（6 张）预置卡片；02324 和 13003 仍需补充。真题与错题本仍为空框架，需用户逐步添加。
+2. **填充真题与背诵内容** — ~~背诵卡目前是空框架~~ v2.0.0 已内置 13015（86 张）和 en（6 张）预置卡片；~~02324 和 13003 仍需补充~~ ✅ v2.11.0-v2.12.0 已补齐（离散数学 57 张、数据结构 48 张、系统原理扩充至 82 张，共 187 张）。真题与错题本仍为空框架，需用户逐步添加。
 3. **AI 资讯周报数据更新** — 定时任务每周六生成周报后，需更新 `Workbench/ai-learning/ai-news-data.json`。
 4. **结构性变更约束** — 已写入核心原则第 4 条，不再作为建议。
 
-> 以上为 v1.0.0 归档内容。新 Agent 请跳转至「v2.1.0 后续建议」查看当前待办。
+> 以上为 v1.0.0 归档内容。新 Agent 请直接跳转至文末「当前后续建议（v2.18.1 状态）」查看最新待办。
 
 ---
 
