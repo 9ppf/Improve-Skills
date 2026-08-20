@@ -324,6 +324,26 @@ python build.py --confirm
 
 ---
 
+## 常见问题（FAQ）
+
+### Q: `python build.py` 报 `Cannot find module workbench_check.js`？
+
+A: 这是已知假失败。pre-build 清理 `__pycache__` 时连带删除了验证脚本临时生成的 `workbench_check.js`，导致第一次构建的 JS 语法校验报 `MODULE_NOT_FOUND`。**再跑一次 `python build.py` 即可正常通过**，不需要修任何代码。
+
+### Q: 切换浏览器/刷新后 iframe 页面不更新？
+
+A: v2.18.0 已从服务器端彻底修复：`dev_server.py` 强制 `Cache-Control: no-store` + 拦截 `If-Modified-Since`/`If-None-Match` 防 304。如果仍出现，确认你访问的是 `http://localhost:8000/` 而非 `file://` 直接打开——缓存控制只在 HTTP 服务下生效。
+
+### Q: 换浏览器后掌握状态/AI 对话历史丢失？
+
+A: v2.18.0 已通过 API 持久化修复。掌握状态存 `data/mastery-progress.json`，AI 对话存 `data/ai-conversation.json`。前提是 `dev_server.py` 在运行——纯 `file://` 打开时降级为 localStorage，换浏览器会丢。
+
+### Q: AI 功能报错或无响应？
+
+A: 检查 `.env` 文件是否存在且包含 `DEEPSEEK_API_KEY=`。不存在则向用户索取，不可自行创建或硬编码。`dev_server.py` 必须在运行，AI 请求通过 `/api/chat` 代理而非直连。
+
+---
+
 ## 主题系统说明
 
 - **基础 token** 定义在 `styles/_variables.scss`（浅色主题的唯一数据源）。
