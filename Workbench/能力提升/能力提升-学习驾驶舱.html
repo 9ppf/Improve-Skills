@@ -1646,7 +1646,7 @@ function daysUntil(dateStr) {
 
 // ---------- Data Loading ----------
 function loadSelfStudyData() {
-  return fetch('../../data/modules/self-study.json')
+  return fetch(apiUrl('/data/modules/self-study.json'))
     .then(function(r) { return r.json(); })
     .then(function(data) { selfStudyData = data; })
     .catch(function(err) {
@@ -2002,6 +2002,19 @@ function renderCards() {
 var SCHEDULE_STORAGE_KEY = 'schedule_data';
 var SCHEDULE_VERSION_KEY = 'schedule_data_version';
 var SCHEDULE_VERSION = 'v3.3.1'; // 更新计划数据时递增此版本号，自动清除旧缓存
+var API_BASE = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
+function apiUrl(path) { return API_BASE + path; }
+function apiPost(url, data) {
+  try { fetch(apiUrl(url), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(function(e) {}); } catch(e) {}
+}
+function saveAIPlan(data) {
+  try { localStorage.setItem('ai_daily_plan', JSON.stringify(data)); } catch(e) {}
+  apiPost('/api/ai-plan', data);
+}
+function saveAIConv(data) {
+  try { localStorage.setItem('ai_conv_history', JSON.stringify(data)); } catch(e) {}
+  apiPost('/api/ai-conv', data);
+}
 
 // 三阶段：0=初级(第1-5周) 1=中间(第6-7周) 2=冲刺(第8-10周)
 var PHASE_RANGES = [
@@ -2131,7 +2144,6 @@ function loadWeekData() {
   var savedVersion = localStorage.getItem(SCHEDULE_VERSION_KEY);
   if (savedVersion !== SCHEDULE_VERSION) {
     localStorage.removeItem(SCHEDULE_STORAGE_KEY);
-    try { localStorage.removeItem('ai_daily_plan'); } catch(e) {}
     localStorage.setItem(SCHEDULE_VERSION_KEY, SCHEDULE_VERSION);
   }
   var saved = safeParse(SCHEDULE_STORAGE_KEY, null);
@@ -2145,7 +2157,7 @@ function saveWeekData(data) {
 
 // 异步从 data/study-plan.json 加载计划数据（source of truth），写入 localStorage 缓存
 function loadPlanFromJSON() {
-  return fetch('../../data/study-plan.json')
+  return fetch(apiUrl('/data/study-plan.json'))
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data && data.weeks && Array.isArray(data.weeks) && data.weeks.length > 0) {
@@ -2167,7 +2179,7 @@ function loadPlanFromJSON() {
         if (!matched) matched = data.dailyPlans[0];
         if (matched && matched.days && matched.days.length > 0) {
           try {
-            localStorage.setItem('ai_daily_plan', JSON.stringify(matched));
+            saveAIPlan(matched);
           } catch(e) {}
         }
       }
@@ -2302,7 +2314,7 @@ function saveConvHistory() {
   }
   aiConvHistory = systemMsgs.concat(chatMsgs);
   try {
-    localStorage.setItem('ai_conv_history', JSON.stringify(aiConvHistory));
+    saveAIConv(aiConvHistory);
   } catch(e) {}
 }
 
@@ -2351,6 +2363,24 @@ function restoreConvHistory() {
       return true;
     }
   } catch(e) {}
+  if (!window._apiConvRestored) {
+    window._apiConvRestored = true;
+    Promise.all([
+      fetch('/api/ai-conv').then(function(r){return r.json()}).catch(function(){return null}),
+      fetch('/api/ai-plan').then(function(r){return r.json()}).catch(function(){return null})
+    ]).then(function(results){
+      var conv = results[0], plan = results[1];
+      if (conv && conv.length) {
+        try { localStorage.setItem('ai_conv_history', JSON.stringify(conv)); } catch(e) {}
+      }
+      if (plan && plan.days) {
+        try { localStorage.setItem('ai_daily_plan', JSON.stringify(plan)); } catch(e) {}
+      }
+      if ((conv && conv.length) || (plan && plan.days)) {
+        restoreConvHistory();
+      }
+    }).catch(function(e){});
+  }
   return false;
 }
 
@@ -2363,6 +2393,8 @@ function aiClearChat() {
   aiConvHistory = [];
   try { localStorage.removeItem('ai_conv_history'); } catch(e) {}
   try { localStorage.removeItem('ai_daily_plan'); } catch(e) {}
+  apiPost('/api/ai-conv', []);
+  apiPost('/api/ai-plan', {});
   document.getElementById('aiConversation').innerHTML = '';
   document.getElementById('aiDailyPlan').innerHTML = '';
   document.getElementById('aiStatus').textContent = '对话已清空，点击上方按钮开始新的对话';
@@ -2411,7 +2443,7 @@ function aiCall(messages, callback, isChat) {
 }
 
 function aiDoFetch(messages, callback) {
-  fetch('/api/chat', {
+  fetch(apiUrl('/api/chat'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -2662,7 +2694,7 @@ function aiAutoApplyDaily(result) {
   if (!result || !result.days) return;
   // 存储到独立的 localStorage key，不写入统筹计划
   try {
-    localStorage.setItem('ai_daily_plan', JSON.stringify(result));
+    saveAIPlan(result);
   } catch(e) {}
   renderDailyPlan(result);
   renderDailyExecPlan(); // 同步刷新每日执行计划
@@ -2989,7 +3021,7 @@ function aiSendMessage() {
 }
 
 function writeGoalToJSON(weekLabel, subject, chapter, done) {
-  fetch('../../api/update-plan', {
+  fetch(apiUrl('/api/update-plan'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ week: weekLabel, subject: subject, chapter: chapter, done: done })
@@ -3018,7 +3050,7 @@ function toggleTaskDone(dayIdx, taskIdx) {
   var task = saved.days[dayIdx].tasks[taskIdx];
   if (!task) return;
   task.done = !task.done;
-  try { localStorage.setItem('ai_daily_plan', JSON.stringify(saved)); } catch(e) {}
+  try { saveAIPlan(saved); } catch(e) {}
   renderDailyExecPlan();
   checkLinkage(task.subject, task.chapter);
 }
@@ -3101,11 +3133,37 @@ document.querySelectorAll('#wkPhaseNav button').forEach(function(btn) {
 });
 
 // ---------- Init ----------
+// 从API恢复AI计划和对话（localStorage为空时从文件加载）
+function restoreFromAPI() {
+  if (!localStorage.getItem('ai_daily_plan')) {
+    fetch(apiUrl('/api/ai-plan'), { cache: 'no-cache' })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d && d.days) {
+          try { localStorage.setItem('ai_daily_plan', JSON.stringify(d)); } catch(e) {}
+          renderDailyExecPlan();
+        }
+      })
+      .catch(function(e) {});
+  }
+  if (!localStorage.getItem('ai_conv_history')) {
+    fetch(apiUrl('/api/ai-conv'), { cache: 'no-cache' })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d && d.length) {
+          try { localStorage.setItem('ai_conv_history', JSON.stringify(d)); } catch(e) {}
+          restoreConvHistory();
+        }
+      })
+      .catch(function(e) {});
+  }
+}
 loadSelfStudyData().then(function() {
   renderPlanning();
   renderWeeks();
   restoreConvHistory();
   renderDailyExecPlan();
+  restoreFromAPI();
   // 异步从 JSON 文件加载最新计划数据，加载后重新渲染
   loadPlanFromJSON().then(function() {
     renderWeeks();
@@ -3117,6 +3175,7 @@ loadSelfStudyData().then(function() {
   renderPlanning();
   renderWeeks();
   renderDailyExecPlan();
+  restoreFromAPI();
 });
 
 // ---------- Tab Switching ----------

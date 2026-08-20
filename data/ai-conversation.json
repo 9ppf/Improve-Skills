@@ -1,0 +1,10 @@
+[
+  {
+    "role": "user",
+    "content": "test question for browser switch"
+  },
+  {
+    "role": "assistant",
+    "content": "test answer for browser switch"
+  }
+]

@@ -2,7 +2,7 @@
 
 > 把本文档直接交给新 Agent，并告诉他当前任务即可开始工作。文档末尾「当前后续建议」列出待办优先级。
 
-> **⚠ 重要：v2.0.0 至 v2.17.0 变更即将提交 Git**。工作区有多个已修改和未跟踪文件（含 recite-cards JSON、study-plan.json、mastery-progress.json 等持久化数据文件，以及 tmp/ 下临时脚本）。**禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未提交的工作。
+> **⚠ 重要：v2.0.0 至 v2.18.0 变更即将提交 Git**。工作区有多个已修改和未跟踪文件（含 recite-cards JSON、study-plan.json、mastery-progress.json、ai-conversation.json、learning-guide.json 等持久化数据文件，以及 tmp/ 下临时脚本）。**禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未提交的工作。
 
 ---
 
@@ -31,14 +31,15 @@
 | v2.15.0 | 2026-08-19 | 周计划topic补全背诵卡知识点(覆盖率100%)+日计划chapter补全(138个练习任务)+日计划topic同步周计划 |
 | v2.16.0 | 2026-08-19 | 系统原理卡片扩充39→82张(补全43个遗漏知识点)+DATA_VERSION升至7+fetch加cache:no-cache+MASTERY_KEY独立存储(版本变化保留掌握进度) |
 | v2.17.0 | 2026-08-19 | 掌握进度+题库+AI答疑持久化到JSON文件：dev_server.py新增6个API端点(mastery/quiz-bank/quiz-ai)、data/下新增持久化文件、localStorage降级为缓存(API失败回退) |
+| v2.18.0 | 2026-08-20 | 学习指南标注(learning-guide.json+三科知识框架页CSS/JS改造) + 掌握状态/AI对话跨浏览器持久化(mastery API按科目读写+ai-conv/ai-plan API) + 浏览器缓存彻底修复(no-store+拦截304) + 今日学习流模块(today-flow.html) |
 
-> **当前版本：v2.17.0** — 详见 `CHANGELOG.md` v2.17.0 章节。
+> **当前版本：v2.18.0** — 详见 `CHANGELOG.md` v2.18.0 章节。
 
 ---
 
 ## 项目一句话描述
 
-一个 Python 构建的静态 HTML 个人工作台，聚合「能力提升」「自考学习」「Python 基础」「AI 学习」「AI 助手角色」与「阅读资料」六大模块，主题可切换，支持本地热重载预览。v2.17.0 当前状态：背诵卡掌握进度+题库+AI答疑持久化到JSON文件（dev_server.py提供6个API端点）、系统原理卡片扩充至82张（三科共187张）、周计划章节对齐教材且topic覆盖全部背诵卡知识点。
+一个 Python 构建的静态 HTML 个人工作台，聚合「今日学习」「能力提升」「自考学习」「Python 基础」「AI 学习」「AI 助手角色」与「阅读资料」七大模块，主题可切换，支持本地热重载预览。v2.18.0 当前状态：三科知识框架页已接入学习指南标注（优先级+类型+学习建议可视化）、掌握状态和AI对话通过API实现跨浏览器持久化（localStorage+JSON双写）、浏览器缓存彻底修复（no-store+拦截304）、新增今日学习流模块。
 
 ---
 
@@ -89,7 +90,7 @@ e:\TraeWorkToDo\
 ├── data/                               # 全局配置与模块数据
 │   ├── workbench.json                  # 主题与模块注册表
 │   ├── study-plan.json                 # 周计划+日计划数据源（10周，含subject/chapter/topic/done字段）
-│   ├── mastery-progress.json           # 背诵卡掌握进度持久化（{问题文本: 掌握状态}）
+│   ├── mastery-progress.json           # 掌握状态持久化（三科，按科目读写）
 │   ├── quiz-bank-13015.json            # 系统原理测验题库持久化
 │   ├── quiz-bank-02324.json            # 离散数学测验题库持久化
 │   ├── quiz-bank-13003.json            # 数据结构测验题库持久化
@@ -99,6 +100,9 @@ e:\TraeWorkToDo\
 │   ├── recite-cards-02324.json         # 离散数学57张概念背诵卡（def/ex/exam三字段）
 │   ├── recite-cards-13015.json         # 系统原理82张概念背诵卡
 │   ├── recite-cards-13003.json         # 数据结构48张概念背诵卡
+│   ├── learning-guide.json             # 三科187个知识点学习指南（优先级+类型+学习建议）
+│   ├── ai-conversation.json            # AI对话历史持久化（最近20条）
+│   ├── ai-daily-plan.json              # AI每日计划持久化
 │   └── modules/
 │       ├── ability.json                # 能力提升
 │       ├── self-study.json             # 自考学习
@@ -106,6 +110,7 @@ e:\TraeWorkToDo\
 │       ├── ai-learning.json            # AI 学习
 │       ├── ai-roles.json                # AI 助手角色
 │       ├── reading.json                # 阅读资料
+│       ├── today.json                  # 今日学习
 │       └── tasks.json                  # 任务模块（番茄钟任务闹钟）
 │
 ├── templates/
@@ -126,6 +131,8 @@ e:\TraeWorkToDo\
 │   ├── 此刻便是春天.html             # 构建产物（由 build.py 生成，禁止手动编辑）
 │   │                                  # 注意：Workbench/ 下其他 HTML 文件均为独立内容页，
 │   │                                  # 不经过 build.py，可直接编辑
+│   ├── today/                         # 今日学习模块页面
+│   │   └── today-flow.html               # 今日学习流（线性任务流+AI伴读+自适应进度）
 │   ├── ai-learning/                  # AI 学习相关页面
 │   │   ├── ai-knowledge-tree.html          # AI 知识图谱（四阶段29个知识点：概念/代码/练习/AI场景）
 │   │   ├── ai-demos.html                   # AI 实战 Demo（四阶段4个Demo：目标/功能/代码/测试/知识点映射）

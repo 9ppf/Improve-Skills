@@ -39,16 +39,10 @@
   },
   "modules": [
     {
-      "id": "tasks",
-      "file": "tasks.json",
+      "id": "today",
+      "file": "today.json",
       "enabled": true,
-      "description": "番茄钟任务闹钟模块"
-    },
-    {
-      "id": "ability",
-      "file": "ability.json",
-      "enabled": true,
-      "description": "能力提升总览模块"
+      "description": "今日学习流（首页入口）"
     },
     {
       "id": "self-study",
@@ -57,28 +51,40 @@
       "description": "自考学习模块"
     },
     {
-      "id": "python",
-      "file": "python.json",
-      "enabled": true,
-      "description": "Python 基础模块"
-    },
-    {
       "id": "ai-learning",
       "file": "ai-learning.json",
       "enabled": true,
-      "description": "AI 学习模块"
+      "description": "AI与编程模块（Python已并入）"
     },
     {
-      "id": "ai-roles",
-      "file": "ai-roles.json",
-      "enabled": false,
-      "description": "AI 助手角色模块（已合并到学习驾驶舱）"
+      "id": "ability",
+      "file": "ability.json",
+      "enabled": true,
+      "description": "计划总览模块"
     },
     {
       "id": "read",
       "file": "reading.json",
       "enabled": true,
       "description": "阅读资料模块"
+    },
+    {
+      "id": "tasks",
+      "file": "tasks.json",
+      "enabled": false,
+      "description": "番茄钟模块（已移出侧边栏，保留悬浮按钮）"
+    },
+    {
+      "id": "python",
+      "file": "python.json",
+      "enabled": false,
+      "description": "Python基础模块（已合并到AI与编程）"
+    },
+    {
+      "id": "ai-roles",
+      "file": "ai-roles.json",
+      "enabled": false,
+      "description": "AI助手角色模块（已合并）"
     }
   ]
 }

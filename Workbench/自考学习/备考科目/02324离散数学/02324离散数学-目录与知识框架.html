@@ -376,6 +376,94 @@
 
     .toc-title-link { transition: color 0.2s, background 0.2s; }
     .toc-title-link:hover { color: var(--accent); background: rgba(37, 99, 235, 0.06); border-radius: 6px; }
+
+
+/* ===== Learning Guide Annotations ===== */
+.lg-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.lg-priority-key { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+.lg-priority-normal { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
+.lg-priority-survey { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+
+.lg-kp-item {
+    position: relative;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    transition: background 0.2s;
+    list-style: none;
+}
+.lg-kp-item.lg-priority-key { background: rgba(254, 226, 226, 0.4); border-left: 3px solid #dc2626; }
+.lg-kp-item.lg-priority-normal { background: rgba(254, 243, 199, 0.3); border-left: 3px solid #d97706; }
+.lg-kp-item.lg-priority-survey { background: rgba(241, 245, 249, 0.3); border-left: 3px solid #94a3b8; opacity: 0.75; }
+
+.lg-howto {
+    font-size: 12px;
+    color: #6366f1;
+    margin-top: 4px;
+    padding-left: 4px;
+    display: none;
+}
+.lg-kp-item:hover .lg-howto { display: block; }
+
+.lg-chapter-summary {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    border: 1px solid #bae6fd;
+}
+.lg-chapter-summary .lg-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.lg-chapter-summary .lg-stat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.lg-stat-key .lg-stat-dot { background: #dc2626; }
+.lg-stat-normal .lg-stat-dot { background: #d97706; }
+.lg-stat-survey .lg-stat-dot { background: #94a3b8; }
+
+.lg-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.lg-filter-btn {
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.lg-filter-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.lg-filter-btn:hover { opacity: 0.8; }
+
+/* ===== Display Fix ===== */
+.chapter-tab-btn.hidden-chapter-tab.active { display: inline-flex !important; }
+.chapter-tab-pane.active { display: block !important; }
+
 </style>
 </head>
 <body>
@@ -1798,6 +1886,37 @@ D.连通但删去一条边则不连通的图</p></div>
 <script>
     (function() {
       var STORAGE_KEY = "ss_mastery_02324";
+      // ===== API Sync: localStorage + JSON dual write =====
+      var SS_SUBJECT = '02324';
+      var _saveTimer = null;
+
+      function saveStateToAPI(state) {
+        if (_saveTimer) clearTimeout(_saveTimer);
+        _saveTimer = setTimeout(function() {
+          try {
+            fetch('/api/mastery', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ subject: SS_SUBJECT, data: state })
+            }).catch(function(e) {});
+          } catch(e) {}
+        }, 500);
+      }
+
+      function syncFromAPI() {
+        try {
+          fetch('/api/mastery?subject=' + SS_SUBJECT)
+            .then(function(r) { return r.json(); })
+            .then(function(apiState) {
+              if (apiState && apiState.mastery && Object.keys(apiState.mastery).length > 0) {
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(apiState)); } catch(e) {}
+                syncUI();
+              }
+            })
+            .catch(function(e) {});
+        } catch(e) {}
+      }
+
       var MASTERY_LABELS = ["未开始", "学习中", "已掌握", "需复习"];
       var DIFFICULTY_LABELS = { 1: "基础", 2: "中等", 3: "难点" };
 
@@ -1821,6 +1940,7 @@ D.连通但删去一条边则不连通的图</p></div>
       }
       function saveState(state) {
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+        saveStateToAPI(state);
       }
 
       function extractChapterNum(h3) {
@@ -1972,10 +2092,12 @@ D.连通但删去一条边则不连通的图</p></div>
       }
 
       document.querySelectorAll(".framework-chapter").forEach(initChapter);
+      syncFromAPI();
 
       document.getElementById("ss-reset-btn").addEventListener("click", function() {
         if (confirm("确定要重置全部掌握度进度吗？")) {
           localStorage.removeItem(STORAGE_KEY);
+        try { fetch("/api/mastery", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: SS_SUBJECT, data: { mastery: {}, kp: {} } }) }).catch(function(e) {}); } catch(e) {}
           syncUI();
         }
       });
@@ -2034,6 +2156,282 @@ D.连通但删去一条边则不连通的图</p></div>
       setInterval(updateTabDots, 1000);
       window.switchChapterTab = switchTab;
     })();
+</script>
+
+<script>
+
+// ===== Learning Guide Annotations v2 =====
+(function() {
+    var LG_SUBJECT = '离散数学';
+    var LG_DATA = null;
+
+    function fetchGuide() {
+        var url = (location.protocol === 'file:') ? 'http://localhost:8000/data/learning-guide.json' : '/data/learning-guide.json';
+        fetch(url)
+            .then(function(r) { return r.json(); })
+            .then(function(data) { LG_DATA = data; annotate(); })
+            .catch(function(e) { console.log('[LG] Failed to load guide:', e); });
+    }
+
+    function normalizeChName(name) {
+        return name.replace(/\s+/g, '').replace(/第(\d+)章/g, '第$1章');
+    }
+
+    function getChNum(name) {
+        var m = name.match(/第\s*(\d+)\s*章/);
+        return m ? parseInt(m[1]) : -1;
+    }
+
+    function matchChapter(htmlName, guideKey) {
+        var h = normalizeChName(htmlName);
+        var g = normalizeChName(guideKey);
+        if (h === g || h.indexOf(g) >= 0 || g.indexOf(h) >= 0) return true;
+        var hn = getChNum(htmlName);
+        var gn = getChNum(guideKey);
+        return hn > 0 && hn === gn;
+    }
+
+    function extractBigrams(text) {
+        var clean = text.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
+        var bigrams = [];
+        for (var i = 0; i < clean.length - 1; i++) {
+            bigrams.push(clean.substring(i, i + 2));
+        }
+        return bigrams;
+    }
+
+    function matchScore(keyTerm, question) {
+        if (!keyTerm || !question) return 0;
+        var kt = keyTerm.trim();
+        var q = question.replace(/\?|？/g, '');
+
+        if (q.indexOf(kt) >= 0) return 100;
+        if (kt.indexOf(q) >= 0) return 80;
+
+        var ktParts = kt.replace(/[（）()，,、：:·\-]/g, ' ').split(/\s+/).filter(function(s) { return s.length >= 2; });
+        var maxPartScore = 0;
+        for (var i = 0; i < ktParts.length; i++) {
+            if (q.indexOf(ktParts[i]) >= 0) {
+                maxPartScore = Math.max(maxPartScore, 50 + ktParts[i].length * 5);
+            }
+        }
+        if (maxPartScore > 0) return maxPartScore;
+
+        var ktBi = extractBigrams(kt);
+        var qBi = extractBigrams(q);
+        var ktSet = {};
+        ktBi.forEach(function(b) { ktSet[b] = true; });
+        var overlap = 0;
+        for (var i = 0; i < qBi.length; i++) {
+            if (ktSet[qBi[i]]) overlap++;
+        }
+
+        if (ktBi.length === 0) return 0;
+        var ratio = overlap / ktBi.length;
+        if (ratio >= 0.4) return Math.round(30 + ratio * 30);
+        if (overlap >= 2) return 20;
+
+        return 0;
+    }
+
+    function findBestMatch(keyTermText, topics) {
+        var bestScore = 0;
+        var bestMatch = null;
+        for (var i = 0; i < topics.length; i++) {
+            var score = matchScore(keyTermText, topics[i].question);
+            if (score > bestScore) {
+                bestScore = score;
+                bestMatch = topics[i];
+            }
+        }
+        return bestScore >= 20 ? bestMatch : null;
+    }
+
+    function inferPriority(keyTermText, liText) {
+        var text = keyTermText + ' ' + liText;
+        if (/发展|历程|历史|分类|概述|简介|产生|演变|现状|趋势|特点|优缺点/.test(text)) return '了解';
+        if (/核心|基本|原理|结构|地址|编码|映射|转换|算法|复杂度|排序|查找|遍历|定义|性质|关系/.test(text)) return '重点';
+        return '一般';
+    }
+
+    function inferType(keyTermText, liText) {
+        var text = keyTermText + ' ' + liText;
+        if (/计算|公式|地址|复杂度|代价|推导|证明|求解|转换|映射/.test(text)) return '计算';
+        if (/定义|概念|性质|特征|特点|分类|区别|联系|组成|结构/.test(text)) return '背诵';
+        if (/设计|实现|构造|编写|画|描述过程/.test(text)) return '应用';
+        return '理解';
+    }
+
+    function getPriorityClass(priority) {
+        if (priority === '重点') return 'lg-priority-key';
+        if (priority === '了解') return 'lg-priority-survey';
+        return 'lg-priority-normal';
+    }
+
+    function getTypeIcon(type) {
+        var icons = { '计算': '🧮', '背诵': '📖', '理解': '💡', '应用': '🔧' };
+        return icons[type] || '💡';
+    }
+
+    function getPriorityIcon(priority) {
+        if (priority === '重点') return '🔴';
+        if (priority === '了解') return '🟢';
+        return '🟡';
+    }
+
+    function annotateChapter(chapterEl, chapterName, guideData) {
+        if (!guideData || !guideData[chapterName]) return;
+        if (chapterEl.dataset.lgAnnotated) return;
+        chapterEl.dataset.lgAnnotated = '1';
+
+        var chData = guideData[chapterName];
+        var topics = chData.topics;
+        var counts = chData.priorityCounts;
+
+        var actualCounts = { '重点': 0, '一般': 0, '了解': 0 };
+
+        var summary = document.createElement('div');
+        summary.className = 'lg-chapter-summary';
+        summary.innerHTML = '<span style="font-weight:700;">📋 本章概览</span>' +
+            '<span class="lg-stat lg-stat-key"><span class="lg-stat-dot"></span>🔴 重点 ' + (counts['重点']||0) + '</span>' +
+            '<span class="lg-stat lg-stat-normal"><span class="lg-stat-dot"></span>🟡 一般 ' + (counts['一般']||0) + '</span>' +
+            '<span class="lg-stat lg-stat-survey"><span class="lg-stat-dot"></span>🟢 了解 ' + (counts['了解']||0) + '</span>' +
+            '<span style="color:#6366f1;font-size:11px;">💡 悬停知识点查看学习建议</span>';
+        chapterEl.insertBefore(summary, chapterEl.firstChild);
+
+        var filterBar = document.createElement('div');
+        filterBar.className = 'lg-filter-bar';
+        filterBar.innerHTML =
+            '<button class="lg-filter-btn active" data-filter="all">全部</button>' +
+            '<button class="lg-filter-btn" data-filter="重点">🔴 重点</button>' +
+            '<button class="lg-filter-btn" data-filter="一般">🟡 一般</button>' +
+            '<button class="lg-filter-btn" data-filter="了解">🟢 了解</button>';
+        chapterEl.insertBefore(filterBar, chapterEl.children[1]);
+
+        filterBar.addEventListener('click', function(e) {
+            if (e.target.classList.contains('lg-filter-btn')) {
+                filterBar.querySelectorAll('.lg-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+                e.target.classList.add('active');
+                var filter = e.target.dataset.filter;
+                chapterEl.querySelectorAll('.lg-kp-item').forEach(function(item) {
+                    if (filter === 'all' || item.dataset.priority === filter) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        var keyTerms = chapterEl.querySelectorAll('.key-term');
+
+        keyTerms.forEach(function(kpSpan) {
+            var kpText = kpSpan.textContent.trim();
+            var matched = findBestMatch(kpText, topics);
+
+            var priority, type, howTo;
+            if (matched) {
+                priority = matched.priority;
+                type = matched.type;
+                howTo = matched.howToLearn;
+            } else {
+                priority = inferPriority(kpText, kpSpan.closest('li') ? kpSpan.closest('li').textContent : '');
+                type = inferType(kpText, kpSpan.closest('li') ? kpSpan.closest('li').textContent : '');
+                howTo = '参考教材重点学习此知识点';
+            }
+
+            actualCounts[priority] = (actualCounts[priority] || 0) + 1;
+
+            var li = kpSpan.closest('li');
+            if (li && !li.classList.contains('lg-kp-item')) {
+                li.classList.add('lg-kp-item');
+                li.classList.add(getPriorityClass(priority));
+                li.dataset.priority = priority;
+                li.dataset.type = type;
+
+                var badge = document.createElement('span');
+                badge.className = 'lg-badge ' + getPriorityClass(priority);
+                badge.innerHTML = getPriorityIcon(priority) + ' ' +
+                    '<span>' + getTypeIcon(type) + '</span> ' +
+                    priority + '·' + type;
+                kpSpan.appendChild(badge);
+
+                var howtoEl = document.createElement('div');
+                howtoEl.className = 'lg-howto';
+                howtoEl.innerHTML = '💡 ' + howTo;
+                li.appendChild(howtoEl);
+            }
+        });
+
+        var actualSummary = summary.querySelector('.lg-stat-key');
+        if (actualSummary) {
+            summary.querySelectorAll('.lg-stat').forEach(function(stat, idx) {
+                var priKeys = ['重点', '一般', '了解'];
+                var count = actualCounts[priKeys[idx]] || 0;
+                var countSpan = stat.querySelectorAll('span')[1];
+                if (countSpan && countSpan.textContent) {
+                    countSpan.textContent = (countSpan.textContent.split(' ')[0] || '') + ' ' + count;
+                }
+            });
+        }
+
+        var uls = chapterEl.querySelectorAll('ul');
+        uls.forEach(function(ul) {
+            var items = Array.from(ul.querySelectorAll('li.lg-kp-item'));
+            if (items.length === 0) return;
+
+            var order = { '重点': 0, '一般': 1, '了解': 2 };
+            items.sort(function(a, b) {
+                var pa = a.dataset.priority || '一般';
+                var pb = b.dataset.priority || '一般';
+                return (order[pa] !== undefined ? order[pa] : 1) - (order[pb] !== undefined ? order[pb] : 1);
+            });
+
+            items.forEach(function(item) { ul.appendChild(item); });
+        });
+    }
+
+    function annotate() {
+        if (!LG_DATA || !LG_DATA[LG_SUBJECT]) return;
+        var subjectData = LG_DATA[LG_SUBJECT];
+
+        var chapters = document.querySelectorAll('.framework-chapter');
+        chapters.forEach(function(ch) {
+            var h3 = ch.querySelector('h3');
+            if (!h3) return;
+            var chName = h3.textContent.trim();
+
+            var matched = null;
+            for (var key in subjectData) {
+                if (matchChapter(chName, key)) {
+                    matched = key;
+                    break;
+                }
+            }
+            if (matched) {
+                annotateChapter(ch, matched, subjectData);
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fetchGuide);
+    } else {
+        fetchGuide();
+    }
+
+// ===== Display Fix: re-annotate after tab switch =====
+window.lgAnnotate = annotate;
+var origSwitch = window.switchChapterTab;
+if (origSwitch) {
+    window.switchChapterTab = function(tabId) {
+        origSwitch(tabId);
+        if (window.lgAnnotate) setTimeout(window.lgAnnotate, 150);
+    };
+}
+
+})();
+
 </script>
 </body>
 </html>

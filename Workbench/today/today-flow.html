@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今日学习流</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --ink: #1e293b;
+  --muted: #64748b;
+  --green: #16a34a;
+  --green-light: #dcfce7;
+  --orange: #ea580c;
+  --orange-light: #fed7aa;
+  --purple: #8b5cf6;
+  --purple-light: #ede9fe;
+}
+body {
+  font-family: -apple-system, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.tf-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.tf-topbar h1 { font-size: 15px; font-weight: 700; white-space: nowrap; }
+.tf-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  max-width: 280px;
+}
+.tf-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--purple));
+  border-radius: 3px;
+  transition: width 0.4s;
+}
+.tf-progress-text { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.tf-countdown { font-size: 12px; color: var(--orange); font-weight: 600; white-space: nowrap; }
+.tf-main { display: flex; flex: 1; overflow: hidden; }
+
+/* Left: task area */
+.tf-task-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.tf-task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 620px;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.tf-task-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.tf-subject-tag {
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.tf-subject-tag.core { background: var(--primary-light); color: var(--primary); }
+.tf-subject-tag.core2 { background: var(--purple-light); color: var(--purple); }
+.tf-subject-tag.key { background: var(--green-light); color: var(--green); }
+.tf-subject-tag.py, .tf-subject-tag.ai { background: #fef3c7; color: #b45309; }
+.tf-subject-tag.en { background: #fce7f3; color: #be185d; }
+.tf-subject-tag.review { background: #f1f5f9; color: var(--muted); }
+.tf-chapter { font-size: 12px; color: var(--muted); }
+.tf-task-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.tf-task-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.tf-task-meta span { display: flex; align-items: center; gap: 3px; }
+
+/* Knowledge cards */
+.tf-kp-section { margin-bottom: 14px; }
+.tf-kp-section-title {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 3px solid var(--primary);
+  padding-left: 6px;
+}
+.tf-kp-card {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 6px;
+}
+.tf-kp-q {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tf-kp-q:after { content: '▼'; font-size: 9px; color: var(--muted); transition: transform 0.2s; }
+.tf-kp-q.open:after { transform: rotate(180deg); }
+.tf-kp-answer {
+  display: none;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.tf-kp-answer.show { display: block; }
+.tf-kp-block { margin-bottom: 6px; }
+.tf-kp-label {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.tf-kp-label.def { background: var(--primary-light); color: var(--primary); }
+.tf-kp-label.ex { background: var(--purple-light); color: var(--purple); }
+.tf-kp-label.exam { background: var(--orange-light); color: var(--orange); }
+
+/* Practice */
+.tf-practice-q {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 6px;
+}
+.tf-practice-q-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.tf-practice-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  margin-bottom: 6px;
+  resize: vertical;
+  min-height: 36px;
+}
+.tf-practice-input:focus { outline: none; border-color: var(--primary); }
+.tf-practice-actions { display: flex; gap: 6px; }
+.tf-practice-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tf-practice-btn.check { background: var(--primary); color: #fff; }
+.tf-practice-btn.show { background: var(--border); color: var(--muted); }
+.tf-practice-feedback {
+  font-size: 12px;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  display: none;
+}
+.tf-practice-feedback.show { display: block; }
+.tf-practice-feedback.correct { background: var(--green-light); color: var(--green); }
+.tf-practice-feedback.wrong { background: #fee2e2; color: #dc2626; }
+
+/* Action buttons */
+.tf-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+.tf-btn {
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tf-btn-primary { background: var(--primary); color: #fff; }
+.tf-btn-primary:hover { background: #1d4ed8; }
+.tf-btn-secondary { background: var(--border); color: var(--muted); }
+.tf-btn-secondary:hover { background: #cbd5e1; }
+
+/* Overview */
+.tf-overview {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 8px 16px;
+  flex-shrink: 0;
+  max-height: 120px;
+  overflow-y: auto;
+}
+.tf-overview-title { font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+.tf-overview-list { display: flex; flex-wrap: wrap; gap: 4px; }
+.tf-overview-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.tf-overview-item.done { background: var(--green-light); color: var(--green); }
+.tf-overview-item.current { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+.tf-overview-item.pending { color: var(--muted); }
+
+/* Right: AI panel */
+.tf-ai-panel {
+  width: 300px;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.tf-ai-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.tf-ai-header h2 { font-size: 13px; font-weight: 600; }
+.tf-ai-status {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+.tf-ai-status.offline { background: var(--border); }
+.tf-ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tf-ai-msg {
+  font-size: 13px;
+  line-height: 1.55;
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 92%;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.tf-ai-msg.ai {
+  background: var(--primary-light);
+  color: #1e40af;
+  align-self: flex-start;
+}
+.tf-ai-msg.user {
+  background: var(--border);
+  color: var(--ink);
+  align-self: flex-end;
+}
+.tf-ai-msg.system {
+  background: #f0fdf4;
+  color: var(--green);
+  font-size: 12px;
+  font-style: italic;
+  align-self: center;
+  text-align: center;
+}
+.tf-ai-msg.loading {
+  background: var(--bg);
+  color: var(--muted);
+  font-style: italic;
+  align-self: flex-start;
+}
+.tf-ai-input {
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.tf-ai-input textarea {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12px;
+  resize: none;
+  height: 36px;
+  font-family: inherit;
+}
+.tf-ai-input textarea:focus { outline: none; border-color: var(--primary); }
+.tf-ai-send {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.tf-ai-send:hover { background: #1d4ed8; }
+.tf-ai-send:disabled { background: var(--border); cursor: not-allowed; }
+
+.tf-offline-notice {
+  background: var(--orange-light);
+  color: var(--orange);
+  padding: 6px 14px;
+  font-size: 11px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.tf-empty {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--muted);
+}
+.tf-empty h2 { font-size: 16px; margin-bottom: 6px; }
+.tf-empty p { font-size: 13px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+</style>
+</head>
+<body>
+
+<div class="tf-topbar">
+  <h1>🏠 今日学习流</h1>
+  <div class="tf-progress-bar"><div class="tf-progress-fill" id="progressFill" style="width: 0%"></div></div>
+  <span class="tf-progress-text" id="progressText">0/0</span>
+  <span class="tf-countdown" id="countdown"></span>
+</div>
+
+<div id="offlineNotice" class="tf-offline-notice" style="display: none;">
+  ⚠️ AI伴读未连接，启动 dev_server.py 获得完整体验（当前为静态学习清单模式）
+</div>
+
+<div class="tf-main">
+  <div class="tf-task-area" id="taskArea">
+    <div class="tf-empty"><h2>加载中...</h2><p>正在读取今日学习计划</p></div>
+  </div>
+  <div class="tf-ai-panel">
+    <div class="tf-ai-header">
+      <div class="tf-ai-status offline" id="aiStatus"></div>
+      <h2>🤖 AI 私教</h2>
+    </div>
+    <div class="tf-ai-messages" id="aiMessages">
+      <div class="tf-ai-msg ai">正在读取学习进度...</div>
+    </div>
+    <div class="tf-ai-input">
+      <textarea id="aiInput" placeholder="有问题随时问我..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
+      <button class="tf-ai-send" id="aiSendBtn" disabled onclick="aiSend()">发送</button>
+    </div>
+  </div>
+</div>
+
+<div class="tf-overview" id="overview" style="display: none;">
+  <div class="tf-overview-title">今日概览</div>
+  <div class="tf-overview-list" id="overviewList"></div>
+</div>
+
+<script>
+var API_BASE = '';
+if (location.protocol === 'file:') API_BASE = 'http://localhost:8000';
+function apiUrl(p) { return API_BASE + p; }
+function fetchJson(p) { return fetch(apiUrl(p)); }
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+var CARD_MAP = {
+  '系统原理': '/data/recite-cards-13015.json',
+  '离散数学': '/data/recite-cards-02324.json',
+  '数据结构': '/data/recite-cards-13003.json'
+};
+var cardCache = {};
+var todayData = null;
+var currentTaskIdx = 0;
+var aiOnline = false;
+var aiHistory = [];
+var examDate = new Date('2026-10-24');
+var taskStartTime = null;
+var timeoutWarned = {};
+var timeoutTimer = null;
+
+function checkAI() {
+  fetch(apiUrl('/api/mastery'), { method: 'GET' })
+    .then(function() {
+      if (!aiOnline) {
+        aiOnline = true;
+        document.getElementById('aiStatus').classList.remove('offline');
+        document.getElementById('aiSendBtn').disabled = false;
+        document.getElementById('offlineNotice').style.display = 'none';
+      }
+    })
+    .catch(function() {
+      aiOnline = false;
+      document.getElementById('aiStatus').classList.add('offline');
+      document.getElementById('aiSendBtn').disabled = true;
+      document.getElementById('offlineNotice').style.display = '';
+    });
+}
+
+function loadCards(subject) {
+  var path = CARD_MAP[subject];
+  if (!path) return Promise.resolve([]);
+  if (cardCache[path]) return Promise.resolve(cardCache[path]);
+  return fetchJson(path).then(function(r) { return r.json(); }).then(function(d) {
+    cardCache[path] = d;
+    return d;
+  }).catch(function() { return []; });
+}
+
+function loadTodayPlan() {
+  fetchJson('/data/study-plan.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var weeks = data.weeks || [];
+      var today = new Date();
+      var todayStr = (today.getMonth() + 1) + '/' + today.getDate();
+      var currentWeek = null;
+      for (var i = 0; i < weeks.length; i++) {
+        if (weeks[i].isCurrent) { currentWeek = weeks[i]; break; }
+        if (weeks[i].dates && weeks[i].dates.indexOf(todayStr) >= 0) { currentWeek = weeks[i]; break; }
+      }
+      if (!currentWeek) currentWeek = weeks[0];
+      if (!currentWeek) { showEmpty(); return; }
+
+      var todayPlan = null;
+      var dp = currentWeek.dailyPlans || data.dailyPlans || [];
+      for (var i = 0; i < dp.length; i++) {
+        if (dp[i].days) {
+          for (var j = 0; j < dp[i].days.length; j++) {
+            if (dp[i].days[j].date === todayStr) { todayPlan = dp[i].days[j]; break; }
+          }
+        }
+        if (todayPlan) break;
+      }
+      if (!todayPlan) {
+        try {
+          var saved = JSON.parse(localStorage.getItem('ai_daily_plan') || '{}');
+          if (saved && saved.days) {
+            for (var i = 0; i < saved.days.length; i++) {
+              if (saved.days[i].date === todayStr) { todayPlan = saved.days[i]; break; }
+            }
+            if (!todayPlan && saved.days.length > 0) todayPlan = saved.days[0];
+          }
+        } catch(e) {}
+      }
+      if (!todayPlan) todayPlan = generateFromGoals(currentWeek);
+
+      // Restore done states from localStorage
+      try {
+        var savedPlan = JSON.parse(localStorage.getItem('tf_today_data') || '{}');
+        if (savedPlan && savedPlan.date === todayStr && savedPlan.tasks) {
+          for (var i = 0; i < todayPlan.tasks.length; i++) {
+            var t = todayPlan.tasks[i];
+            var s = savedPlan.tasks.find(function(x) {
+              return x.subject === t.subject && x.chapter === t.chapter && x.topic === t.topic;
+            });
+            if (s) t.done = s.done;
+          }
+        }
+      } catch(e) {}
+
+      // Step4: 昨日完成检测 + 自动重排
+      var yesterdayPlan = checkYesterday(data, today);
+      var missedTasks = [];
+      if (yesterdayPlan && yesterdayPlan.tasks) {
+        missedTasks = yesterdayPlan.tasks.filter(function(t) { return !t.done; });
+      }
+
+      // Step4: 周日自测
+      var isSunday = today.getDay() === 0;
+
+      todayData = todayPlan;
+      todayData.date = todayStr;
+
+      // Prepend missed tasks as review
+      if (missedTasks.length > 0 && !todayData._reviewChecked) {
+        var reviewTasks = missedTasks.map(function(t) {
+          return {
+            tag: 'review',
+            subject: t.subject || '',
+            chapter: t.chapter || '',
+            topic: '📥 补学：' + (t.topic || ''),
+            hours: 0.5,
+            done: false,
+            _isReview: true
+          };
+        });
+        todayData.tasks = reviewTasks.concat(todayData.tasks);
+        todayData._reviewChecked = true;
+      }
+
+      // Sunday quiz: replace practice tasks with quiz
+      if (isSunday && !todayData._sundayQuizAdded) {
+        todayData._sundayQuizAdded = true;
+        var quizTask = {
+          tag: 'review',
+          subject: '自测',
+          chapter: '周日迷你测试',
+          topic: '每科30分钟迷你测试（从题库生成）',
+          hours: 1.5,
+          done: false,
+          _isQuiz: true
+        };
+        // Insert quiz after the first 3 tasks
+        todayData.tasks.splice(3, 0, quizTask);
+      }
+
+      renderTask();
+      renderOverview();
+      updateCountdown();
+      startTimeoutCheck();
+      if (aiOnline) aiGreeting(missedTasks.length, isSunday);
+    })
+    .catch(function(e) { showEmpty(); });
+}
+
+function generateFromGoals(week) {
+  var tasks = [];
+  (week.goals || []).forEach(function(g) {
+    tasks.push({ tag: g.tag, subject: g.subject, chapter: g.chapter || '', topic: g.topic || '', hours: 1, done: false });
+  });
+  return { date: '', weekday: '', tasks: tasks };
+}
+
+// Step4: Check yesterday's completion
+function checkYesterday(data, today) {
+  var yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  var yStr = (yesterday.getMonth() + 1) + '/' + yesterday.getDate();
+
+  // Try to get yesterday's saved data from localStorage
+  try {
+    var saved = JSON.parse(localStorage.getItem('tf_today_data_' + yStr) || 'null');
+    if (saved && saved.tasks) return saved;
+  } catch(e) {}
+
+  // Try from study-plan.json
+  var dp = data.dailyPlans || [];
+  for (var i = 0; i < dp.length; i++) {
+    if (dp[i].days) {
+      for (var j = 0; j < dp[i].days.length; j++) {
+        if (dp[i].days[j].date === yStr) return dp[i].days[j];
+      }
+    }
+  }
+  return null;
+}
+
+// Step4: Timeout check - remind user if task takes too long
+function startTimeoutCheck() {
+  if (timeoutTimer) clearInterval(timeoutTimer);
+  taskStartTime = Date.now();
+  var currentKey = currentTaskIdx;
+  timeoutWarned[currentKey] = false;
+
+  timeoutTimer = setInterval(function() {
+    if (!todayData || !todayData.tasks || !todayData.tasks[currentTaskIdx]) return;
+    var t = todayData.tasks[currentTaskIdx];
+    if (t.done) return;
+
+    var elapsed = (Date.now() - taskStartTime) / 1000 / 60; // minutes
+    var estimated = (t.hours || 1) * 60 * 1.5; // 1.5x estimated time in minutes
+
+    if (elapsed >= estimated && !timeoutWarned[currentKey]) {
+      timeoutWarned[currentKey] = true;
+      if (aiOnline) {
+        var prompt = '用户学习' + (t.subject || '') + ' ' + (t.chapter || '') + ' ' + (t.topic || '') + '已超时（预计' + (t.hours || 1) + '小时，已用' + Math.round(elapsed) + '分钟）。请用一句话提醒用户，可以建议休息或拆分任务。30字以内。';
+        aiCall(prompt, function(resp) {
+          aiAddMsg('system', '⏰ 超时提醒');
+          aiAddMsg('ai', resp);
+        });
+      } else {
+        aiAddMsg('system', '⏰ 此任务已超时，建议休息或拆分');
+      }
+    }
+  }, 60000); // Check every minute
+}
+
+// Step4: Render Sunday quiz
+function renderSundayQuiz() {
+  var area = document.getElementById('taskArea');
+  var html = '<div class="tf-task-card">';
+  html += '<div class="tf-task-header">';
+  html += '<span class="tf-subject-tag review">📝 自测</span>';
+  html += '<span class="tf-chapter">周日迷你测试</span>';
+  html += '</div>';
+  html += '<div class="tf-task-title">每科30分钟迷你测试</div>';
+  html += '<div class="tf-task-meta"><span>⏱ 1.5h</span><span>📋 自测模式</span></div>';
+  html += '<div class="tf-kp-section">';
+  html += '<div class="tf-kp-section-title">📝 测试说明</div>';
+  html += '<div style="font-size:13px;line-height:1.6;padding:8px 0;">';
+  html += '周日自测模式：从题库抽取每科5道题，限时30分钟/科。<br>';
+  html += '点击下方按钮开始测试，完成后AI帮你批改分析薄弱点。';
+  html += '</div>';
+  html += '</div>';
+  html += '<div class="tf-kp-section" id="quizContainer"></div>';
+  html += '<div class="tf-actions">';
+  html += '<button class="tf-btn tf-btn-primary" onclick="startSundayQuiz()">📝 开始自测</button>';
+  html += '</div>';
+  html += '</div>';
+  area.innerHTML = html;
+}
+
+function startSundayQuiz() {
+  var container = document.getElementById('quizContainer');
+  if (!container) return;
+  container.innerHTML = '<div style="color:var(--muted);font-size:12px;">正在从题库加载...</div>';
+
+  // Load quiz bank from localStorage or API
+  var subjects = ['系统原理', '离散数学', '数据结构'];
+  var allQuestions = [];
+  var loaded = 0;
+
+  subjects.forEach(function(subj) {
+    var key = 'recite-quiz-bank-' + (subj === '系统原理' ? '13015' : subj === '离散数学' ? '02324' : '13003');
+    try {
+      var bank = JSON.parse(localStorage.getItem(key) || '[]');
+      var shuffled = bank.sort(function() { return Math.random() - 0.5; });
+      allQuestions = allQuestions.concat(shuffled.slice(0, 3).map(function(q) {
+        q._subject = subj;
+        return q;
+      }));
+    } catch(e) {}
+    loaded++;
+    if (loaded === subjects.length) renderQuizQuestions(allQuestions);
+  });
+
+  // Also try API
+  subjects.forEach(function(subj, idx) {
+    var code = subj === '系统原理' ? '13015' : subj === '离散数学' ? '02324' : '13003';
+    fetch(apiUrl('/api/quiz-bank?subject=' + code))
+      .then(function(r) { return r.json(); })
+      .then(function(bank) {
+        if (Array.isArray(bank) && bank.length > 0) {
+          var shuffled = bank.sort(function() { return Math.random() - 0.5; });
+          allQuestions = allQuestions.concat(shuffled.slice(0, 3).map(function(q) {
+            q._subject = subj;
+            return q;
+          }));
+        }
+        renderQuizQuestions(allQuestions);
+      })
+      .catch(function() {});
+  });
+}
+
+function renderQuizQuestions(questions) {
+  var container = document.getElementById('quizContainer');
+  if (!container || !questions.length) {
+    if (container) container.innerHTML = '<div style="color:var(--muted);font-size:12px;">题库为空，请先在背诵卡测验模式中生成题目</div>';
+    return;
+  }
+  var html = '';
+  questions.forEach(function(q, i) {
+    html += '<div class="tf-practice-q">';
+    html += '<div class="tf-practice-q-title">[' + escapeHtml(q._subject || '') + '] Q' + (i+1) + ': ' + escapeHtml(q.question || q.title || '') + '</div>';
+    html += '<textarea class="tf-practice-input" id="quiz_' + i + '" placeholder="输入答案..." rows="2"></textarea>';
+    html += '<div class="tf-practice-actions">';
+    html += '<button class="tf-practice-btn show" onclick="showQuizAnswer(' + i + ', \'' + escapeHtml((q.answer || q.def || '')).replace(/'/g, "\\'").replace(/\n/g, '\\n') + '\')">看答案</button>';
+    html += '</div>';
+    html += '<div class="tf-practice-feedback" id="qf_' + i + '"></div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function showQuizAnswer(idx, answer) {
+  var fb = document.getElementById('qf_' + idx);
+  if (fb) {
+    fb.className = 'tf-practice-feedback show correct';
+    fb.textContent = '📌 参考答案：' + answer;
+  }
+}
+
+function renderTask() {
+  var area = document.getElementById('taskArea');
+  if (!todayData || !todayData.tasks || !todayData.tasks.length) { showEmpty(); return; }
+  for (var i = 0; i < todayData.tasks.length; i++) {
+    if (!todayData.tasks[i].done) { currentTaskIdx = i; break; }
+    if (i === todayData.tasks.length - 1) { currentTaskIdx = 0; }
+  }
+  var t = todayData.tasks[currentTaskIdx];
+
+  // Step4: Start timeout timer for this task
+  startTimeoutCheck();
+
+  // Step4: Sunday quiz task
+  if (t._isQuiz) {
+    renderSundayQuiz();
+    if (aiOnline) aiTaskContext(t, 0);
+    return;
+  }
+  var tagClass = t.tag || 'core';
+  var subject = t.subject || t.tag || '';
+  var chapter = t.chapter || '';
+  var cardPath = CARD_MAP[subject];
+
+  var html = '<div class="tf-task-card">';
+  html += '<div class="tf-task-header">';
+  html += '<span class="tf-subject-tag ' + tagClass + '">' + escapeHtml(subject) + '</span>';
+  if (chapter) html += '<span class="tf-chapter">' + escapeHtml(chapter) + '</span>';
+  html += '</div>';
+  html += '<div class="tf-task-title">' + escapeHtml(t.topic || '') + '</div>';
+  html += '<div class="tf-task-meta">';
+  html += '<span>⏱ ' + (t.hours || 1) + 'h</span>';
+  html += '<span>📋 任务 ' + (currentTaskIdx + 1) + '/' + todayData.tasks.length + '</span>';
+  html += '</div>';
+
+  // Knowledge cards section
+  if (cardPath) {
+    html += '<div class="tf-kp-section">';
+    html += '<div class="tf-kp-section-title">📖 知识点卡片</div>';
+    html += '<div id="kpCards"><div style="color:var(--muted);font-size:12px;padding:8px;">加载中...</div></div>';
+    html += '</div>';
+    // Practice section
+    html += '<div class="tf-kp-section">';
+    html += '<div class="tf-kp-section-title">✏️ 快速练习</div>';
+    html += '<div id="practiceArea"><div style="color:var(--muted);font-size:12px;padding:8px;">加载中...</div></div>';
+    html += '</div>';
+  } else {
+    html += '<div class="tf-kp-section">';
+    html += '<div class="tf-kp-section-title">📝 任务说明</div>';
+    html += '<div style="font-size:13px;line-height:1.6;padding:8px 0;color:var(--ink);">' + escapeHtml(t.topic || '完成此任务') + '</div>';
+    html += '</div>';
+  }
+
+  html += '<div class="tf-actions">';
+  html += '<button class="tf-btn tf-btn-secondary" onclick="prevTask()">← 上一个</button>';
+  html += '<button class="tf-btn tf-btn-primary" onclick="completeTask()">✅ 完成此任务 →</button>';
+  html += '</div>';
+  html += '</div>';
+
+  area.innerHTML = html;
+
+  // Load cards async
+  if (cardPath) {
+    loadCards(subject).then(function(cards) {
+      var ch = chapter.replace('第', '').replace('章', '');
+      var matched = cards.filter(function(c) {
+        return c.chapter && c.chapter.indexOf(chapter) >= 0;
+      });
+      renderKpCards(matched.slice(0, 5));
+      renderPractice(matched.slice(0, 2));
+      if (aiOnline) aiTaskContext(t, matched.length);
+    });
+  } else {
+    if (aiOnline) aiTaskContext(t, 0);
+  }
+}
+
+function renderKpCards(cards) {
+  var el = document.getElementById('kpCards');
+  if (!el) return;
+  if (!cards || !cards.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;">本章暂无知识点卡片</div>'; return; }
+  var html = '';
+  cards.forEach(function(c, i) {
+    html += '<div class="tf-kp-card">';
+    html += '<div class="tf-kp-q" onclick="toggleKp(this)">';
+    html += '<span>' + escapeHtml(c.question) + '</span>';
+    html += '</div>';
+    html += '<div class="tf-kp-answer">';
+    if (c.def) html += '<div class="tf-kp-block"><span class="tf-kp-label def">定义</span><br>' + escapeHtml(c.def) + '</div>';
+    if (c.ex) html += '<div class="tf-kp-block"><span class="tf-kp-label ex">举例</span><br>' + escapeHtml(c.ex) + '</div>';
+    if (c.exam) html += '<div class="tf-kp-block"><span class="tf-kp-label exam">考点</span><br>' + escapeHtml(c.exam) + '</div>';
+    html += '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function toggleKp(el) {
+  el.classList.toggle('open');
+  var ans = el.nextElementSibling;
+  if (ans) ans.classList.toggle('show');
+}
+
+function renderPractice(cards) {
+  var el = document.getElementById('practiceArea');
+  if (!el) return;
+  if (!cards || !cards.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;">本章暂无练习题</div>'; return; }
+  var html = '';
+  cards.forEach(function(c, i) {
+    html += '<div class="tf-practice-q">';
+    html += '<div class="tf-practice-q-title">Q' + (i+1) + ': ' + escapeHtml(c.question) + '</div>';
+    html += '<textarea class="tf-practice-input" id="pa_' + i + '" placeholder="输入你的答案..." rows="2"></textarea>';
+    html += '<div class="tf-practice-actions">';
+    html += '<button class="tf-practice-btn check" onclick="checkPractice(' + i + ',\'' + escapeHtml(c.def || '').replace(/'/g, "\\'") + '\')">提交</button>';
+    html += '<button class="tf-practice-btn show" onclick="showPractice(' + i + ',\'' + escapeHtml((c.def || '') + ' | ' + (c.ex || '')).replace(/'/g, "\\'") + '\')">看答案</button>';
+    html += '</div>';
+    html += '<div class="tf-practice-feedback" id="pf_' + i + '"></div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function checkPractice(idx, answer) {
+  var input = document.getElementById('pa_' + idx);
+  var fb = document.getElementById('pf_' + idx);
+  if (!input || !fb) return;
+  var userAns = input.value.trim();
+  if (!userAns) { fb.className = 'tf-practice-feedback show wrong'; fb.textContent = '请先输入答案'; return; }
+  var keywords = answer.split(/[，。、；]/).filter(function(s) { return s.length > 2; }).slice(0, 3);
+  var hits = keywords.filter(function(k) { return userAns.indexOf(k) >= 0; });
+  if (hits.length >= 1) {
+    fb.className = 'tf-practice-feedback show correct';
+    fb.textContent = '✅ 回答包含关键点：' + hits.join('、') + '。完整参考答案可点击"看答案"。';
+  } else {
+    fb.className = 'tf-practice-feedback show wrong';
+    fb.textContent = '⚠️ 回答可能遗漏关键点，建议点击"看答案"对照。';
+  }
+}
+
+function showPractice(idx, answer) {
+  var fb = document.getElementById('pf_' + idx);
+  if (fb) {
+    fb.className = 'tf-practice-feedback show correct';
+    fb.textContent = '📌 参考答案：' + answer;
+  }
+}
+
+function renderOverview() {
+  if (!todayData || !todayData.tasks) return;
+  var list = document.getElementById('overviewList');
+  var html = '';
+  var doneCount = 0;
+  todayData.tasks.forEach(function(t, i) {
+    var cls = t.done ? 'done' : (i === currentTaskIdx ? 'current' : 'pending');
+    var icon = t.done ? '✓' : (i === currentTaskIdx ? '→' : '○');
+    html += '<div class="tf-overview-item ' + cls + '" onclick="jumpTo(' + i + ')">';
+    html += icon + ' ' + escapeHtml(t.subject || t.tag || '') + ' ' + escapeHtml(t.chapter || '');
+    html += '</div>';
+    if (t.done) doneCount++;
+  });
+  list.innerHTML = html;
+  document.getElementById('overview').style.display = '';
+  var pct = Math.round(doneCount / todayData.tasks.length * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = doneCount + '/' + todayData.tasks.length;
+}
+
+function completeTask() {
+  if (!todayData || !todayData.tasks) return;
+  todayData.tasks[currentTaskIdx].done = true;
+  saveTodayData();
+  writeTaskDone(todayData.tasks[currentTaskIdx], true);
+  var next = currentTaskIdx + 1;
+  if (next < todayData.tasks.length) {
+    currentTaskIdx = next;
+    renderTask();
+    renderOverview();
+    if (aiOnline) aiOnComplete(todayData.tasks[currentTaskIdx - 1], todayData.tasks[currentTaskIdx]);
+  } else {
+    var area = document.getElementById('taskArea');
+    area.innerHTML = '<div class="tf-empty"><h2>🎉 今日全部完成！</h2><p>好好休息，明天继续</p></div>';
+    renderOverview();
+    if (aiOnline) aiAllDone();
+  }
+}
+
+function prevTask() {
+  if (currentTaskIdx > 0) { currentTaskIdx--; renderTask(); renderOverview(); }
+}
+
+function jumpTo(idx) {
+  currentTaskIdx = idx;
+  renderTask();
+  renderOverview();
+}
+
+function saveTodayData() {
+  try {
+    localStorage.setItem('tf_today_data', JSON.stringify(todayData));
+    // Step4: Also save by date for yesterday check
+    if (todayData.date) {
+      localStorage.setItem('tf_today_data_' + todayData.date, JSON.stringify(todayData));
+    }
+  } catch(e) {}
+}
+
+function writeTaskDone(task, done) {
+  fetch(apiUrl('/api/update-plan'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ week: '', subject: task.subject, chapter: task.chapter, done: done })
+  }).catch(function() {});
+}
+
+function updateCountdown() {
+  var now = new Date();
+  var days = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+  document.getElementById('countdown').textContent = '距考试 ' + days + ' 天';
+}
+
+function showEmpty() {
+  document.getElementById('taskArea').innerHTML = '<div class="tf-empty"><h2>暂无今日计划</h2><p>请先在学习驾驶舱生成计划</p></div>';
+}
+
+// ---- AI Functions ----
+function aiGreeting(missedCount, isSunday) {
+  if (!todayData) return;
+  var done = todayData.tasks.filter(function(t) { return t.done; }).length;
+  var total = todayData.tasks.length;
+  var firstTask = todayData.tasks.find(function(t) { return !t.done; }) || todayData.tasks[0];
+  var context = '当前时间：' + new Date().toLocaleString('zh-CN') + '\n';
+  context += '今日任务：' + total + '个，已完成' + done + '个\n';
+  context += '第一个未完成任务：' + (firstTask.subject || '') + ' ' + (firstTask.chapter || '') + ' ' + (firstTask.topic || '') + '\n';
+  context += '距考试：' + Math.ceil((examDate - new Date()) / (1000*60*60*24)) + '天';
+  if (missedCount > 0) context += '\n昨日有' + missedCount + '个任务未完成，已插入今日开头作为补学';
+  if (isSunday) context += '\n今天是周日，有迷你自测任务';
+
+  var prompt = '你是用户的AI学习私教。请根据以下信息生成一句简短的开场白（2-3句话），鼓励用户开始今天的学习，提到第一个任务的内容。';
+  if (missedCount > 0) prompt += '提醒用户昨日有' + missedCount + '个任务未完成，已安排补学。';
+  prompt += '语气亲切但简洁。\n\n' + context;
+  aiCall(prompt, function(resp) {
+    aiAddMsg('ai', resp);
+  });
+}
+
+function aiTaskContext(task, cardCount) {
+  var msg = '📍 当前任务：' + (task.subject || '') + ' ' + (task.chapter || '') + '\n';
+  msg += '知识点：' + (task.topic || '') + '\n';
+  msg += '预计时长：' + (task.hours || 1) + '小时';
+  if (cardCount > 0) msg += '\n本章有' + cardCount + '张知识卡片可供学习';
+  aiAddMsg('system', msg);
+
+  var prompt = '用户正在学习：' + (task.subject || '') + ' ' + (task.chapter || '') + '，知识点：' + (task.topic || '') + '。';
+  prompt += '请用一句话给出学习建议（如重点注意什么、怎么学最快）。50字以内。';
+  aiCall(prompt, function(resp) {
+    aiAddMsg('ai', '💡 ' + resp);
+  });
+}
+
+function aiOnComplete(doneTask, nextTask) {
+  var prompt = '用户刚完成了：' + (doneTask.subject || '') + ' ' + (doneTask.chapter || '') + '。';
+  prompt += '下一个任务是：' + (nextTask.subject || '') + ' ' + (nextTask.chapter || '') + ' ' + (nextTask.topic || '') + '。';
+  prompt += '请用一句话鼓励用户并预告下个任务。30字以内。';
+  aiCall(prompt, function(resp) {
+    aiAddMsg('ai', resp);
+  });
+}
+
+function aiAllDone() {
+  aiAddMsg('ai', '🎉 今日全部任务完成！收获满满，好好休息，明天继续加油！');
+}
+
+function aiSend() {
+  var input = document.getElementById('aiInput');
+  var text = input.value.trim();
+  if (!text || !aiOnline) return;
+  aiAddMsg('user', text);
+  input.value = '';
+  var currentTask = todayData ? todayData.tasks[currentTaskIdx] : null;
+  var context = '';
+  if (currentTask) {
+    context = '【当前学习上下文】\n科目：' + (currentTask.subject || '') + '\n章节：' + (currentTask.chapter || '') + '\n知识点：' + (currentTask.topic || '') + '\n\n';
+  }
+  aiHistory.push({ role: 'user', content: text });
+  var messages = [{ role: 'system', content: '你是用户的AI学习私教，解答学习问题，语气简洁亲切。' + context }];
+  aiHistory.forEach(function(m) { messages.push(m); });
+  aiCallDirect(messages, function(resp) {
+    aiAddMsg('ai', resp);
+    aiHistory.push({ role: 'assistant', content: resp });
+    if (aiHistory.length > 20) aiHistory = aiHistory.slice(-20);
+  });
+}
+
+function aiCall(prompt, callback) {
+  var loadingEl = aiAddMsg('loading', 'AI 思考中...');
+  fetch(apiUrl('/api/chat'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], model: 'deepseek-v4-flash', stream: false, max_tokens: 300 })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    loadingEl.remove();
+    var text = '';
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      text = data.choices[0].message.content || '';
+    } else if (data.response) {
+      text = data.response;
+    } else if (data.content) {
+      text = data.content;
+    } else if (data.error) {
+      text = '⚠️ ' + data.error;
+    }
+    if (!text) text = '（无回复）';
+    callback(text);
+  })
+  .catch(function(e) {
+    loadingEl.remove();
+    aiAddMsg('ai', '⚠️ 请求失败：' + (e.message || '网络错误'));
+  });
+}
+
+function aiCallDirect(messages, callback) {
+  var loadingEl = aiAddMsg('loading', 'AI 思考中...');
+  fetch(apiUrl('/api/chat'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: messages, model: 'deepseek-v4-flash', stream: false, max_tokens: 800 })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    loadingEl.remove();
+    var text = '';
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      text = data.choices[0].message.content || '';
+    } else if (data.response) {
+      text = data.response;
+    } else if (data.content) {
+      text = data.content;
+    } else if (data.error) {
+      text = '⚠️ ' + data.error;
+    }
+    if (!text) text = '（无回复）';
+    callback(text);
+  })
+  .catch(function(e) {
+    loadingEl.remove();
+    aiAddMsg('ai', '⚠️ 请求失败：' + (e.message || '网络错误'));
+  });
+}
+
+function aiAddMsg(type, text) {
+  var container = document.getElementById('aiMessages');
+  var div = document.createElement('div');
+  div.className = 'tf-ai-msg ' + type;
+  div.textContent = text;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+// Init
+checkAI();
+loadTodayPlan();
+setInterval(checkAI, 30000);
+</script>
+</body>
+</html>

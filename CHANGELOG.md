@@ -4,6 +4,38 @@
 
 ---
 
+## v2.18.0
+
+**发布时间**：2026-08-20 18:00（北京时间）
+
+### 2026-08-20 — 学习指南标注 + 掌握状态/AI对话跨浏览器持久化 + 浏览器缓存彻底修复 + 今日学习流模块
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/learning-guide.json` | 新建：三科187个知识点的学习指南数据，通过AI批量分类生成。每条含priority（重点/一般/了解）、type（计算/背诵/理解/应用）、advice（学习建议），覆盖13015(72条)、02324(67条)、13003(48条) |
+| `Workbench/自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html` | 学习指南标注改造：CSS背景色区分重点(红)/一般(蓝)/了解(灰)，知识点标签显示类型与优先级，章节概览统计分布，筛选按钮(全部/重点/一般/了解)，学习建议悬浮提示；掌握状态API同步：saveStateToAPI延迟500ms写JSON、syncFromAPI页面加载时拉取、重置按钮同步清空API；contentUrl版本号升至v=2.3.5 |
+| `Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html` | 同上：学习指南标注改造 + 掌握状态API同步；contentUrl版本号升至v=2.3.5 |
+| `Workbench/自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html` | 同上：学习指南标注改造 + 掌握状态API同步；contentUrl版本号升至v=2.3.5 |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | AI对话历史API同步：saveAIConv同时写localStorage和POST /api/ai-conv；saveAIPlan同时写localStorage和POST /api/ai-plan；restoreConvHistory优先读localStorage，为空时从/api/ai-conv和/api/ai-plan拉取并回填localStorage；aiClearChat同步清空API数据 |
+| `dev_server.py` | 浏览器缓存彻底修复：end_headers增加Cache-Control: no-store/no-cache/must-revalidate/max-age=0 + Pragma: no-cache + Expires: 0；do_GET拦截If-Modified-Since和If-None-Match头防止304响应；_handle_load_mastery支持按科目查询(GET /api/mastery?subject=xxx)；新增_handle_load_ai_conv(GET /api/ai-conv)、_handle_save_ai_conv(POST /api/ai-conv)、_handle_load_ai_plan(GET /api/ai-plan)、_handle_save_ai_plan(POST /api/ai-plan)四个端点 |
+| `data/mastery-progress.json` | 三科掌握状态数据：13015(kp+掌握度)、02324(kp+掌握度)、13003(kp+掌握度) |
+| `data/ai-conversation.json` | 新建：AI对话历史持久化文件，存储最近20条对话 |
+| `data/ai-daily-plan.json` | 新建：AI每日计划持久化文件 |
+| `data/modules/self-study.json` | 三个知识框架页contentUrl版本号从v=2.3.4升至v=2.3.5（绕过浏览器缓存） |
+| `data/modules/ability.json` | 学习驾驶舱配置更新 |
+| `data/modules/ai-learning.json` | AI学习模块配置更新 |
+| `data/workbench.json` | 新增today今日学习模块注册 |
+| `data/modules/today.json` | 新建：今日学习模块数据，含今日学习流页面(today-flow.html) |
+| `Workbench/today/today-flow.html` | 新建：今日学习流页面，线性任务流+AI伴读+自适应进度 |
+| `templates/workbench.html` | 模板更新：适配今日学习模块 |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | contentUrl版本号更新 |
+| `Workbench/此刻便是春天.html` | 构建产物同步更新 |
+| `CHANGELOG.md` | 新增v2.18.0版本记录 |
+| `AGENT_HANDOFF.md` | 版本表新增v2.18.0，更新当前版本标记与项目一句话描述 |
+| `文件说明.md` | 新增learning-guide.json、ai-conversation.json、ai-daily-plan.json、today.json、today-flow.html说明；更新dev_server.py端点列表 |
+
+---
+
 ## v2.17.0
 
 **发布时间**：2026-08-19 20:30（北京时间）

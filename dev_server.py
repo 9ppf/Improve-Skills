@@ -96,6 +96,12 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
+    def end_headers(self):
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+        self.send_header('Pragma', 'no-cache')
+        self.send_header('Expires', '0')
+        super().end_headers()
+
     def do_POST(self):
         if self.path == '/api/chat':
             self._handle_chat()
@@ -107,16 +113,30 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_save_quiz('bank')
         elif self.path == '/api/quiz-ai':
             self._handle_save_quiz('ai')
+        elif self.path == '/api/ai-plan':
+            self._handle_save_ai_plan()
+        elif self.path == '/api/ai-conv':
+            self._handle_save_ai_conv()
         else:
             self.send_error(404, 'Not Found')
 
     def do_OPTIONS(self):
         self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.send_header('Content-Length', '0')
         self.end_headers()
 
     def do_GET(self):
-        if self.path == '/api/health':
+        for h in ('If-Modified-Since', 'If-None-Match'):
+            if h in self.headers:
+                del self.headers[h]
+        if self.path == '/favicon.ico':
+            self.send_response(204)
+            self.send_header('Content-Length', '0')
+            self.end_headers()
+        elif self.path == '/api/health':
             self._handle_health()
         elif self.path.startswith('/api/mastery'):
             self._handle_load_mastery()
@@ -124,6 +144,10 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_quiz('bank')
         elif self.path.startswith('/api/quiz-ai'):
             self._handle_load_quiz('ai')
+        elif self.path.startswith('/api/ai-plan'):
+            self._handle_load_ai_plan()
+        elif self.path.startswith('/api/ai-conv'):
+            self._handle_load_ai_conv()
         else:
             super().do_GET()
 
@@ -187,13 +211,20 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         self._send_json(200, {'status': 'ok', 'updated': True})
 
     def _handle_load_mastery(self):
+        from urllib.parse import urlparse, parse_qs
+        qs = parse_qs(urlparse(self.path).query)
+        subject = qs.get('subject', [''])[0]
         path = ROOT / 'data' / 'mastery-progress.json'
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             data = {}
-        self._send_json(200, data)
+        if subject:
+            result = data.get(subject, {'mastery': {}, 'kp': {}})
+        else:
+            result = data
+        self._send_json(200, result)
 
     def _handle_save_mastery(self):
         content_length = int(self.headers.get('Content-Length', 0))
@@ -203,10 +234,22 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         except json.JSONDecodeError:
             self._send_json(400, {'error': 'Invalid JSON body'})
             return
+        subject = data.get('subject', '')
+        payload = data.get('data', data)
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject field'})
+            return
         path = ROOT / 'data' / 'mastery-progress.json'
+        existing = {}
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                existing = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+        existing[subject] = payload
         try:
             with open(path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+                json.dump(existing, f, ensure_ascii=False, indent=2)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
@@ -246,6 +289,58 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         try:
             with open(path, 'w', encoding='utf-8') as f:
                 json.dump(content, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write: {e}'})
+            return
+        self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_ai_plan(self):
+        path = ROOT / 'data' / 'ai-daily-plan.json'
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {}
+        self._send_json(200, data)
+
+    def _handle_save_ai_plan(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        path = ROOT / 'data' / 'ai-daily-plan.json'
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write: {e}'})
+            return
+        self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_ai_conv(self):
+        path = ROOT / 'data' / 'ai-conversation.json'
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = []
+        self._send_json(200, data)
+
+    def _handle_save_ai_conv(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        path = ROOT / 'data' / 'ai-conversation.json'
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
@@ -306,6 +401,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-Type', 'text/event-stream')
             self.send_header('Cache-Control', 'no-cache')
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.send_header('Transfer-Encoding', 'chunked')
             self.end_headers()
             try:
@@ -337,6 +433,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         body = json.dumps(data, ensure_ascii=False).encode('utf-8')
         self.send_response(code)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
         self.wfile.write(body)

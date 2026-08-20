@@ -1,6 +1,6 @@
 {
   "id": "ai-learning",
-  "name": "AI 学习",
+  "name": "AI与编程",
   "icon": "🤖",
   "iconBg": "purple-soft",
   "editable": false,
@@ -21,14 +21,34 @@
           "contentUrl": "ai-learning/ai-knowledge-tree.html?v=2.5.0"
         },
         {
-          "name": "AI 实战 Demo",
+          "name": "Python 知识点详解",
+          "type": "python",
+          "renderMode": "bare",
+          "stage": "进行中",
+          "current": "四阶段29个知识点：语法基础·数据结构·常用库·AI Python",
+          "tasks": [],
+          "review": "按阶段按钮切换，每个知识点含概念、示例、手写练习、AI 场景四层内容。",
+          "contentUrl": "Python基础/python-knowledge-tree.html?v=2.10.0"
+        },
+        {
+          "name": "Demo 实战",
           "type": "ai-learning",
           "renderMode": "bare",
           "stage": "进行中",
-          "current": "四阶段4个 Demo：数据评估工具·MNIST分类器·语义搜索·AI知识助手",
+          "current": "AI+Python共8个Demo：模板引擎·上下文管理器·API客户端·数据仪表盘·数据评估·MNIST·语义搜索·AI助手",
           "tasks": [],
           "review": "按阶段按钮切换，每个 Demo 含目标、功能、代码、测试用例、知识点映射。",
           "contentUrl": "ai-learning/ai-demos.html?v=2.10.0"
+        },
+        {
+          "name": "Python 学习闭环",
+          "type": "python",
+          "renderMode": "bare",
+          "stage": "进行中",
+          "current": "学习目标 → 代码练习 → Demo → GitHub → 复盘",
+          "tasks": [],
+          "review": "四阶段学习路径与闭环流程，进度自动反馈到知识树。",
+          "contentUrl": "Python基础/python-learning-loop.html?v=2.4.0"
         }
       ]
     },
@@ -56,6 +76,23 @@
           "tasks": [],
           "review": "读取 localStorage job_kp_detail_v1 显示各阶段掌握度，追踪3个简历项目进度。",
           "contentUrl": "ai-learning/job-learning-loop.html?v=2.6.0"
+        }
+      ]
+    },
+    {
+      "name": "实战工具",
+      "icon": "🛠️",
+      "iconBg": "green-soft",
+      "items": [
+        {
+          "name": "AI 帮我复盘代码",
+          "type": "ability",
+          "renderMode": "content",
+          "stage": "可用",
+          "current": "粘贴代码即可 Review",
+          "tasks": [],
+          "review": "粘贴 Python 代码，AI 检查 bug、提优化、解释算法复杂度。",
+          "contentUrl": "ai-learning/ai-code-review.html?v=2.5.0"
         }
       ]
     },

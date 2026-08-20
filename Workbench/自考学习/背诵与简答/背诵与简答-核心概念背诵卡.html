@@ -559,6 +559,60 @@
       outline: none;
     }
     .quiz-textarea:focus { border-color: var(--accent); }
+    .quiz-symbol-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      padding: 0.4rem 0.5rem;
+      margin-bottom: 0.4rem;
+      background: #f3f4f6;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+    }
+    .quiz-symbol-palette[hidden] { display: none; }
+    .quiz-symbol-btn {
+      min-width: 1.8rem;
+      height: 1.8rem;
+      border: none;
+      background: #fff;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: 'Segoe UI Symbol', 'Noto Sans Math', sans-serif;
+    }
+    .quiz-symbol-btn:hover { background: #e0e7ff; }
+    .quiz-symbol-btn:active { background: #c7d2fe; }
+    .quiz-symbol-toggle {
+      display: inline-block;
+      font-size: 0.75rem;
+      color: var(--accent);
+      cursor: pointer;
+      margin-bottom: 0.3rem;
+      user-select: none;
+    }
+    .quiz-symbol-toggle:hover { text-decoration: underline; }
+    .quiz-voice-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--rule);
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      vertical-align: middle;
+      margin-left: 0.4rem;
+    }
+    .quiz-voice-btn:hover { background: #f0f0f0; border-color: var(--accent); }
+    .quiz-voice-btn.recording { background: #fee2e2; border-color: #ef4444; animation: voice-pulse 1.2s infinite; }
+    @keyframes voice-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+    }
     .quiz-submit-btn {
       margin-top: 0.75rem;
       padding: 0.45rem 1.1rem;
@@ -990,9 +1044,11 @@
     window.__apiMastery = null;
     window.__apiQuizBank = null;
     window.__apiQuizAI = null;
+    var API_BASE = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
+    function apiUrl(path) { return API_BASE + path; }
     function apiPost(url, data) {
       try {
-        fetch(url, {
+        fetch(apiUrl(url), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
@@ -1663,7 +1719,7 @@
       var controller = new AbortController();
       var timeoutId = setTimeout(function() { controller.abort(); }, 60000);
 
-      fetch('/api/chat', {
+      fetch(apiUrl('/api/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1787,7 +1843,8 @@
           '<div class="quiz-question-text">' + (q.question || '').replace(/</g, '&lt;') + '</div>';
 
         if (q.type === 'fill' || q.type === 'calculate') {
-          html += '<input type="text" class="quiz-input" placeholder="输入你的答案..." id="quiz-input-' + i + '">' +
+          html += getSymbolPaletteHTML(i) +
+            '<input type="text" class="quiz-input" placeholder="输入你的答案..." id="quiz-input-' + i + '">' +
             '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'' + q.type + '\')">提交答案</button>' +
             '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div><button class="quiz-ask-ai-btn" onclick="askAIAboutQuiz(' + i + ')">🤖 问 AI</button><div class="quiz-ai-chat" id="quiz-ai-chat-' + i + '"><div class="quiz-ai-header"><span>AI 答疑</span><div class="quiz-ai-header-right"><button class="quiz-ai-header-copy" onclick="copyQuizAIConversation(' + i + ', this)">复制</button><button class="quiz-ai-close" onclick="closeQuizAI(' + i + ')">×</button></div></div><div class="quiz-ai-messages" id="quiz-ai-msgs-' + i + '"></div><div class="quiz-ai-input-wrap"><textarea class="quiz-ai-input" id="quiz-ai-input-' + i + '" placeholder="输入追问..." rows="1"></textarea><button class="quiz-ai-send" id="quiz-ai-send-' + i + '" onclick="sendQuizAIFollowUp(' + i + ')">发送</button></div></div></div>';
         } else if (q.type === 'choice') {
@@ -1802,7 +1859,8 @@
           html += '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'choice\')">提交答案</button>' +
             '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div><button class="quiz-ask-ai-btn" onclick="askAIAboutQuiz(' + i + ')">🤖 问 AI</button><div class="quiz-ai-chat" id="quiz-ai-chat-' + i + '"><div class="quiz-ai-header"><span>AI 答疑</span><div class="quiz-ai-header-right"><button class="quiz-ai-header-copy" onclick="copyQuizAIConversation(' + i + ', this)">复制</button><button class="quiz-ai-close" onclick="closeQuizAI(' + i + ')">×</button></div></div><div class="quiz-ai-messages" id="quiz-ai-msgs-' + i + '"></div><div class="quiz-ai-input-wrap"><textarea class="quiz-ai-input" id="quiz-ai-input-' + i + '" placeholder="输入追问..." rows="1"></textarea><button class="quiz-ai-send" id="quiz-ai-send-' + i + '" onclick="sendQuizAIFollowUp(' + i + ')">发送</button></div></div></div>';
         } else {
-          html += '<textarea class="quiz-textarea" placeholder="输入你的回答..." id="quiz-input-' + i + '"></textarea>' +
+          html += getSymbolPaletteHTML(i) +
+            '<textarea class="quiz-textarea" placeholder="输入你的回答..." id="quiz-input-' + i + '"></textarea>' +
             '<button class="quiz-submit-btn" onclick="checkQuizAnswer(' + i + ',\'' + q.type + '\')">提交答案</button>' +
             '<div class="quiz-feedback" id="quiz-feedback-' + i + '"><div class="quiz-feedback-title"></div><div class="quiz-feedback-answer"></div><button class="quiz-ask-ai-btn" onclick="askAIAboutQuiz(' + i + ')">🤖 问 AI</button><div class="quiz-ai-chat" id="quiz-ai-chat-' + i + '"><div class="quiz-ai-header"><span>AI 答疑</span><div class="quiz-ai-header-right"><button class="quiz-ai-header-copy" onclick="copyQuizAIConversation(' + i + ', this)">复制</button><button class="quiz-ai-close" onclick="closeQuizAI(' + i + ')">×</button></div></div><div class="quiz-ai-messages" id="quiz-ai-msgs-' + i + '"></div><div class="quiz-ai-input-wrap"><textarea class="quiz-ai-input" id="quiz-ai-input-' + i + '" placeholder="输入追问..." rows="1"></textarea><button class="quiz-ai-send" id="quiz-ai-send-' + i + '" onclick="sendQuizAIFollowUp(' + i + ')">发送</button></div></div></div>';
         }
@@ -1812,6 +1870,73 @@
       }).join('');
     }
 
+    var QUIZ_SYMBOLS = [
+      '\u2228','\u2227','\u00ac','\u2192','\u2194','\u2295','\u2200','\u2203',
+      '\u2208','\u2209','\u222a','\u2229','\u2286','\u2287','\u2205',
+      '\u2264','\u2265','\u2260','\u2248','\u2261',
+      '\u2211','\u220f','\u00d7','\u00f7','\u00b1','\u221a','\u221e','\u03c0',
+      '\u2082','\u2088','\u2081','\u2080','\u2083','\u2084','\u2085','\u2086','\u2087','\u2089',
+      '\u2070','\u00b9','\u00b2','\u00b3','\u207f',
+      '\u03b1','\u03b2','\u03b3','\u03b4','\u03b5','\u03b8','\u03bb','\u03bc','\u03c3','\u03c6','\u03c8','\u03c9','\u0394'
+    ];
+    function getSymbolPaletteHTML(qi) {
+      var btns = QUIZ_SYMBOLS.map(function(s) {
+        return '<button type="button" class="quiz-symbol-btn" onclick="insertQuizSymbol(' + qi + ',\'' + s + '\')">' + s + '</button>';
+      });
+      var voiceBtn = '<button type="button" class="quiz-voice-btn" id="quiz-voice-' + qi + '" onclick="toggleVoiceInput(' + qi + ')" title="语音输入">🎤</button>';
+      return '<div style="display:flex;align-items:center;gap:0.3rem;margin-bottom:0.3rem;">' +
+        '<span class="quiz-symbol-toggle" onclick="var p=document.getElementById(\'quiz-sym-' + qi + '\');p.hidden=!p.hidden">🔣 特殊符号</span>' +
+        voiceBtn +
+        '</div>' +
+        '<div class="quiz-symbol-palette" id="quiz-sym-' + qi + '" hidden>' + btns.join('') + '</div>';
+    }
+    var voiceRecs = {};
+    function toggleVoiceInput(qi) {
+      var btn = document.getElementById('quiz-voice-' + qi);
+      if (!btn) return;
+      if (btn.classList.contains('recording')) {
+        if (voiceRecs[qi]) { voiceRecs[qi].stop(); }
+        return;
+      }
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { alert('当前浏览器不支持语音输入，请使用 Chrome 或 Edge'); return; }
+      var rec = new SR();
+      rec.lang = 'zh-CN';
+      rec.continuous = true;
+      rec.interimResults = true;
+      var input = document.getElementById('quiz-input-' + qi);
+      var baseText = input ? input.value : '';
+      rec.onresult = function(event) {
+        if (!input) return;
+        var transcript = '';
+        for (var i = 0; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        input.value = baseText + transcript;
+        input.selectionStart = input.selectionEnd = input.value.length;
+        input.focus();
+      };
+      rec.onerror = function(e) { console.warn('语音识别错误:', e.error); };
+      rec.onend = function() {
+        btn.classList.remove('recording');
+        btn.textContent = '🎤';
+        delete voiceRecs[qi];
+      };
+      voiceRecs[qi] = rec;
+      btn.classList.add('recording');
+      btn.textContent = '🔴';
+      rec.start();
+    }
+    function insertQuizSymbol(qi, sym) {
+      var input = document.getElementById('quiz-input-' + qi);
+      if (!input) return;
+      var start = input.selectionStart || 0;
+      var end = input.selectionEnd || 0;
+      var val = input.value;
+      input.value = val.substring(0, start) + sym + val.substring(end);
+      input.selectionStart = input.selectionEnd = start + sym.length;
+      input.focus();
+    }
     function selectQuizOption(qi, oi) {
       var options = document.querySelectorAll('#quiz-options-' + qi + ' .quiz-option');
       options.forEach(function(opt) { opt.classList.remove('selected'); });
@@ -2087,7 +2212,7 @@
       sendBtn.textContent = '...';
       inputEl.disabled = true;
 
-      fetch('/api/chat', {
+      fetch(apiUrl('/api/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2365,21 +2490,22 @@
 
     loadData();
     loadQuizBank();
+    var dataBase = API_BASE ? API_BASE + '/data' : '../../../data';
     var cardSources = [
-      ['02324', '../../../data/recite-cards-02324.json?v=' + DATA_VERSION],
-      ['13015', '../../../data/recite-cards-13015.json?v=' + DATA_VERSION],
-      ['13003', '../../../data/recite-cards-13003.json?v=' + DATA_VERSION]
+      ['02324', dataBase + '/recite-cards-02324.json?v=' + DATA_VERSION],
+      ['13015', dataBase + '/recite-cards-13015.json?v=' + DATA_VERSION],
+      ['13003', dataBase + '/recite-cards-13003.json?v=' + DATA_VERSION]
     ];
     var apiCalls = [
-      fetch('/api/mastery', { cache: 'no-cache' })
+      fetch(apiUrl('/api/mastery'), { cache: 'no-cache' })
         .then(function(r) { return r.json(); })
         .then(function(d) { window.__apiMastery = d; })
         .catch(function(e) {}),
-      fetch('/api/quiz-bank?subject=' + currentSubject, { cache: 'no-cache' })
+      fetch(apiUrl('/api/quiz-bank?subject=' + currentSubject), { cache: 'no-cache' })
         .then(function(r) { return r.json(); })
         .then(function(d) { window.__apiQuizBank = d; })
         .catch(function(e) {}),
-      fetch('/api/quiz-ai?subject=' + currentSubject, { cache: 'no-cache' })
+      fetch(apiUrl('/api/quiz-ai?subject=' + currentSubject), { cache: 'no-cache' })
         .then(function(r) { return r.json(); })
         .then(function(d) { window.__apiQuizAI = d; })
         .catch(function(e) {})
