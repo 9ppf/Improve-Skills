@@ -32,8 +32,9 @@
 | v2.16.0 | 2026-08-19 | 系统原理卡片扩充39→82张(补全43个遗漏知识点)+DATA_VERSION升至7+fetch加cache:no-cache+MASTERY_KEY独立存储(版本变化保留掌握进度) |
 | v2.17.0 | 2026-08-19 | 掌握进度+题库+AI答疑持久化到JSON文件：dev_server.py新增6个API端点(mastery/quiz-bank/quiz-ai)、data/下新增持久化文件、localStorage降级为缓存(API失败回退) |
 | v2.18.0 | 2026-08-20 | 学习指南标注(learning-guide.json+三科知识框架页CSS/JS改造) + 掌握状态/AI对话跨浏览器持久化(mastery API按科目读写+ai-conv/ai-plan API) + 浏览器缓存彻底修复(no-store+拦截304) + 今日学习流模块(today-flow.html) |
+| v2.18.1 | 2026-08-20 | 工作台搭建总结补全8个版本(v2.10.1-v2.18.0) + 新增check_summary_version_sync()校验(工作台搭建总结 vs CHANGELOG版本一致性) + 版本控制规范pre-commit清单补充三文档同步要求 |
 
-> **当前版本：v2.18.0** — 详见 `CHANGELOG.md` v2.18.0 章节。
+> **当前版本：v2.18.1** — 详见 `CHANGELOG.md` v2.18.1 章节。
 
 ---
 
