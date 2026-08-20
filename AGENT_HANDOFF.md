@@ -2,7 +2,7 @@
 
 > 把本文档直接交给新 Agent，并告诉他当前任务即可开始工作。文档末尾「当前后续建议」列出待办优先级。
 
-> **⚠ 重要：v2.0.0 至 v2.18.0 变更即将提交 Git**。工作区有多个已修改和未跟踪文件（含 recite-cards JSON、study-plan.json、mastery-progress.json、ai-conversation.json、learning-guide.json 等持久化数据文件，以及 tmp/ 下临时脚本）。**禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未提交的工作。
+> **⚠ 禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未提交的工作。当前所有代码已提交至 v2.18.1（commit `5ded036`）。
 
 ---
 
@@ -40,7 +40,67 @@
 
 ## 项目一句话描述
 
-一个 Python 构建的静态 HTML 个人工作台，聚合「今日学习」「能力提升」「自考学习」「Python 基础」「AI 学习」「AI 助手角色」与「阅读资料」七大模块，主题可切换，支持本地热重载预览。v2.18.0 当前状态：三科知识框架页已接入学习指南标注（优先级+类型+学习建议可视化）、掌握状态和AI对话通过API实现跨浏览器持久化（localStorage+JSON双写）、浏览器缓存彻底修复（no-store+拦截304）、新增今日学习流模块。
+一个 Python 构建的静态 HTML 个人工作台，聚合「今日学习」「能力提升」「自考学习」「Python 基础」「AI 学习」「AI 助手角色」与「阅读资料」七大模块，主题可切换，支持本地热重载预览。v2.18.1 当前状态：三科知识框架页已接入学习指南标注（优先级+类型+学习建议可视化）、掌握状态和AI对话通过API实现跨浏览器持久化（localStorage+JSON双写）、浏览器缓存彻底修复（no-store+拦截304）、新增今日学习流模块、工作台搭建总结版本一致性校验。
+
+---
+
+## 产品愿景：个人私教工作台
+
+这个工作台不是一个被动展示信息的面板，而是一个**像个人私教一样主动引导用户学习和完成项目**的智能工作台。新 Agent 在做任何功能决策时，都应以此为最高准则：
+
+### 核心理念
+
+1. **主动引导，而非被动展示** — 工作台应该告诉用户"今天学什么、怎么学、学多久"，而不是让用户自己去找内容。AI 统筹规划师、今日学习流、番茄钟任务闹钟都是这一理念的体现。
+2. **重点醒目，减轻焦虑** — 知识点必须有优先级标注（重点/一般/了解）和学习方式指导（计算/背诵/理解/应用），用背景色、图标等视觉手段让用户一眼抓住重点，消除"遗漏关键内容"的焦虑。
+3. **学习闭环** — 知识框架 → 背诵卡片 → 测验题库 → 真题练习 → 复盘总结，每个环节的数据要打通，掌握状态联动更新。
+4. **AI 直接生成计划** — 用户期望 AI 能直接调用工具生成学习计划，而不是只给提示词让用户自己去问。AI 统筹规划师（对话式生成每日计划）和岗位技能图谱的教学指引（tutorial+practice+completion）都是这一理念的体现。
+5. **数据不丢失** — 掌握状态、AI对话历史、题库等关键数据通过 API 持久化到 JSON 文件，换浏览器、换 Agent 都不丢。
+
+### 用户画像
+
+| 维度 | 内容 |
+|---|---|
+| 身份 | 自考本科生（武汉理工大学·计算机科学与技术），前端开发背景，目前在上海嘉定 |
+| 考试目标 | 2026年10月自考（计算机系统原理、离散数学、数据结构与算法三科） |
+| 职业目标 | 考后立即转型 AI 岗位，需在学习阶段同步准备岗位技能和简历级项目 |
+| 技术水平 | 前端熟练；Python 零基础；AI 初学者 |
+| 时间分配 | 自考 60%、AI 学习 25%、英语 5%、休息 10% |
+| 学习周期 | 10 周冲刺备考 → 考后 12 周岗位转型 |
+| 备考工具 | 飞书文档（笔记）、本工作台（学习引导+进度追踪） |
+
+### 工作台与用户的关系
+
+工作台扮演三个角色：
+- **教练**：制定计划、分配任务、追踪进度、提醒复盘（学习驾驶舱、今日学习流、番茄钟）
+- **家教**：讲解知识点、出题测验、答疑解惑（知识框架页、背诵卡测验、AI答疑）
+- **项目经理**：管理岗位技能图谱、简历项目追踪、学习闭环（岗位技能图谱、岗位学习闭环）
+
+---
+
+## 设计原则（用户偏好提炼）
+
+新 Agent 在做功能设计和交互决策时，必须遵守以下原则。这些原则来自用户在 v1.0.0-v2.18.1 期间反复强调的偏好，违反任何一条都可能导致返工。
+
+### 交互设计
+
+1. **方案先行再编码** — 涉及结构性变更（增删分类、重组导航、改变信息架构）前，必须先讨论确认方案再落地。只有"往已有结构里填数据"的内容填充可以直接执行。（核心原则第4条）
+2. **按钮切换优于 Tab 切换** — 内容视图切换优先使用按钮（与 AI 规划助手风格一致），而非 Tab 条。知识框架页的「学习计划 / 知识总览」就是按钮切换。
+3. **编辑/删除按钮默认隐藏** — 桌面端 hover/focus 时显示，移动端永久显示。避免界面杂乱。（侧边栏添加按钮已隐藏，因为当前不需要手动添加）
+4. **AI 对话历史只保留最近 20 条** — 超过自动截断，避免 localStorage 膨胀。
+5. **AI 对话入口直接可见** — 用户期望 AI 对话入口直接可见，而非藏在菜单里。一次性问题用提示词，后续追问用直接 AI 对话。
+
+### 视觉设计
+
+6. **重点内容必须醒目** — 知识点优先级不能只用标签，必须用背景色区分（重点=红色背景、一般=黄色背景、了解=灰色背景），配合图标和排序，让用户一眼抓住重点。
+7. **中文风可爱图标** — 使用 🏮📚🎋🍑🍵🌸🎐 等 emoji 作为模块/分类图标，图标应可修改。
+8. **渐变按钮仅用于"添加"操作** — 只有"添加"类按钮保留渐变色，编辑/删除等操作按钮使用纯色。
+9. **最小化过度工程** — 用户对细节敏感，偏好简洁直接的方案，反对不必要的抽象和过度设计。
+
+### 内容设计
+
+10. **知识点必须有优先级和学习方式标注** — 每个知识点标注优先级（重点/一般/了解）和学习方式（计算/背诵/理解/应用），减少"该重点学的内容被遗漏"的焦虑。
+11. **不修改已完成框架的现有面板** — 用户偏好保持已有框架的完整性，新增功能尽量以独立面板/模块方式添加，而非改动现有面板。
+12. **数据版本控制偏好** — 修改方案前先做版本记录并提交 Git，方便后续回溯。
 
 ---
 
@@ -68,15 +128,17 @@ e:\TraeWorkToDo\
 ├── dev_server.py                     # 本地预览 + 热重载 + AI API 代理 + 数据持久化API
 │                                     #   /api/chat — AI对话代理（流式SSE）
 │                                     #   /api/update-plan — 周计划写回study-plan.json
-│                                     #   GET/POST /api/mastery — 掌握进度读写data/mastery-progress.json
+│                                     #   GET/POST /api/mastery — 掌握进度读写data/mastery-progress.json（按科目）
 │                                     #   GET/POST /api/quiz-bank?subject=xxx — 题库读写data/quiz-bank-{subject}.json
 │                                     #   GET/POST /api/quiz-ai?subject=xxx — AI答疑读写data/quiz-ai-{subject}.json
+│                                     #   GET/POST /api/ai-conv — AI对话历史读写data/ai-conversation.json
+│                                     #   GET/POST /api/ai-plan — AI每日计划读写data/ai-daily-plan.json
 ├── requirements.txt                  # Python 依赖：libsass, watchdog
 ├── .env                              # API Key 存储（已加入 .gitignore，不入版本控制）
 ├── .gitignore                        # Git 忽略规则
 ├── .gitattributes                    # Git LFS 与属性配置
 ├── AGENT_HANDOFF.md                  # 本文档
-├── CHANGELOG.md                      # 变更日志（当前版本 v2.14.0）
+├── CHANGELOG.md                      # 变更日志（当前版本 v2.18.1）
 ├── 文件说明.md                        # 项目文件用途说明
 ├── 项目约束总览.md                     # 所有规范的索引入口
 ├── 文件约束隐患与规避方案.md             # 已知隐患与规避方案（13 条）
@@ -254,18 +316,22 @@ python build.py --confirm
   - `Workbench/能力提升/能力提升-学习驾驶舱.html` — AI 统筹规划师（对话式生成每日学习计划）。
   - `Workbench/ai-learning/ai-roles-hub.html` — AI 学习规划师（提示词生成 + 直接生成模式）。
 
-### 数据持久化 API（v2.17.0 新增）
+### 数据持久化 API（v2.17.0 新增，v2.18.0 扩展）
 
 除 AI 对话代理外，`dev_server.py` 还提供数据持久化端点，将用户学习进度从 localStorage 迁移到 JSON 文件，**跨浏览器、跨 Agent 不丢失**：
 
 | 端点 | 方法 | 用途 | 持久化文件 |
 |---|---|---|---|
-| `/api/mastery` | GET | 读取掌握进度 | `data/mastery-progress.json` |
-| `/api/mastery` | POST | 写入掌握进度（body = {问题: 状态}） | `data/mastery-progress.json` |
+| `/api/mastery?subject=xxx` | GET | 读取掌握进度（按科目） | `data/mastery-progress.json` |
+| `/api/mastery` | POST | 写入掌握进度（body = {subject, data}） | `data/mastery-progress.json` |
 | `/api/quiz-bank?subject=xxx` | GET | 读取题库 | `data/quiz-bank-{subject}.json` |
 | `/api/quiz-bank` | POST | 写入题库（body = {subject, data}） | `data/quiz-bank-{subject}.json` |
 | `/api/quiz-ai?subject=xxx` | GET | 读取AI答疑对话 | `data/quiz-ai-{subject}.json` |
 | `/api/quiz-ai` | POST | 写入AI答疑（body = {subject, data}） | `data/quiz-ai-{subject}.json` |
+| `/api/ai-conv` | GET | 读取AI统筹规划师对话历史 | `data/ai-conversation.json` |
+| `/api/ai-conv` | POST | 写入AI统筹规划师对话历史 | `data/ai-conversation.json` |
+| `/api/ai-plan` | GET | 读取AI每日计划 | `data/ai-daily-plan.json` |
+| `/api/ai-plan` | POST | 写入AI每日计划 | `data/ai-daily-plan.json` |
 
 **读写策略**：
 - **写入**：localStorage + API 双写（API fire-and-forget 不阻塞用户操作）
@@ -281,8 +347,8 @@ python build.py --confirm
 
 | Key | 用途 | 写入文件 | 文件持久化 |
 |---|---|---|---|
-| `ai_daily_plan` | AI 统筹规划师生成的每日计划 | 能力提升-学习驾驶舱.html | — |
-| `ai_conversation` | AI 统筹规划师对话历史（20 条截断） | 能力提升-学习驾驶舱.html | — |
+| `ai_daily_plan` | AI 统筹规划师生成的每日计划 | 能力提升-学习驾驶舱.html | data/ai-daily-plan.json (通过/api/ai-plan) |
+| `ai_conversation` | AI 统筹规划师对话历史（20 条截断） | 能力提升-学习驾驶舱.html | data/ai-conversation.json (通过/api/ai-conv) |
 | `self_study_weeks` | 统筹计划（按周×科目） | 能力提升-学习驾驶舱.html | — |
 | `schedule_data` | 周任务数据缓存（含版本检查 SCHEDULE_VERSION） | 能力提升-学习驾驶舱.html | study-plan.json (通过/api/update-plan) |
 | `recite-cards-data` | 背诵卡数据（按科目） | 背诵与简答-核心概念背诵卡.html | data/recite-cards-*.json |
@@ -1064,27 +1130,107 @@ guide: {
 
 ---
 
-## 当前后续建议（v2.17.0 状态）
+## v2.18.0 更新内容（2026-08-20）
 
-> 以下为截至 v2.17.0 的待办优先级，供新 Agent 参考。
+> 文件级变更明细详见 `CHANGELOG.md` v2.18.0 章节。本节记录功能级上下文与后续建议。
+
+### 1. 学习指南标注系统
+
+**背景**：用户反馈学习方案枯燥、重点不明确，不知道哪些是重点、哪些只需了解、哪些偏计算、哪些偏背诵。
+
+**实现**：
+- 新建 `data/learning-guide.json`：通过 AI 批量分类三科 187 个知识点，每个知识点标注优先级（重点 50%/一般 42%/了解 8%）、类型（计算/背诵/理解/应用）、学习建议。
+- 三个知识框架页（13015/02324/13003）通过 CSS+JS 改造，添加视觉标注：
+  - 背景色区分优先级（重点=红色、一般=黄色、了解=灰色）
+  - 标签显示类型（🔢计算/📖背诵/💡理解/🔧应用）
+  - 章节概览显示重点数量统计
+  - 筛选功能（按优先级/类型过滤知识点）
+  - 学习建议 tooltip
+
+### 2. 掌握状态跨浏览器持久化
+
+**背景**：用户发现换浏览器后掌握状态全部丢失，因为数据只存在 localStorage。
+
+**实现**：
+- `dev_server.py` 的 `/api/mastery` 端点升级为按科目读写（`GET /api/mastery?subject=13015`）
+- 三个知识框架页添加 `saveStateToAPI()` 和 `syncFromAPI()`：
+  - 勾选掌握状态时延迟 500ms 自动同步到 `data/mastery-progress.json`
+  - 页面加载时从 API 拉取数据，localStorage 为空时自动恢复
+  - 重置按钮同步清空 JSON 数据
+
+### 3. AI 对话跨浏览器持久化
+
+**实现**：
+- `dev_server.py` 新增 `/api/ai-conv`（读写 `data/ai-conversation.json`）和 `/api/ai-plan`（读写 `data/ai-daily-plan.json`）
+- 学习驾驶舱页 `restoreConvHistory()` 增强：localStorage 为空时从 API 加载历史对话和每日计划
+- 对话保存时同时写 localStorage 和 API，清空对话时同步清 API
+
+### 4. 浏览器缓存彻底修复
+
+**背景**：iframe 加载缓存问题反复出现（切换浏览器/刷新后页面不更新），之前的 `?v=` 版本参数方案不够彻底。
+
+**实现**：
+- `dev_server.py` 增强缓存控制头：`Cache-Control: no-store, no-cache, must-revalidate, max-age=0` + `Pragma: no-cache` + `Expires: 0`
+- 拦截条件请求头：删除 `If-Modified-Since` 和 `If-None-Match`，防止 304 响应
+- 知识框架页 URL 版本参数更新至 `?v=2.3.5`
+
+### 5. 今日学习流模块
+
+**实现**：
+- 新建 `Workbench/today/today-flow.html`：线性任务流 + AI 伴读 + 自适应进度
+- 新建 `data/modules/today.json`：今日学习模块注册
+- 工作台新增「今日学习」一级模块
+
+### 6. v2.18.0 经验教训
+
+- **规则引擎分类不可靠**：最初用基于关键词的规则引擎给知识点分类，导致重点占比 65% 或 17%，不合理。改用 AI 批量分类后才得到合理分布（重点 50%）。
+- **浏览器缓存必须从服务器端解决**：仅靠 URL 版本参数不够，必须从 HTTP 响应头层面强制 no-store + 拦截 304。
+- **localStorage + JSON 双写是最佳实践**：API 请求失败时自动降级为纯 localStorage，不影响功能正常使用。
+
+---
+
+## v2.18.1 更新内容（2026-08-20）
+
+> 文件级变更明细详见 `CHANGELOG.md` v2.18.1 章节。
+
+### 1. 工作台搭建总结版本补全
+
+- `工作台搭建总结.md` 此前停留在 v2.10.0，落后 8 个版本。补全 v2.10.1-v2.18.0 共 11 个版本条目。
+- 更新「当前状态」章节的 5.1 基础能力、5.3 自考学习、5.4 AI 与辅助能力。
+
+### 2. 版本一致性校验
+
+- `validate_workbench.py` 新增 `check_summary_version_sync()`：比较 `工作台搭建总结.md` 的「当前文档版本」与 `CHANGELOG.md` 最新版本号，不一致时警告。
+- `版本控制规范.md` pre-commit 清单新增第 6 条：版本号变更时同步更新 CHANGELOG.md、AGENT_HANDOFF.md、工作台搭建总结.md 三份文档。
+
+### 3. 侧边栏添加按钮隐藏
+
+- `templates/workbench.html` 的 `sidebar-footer` 设为 `display:none`，隐藏「+ 工作区」「+ 分类」「+ 任务」三个按钮（当前不需要手动添加）。
+
+---
+
+## 当前后续建议（v2.18.1 状态）
+
+> 以下为截至 v2.18.1 的待办优先级，供新 Agent 参考。
 
 ### 高优先级
 
 1. **AI_WEEKLY_TASKS 与 WEEK_DATA 统一** — `job-skill-tree.html` 的 `AI_WEEKLY_TASKS` 数据与学习驾驶舱的 `WEEK_DATA` 重复，需统一数据源避免不一致。
 2. **KP5-25 guide 字段编写** — 目前仅 Stage 1 的 KP1-4 有教学指引，KP5-25 待编写。Stage 1 样板制作流程已记录，后续可复用模板。
 3. **番茄钟与study-plan.json联动验证** — 番茄钟读取study-plan.json当日计划生成任务卡片，需验证写回功能（完成状态持久化）。
+4. **今日学习流模块完善** — `today-flow.html` 已创建但功能尚简，需与 study-plan.json 和 AI 统筹规划师联动，实现真正的"今天该做什么"引导。
 
 ### 中优先级
 
-4. **清理临时脚本** — `tmp/` 下有check_sections.py、fix_topics.py等临时脚本，已加入.gitignore，但可考虑整理或删除。
-5. **清理备份文件** — Workbench 根目录有备份文件，自考学习目录有 `_备份_` 目录，应清理。
-6. **移动端响应式适配** — 已支持手机访问但大部分页面无响应式适配，侧边栏/卡片在手机上体验不佳。
-7. **其他localStorage数据迁移** — Python/AI知识点掌握状态、英语进度等仍在localStorage，如需跨浏览器保留可参照v2.17.0方案迁移。
+5. **清理临时脚本** — `tmp/` 下有 check_sections.py、fix_topics.py 等临时脚本，已加入 .gitignore，但可考虑整理或删除。
+6. **清理备份文件** — Workbench 根目录有备份文件，自考学习目录有 `_备份_` 目录，应清理。
+7. **移动端响应式适配** — 已支持手机访问但大部分页面无响应式适配，侧边栏/卡片在手机上体验不佳。
+8. **其他localStorage数据迁移** — Python/AI知识点掌握状态、英语进度等仍在localStorage，如需跨浏览器保留可参照v2.17.0方案迁移。
 
 ### 低优先级
 
-8. **Python 知识点手写练习验证** — 29 个知识点的手写练习代码尚未在 Python 环境中实际运行验证。
-9. **Demo 代码实测** — Python 4 个 Demo 和 AI 4 个 Demo 的完整代码已内嵌页面，但尚未在实际环境中创建项目并运行测试。
-10. **AI 知识图谱内容补充** — 29 个知识点的代码示例和手写练习答案可根据实际学习进度逐步补充和修正。
-11. **AI Demo 代码实现** — 4 个 Demo 目前为设计文档+伪代码，后续可在实际 Python 环境中创建项目并实现。
-12. **简历项目实际开发** — 岗位技能图谱的 3 个简历项目目前为任务清单设计，尚未实际创建项目并编码。
+9. **Python 知识点手写练习验证** — 29 个知识点的手写练习代码尚未在 Python 环境中实际运行验证。
+10. **Demo 代码实测** — Python 4 个 Demo 和 AI 4 个 Demo 的完整代码已内嵌页面，但尚未在实际环境中创建项目并运行测试。
+11. **AI 知识图谱内容补充** — 29 个知识点的代码示例和手写练习答案可根据实际学习进度逐步补充和修正。
+12. **AI Demo 代码实现** — 4 个 Demo 目前为设计文档+伪代码，后续可在实际 Python 环境中创建项目并实现。
+13. **简历项目实际开发** — 岗位技能图谱的 3 个简历项目目前为任务清单设计，尚未实际创建项目并编码。
