@@ -511,5 +511,67 @@
     "exam": "填空：只有___图才有拓扑排序\n简答：什么是DAG和拓扑排序？写出拓扑排序的算法步骤",
     "hint": "DAG无回路，拓扑排序线性化",
     "mastery": "unknown"
+  },
+  {
+    "cardType": "calculation",
+    "chapter": "第2章 命题逻辑",
+    "question": "设 p 为真，q 为假，r 为真，求命题公式 (p ∧ q) → ¬r 的真值。",
+    "formula": "蕴含式 A→B 为假当且仅当 A真B假，其余情况均为真",
+    "steps": [
+      "第一步：计算 p ∧ q = T ∧ F = F",
+      "第二步：计算 ¬r = ¬T = F",
+      "第三步：(p ∧ q) → ¬r = F → F = T（前件为假，蕴含式为真）"
+    ],
+    "answer": "真",
+    "answerAliases": [
+      "T",
+      "True",
+      "true",
+      "1"
+    ],
+    "hint": "前件假则蕴含真，后件真则蕴含真",
+    "mastery": "unknown",
+    "id": -60
+  },
+  {
+    "cardType": "calculation",
+    "chapter": "第3章 集合",
+    "question": "设 A={1,2,3,4}，B={3,4,5,6}，求 |A⊕B|（对称差的基数）。",
+    "formula": "A⊕B = (A-B) ∪ (B-A)，|A⊕B| = |A| + |B| - 2|A∩B|",
+    "steps": [
+      "A ∩ B = {3, 4}，|A ∩ B| = 2",
+      "|A| = 4，|B| = 4",
+      "|A ⊕ B| = 4 + 4 - 2×2 = 4",
+      "验证：A-B={1,2}，B-A={5,6}，A⊕B={1,2,5,6}，|A⊕B|=4 ✓"
+    ],
+    "answer": "4",
+    "answerAliases": [
+      "4个",
+      "4 个"
+    ],
+    "hint": "对称差=只在A或只在B的元素",
+    "mastery": "unknown",
+    "id": -59
+  },
+  {
+    "cardType": "calculation",
+    "chapter": "第6章 图",
+    "question": "已知无向图 G 有 10 条边，3 度顶点 2 个，4 度顶点 2 个，其余顶点度数均为 2，求该图的顶点总数。",
+    "formula": "握手定理：所有顶点度数之和 = 2 × 边数",
+    "steps": [
+      "总度数 = 2 × 边数 = 2 × 10 = 20",
+      "已知度数和 = 3×2 + 4×2 = 6 + 8 = 14",
+      "剩余度数 = 20 - 14 = 6",
+      "2度顶点数 = 6 / 2 = 3 个",
+      "顶点总数 = 2 + 2 + 3 = 7 个"
+    ],
+    "answer": "7",
+    "answerAliases": [
+      "7个",
+      "7 个"
+    ],
+    "hint": "总度数=2×边数，倒推顶点数",
+    "mastery": "unknown",
+    "id": -58
   }
 ]

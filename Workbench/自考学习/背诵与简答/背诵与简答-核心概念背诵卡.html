@@ -289,6 +289,118 @@
     .recite-mastery.unsure { background: rgba(217, 119, 6, 0.10); color: var(--amber); }
     .recite-mastery.unknown { background: rgba(225, 29, 72, 0.10); color: var(--coral); }
 
+    /* 计算卡专属样式 */
+    .calc-card-input {
+      width: 100%;
+      padding: 0.5rem 0.6rem;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      margin-top: 0.6rem;
+      box-sizing: border-box;
+      background: var(--bg-soft);
+    }
+    .calc-card-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+    }
+    .calc-card-submit {
+      width: 100%;
+      padding: 0.45rem;
+      margin-top: 0.4rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .calc-card-submit:hover { opacity: 0.85; }
+    .calc-card-feedback {
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      display: none;
+    }
+    .calc-card-feedback.show { display: block; }
+    .calc-card-feedback.correct {
+      background: rgba(5, 150, 105, 0.10);
+      color: var(--green);
+    }
+    .calc-card-feedback.wrong {
+      background: rgba(225, 29, 72, 0.10);
+      color: var(--coral);
+    }
+    .calc-card-symbol-toggle {
+      font-size: 0.7rem;
+      color: var(--muted);
+      cursor: pointer;
+      margin-top: 0.3rem;
+      display: inline-block;
+    }
+    .calc-card-symbol-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      margin-top: 0.3rem;
+      padding: 0.3rem;
+      background: var(--bg-soft);
+      border-radius: 4px;
+    }
+    .calc-card-symbol-btn {
+      padding: 0.15rem 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #fff;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .calc-card-symbol-btn:hover { background: var(--bg-soft); }
+    .calc-card-type-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: rgba(139, 92, 246, 0.12);
+      color: #7c3aed;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .calc-formula {
+      background: #f0fdf4;
+      border-left: 3px solid var(--green);
+      padding: 0.5rem 0.7rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      margin-bottom: 0.5rem;
+    }
+    .calc-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0.5rem 0;
+    }
+    .calc-steps li {
+      padding: 0.3rem 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+    .calc-steps li:last-child { border-bottom: none; }
+    .calc-answer-final {
+      background: #fef3c7;
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: center;
+      color: #92400e;
+    }
+
     .recite-add-form {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1420,25 +1532,59 @@
 
       grid.innerHTML = filtered.map(function(c) {
         var esc = function(s) { return s.replace(/</g, '&lt;'); };
+        var isCalc = c.cardType === 'calculation';
+        var frontExtra = '';
         var backContent = '';
-        if (c.def || c.ex || c.exam) {
-          if (c.def) backContent += '<div class="recite-card-section"><span class="recite-section-label def-label">📋 定义</span><div class="recite-section-content">' + esc(c.def) + '</div></div>';
-          if (c.ex) backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">💡 举例</span><div class="recite-section-content">' + esc(c.ex) + '</div></div>';
-          if (c.exam) backContent += '<div class="recite-card-section"><span class="recite-section-label exam-label">🎯 考点</span><div class="recite-section-content">' + esc(c.exam) + '</div></div>';
-        } else if (c.answer) {
-          backContent = '<div class="recite-card-answer">' + esc(c.answer) + '</div>';
+
+        if (isCalc) {
+          // 计算卡正面：问题 + 输入框 + 提交按钮 + 符号面板
+          frontExtra = '<input type="text" class="calc-card-input" id="calc-input-' + c.id + '" placeholder="输入答案..." onclick="event.stopPropagation()" onkeydown="if(event.key===\'Enter\'){checkCalcCardAnswer(' + c.id + ');event.stopPropagation();}">' +
+            '<button class="calc-card-submit" onclick="event.stopPropagation();checkCalcCardAnswer(' + c.id + ')">提交答案</button>' +
+            '<div class="calc-card-feedback" id="calc-fb-' + c.id + '"></div>' +
+            '<span class="calc-card-symbol-toggle" onclick="event.stopPropagation();toggleCalcCardSymbols(' + c.id + ')">🔣 特殊符号</span>' +
+            '<div class="calc-card-symbol-palette" id="calc-sym-' + c.id + '" style="display:none;" onclick="event.stopPropagation()">' +
+            QUIZ_SYMBOLS.map(function(s) {
+              return '<button type="button" class="calc-card-symbol-btn" onclick="insertCalcCardSymbol(' + c.id + ',\'' + s + '\')">' + s + '</button>';
+            }).join('') +
+            '</div>';
+          // 计算卡背面：公式 + 步骤 + 最终答案
+          backContent = '<div class="calc-card-type-badge">🧮 计算题</div>';
+          if (c.formula) {
+            backContent += '<div class="calc-formula"><b>公式：</b>' + esc(c.formula) + '</div>';
+          }
+          if (c.steps && c.steps.length) {
+            backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">📝 解题步骤</span><ul class="calc-steps">';
+            c.steps.forEach(function(s, i) {
+              backContent += '<li><b>步骤' + (i+1) + '：</b>' + esc(s) + '</li>';
+            });
+            backContent += '</ul></div>';
+          }
+          if (c.answer) {
+            backContent += '<div class="calc-answer-final">最终答案：' + esc(c.answer) + '</div>';
+          }
+        } else {
+          // 记忆卡（保持原有逻辑）
+          if (c.def || c.ex || c.exam) {
+            if (c.def) backContent += '<div class="recite-card-section"><span class="recite-section-label def-label">📋 定义</span><div class="recite-section-content">' + esc(c.def) + '</div></div>';
+            if (c.ex) backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">💡 举例</span><div class="recite-section-content">' + esc(c.ex) + '</div></div>';
+            if (c.exam) backContent += '<div class="recite-card-section"><span class="recite-section-label exam-label">🎯 考点</span><div class="recite-section-content">' + esc(c.exam) + '</div></div>';
+          } else if (c.answer) {
+            backContent = '<div class="recite-card-answer">' + esc(c.answer) + '</div>';
+          }
         }
+
         return '<div class="recite-card" id="card-' + c.id + '" onclick="flipCard(this)">' +
           '<div class="recite-card-inner">' +
           '<div class="recite-card-front">' +
-          '<div class="recite-card-chapter">' + (c.chapter || '未分类') + '</div>' +
-          '<div class="recite-card-label">问题</div>' +
+          '<div class="recite-card-chapter">' + (c.chapter || '未分类') + (isCalc ? ' · 计算' : '') + '</div>' +
+          '<div class="recite-card-label">' + (isCalc ? '计算' : '问题') + '</div>' +
           '<div class="recite-card-question">' + esc(c.question) + '</div>' +
           (c.hint ? '<div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem;">💡 ' + esc(c.hint) + '</div>' : '') +
+          frontExtra +
           '<span class="recite-mastery ' + c.mastery + '">' + masteryLabel[c.mastery] + '</span>' +
           '</div>' +
           '<div class="recite-card-back">' +
-          '<div class="recite-card-label">答案</div>' +
+          '<div class="recite-card-label">' + (isCalc ? '解析' : '答案') + '</div>' +
           backContent +
           '<div class="recite-card-actions" onclick="event.stopPropagation()">' +
           '<button class="recite-card-btn known' + (c.mastery === 'known' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'known\')"><span>✓ 掌握</span></button>' +
@@ -1484,6 +1630,61 @@
       var cards = getCards(currentSubject);
       var c = cards.find(function(x) { return x.id === id; });
       if (c) { c.mastery = mastery; saveMastery(); saveData(); renderAll(); }
+    }
+
+    // 计算卡：评分
+    function checkCalcCardAnswer(cardId) {
+      var cards = getCards(currentSubject);
+      var c = cards.find(function(x) { return x.id === cardId; });
+      if (!c) return;
+      var input = document.getElementById('calc-input-' + cardId);
+      var fb = document.getElementById('calc-fb-' + cardId);
+      if (!input || !fb) return;
+      var userAns = input.value.trim();
+      if (!userAns) { fb.className = 'calc-card-feedback show wrong'; fb.textContent = '请先输入答案'; return; }
+
+      var correct = c.answer || '';
+      var aliases = c.answerAliases || [];
+      var allAnswers = [correct].concat(aliases);
+      var isCorrect = allAnswers.some(function(a) {
+        if (!a) return false;
+        // 归一化：去空格、转小写
+        var normA = a.replace(/\s+/g, '').toLowerCase();
+        var normU = userAns.replace(/\s+/g, '').toLowerCase();
+        return normA === normU || normA.indexOf(normU) >= 0 || normU.indexOf(normA) >= 0;
+      });
+
+      if (isCorrect) {
+        fb.className = 'calc-card-feedback show correct';
+        fb.textContent = '✅ 答案正确！点击卡片查看解题步骤';
+        // 答对自动升级掌握度
+        if (c.mastery === 'unknown') setMastery(cardId, 'unsure');
+        else if (c.mastery === 'unsure') setMastery(cardId, 'known');
+      } else {
+        fb.className = 'calc-card-feedback show wrong';
+        fb.textContent = '❌ 答案不正确，点击卡片查看解析';
+        // 答错自动标记为不会
+        if (c.mastery !== 'unknown') setMastery(cardId, 'unknown');
+      }
+    }
+
+    // 计算卡：符号面板切换
+    function toggleCalcCardSymbols(cardId) {
+      var pal = document.getElementById('calc-sym-' + cardId);
+      if (!pal) return;
+      pal.style.display = pal.style.display === 'none' ? '' : 'none';
+    }
+
+    // 计算卡：插入符号
+    function insertCalcCardSymbol(cardId, sym) {
+      var input = document.getElementById('calc-input-' + cardId);
+      if (!input) return;
+      var start = input.selectionStart || 0;
+      var end = input.selectionEnd || 0;
+      var val = input.value;
+      input.value = val.substring(0, start) + sym + val.substring(end);
+      input.selectionStart = input.selectionEnd = start + sym.length;
+      input.focus();
     }
 
     function deleteCard(id) {

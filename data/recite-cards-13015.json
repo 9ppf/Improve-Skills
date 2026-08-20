@@ -736,5 +736,64 @@
     "exam": "填空：磁头像电梯一样来回扫描的算法是___\n选择：可能导致饥饿的算法是？A.FCFS B.SSTF C.SCAN D.C-SCAN",
     "hint": "SSTF=最近优先可能饥饿，SCAN=电梯无饥饿",
     "mastery": "unknown"
+  },
+  {
+    "cardType": "calculation",
+    "chapter": "第1章 计算机系统概述",
+    "question": "某程序指令数为 200 万条，CPI 为 2.5，CPU 主频为 2 GHz，求该程序的 CPU 执行时间（毫秒）。",
+    "formula": "CPU时间 = 指令数 × CPI / 主频",
+    "steps": [
+      "CPU执行时间 = 程序总时钟周期数 / 时钟频率",
+      "程序总时钟周期数 = 指令数 × CPI = 200万 × 2.5 = 500万",
+      "CPU时间 = 500万 / 2×10⁹ = 2.5×10⁻³ 秒 = 2.5 毫秒"
+    ],
+    "answer": "2.5ms",
+    "answerAliases": [
+      "2.5毫秒",
+      "2.5 ms",
+      "0.0025s",
+      "0.0025秒"
+    ],
+    "hint": "周期数=指令数×CPI，时间=周期数/频率",
+    "mastery": "unknown",
+    "id": -85
+  },
+  {
+    "cardType": "calculation",
+    "chapter": "第1章 计算机系统概述",
+    "question": "若某机主频为 3 GHz，CPI 为 3，求该机的 MIPS 值。",
+    "formula": "MIPS = 主频 / (CPI × 10⁶)",
+    "steps": [
+      "MIPS = 每秒执行百万条指令数",
+      "MIPS = 主频(MHz) / CPI = 3000 MHz / 3 = 1000 MIPS",
+      "验证：每秒指令数 = 3×10⁹ / 3 = 1×10⁹ 条 = 1000 百万条"
+    ],
+    "answer": "1000MIPS",
+    "answerAliases": [
+      "1000 MIPS",
+      "1000mips"
+    ],
+    "hint": "MIPS=主频/(CPI×10^6)",
+    "mastery": "unknown",
+    "id": -84
+  },
+  {
+    "cardType": "calculation",
+    "chapter": "第5章 程序的存储访问",
+    "question": "某Cache命中率为 95%，Cache访问时间为 2ns，主存访问时间为 20ns，求平均访问时间（ns）。",
+    "formula": "平均访问时间 = 命中率×Cache时间 + (1-命中率)×主存时间",
+    "steps": [
+      "平均访问时间 = h × t_c + (1-h) × t_m",
+      "= 0.95 × 2ns + 0.05 × 20ns",
+      "= 1.9ns + 1ns = 2.9ns"
+    ],
+    "answer": "2.9ns",
+    "answerAliases": [
+      "2.9 ns",
+      "2.9纳秒"
+    ],
+    "hint": "加权平均：命中用Cache，不命中用主存",
+    "mastery": "unknown",
+    "id": -83
   }
 ]
