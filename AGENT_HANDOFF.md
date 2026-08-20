@@ -2,7 +2,7 @@
 
 > 把本文档直接交给新 Agent，并告诉他当前任务即可开始工作。文档末尾「当前后续建议」列出待办优先级。
 
-> **⚠ 禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未提交的工作。当前所有代码已提交至 v2.18.1（commit `6822a40`）。
+> **⚠ 禁止执行 `git reset --hard`、`git checkout .`、`git clean -f` 等破坏性操作**，以免丢失未提交的工作。当前有未提交变更（v2.18.2 Bug修复+增强功能）。
 
 ---
 
@@ -40,11 +40,11 @@ python dev_server.py
 
 | 维度 | 当前状态 |
 |---|---|
-| 版本 | v2.18.1（2026-08-20） |
+| 版本 | v2.18.2（2026-08-20） |
 | 模块数 | 7 个（今日学习、能力提升、自考学习、Python基础、AI学习、AI助手角色、阅读资料） |
 | 自考科目 | 3 科已建知识框架 + 背诵卡（187张） + 测验题库 + AI答疑 |
 | 数据持久化 | 掌握状态/AI对话/题库 已通过 API 持久化到 JSON 文件，跨浏览器不丢 |
-| 待办优先级 | 见文末「当前后续建议（v2.18.1 状态）」 |
+| 待办优先级 | 见文末「当前后续建议（v2.18.2 状态）」 |
 
 > **做任何结构性变更前，必须先讨论确认方案再编码**（设计原则第1条）。只有"往已有结构里填数据"可以直接执行。
 
@@ -76,9 +76,10 @@ python dev_server.py
 | v2.16.0 | 2026-08-19 | 系统原理卡片扩充39→82张(补全43个遗漏知识点)+DATA_VERSION升至7+fetch加cache:no-cache+MASTERY_KEY独立存储(版本变化保留掌握进度) |
 | v2.17.0 | 2026-08-19 | 掌握进度+题库+AI答疑持久化到JSON文件：dev_server.py新增6个API端点(mastery/quiz-bank/quiz-ai)、data/下新增持久化文件、localStorage降级为缓存(API失败回退) |
 | v2.18.0 | 2026-08-20 | 学习指南标注(learning-guide.json+三科知识框架页CSS/JS改造) + 掌握状态/AI对话跨浏览器持久化(mastery API按科目读写+ai-conv/ai-plan API) + 浏览器缓存彻底修复(no-store+拦截304) + 今日学习流模块(today-flow.html) |
-| v2.18.1 | 2026-08-20 | 工作台搭建总结补全8个版本(v2.10.1-v2.18.0) + 新增check_summary_version_sync()校验(工作台搭建总结 vs CHANGELOG版本一致性) + 版本控制规范pre-commit清单补充三文档同步要求 |
+| v2.18.1 | 2026-08-20 | 工作台搭建总结补全8个版本(v2.10.1-v2.18.0) + 新增check_summary_version_sync()校验(工作台搭建总结vs CHANGELOG版本一致性) + 版本控制规范pre-commit清单补充三文档同步要求 |
+| v2.18.2 | 2026-08-20 | 私教功能Bug3修复(postMessage状态同步链路+dailyPlans同步写回) + 增强6弱点优先本地降级排序 + 增强7番茄钟接入今日学习流(25分钟专注+5分钟休息循环) + 增强8 AI伴读接入掌握状态(四个AI函数注入掌握上下文) |
 
-> **当前版本：v2.18.1** — 详见 `CHANGELOG.md` v2.18.1 章节。
+> **当前版本：v2.18.2** — 详见 `CHANGELOG.md` v2.18.2 章节。
 
 ---
 
@@ -691,7 +692,7 @@ A: 检查 `.env` 文件是否存在且包含 `DEEPSEEK_API_KEY=`。不存在则�
 3. **AI 资讯周报数据更新** — 定时任务每周六生成周报后，需更新 `Workbench/ai-learning/ai-news-data.json`。
 4. **结构性变更约束** — 已写入核心原则第 4 条，不再作为建议。
 
-> 以上为 v1.0.0 归档内容。新 Agent 请直接跳转至文末「当前后续建议（v2.18.1 状态）」查看最新待办。
+> 以上为 v1.0.0 归档内容。新 Agent 请直接跳转至文末「当前后续建议（v2.18.2 状态）」查看最新待办。
 
 ---
 
@@ -1311,30 +1312,30 @@ guide: {
 
 ---
 
-## 当前后续建议（v2.18.1 状态）
+## 当前后续建议（v2.18.2 状态）
 
-> 以下为截至 v2.18.1 的待办优先级，供新 Agent 参考。
+> 以下为截至 v2.18.2 的待办优先级，供新 Agent 参考。
 
 ### 高优先级
 
 1. **AI_WEEKLY_TASKS 与 WEEK_DATA 统一** — `job-skill-tree.html` 的 `AI_WEEKLY_TASKS` 数据与学习驾驶舱的 `WEEK_DATA` 重复，需统一数据源避免不一致。
 2. **KP5-25 guide 字段编写** — 目前仅 Stage 1 的 KP1-4 有教学指引，KP5-25 待编写。Stage 1 样板制作流程已记录，后续可复用模板。
 
-### 私教功能优化（v2.18.1 新增分析）
+### 私教功能优化（v2.18.2 已完成 Bug 修复 + 3 项增强）
 
-> 以下基于对 today-flow.html、study-plan.json、learning-guide.json、驾驶舱代码的完整探查，是"私教"体验从可用到好用的关键路径。
+> v2.18.1 新增分析，v2.18.2 已修复全部 3 个 bug 并实现增强 6/7/8。剩余增强 9/10 为低优先级。
 
-**现有 bug（必须先修）**：
+**已完成（v2.18.2）**：
 
-3. **今日学习流 week 字段 bug** — `today-flow.html` 的 `writeTaskDone` 调 `/api/update-plan` 时 `week` 字段传空字符串，导致任务完成状态写不回 `study-plan.json`，周计划联动标记失效。修复方式：从 study-plan.json 数据中解析当前周次填入。
-4. **学习指南未接入今日学习流** — `learning-guide.json` 有每个知识点的优先级、类型和学习建议，但 `today-flow.html` 只读 `recite-cards-*.json`，不读 learning-guide。用户看卡片时看不到"这是重点，偏计算，先做例题"的引导。修复方式：today-flow 加载卡片时同时 fetch learning-guide，在卡片上显示优先级标签和学习建议。
-5. **驾驶舱与今日学习流状态不同步** — 在今日流完成任务后，驾驶舱完成率不实时更新（需刷新）。修复方式：用 postMessage 通知父页面，或完成后调用驾驶舱的刷新函数。
+3. ✅ **Bug1: 今日学习流 week 字段** — `currentWeekLabel` 已在 `loadTodayPlan()` 中赋值，`writeTaskDone` 正确传递。
+4. ✅ **Bug2: 学习指南接入今日学习流** — `loadLearningGuide()` + `getTopicPriority()` 已在卡片上显示优先级标签。
+5. ✅ **Bug3: 驾驶舱与今日学习流状态同步** — postMessage 链路（today-flow → workbench → 驾驶舱）+ 服务端 dailyPlans 同步写回。
+6. ✅ **增强6: 弱点优先算法** — `localSortByMastery()` 本地降级排序，AI 离线时按掌握状态弱点优先排列。
+7. ✅ **增强7: 番茄钟接入今日学习流** — 25分钟专注+5分钟休息循环，任务卡片内建倒计时和开始/暂停按钮。
+8. ✅ **增强8: AI 伴读接入掌握状态** — `getChapterMastery()` 注入 aiGreeting/aiTaskContext/aiOnComplete/aiSend 四个函数。
 
-**功能增强建议**：
+**剩余增强（低优先级）**：
 
-6. **弱点优先算法** — 掌握状态已是三级（不会/不熟练/已掌握），今日学习流应优先推送"不会"的卡片，而非顺序展示。数据源：`/api/mastery?subject=xxx`。
-7. **番茄钟接入今日学习流** — 番茄钟模块当前被禁用（`workbench.json` 中 `[skip] disabled module: tasks`）。建议启用并接入今日流：每个任务自带计时器，超时提醒，完成自动切换下一个。
-8. **AI 伴读接入掌握状态** — AI 对话时自动读取当前科目的掌握进度，针对性讲解薄弱点而非泛泛而谈。数据源：`/api/mastery?subject=xxx`。
 9. **间隔重复调度** — 英语词汇已有 SM-2 算法，自考三科背诵卡可复用同一算法安排复习频率，让"不会"的卡片间隔重现。
 10. **自适应难度** — 根据连续答对/答错动态调整出题难度，模拟真人私教的节奏感。
 

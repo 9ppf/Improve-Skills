@@ -197,7 +197,17 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             if updated:
                 break
 
-        if not updated:
+        dp_updated = False
+        for dp in plan.get('dailyPlans', []):
+            if dp.get('week') != week_label:
+                continue
+            for day in dp.get('days', []):
+                for task in day.get('tasks', []):
+                    if task.get('subject') == subject and task.get('chapter') == chapter:
+                        task['done'] = done
+                        dp_updated = True
+
+        if not updated and not dp_updated:
             self._send_json(404, {'error': f'Goal not found: {week_label} / {subject} / {chapter}'})
             return
 
@@ -208,7 +218,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._send_json(500, {'error': f'Cannot write study-plan.json: {e}'})
             return
 
-        self._send_json(200, {'status': 'ok', 'updated': True})
+        self._send_json(200, {'status': 'ok', 'updated': True, 'dp_updated': dp_updated})
 
     def _handle_load_mastery(self):
         from urllib.parse import urlparse, parse_qs

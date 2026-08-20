@@ -3178,6 +3178,16 @@ loadSelfStudyData().then(function() {
   restoreFromAPI();
 });
 
+// Bug3 fix: 监听来自今日学习流的计划更新通知，实时刷新驾驶舱数据
+window.addEventListener('message', function(e) {
+  if (!e.data || e.data.action !== 'refresh-plan') return;
+  loadPlanFromJSON().then(function() {
+    renderWeeks();
+    renderPlanning();
+    renderDailyExecPlan();
+  });
+});
+
 // ---------- Tab Switching ----------
 var COMP_SUBJECTS = [
   { code: '02324', name: '离散数学', icon: '🔢', totalChapters: 9 },

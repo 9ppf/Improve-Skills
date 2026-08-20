@@ -4,6 +4,24 @@
 
 ---
 
+## v2.18.2
+
+**发布时间**：2026-08-20 20:00（北京时间）
+
+### 2026-08-20 — 私教功能 Bug 修复 + 弱点优先 + AI 伴读接入掌握状态 + 番茄钟接入今日学习流
+
+| 文件 | 更新内容 |
+|---|---|
+| `dev_server.py` | Bug3 修复：`_handle_update_plan()` 新增 dailyPlans 同步逻辑：更新 weeks.goals 时同步更新 dailyPlans[].days[].tasks[] 中匹配 subject+chapter 的任务 done 状态；响应新增 dp_updated 字段 |
+| `Workbench/today/today-flow.html` | Bug3 修复：completeTask() 完成任务后 postMessage 通知父窗口（工作台）计划已更新；增强8：新增 getChapterMastery 辅助函数，aiGreeting/aiTaskContext/aiOnComplete/aiSend 四个函数均注入掌握状态上下文，AI 可针对薄弱点讲解；增强6：新增 localSortByMastery 本地排序函数，loadMasteryState 改为返回 Promise，AI 离线时降级使用本地弱点优先排序；增强7：内建番茄钟（25分钟专注+5分钟休息循环），任务卡片显示倒计时、开始/暂停按钮，完成后自动切换休息模式并AI鼓励，renderTask切换任务时自动重置 |
+| `templates/workbench.html` | Bug3 修复：message 监听器新增 plan-updated 处理分支，收到通知后向当前 content-frame iframe 转发 refresh-plan 消息，并设置 _planUpdated 标志 |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | Bug3 修复：新增 refresh-plan postMessage 监听器，收到通知后调用 loadPlanFromJSON() 重新加载 study-plan.json 并触发 renderWeeks/renderPlanning/renderDailyExecPlan 刷新完成率 |
+| `工作台搭建总结.md` | 版本号同步至 v2.18.2，新增 v2.18.2 版本记录 |
+| `AGENT_HANDOFF.md` | 版本号更新至 v2.18.2，版本历史表新增 v2.18.2 条目，待办优先级章节标注 Bug1-3 和增强6/7/8 已完成 |
+| `Workbench/此刻便是春天.html` | 构建产物同步更新 |
+
+---
+
 ## v2.18.1
 
 **发布时间**：2026-08-20 18:15（北京时间）

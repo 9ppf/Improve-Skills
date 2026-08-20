@@ -1231,7 +1231,19 @@ function renderTree() {
 
     // 跨 iframe 导航：子页面通过 postMessage 请求切换模块
     window.addEventListener('message', function(e) {
-      if (!e.data || e.data.action !== 'navigate') return;
+      if (!e.data) return;
+
+      // Bug3 fix: 今日学习流完成任务后通知驾驶舱刷新
+      if (e.data.action === 'plan-updated') {
+        var frame = document.querySelector('.content-frame');
+        if (frame && frame.contentWindow) {
+          frame.contentWindow.postMessage({ action: 'refresh-plan', data: e.data }, '*');
+        }
+        window._planUpdated = true;
+        return;
+      }
+
+      if (e.data.action !== 'navigate') return;
       var mod = e.data.module;
       var page = e.data.page;
       var kpId = e.data.kpId;
