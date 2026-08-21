@@ -1264,6 +1264,25 @@ def main() -> int:
     except Exception as e:
         file_doc_warnings.append(f'文件说明完整性检查失败：{e}')
 
+    # temp 目录规范检查
+    temp_clean_warnings = []
+    try:
+        tc_spec = importlib.util.spec_from_file_location(
+            "check_temp_cleanliness",
+            os.path.join(SKILLS_DIR, 'check_temp_cleanliness.py')
+        )
+        tc_module = importlib.util.module_from_spec(tc_spec)
+        tc_spec.loader.exec_module(tc_module)
+        temp_issues = tc_module.check_all()
+        if temp_issues:
+            temp_clean_warnings.append(f'temp 目录规范检查发现 {len(temp_issues)} 个问题：')
+            for t in temp_issues[:5]:
+                temp_clean_warnings.append(f'  - {t}')
+            if len(temp_issues) > 5:
+                temp_clean_warnings.append(f'  ... 还有 {len(temp_issues)-5} 个')
+    except Exception as e:
+        temp_clean_warnings.append(f'temp 目录规范检查失败：{e}')
+
     # 结构性变更检查：如果检测到结构性变更但未走确认流程，发出警告
     sc_spec = importlib.util.spec_from_file_location(
         "check_structural_change",
@@ -1295,7 +1314,7 @@ def main() -> int:
         naming_warnings + generic_global_warnings +
         comment_warnings + backup_warnings + json_naming_warnings +
         date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings + acceptance_tag_warnings + file_doc_warnings
+        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings + acceptance_tag_warnings + file_doc_warnings + temp_clean_warnings
     )
     all_warnings = critical_warnings + advisory_warnings
 
