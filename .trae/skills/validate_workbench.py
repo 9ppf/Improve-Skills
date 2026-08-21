@@ -1148,6 +1148,8 @@ def validate(html: str) -> list[str]:
 
 
 def main() -> int:
+    strict = '--strict' in sys.argv
+
     if not WORKBENCH.exists():
         print(f'Workbench not found: {WORKBENCH}', file=sys.stderr)
         return 1
@@ -1158,7 +1160,7 @@ def main() -> int:
     # 全局 Tab 完整性检查：针对所有 Workbench HTML 源文件
     errors.extend(check_tab_integrity_global())
 
-    # 全局 JS 语法检查：扫描所有内容页的内嵌 JS
+    # 全局 JS 语法检查：扫描所有内容页的内联 JS
     errors.extend(check_js_syntax_global())
 
     # 文档、命名、全局 class、中文注释等检查作为警告而非致命错误
@@ -1176,13 +1178,21 @@ def main() -> int:
     summary_sync_warnings = check_summary_version_sync()
     tmp_dir_warnings = check_no_tmp_directory()
     workbench_temp_warnings = check_no_workbench_intermediate()
-    all_warnings = (
-        doc_warnings + naming_warnings + generic_global_warnings +
-        comment_warnings + backup_warnings + json_naming_warnings +
-        date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings + summary_sync_warnings +
+
+    # Critical warnings: block commit in --strict mode
+    critical_warnings = (
+        doc_warnings + summary_sync_warnings +
         tmp_dir_warnings + workbench_temp_warnings
     )
+    # Advisory warnings: print but don't block
+    advisory_warnings = (
+        naming_warnings + generic_global_warnings +
+        comment_warnings + backup_warnings + json_naming_warnings +
+        date_format_warnings + folder_naming_warnings + interactive_style_warnings +
+        dir_sync_warnings + changelog_coverage_warnings
+    )
+    all_warnings = critical_warnings + advisory_warnings
+
     if all_warnings:
         print('Warnings:')
         for warn in all_warnings:
@@ -1194,7 +1204,17 @@ def main() -> int:
             print(f'  - {err}')
         return 1
 
-    print('Validation passed.')
+    if strict and critical_warnings:
+        print(f'\nPre-commit check failed: {len(critical_warnings)} critical warning(s) must be fixed before committing.')
+        print('Run: python .trae/skills/validate_workbench.py')
+        print('Fix the issues above, or use --no-verify to bypass (not recommended).')
+        return 1
+
+    if strict:
+        print(f'Pre-commit check passed ({len(advisory_warnings)} advisory warning(s)).')
+
+    if not strict:
+        print('Validation passed.')
     return 0
 
 

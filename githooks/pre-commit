@@ -1,0 +1,7 @@
+#!/bin/bash
+# Pre-commit hook: runs validation script in strict mode
+# Blocks commit if critical warnings exist (file documentation, version sync, temp directory naming)
+# Advisory warnings are printed but don't block
+
+python .trae/skills/validate_workbench.py --strict
+exit $?
