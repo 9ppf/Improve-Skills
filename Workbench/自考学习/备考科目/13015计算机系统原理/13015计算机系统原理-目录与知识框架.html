@@ -31,6 +31,7 @@
       --accent: #3b82f6;
 
       --accent2: #8b5cf6;
+      --green: #10b981;
 
       --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
 
@@ -632,11 +633,9 @@
 
     .ss-kp-label.ss-checked { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(100, 116, 139, 0.3); }
 
-    .framework-chapter[data-mastery="2"] { border-left: 4px solid #16a34a; padding-left: 0.8rem; }
-
-    .framework-chapter[data-mastery="3"] { border-left: 4px solid #ea580c; padding-left: 0.8rem; }
-
-    .framework-chapter[data-mastery="1"] { border-left: 4px solid #3b82f6; padding-left: 0.8rem; }
+    .framework-chapter[data-mastery="2"] { }
+    .framework-chapter[data-mastery="3"] { }
+    .framework-chapter[data-mastery="1"] { }
 
 
 
@@ -962,7 +961,35 @@
     .ch-card[data-mastery="0"] .ch-icon { background: #d1d5db; }
 
 
+    /* ===== Design Draft Components ===== */
+    .kf-card { background: var(--bg2); border-radius: 10px; padding: 0.8rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 0.6rem; }
+    .card-label { font-size: 0.66rem; font-weight: 700; color: var(--accent2); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .card-body { font-size: 0.74rem; color: var(--ink); line-height: 1.5; }
 
+    .journey-step { display: flex; gap: 8px; margin-bottom: 0.4rem; align-items: center; }
+    .journey-step .step-num { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .journey-step .step-text { font-size: 0.72rem; color: var(--ink); line-height: 1.5; }
+    .journey-step .step-text .step-ch { font-size: 0.64rem; color: var(--muted); }
+
+    .collapse-card { cursor: pointer; }
+    .collapse-card .chevron { transition: transform 0.2s; font-size: 0.7rem; color: var(--muted); }
+    .collapse-card.open .chevron { transform: rotate(90deg); }
+    .collapse-card .collapse-body { display: none; margin-top: 0.4rem; }
+    .collapse-card.open .collapse-body { display: block; }
+
+    /* Chapter cards using class instead of data-mastery */
+    .ch-card.mastered { border-left: 4px solid #10b981; }
+    .ch-card.mastered .ch-status { color: #047857; }
+    .ch-card.mastered .ch-icon { background: #10b981; }
+    .ch-card.progress { border-left: 4px solid #3b82f6; }
+    .ch-card.progress .ch-status { color: #1d4ed8; }
+    .ch-card.progress .ch-icon { background: #3b82f6; }
+    .ch-card.review { border-left: 4px solid #f59e0b; }
+    .ch-card.review .ch-status { color: #b45309; }
+    .ch-card.review .ch-icon { background: #f59e0b; }
+    .ch-card.idle { border-left: 4px solid #d1d5db; }
+    .ch-card.idle .ch-status { color: var(--muted); }
+    .ch-card.idle .ch-icon { background: #d1d5db; }
 
 
 /* ===== Learning Guide Annotations ===== */
@@ -991,35 +1018,28 @@
 
 }
 
-.lg-priority-key { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+.lg-priority-key { color: #dc2626; }
+.lg-priority-normal { color: #d97706; }
+.lg-priority-survey { color: #64748b; }
 
-.lg-priority-normal { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
-
-.lg-priority-survey { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+.lg-badge.lg-priority-key { background: #fee2e2; border: 1px solid #fecaca; }
+.lg-badge.lg-priority-normal { background: #fef3c7; border: 1px solid #fde68a; }
+.lg-badge.lg-priority-survey { background: #f1f5f9; border: 1px solid #e2e8f0; }
 
 
 
 .lg-kp-item {
-
     position: relative;
-
     padding: 6px 10px;
-
     border-radius: 6px;
-
     margin-bottom: 4px;
-
     transition: background 0.2s;
-
     list-style: none;
-
 }
 
-.lg-kp-item.lg-priority-key { background: rgba(254, 226, 226, 0.4); border-left: 3px solid #dc2626; }
-
-.lg-kp-item.lg-priority-normal { background: rgba(254, 243, 199, 0.3); border-left: 3px solid #d97706; }
-
-.lg-kp-item.lg-priority-survey { background: rgba(241, 245, 249, 0.3); border-left: 3px solid #94a3b8; opacity: 0.75; }
+.lg-kp-item.lg-priority-key { background: rgba(254, 226, 226, 0.4); color: #dc2626; }
+.lg-kp-item.lg-priority-normal { background: rgba(254, 243, 199, 0.3); color: #d97706; }
+.lg-kp-item.lg-priority-survey { background: rgba(241, 245, 249, 0.3); color: #64748b; opacity: 0.75; }
 
 
 
@@ -1135,6 +1155,270 @@
 
 
 
+
+
+    /* === 章节精讲新结构 === */
+
+    .lg-chapter-summary {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        font-size: 0.72rem;
+
+        margin-bottom: 0.6rem;
+
+        flex-wrap: wrap;
+
+    }
+
+    .ch-meta-tag {
+
+        display: inline-block;
+
+        padding: 2px 8px;
+
+        border-radius: 6px;
+
+        font-size: 0.68rem;
+
+        font-weight: 600;
+
+        background: rgba(37, 99, 235, 0.08);
+
+        color: #3b82f6;
+
+    }
+
+    .ch-pages { color: var(--muted); }
+
+    .ch-items { color: var(--ink); font-weight: 500; }
+
+    .ch-tag {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 4px;
+
+        font-size: 0.66rem;
+
+        font-weight: 600;
+
+        padding: 2px 8px;
+
+        border-radius: 999px;
+
+    }
+
+    .ch-tag-key { background: rgba(239, 68, 68, 0.10); color: #dc2626; }
+
+    .ch-tag-normal { background: rgba(245, 158, 11, 0.10); color: #d97706; }
+
+
+
+    .lg-filter-bar {
+
+        display: flex;
+
+        gap: 8px;
+
+        margin-bottom: 0.6rem;
+
+        flex-wrap: wrap;
+
+    }
+
+    .lg-filter-btn {
+
+        padding: 4px 12px;
+
+        border-radius: 999px;
+
+        font-size: 0.72rem;
+
+        border: 1.5px solid var(--rule);
+
+        background: #fff;
+
+        cursor: pointer;
+
+        color: var(--muted);
+
+        font-weight: 500;
+
+        transition: all 0.15s;
+
+    }
+
+    .lg-filter-btn:hover {
+
+        border-color: var(--accent);
+
+        color: var(--accent);
+
+    }
+
+    .lg-filter-btn.active {
+
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+
+        color: #fff;
+
+        border-color: transparent;
+
+        font-weight: 600;
+
+    }
+
+
+
+    .section-card {
+
+        background: var(--bg2);
+
+        border-radius: 10px;
+
+        padding: 0.8rem;
+
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
+        margin-bottom: 0.6rem;
+
+    }
+
+    .section-card-header {
+
+        display: flex;
+
+        align-items: center;
+
+        cursor: pointer;
+
+        gap: 8px;
+
+    }
+
+    .section-card-title {
+
+        font-size: 0.74rem;
+
+        font-weight: 700;
+
+        color: var(--ink);
+
+    }
+
+    .section-card-count {
+
+        font-size: 0.66rem;
+
+        color: var(--muted);
+
+        font-weight: 500;
+
+    }
+
+    .section-card .chevron {
+
+        margin-left: auto;
+
+        font-size: 0.7rem;
+
+        color: var(--muted);
+
+        transition: transform 0.2s;
+
+    }
+
+    .section-card.open .chevron {
+
+        transform: rotate(90deg);
+
+    }
+
+    .section-card-body {
+
+        display: none;
+
+        margin-top: 0.5rem;
+
+    }
+
+    .section-card.open .section-card-body {
+
+        display: block;
+
+    }
+
+
+
+    .lg-quiz-btn {
+
+        display: block;
+
+        width: 100%;
+
+        text-align: center;
+
+        padding: 0.7rem 1rem;
+
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+
+        color: #fff;
+
+        border-radius: 10px;
+
+        text-decoration: none;
+
+        font-size: 0.82rem;
+
+        font-weight: 600;
+
+        margin-top: 0.8rem;
+
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+
+        transition: transform 0.15s, box-shadow 0.15s;
+
+    }
+
+    .lg-quiz-btn:hover {
+
+        transform: translateY(-1px);
+
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+
+    }
+
+
+
+    /* 隐藏旧的大标题 */
+
+    .framework-chapter > h3 {
+
+        display: none;
+
+    }
+
+
+
+    /* 旧结构适配 */
+
+    .framework-chapter h4 {
+
+        display: none;
+
+    }
+
+
+    .kt-priority-key { color: #dc2626; font-weight: 700; }
+    .kt-priority-normal { color: #d97706; font-weight: 700; }
+    .kt-priority-survey { color: #64748b; font-weight: 700; }
 </style>
 
 </head>
@@ -1259,105 +1543,83 @@
 
 <div class="kf-tip"><span class="kf-tag kf-tag-example">实例</span>第 5 章 Intel Core i7+Linux 存储系统实例是理解 cache 和虚拟存储的好素材。</div>
 
-</div></div><div class="chapter-tab-pane" data-tab="knowledge-overview"><section>
-
-<h2>整体定位</h2>
-
-<p>计算机系统原理共 6 章，292 页，从底层硬件到程序执行再到 I/O 操作，层层递进。全书可以按“程序在计算机中如何表示、如何运行、如何访存、如何 I/O”这条主线串起来：</p>
-
-<ol>
-
-<li><strong>系统概述</strong>（第 1 章）：冯·诺依曼结构、程序开发与运行、层次结构、性能评价。</li>
-
-<li><strong>数据表示与运算</strong>（第 2 章）：数制、编码、整数/浮点数表示、ALU、乘除运算。</li>
-
-<li><strong>程序机器级表示</strong>（第 3 章）：指令系统、IA-32/x86-64 指令、C 语言机器级表示。</li>
-
-<li><strong>可执行文件与执行</strong>（第 4 章）：编译链接、ELF 格式、加载执行、CPU、异常中断、流水线。</li>
-
-<li><strong>存储系统</strong>（第 5 章）：存储器层次、cache、虚拟存储、实例分析。</li>
-
-<li><strong>I/O 系统</strong>（第 6 章）：I/O 软件层次、设备驱动、中断系统、总线与接口。</li>
-
-</ol>
-
-<div class="callout">
-
-          你目前掌握约 20%，建议用 3 周系统学习：第 1 周建立整体概念 + 数据表示，第 2 周深入指令系统 + 可执行文件，第 3 周攻克存储系统 + I/O。
-
-        </div>
-
-</section>
+</div></div><div class="chapter-tab-pane" data-tab="knowledge-overview"><div class="kf-card" style="border-left:4px solid var(--accent2);">
+  <div class="card-label">整体定位</div>
+  <div class="card-body">6章结构，主线：程序如何<b>表示→转换→加载→存储→I/O→性能评价</b>。全书292页，建议3周完成，每周2章。</div>
+</div>
 
 <!-- 章节掌握度网格 -->
 
 <div class="chapter-grid" id="chapterGrid">
 
-  <div class="ch-card" data-chapter="1" onclick="switchChapterTab('chapter-1')">
+  <div class="ch-card progress" data-chapter="1" onclick="switchChapterTab('chapter-1')">
 
     <div class="ch-name">第1章 计算机系统概述</div>
 
     <div class="ch-meta">基础 · P26-44</div>
 
-    <div class="ch-status"><span class="ch-icon"></span><span class="ch-status-text">未开始</span></div>
+    <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
 
   </div>
 
-  <div class="ch-card" data-chapter="2" onclick="switchChapterTab('chapter-2')">
+  <div class="ch-card progress" data-chapter="2" onclick="switchChapterTab('chapter-2')">
 
     <div class="ch-name">第2章 数据的表示和运算</div>
 
     <div class="ch-meta">难点 · P47-86</div>
 
-    <div class="ch-status"><span class="ch-icon"></span><span class="ch-status-text">未开始</span></div>
+    <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
 
   </div>
 
-  <div class="ch-card" data-chapter="3" onclick="switchChapterTab('chapter-3')">
+  <div class="ch-card idle" data-chapter="3" onclick="switchChapterTab('chapter-3')">
 
     <div class="ch-name">第3章 程序的转换及机器级表示</div>
 
     <div class="ch-meta">难点 · P90-148</div>
 
-    <div class="ch-status"><span class="ch-icon"></span><span class="ch-status-text">未开始</span></div>
+    <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">未开始</span></div>
 
   </div>
 
-  <div class="ch-card" data-chapter="4" onclick="switchChapterTab('chapter-4')">
+  <div class="ch-card idle" data-chapter="4" onclick="switchChapterTab('chapter-4')">
 
     <div class="ch-name">第4章 可执行文件的生成与加载</div>
 
     <div class="ch-meta">中等 · P159-198</div>
 
-    <div class="ch-status"><span class="ch-icon"></span><span class="ch-status-text">未开始</span></div>
+    <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">未开始</span></div>
 
   </div>
 
-  <div class="ch-card" data-chapter="5" onclick="switchChapterTab('chapter-5')">
+  <div class="ch-card idle" data-chapter="5" onclick="switchChapterTab('chapter-5')">
 
     <div class="ch-name">第5章 程序的存储访问</div>
 
     <div class="ch-meta">难点 · P199-242</div>
 
-    <div class="ch-status"><span class="ch-icon"></span><span class="ch-status-text">未开始</span></div>
+    <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">未开始</span></div>
 
   </div>
 
-  <div class="ch-card" data-chapter="6" onclick="switchChapterTab('chapter-6')">
+  <div class="ch-card idle" data-chapter="6" onclick="switchChapterTab('chapter-6')">
 
     <div class="ch-name">第6章 I/O操作的实现</div>
 
     <div class="ch-meta">中等 · P248-285</div>
 
-    <div class="ch-status"><span class="ch-icon"></span><span class="ch-status-text">未开始</span></div>
+    <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">未开始</span></div>
 
   </div>
 
 </div>
 
-<section>
-
-<h2>完整目录</h2>
+<div class="kf-card collapse-card open" style="border-left:4px solid var(--accent2);">
+  <div style="display:flex;align-items:center;" onclick="toggleCollapse(this)">
+    <span class="card-label">完整目录</span>
+    <span class="chevron" style="margin-left:auto;">▶</span>
+  </div>
+  <div class="collapse-body">
 
 <div class="toc-chapter">
 
@@ -1737,48 +1999,50 @@
 
 </div>
 
-</section><section><h3>总览：一个 C 程序在计算机中的完整旅程</h3><p>全书可按"程序生命周期"串成一条主线。理解这条线，就能把 6 章内容连成整体：</p><ol>
+</div></div><div class="kf-card" style="border-left:4px solid var(--green);">
+  <div class="card-label">C程序完整旅程</div><div class="journey-step"><div class="step-num">1</div><div class="step-text">编码表示 <span class="step-ch">→ 第2章</span></div></div>
+<div class="journey-step"><div class="step-num">2</div><div class="step-text">编译翻译 <span class="step-ch">→ 第3章</span></div></div>
+<div class="journey-step"><div class="step-num">3</div><div class="step-text">链接加载 <span class="step-ch">→ 第4章</span></div></div>
+<div class="journey-step"><div class="step-num">4</div><div class="step-text">存储访问 <span class="step-ch">→ 第5章</span></div></div>
+<div class="journey-step"><div class="step-num">5</div><div class="step-text">I/O 交互 <span class="step-ch">→ 第6章</span></div></div>
+<div class="journey-step"><div class="step-num">6</div><div class="step-text">性能评价 <span class="step-ch">→ 第1章</span></div></div>
+</div></div><div class="chapter-tab-pane" data-chapter="1" data-tab="chapter-1"><div class="framework-chapter" data-chapter="1" data-meta="基础" data-pages="P26-44">
 
-<li><strong>编码表示</strong>（第 2 章）：程序中的整数、浮点数、字符、指令在机器里都是 0/1。</li>
+<h3 style="display:none;">第 1 章 计算机系统概述</h3>
 
-<li><strong>编译翻译</strong>（第 3 章）：C 语言被翻译成机器指令，涉及指令格式、寻址、寄存器。</li>
 
-<li><strong>链接加载</strong>（第 4 章）：目标文件链接成可执行文件，加载到内存后被 CPU 执行。</li>
 
-<li><strong>存储访问</strong>（第 5 章）：执行中访问 cache、主存、硬盘，虚拟地址转物理地址。</li>
-
-<li><strong>I/O 交互</strong>（第 6 章）：程序通过外设与外界交换数据。</li>
-
-<li><strong>性能评价</strong>（第 1 章）：用 CPI、MIPS、基准程序衡量整台机器。</li>
-
-</ol><div class="callout">
-
-<span class="exam-tag">主线记忆法</span>建议把每一章都放到这条线上：它解决的是"程序生命周期"的哪一个环节？这样不容易把零散概念记混。
-
-        </div></section></div><div class="chapter-tab-pane" data-chapter="1" data-tab="chapter-1"><div class="framework-chapter">
-
-<h3>第 1 章 计算机系统概述</h3>
-
-<h4>核心概念</h4>
-
+<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">核心概念</span>
+    <span class="section-card-count">(6)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
-<li><span class="key-term">冯·诺依曼结构</span>：采用“存储程序”工作方式；计算机由运算器、控制器、存储器、输入设备和输出设备五大基本部件组成；存储器既能存放数据也能存放指令，形式上无区别；内部以二进制表示指令和数据，每条指令由操作码和地址码组成。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">冯·诺依曼结构<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：采用“存储程序”工作方式；计算机由运算器、控制器、存储器、输入设备和输出设备五大基本部件组成；存储器既能存放数据也能存放指令，形式上无区别；内部以二进制表示指令和数据，每条指令由操作码和地址码组成。</li>
 
-<li><span class="key-term">程序开发与执行</span>：源程序 → 预处理 → 编译 → 汇编 → 可重定位目标文件（.o）→ 链接（符号解析、重定位）→ 可执行文件 → 加载 → 运行。程序执行即数据在 CPU、主存和 I/O 模块之间的流动。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">程序开发与执行<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：源程序 → 预处理 → 编译 → 汇编 → 可重定位目标文件（.o）→ 链接（符号解析、重定位）→ 可执行文件 → 加载 → 运行。程序执行即数据在 CPU、主存和 I/O 模块之间的流动。</li>
 
-<li><span class="key-term">指令集体系结构 ISA</span>：软硬件交界面，定义计算机可执行的全部指令集合、操作数类型与地址空间。ISA 相同则程序可跨微架构兼容。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">指令集体系结构 ISA<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：软硬件交界面，定义计算机可执行的全部指令集合、操作数类型与地址空间。ISA 相同则程序可跨微架构兼容。</li>
 
-<li><span class="key-term">微体系结构</span>：实现 ISA 的电路逻辑结构，如加法器采用串行进位还是并行进位、是否流水线、是否多核等，属于微架构问题。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">微体系结构<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：实现 ISA 的电路逻辑结构，如加法器采用串行进位还是并行进位、是否流水线、是否多核等，属于微架构问题。</li>
 
-<li><span class="key-term">系统层次结构</span>：最终用户/应用软件 → 语言处理系统/操作系统虚拟机 → ISA/机器语言机器 → 微架构 → 数字逻辑 → 器件。ISA 是核心层，透明性指下层细节对上层用户“不可见”。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">系统层次结构<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：最终用户/应用软件 → 语言处理系统/操作系统虚拟机 → ISA/机器语言机器 → 微架构 → 数字逻辑 → 器件。ISA 是核心层，透明性指下层细节对上层用户“不可见”。</li>
 
-<li><span class="key-term">用户分类</span>：最终用户、系统管理员、应用程序员、系统程序员，各自工作在不同抽象层。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">用户分类<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：最终用户、系统管理员、应用程序员、系统程序员，各自工作在不同抽象层。</li>
 
 </ul>
-
-<h4>必会公式</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">必会公式</span>
+    <span class="section-card-count">(4)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>用户 CPU 时间 = 程序总时钟周期数 × 时钟周期 = 程序总时钟周期数 / 时钟频率</li>
@@ -1790,9 +2054,15 @@
 <li>MIPS = 主频 / (CPI × 10⁶)</li>
 
 </ul>
-
-<h4>常见题型</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">常见题型</span>
+    <span class="section-card-count">(4)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>根据指令数、CPI、主频计算执行时间和 MIPS。</li>
@@ -1804,9 +2074,15 @@
 <li>吞吐率与响应时间（执行时间/等待时间）的适用场景辨析。</li>
 
 </ul>
-
-<h4>典型例题</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">典型例题</span>
+    <span class="section-card-count">(2)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block">
 
 <div class="example-title"><strong>例 1.1</strong></div>
@@ -2000,9 +2276,15 @@ CPU2000)、讨④服务器性能测试集(SPECweb99)等。<br/>
 程序之一</p></div>
 
 </div>
-
-<h4>同步练习</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">同步练习</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block exercise">
 
 <div class="example-title"><span class="example-tag">习题</span><strong>练 1</strong></div>
@@ -2054,9 +2336,15 @@ MFLOPS GFLOPS TFLOPS PFLOPS EFLOPS</p></div>
 (7)为什么说性能指标MIPS不能很好地反映计算机的性能？</p></div>
 
 </div>
-
-<h4>易错点</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">易错点</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>MIPS 高不一定更快，因为程序指令数可能不同；峰值 MIPS 更具误导性。</li>
@@ -2069,34 +2357,51 @@ MFLOPS GFLOPS TFLOPS PFLOPS EFLOPS</p></div>
 
 </ul>
 
-</div></div><div class="chapter-tab-pane" data-chapter="2" data-tab="chapter-2"><div class="framework-chapter">
+</div>
+  </div>
+</div>
+<a href="../../练习测验.html?subject=13015&chapter=1" class="lg-quiz-btn">📝 去练习测验 →</a>
+</div><div class="chapter-tab-pane" data-chapter="2" data-tab="chapter-2"><div class="framework-chapter" data-chapter="2" data-meta="难点" data-pages="P47-86">
 
-<h3>第 2 章 数据的表示和运算</h3>
+<h3 style="display:none;">第 2 章 数据的表示和运算</h3>
 
-<h4>核心概念</h4>
 
+
+<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">核心概念</span>
+    <span class="section-card-count">(8)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
-<li><span class="key-term">进位计数制</span>：二进制、八进制、十进制、十六进制及相互转换；位（bit）是信息最小单位，字节（Byte）= 8 bit；KB、MB、GB、TB、PB 按 1024 递进。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">进位计数制<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：二进制、八进制、十进制、十六进制及相互转换；位（bit）是信息最小单位，字节（Byte）= 8 bit；KB、MB、GB、TB、PB 按 1024 递进。</li>
 
-<li><span class="key-term">定点数编码</span>：原码、反码、补码、移码。补码优点：0 表示唯一、可用加法实现减法、符号位与数值位一起运算、比原码/反码多表示一个最小负数；n 位补码范围 −2ⁿ⁻¹ ~ 2ⁿ⁻¹−1。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">定点数编码<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：原码、反码、补码、移码。补码优点：0 表示唯一、可用加法实现减法、符号位与数值位一起运算、比原码/反码多表示一个最小负数；n 位补码范围 −2ⁿ⁻¹ ~ 2ⁿ⁻¹−1。</li>
 
-<li><span class="key-term">整数表示</span>：无符号整数范围 0 ~ 2ⁿ−1；带符号整数用补码表示。C 语言中 unsigned short/int/long 与 short/int/long 的转换按机器数重新解释，易出现与直觉不符的结果。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">整数表示<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：无符号整数范围 0 ~ 2ⁿ−1；带符号整数用补码表示。C 语言中 unsigned short/int/long 与 short/int/long 的转换按机器数重新解释，易出现与直觉不符的结果。</li>
 
-<li><span class="key-term">浮点数</span>：IEEE 754 单精度（1 位符号 s + 8 位阶码 e + 23 位尾数 f）和双精度（1+11+52）。阶码用移码，尾数用原码并含隐藏位 1；规格化、非规格化、无穷大、NaN 四种形式。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">浮点数<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：IEEE 754 单精度（1 位符号 s + 8 位阶码 e + 23 位尾数 f）和双精度（1+11+52）。阶码用移码，尾数用原码并含隐藏位 1；规格化、非规格化、无穷大、NaN 四种形式。</li>
 
-<li><span class="key-term">数据存储排列</span>：大端方式（MSB 在低地址）、小端方式（LSB 在低地址）；数据的宽度和边界对齐影响结构体/数组地址与大小。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">数据存储排列<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：大端方式（MSB 在低地址）、小端方式（LSB 在低地址）；数据的宽度和边界对齐影响结构体/数组地址与大小。</li>
 
-<li><span class="key-term">运算部件</span>：全加器、行波进位/并行进位加法器、带标志加法器；标志位 ZF（零）、SF（符号）、CF（进位/借位）、OF（溢出）；ALU 执行算术逻辑运算。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">运算部件<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：全加器、行波进位/并行进位加法器、带标志加法器；标志位 ZF（零）、SF（符号）、CF（进位/借位）、OF（溢出）；ALU 执行算术逻辑运算。</li>
 
-<li><span class="key-term">乘除运算</span>：原码一位乘法、补码 Booth 乘法、原码/补码除法（加减交替法/不恢复余数法）；整数除法一般不用流水线实现。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">乘除运算<span class="lg-badge lg-priority-normal">🟡 <span>🔧</span> 一般·应用</span></span>：原码一位乘法、补码 Booth 乘法、原码/补码除法（加减交替法/不恢复余数法）；整数除法一般不用流水线实现。</li>
 
-<li><span class="key-term">浮点运算</span>：对阶 → 尾数运算 → 规格化（左规/右规）→ 舍入 → 溢出判断；阶码溢出才是真溢出，尾数溢出可通过右规处理。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">浮点运算<span class="lg-badge lg-priority-key">🔴 <span>🔧</span> 重点·应用</span></span>：对阶 → 尾数运算 → 规格化（左规/右规）→ 舍入 → 溢出判断；阶码溢出才是真溢出，尾数溢出可通过右规处理。</li>
 
 </ul>
-
-<h4>必会公式</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">必会公式</span>
+    <span class="section-card-count">(5)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>[X]补 + [Y]补 = [X+Y]补；[X−Y]补 = [X]补 + [−Y]补。</li>
@@ -2106,9 +2411,15 @@ MFLOPS GFLOPS TFLOPS PFLOPS EFLOPS</p></div>
 <li>无符号数溢出看 CF；有符号数溢出看 OF（双符号位或单符号位判断）。</li>
 
 </ul>
-
-<h4>常见题型</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">常见题型</span>
+    <span class="section-card-count">(5)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>进制转换、补码与原码/真值互换、溢出判断。</li>
@@ -2122,9 +2433,15 @@ MFLOPS GFLOPS TFLOPS PFLOPS EFLOPS</p></div>
 <li>C 语言中带符号与无符号整数转换、关系表达式结果分析。</li>
 
 </ul>
-
-<h4>典型例题</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">典型例题</span>
+    <span class="section-card-count">(3)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block">
 
 <div class="example-title"><strong>例 2.1</strong></div>
@@ -2172,9 +2489,15 @@ l6 lo lo<br/>
 (先得到的余数)作为右边低位上的数位，下面的余数作为左边高位上的数位。</p></div>
 
 </div>
-
-<h4>同步练习</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">同步练习</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block exercise">
 
 <div class="example-title"><span class="example-tag">习题</span><strong>练 1</strong></div>
@@ -2212,9 +2535,15 @@ l6 lo lo<br/>
 些编码中哪些用二进制编码，哪些不用二进制编码，为什么？</p></div>
 
 </div>
-
-<h4>易错点</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">易错点</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>CF 针对无符号运算，OF 针对有符号运算，不要混用；SF 只表示结果最高位，不能直接判定有符号溢出。</li>
@@ -2229,32 +2558,49 @@ l6 lo lo<br/>
 
 </ul>
 
-</div></div><div class="chapter-tab-pane" data-chapter="3" data-tab="chapter-3"><div class="framework-chapter">
+</div>
+  </div>
+</div>
+<a href="../../练习测验.html?subject=13015&chapter=2" class="lg-quiz-btn">📝 去练习测验 →</a>
+</div><div class="chapter-tab-pane" data-chapter="3" data-tab="chapter-3"><div class="framework-chapter" data-chapter="3" data-meta="难点" data-pages="P90-148">
 
-<h3>第 3 章 程序的转换及机器级表示</h3>
+<h3 style="display:none;">第 3 章 程序的转换及机器级表示</h3>
 
-<h4>核心概念</h4>
 
+
+<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">核心概念</span>
+    <span class="section-card-count">(7)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
-<li><span class="key-term">指令与 ISA</span>：机器指令、汇编指令、指令集体系结构（ISA）。ISA 是软硬件接口，CISC 指令复杂、变长，RISC 指令简单、定长、Load/Store 结构。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">指令与 ISA<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：机器指令、汇编指令、指令集体系结构（ISA）。ISA 是软硬件接口，CISC 指令复杂、变长，RISC 指令简单、定长、Load/Store 结构。</li>
 
-<li><span class="key-term">IA-32 寄存器</span>：8 个 32 位通用寄存器 EAX/EBX/ECX/EDX/ESP/EBP/ESI/EDI；EIP 指令指针；EFLAGS 标志寄存器；6 个段寄存器。实地址模式用 16 位 IP/FLAGS，保护模式用 32 位 EIP/EFLAGS。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">IA-32 寄存器<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·背诵</span></span>：8 个 32 位通用寄存器 EAX/EBX/ECX/EDX/ESP/EBP/ESI/EDI；EIP 指令指针；EFLAGS 标志寄存器；6 个段寄存器。实地址模式用 16 位 IP/FLAGS，保护模式用 32 位 EIP/EFLAGS。</li>
 
-<li><span class="key-term">寻址方式</span>：立即寻址、寄存器寻址；存储器操作数在保护模式下采用段页式管理，常见有效地址形式包括位移、基址、基址加位移、比例变址加位移、基址加变址加位移、基址加比例变址加位移、相对寻址。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">寻址方式<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：立即寻址、寄存器寻址；存储器操作数在保护模式下采用段页式管理，常见有效地址形式包括位移、基址、基址加位移、比例变址加位移、基址加变址加位移、基址加比例变址加位移、相对寻址。</li>
 
-<li><span class="key-term">常用指令</span>：MOV、PUSH/POP、LEA、ADD/SUB/INC/DEC、IMUL/MUL、IDIV/DIV、CMP、TEST、JMP/Jcc、CALL/RET；逻辑运算与移位指令（AND/OR/XOR/NOT/SHL/SHR/SAR/ROL/ROR 等）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">常用指令<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·背诵</span></span>：MOV、PUSH/POP、LEA、ADD/SUB/INC/DEC、IMUL/MUL、IDIV/DIV、CMP、TEST、JMP/Jcc、CALL/RET；逻辑运算与移位指令（AND/OR/XOR/NOT/SHL/SHR/SAR/ROL/ROR 等）。</li>
 
-<li><span class="key-term">C 语言机器级表示</span>：过程调用（栈帧、调用者保存与被调用者保存寄存器、参数从右向左入栈、返回值在 EAX）、选择语句（if/switch 的跳转序列）、循环结构（while/for/do-while 的跳转与条件测试）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">C 语言机器级表示<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：过程调用（栈帧、调用者保存与被调用者保存寄存器、参数从右向左入栈、返回值在 EAX）、选择语句（if/switch 的跳转序列）、循环结构（while/for/do-while 的跳转与条件测试）。</li>
 
-<li><span class="key-term">复杂数据类型</span>：数组元素地址 = 基地址 + 下标 × 元素大小；结构体大小与成员偏移需按对齐规则填充；联合体所有成员共享起始地址，大小取最大成员并考虑对齐。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">复杂数据类型<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：数组元素地址 = 基地址 + 下标 × 元素大小；结构体大小与成员偏移需按对齐规则填充；联合体所有成员共享起始地址，大小取最大成员并考虑对齐。</li>
 
-<li><span class="key-term">x86-64 基础</span>：64 位通用寄存器 RAX/RBX/RCX/RDX/RSI/RDI/RBP/RSP/R8~R15；前 6 个整型参数通过寄存器传递；栈帧对齐要求 16 字节。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">x86-64 基础<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：64 位通用寄存器 RAX/RBX/RCX/RDX/RSI/RDI/RBP/RSP/R8~R15；前 6 个整型参数通过寄存器传递；栈帧对齐要求 16 字节。</li>
 
 </ul>
-
-<h4>常见题型</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">常见题型</span>
+    <span class="section-card-count">(4)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>根据 C 代码写出汇编指令片段，或根据汇编反推 C 代码逻辑。</li>
@@ -2268,9 +2614,15 @@ l6 lo lo<br/>
 <li>区分 LEA 与 MOV、MUL 与 IMUL、TEST 与 CMP 的功能。</li>
 
 </ul>
-
-<h4>典型例题</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">典型例题</span>
+    <span class="section-card-count">(2)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block">
 
 <div class="example-title"><strong>例 3.1</strong></div>
@@ -3700,9 +4052,15 @@ o<br/>
 FFFOH,真值为-10000B = -1 6 ,结果为-6+（-16）= -2 2 ,验证正确。</p></div>
 
 </div>
-
-<h4>同步练习</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">同步练习</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block exercise">
 
 <div class="example-title"><span class="example-tag">习题</span><strong>练 1</strong></div>
@@ -3754,9 +4112,15 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 ( 8 ) 为什么数据在存储器中最好按地址对齐方式存放？</p></div>
 
 </div>
-
-<h4>易错点</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">易错点</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>LEA 是取有效地址，不是取内存值；MOV 才是取内存值。</li>
@@ -3771,32 +4135,49 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 
 </ul>
 
-</div></div><div class="chapter-tab-pane" data-chapter="4" data-tab="chapter-4"><div class="framework-chapter">
+</div>
+  </div>
+</div>
+<a href="../../练习测验.html?subject=13015&chapter=3" class="lg-quiz-btn">📝 去练习测验 →</a>
+</div><div class="chapter-tab-pane" data-chapter="4" data-tab="chapter-4"><div class="framework-chapter" data-chapter="4" data-meta="中等" data-pages="P159-198">
 
-<h3>第 4 章 可执行文件的生成与加载执行</h3>
+<h3 style="display:none;">第 4 章 可执行文件的生成与加载</h3>
 
-<h4>核心概念</h4>
 
+
+<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">核心概念</span>
+    <span class="section-card-count">(5)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
-<li><span class="key-term">编译链接过程</span>：预处理（宏展开、头文件包含、条件编译）→ 编译（生成汇编）→ 汇编（生成可重定位目标文件 .o）→ 链接（符号解析、重定位）→ 可执行目标文件。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">编译链接过程<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：预处理（宏展开、头文件包含、条件编译）→ 编译（生成汇编）→ 汇编（生成可重定位目标文件 .o）→ 链接（符号解析、重定位）→ 可执行目标文件。</li>
 
-<li><span class="key-term">ELF 格式</span>：可重定位目标文件（.o）、可执行目标文件、共享目标文件（.so）；包含 ELF 头、程序头表（段头表）、节头表、符号表、.text、.data、.bss、.rodata 等节。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">ELF 格式<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：可重定位目标文件（.o）、可执行目标文件、共享目标文件（.so）；包含 ELF 头、程序头表（段头表）、节头表、符号表、.text、.data、.bss、.rodata 等节。</li>
 
-<li><span class="key-term">符号解析与重定位</span>：强符号（函数、已初始化全局变量、.bss 中全局变量）不能多重定义；弱符号/COMMON 可被强符号覆盖。重定位修改代码/数据中的地址引用，常见 R_386_PC32 等重定位类型。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">符号解析与重定位<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：强符号（函数、已初始化全局变量、.bss 中全局变量）不能多重定义；弱符号/COMMON 可被强符号覆盖。重定位修改代码/数据中的地址引用，常见 R_386_PC32 等重定位类型。</li>
 
-<li><span class="key-term">加载执行</span>：程序是静态代码，进程是程序的一次运行实例；fork 创建子进程，execve 在当前进程上下文加载新程序；启动加载器通过程序头表初始化进程数据结构，真正装入靠缺页异常按需调页。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">加载执行<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：程序是静态代码，进程是程序的一次运行实例；fork 创建子进程，execve 在当前进程上下文加载新程序；启动加载器通过程序头表初始化进程数据结构，真正装入靠缺页异常按需调页。</li>
 
-<li><span class="key-term">CPU 与执行</span>：CPU 由数据通路（ALU、寄存器、状态寄存器）和控制器组成；指令周期包括取指、译码、执行、写回等；PC 存放下条指令地址，IR 存放现行指令，ID 译码。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">CPU 与执行<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：CPU 由数据通路（ALU、寄存器、状态寄存器）和控制器组成；指令周期包括取指、译码、执行、写回等；PC 存放下条指令地址，IR 存放现行指令，ID 译码。</li>
 
-<li><span class="key-term">异常与中断</span>：异常是 CPU 执行指令时同步发生的事件（如缺页、除零、断点、系统调用）；中断是外部设备异步发出的请求。识别方式有软件识别（cause 寄存器查询）和硬件向量中断（中断向量表）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">异常与中断<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：异常是 CPU 执行指令时同步发生的事件（如缺页、除零、断点、系统调用）；中断是外部设备异步发出的请求。识别方式有软件识别（cause 寄存器查询）和硬件向量中断（中断向量表）。</li>
 
-<li><span class="key-term">流水线</span>：将指令执行分成若干流水段（如 IF/ID/EX/WB），多条指令重叠执行以提高吞吐率；冲突/冒险包括结构冒险、数据冒险、控制冒险；通过转发（旁路）和阻塞（气泡）解决。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">流水线<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：将指令执行分成若干流水段（如 IF/ID/EX/WB），多条指令重叠执行以提高吞吐率；冲突/冒险包括结构冒险、数据冒险、控制冒险；通过转发（旁路）和阻塞（气泡）解决。</li>
 
 </ul>
-
-<h4>必会公式</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">必会公式</span>
+    <span class="section-card-count">(4)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>理想流水线 N 条指令执行时间 ≈ (M − 1 + N) × T，M 为流水段数，T 为最长段耗时。</li>
@@ -3804,9 +4185,15 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 <li>流水线加速比 = 非流水线执行时间 / 流水线执行时间；理想情况下接近流水段数。</li>
 
 </ul>
-
-<h4>常见题型</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">常见题型</span>
+    <span class="section-card-count">(3)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>编译链接各阶段输出产物及作用；预处理、编译、汇编、链接的命令与产物。</li>
@@ -3820,11 +4207,25 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 <li>流水线性能加速比、冒险类型识别与解决方案。</li>
 
 </ul>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">典型例题</span>
+    <span class="section-card-count">(2)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 
-<h4>典型例题</h4>
-
-<h4>同步练习</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">同步练习</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block exercise">
 
 <div class="example-title"><span class="example-tag">习题</span><strong>练 1</strong></div>
@@ -3890,9 +4291,15 @@ ELF头 节头表 程序头表 只读代码段 可读/写数据段<br/>
 (14)具有什么特征的指令系统易于实现指令流水线？</p></div>
 
 </div>
-
-<h4>易错点</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">易错点</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>静态链接把库代码复制进可执行文件，动态链接在运行时才加载共享库；动态链接不复制代码。</li>
@@ -3907,32 +4314,49 @@ ELF头 节头表 程序头表 只读代码段 可读/写数据段<br/>
 
 </ul>
 
-</div></div><div class="chapter-tab-pane" data-chapter="5" data-tab="chapter-5"><div class="framework-chapter">
+</div>
+  </div>
+</div>
+<a href="../../练习测验.html?subject=13015&chapter=4" class="lg-quiz-btn">📝 去练习测验 →</a>
+</div><div class="chapter-tab-pane" data-chapter="5" data-tab="chapter-5"><div class="framework-chapter" data-chapter="5" data-meta="难点" data-pages="P199-242">
 
-<h3>第 5 章 程序的存储访问</h3>
+<h3 style="display:none;">第 5 章 程序的存储访问</h3>
 
-<h4>核心概念</h4>
 
+
+<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">核心概念</span>
+    <span class="section-card-count">(6)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
-<li><span class="key-term">存储器层次</span>：寄存器 → cache → 主存 → 硬盘；速度快、容量小、价格高在上层，反之在下层。层次化设计利用程序访问局部性。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">存储器层次<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：寄存器 → cache → 主存 → 硬盘；速度快、容量小、价格高在上层，反之在下层。层次化设计利用程序访问局部性。</li>
 
-<li><span class="key-term">局部性原理</span>：时间局部性（最近访问的数据很可能再次被访问）和空间局部性（相邻数据很可能被连续访问）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">局部性原理<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：时间局部性（最近访问的数据很可能再次被访问）和空间局部性（相邻数据很可能被连续访问）。</li>
 
-<li><span class="key-term">主存</span>：DRAM 集成度高、成本低、需刷新，用于主存；SRAM 速度快、成本高，用于 cache；主存与 CPU 通过地址线、数据线、控制线连接。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">主存<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：DRAM 集成度高、成本低、需刷新，用于主存；SRAM 速度快、成本高，用于 cache；主存与 CPU 通过地址线、数据线、控制线连接。</li>
 
-<li><span class="key-term">磁盘</span>：磁道、扇区、柱面；平均存取时间 = 寻道时间 + 旋转延迟（约半圈）+ 传输时间；闪存/U 盘基于半导体存储。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">磁盘<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：磁道、扇区、柱面；平均存取时间 = 寻道时间 + 旋转延迟（约半圈）+ 传输时间；闪存/U 盘基于半导体存储。</li>
 
-<li><span class="key-term">cache</span>：主存与 CPU 之间的高速缓冲。主存划分为块（Block），cache 划分为行（Line/Slot）。包含有效位、标记（Tag）、脏位（写回法）。映射方式：直接映射、全相联、组相联；替换算法：FIFO、LRU、随机；写策略：写直达（Write-through，需写缓冲）与写回（Write-back，需脏位）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">cache<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：主存与 CPU 之间的高速缓冲。主存划分为块（Block），cache 划分为行（Line/Slot）。包含有效位、标记（Tag）、脏位（写回法）。映射方式：直接映射、全相联、组相联；替换算法：FIFO、LRU、随机；写策略：写直达（Write-through，需写缓冲）与写回（Write-back，需脏位）。</li>
 
-<li><span class="key-term">虚拟存储</span>：每个进程拥有私有、一致的虚拟地址空间；页式虚存将虚拟地址空间和主存空间按固定大小页/页框划分，通过页表实现虚拟页到物理页框的映射；TLB（转换检测缓冲区/快表）缓存最近使用的页表项以加速地址转换；缺页异常时由 OS 从外存调入所需页面。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">虚拟存储<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：每个进程拥有私有、一致的虚拟地址空间；页式虚存将虚拟地址空间和主存空间按固定大小页/页框划分，通过页表实现虚拟页到物理页框的映射；TLB（转换检测缓冲区/快表）缓存最近使用的页表项以加速地址转换；缺页异常时由 OS 从外存调入所需页面。</li>
 
-<li><span class="key-term">存储保护</span>：通过页表项中的访问权限位、内核/用户模式等机制实现读/写/执行保护，防止进程越界访问。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">存储保护<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：通过页表项中的访问权限位、内核/用户模式等机制实现读/写/执行保护，防止进程越界访问。</li>
 
 </ul>
-
-<h4>必会公式</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">必会公式</span>
+    <span class="section-card-count">(4)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>平均访问时间 = 命中时间 + 缺失率 × 缺失损失（对 cache 和虚拟存储均适用）。</li>
@@ -3944,9 +4368,15 @@ ELF头 节头表 程序头表 只读代码段 可读/写数据段<br/>
 <li>磁盘平均存取时间 ≈ 寻道时间 + 旋转延迟（半圈）+ 传输时间。</li>
 
 </ul>
-
-<h4>常见题型</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">常见题型</span>
+    <span class="section-card-count">(4)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>cache 命中率、平均访问时间计算。</li>
@@ -3960,9 +4390,15 @@ ELF头 节头表 程序头表 只读代码段 可读/写数据段<br/>
 <li>分析程序代码片段的时间局部性与空间局部性。</li>
 
 </ul>
-
-<h4>典型例题</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">典型例题</span>
+    <span class="section-card-count">(3)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block">
 
 <div class="example-title"><strong>例 5.1</strong></div>
@@ -4868,9 +5304,15 @@ o
 址两个字段。全相联方式下，只要有空闲©2$©行，就不会发生冲突，因而块冲突概率低。</p></div>
 
 </div>
-
-<h4>同步练习</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">同步练习</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block exercise">
 
 <div class="example-title"><span class="example-tag">习题</span><strong>练 1</strong></div>
@@ -4930,9 +5372,15 @@ FIFO算法 LRU算法 口＜0 位 cache写策略<br/>
 (7)在存储器层次化结构中，％α&©-主存”“主存-外存”这两个层次有哪些不同？</p></div>
 
 </div>
-
-<h4>易错点</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">易错点</span>
+    <span class="section-card-count">(?)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>直接映射实现简单但冲突率高；全相联成本高、查找慢；组相联是折中方案。</li>
@@ -4947,30 +5395,47 @@ FIFO算法 LRU算法 口＜0 位 cache写策略<br/>
 
 </ul>
 
-</div></div><div class="chapter-tab-pane" data-chapter="6" data-tab="chapter-6"><div class="framework-chapter">
+</div>
+  </div>
+</div>
+<a href="../../练习测验.html?subject=13015&chapter=5" class="lg-quiz-btn">📝 去练习测验 →</a>
+</div><div class="chapter-tab-pane" data-chapter="6" data-tab="chapter-6"><div class="framework-chapter" data-chapter="6" data-meta="中等" data-pages="P248-285">
 
-<h3>第 6 章 程序中 I/O 操作的实现</h3>
+<h3 style="display:none;">第 6 章 程序中 I/O 操作的实现</h3>
 
-<h4>核心概念</h4>
 
+
+<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">核心概念</span>
+    <span class="section-card-count">(6)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
-<li><span class="key-term">I/O 子系统层次</span>：用户空间 I/O 软件 → 与设备无关的内核 I/O 软件（文件系统/VFS、缓存层、通用块设备层）→ 设备驱动程序 → 中断服务程序 → I/O 硬件。操作系统因共享性、复杂性、异步性而在 I/O 子系统中起核心作用。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">I/O 子系统层次<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：用户空间 I/O 软件 → 与设备无关的内核 I/O 软件（文件系统/VFS、缓存层、通用块设备层）→ 设备驱动程序 → 中断服务程序 → I/O 硬件。操作系统因共享性、复杂性、异步性而在 I/O 子系统中起核心作用。</li>
 
-<li><span class="key-term">用户空间 I/O</span>：C 标准 I/O 库（fopen/fread/fwrite，带流缓冲）、系统级 I/O（open/read/write/lseek/close，返回文件描述符 fd）。用户请求最终通过陷阱指令（自陷/软中断）陷入内核态执行。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">用户空间 I/O<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：C 标准 I/O 库（fopen/fread/fwrite，带流缓冲）、系统级 I/O（open/read/write/lseek/close，返回文件描述符 fd）。用户请求最终通过陷阱指令（自陷/软中断）陷入内核态执行。</li>
 
-<li><span class="key-term">内核空间 I/O</span>：VFS 提供统一文件抽象与 inode/目录项/超级块等数据结构；设备驱动程序与具体设备相关，通过控制/状态/数据端口操控设备；中断服务程序分准备、处理、恢复三阶段。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">内核空间 I/O<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：VFS 提供统一文件抽象与 inode/目录项/超级块等数据结构；设备驱动程序与具体设备相关，通过控制/状态/数据端口操控设备；中断服务程序分准备、处理、恢复三阶段。</li>
 
-<li><span class="key-term">I/O 控制方式</span>：程序直接控制（轮询/查询，CPU 全程参与）、中断控制（设备就绪发中断，CPU 每中断处理一个数据）、DMA 控制（DMA 控制器直接批量传送，仅在开始和结束时中断 CPU）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">I/O 控制方式<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：程序直接控制（轮询/查询，CPU 全程参与）、中断控制（设备就绪发中断，CPU 每中断处理一个数据）、DMA 控制（DMA 控制器直接批量传送，仅在开始和结束时中断 CPU）。</li>
 
-<li><span class="key-term">I/O 端口编址</span>：独立编址（I/O 地址空间独立，需专用 IN/OUT 指令，如 x86）；统一编址/存储器映射（I/O 端口占用主存地址空间，用访存指令访问，如 MIPS、ARM）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">I/O 端口编址<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：独立编址（I/O 地址空间独立，需专用 IN/OUT 指令，如 x86）；统一编址/存储器映射（I/O 端口占用主存地址空间，用访存指令访问，如 MIPS、ARM）。</li>
 
-<li><span class="key-term">中断系统</span>：中断请求寄存器记录请求；中断判优电路按中断响应优先级选择；CPU 在“开中断”状态下执行完当前指令后响应中断。中断向量表根据中断类型号定位服务程序入口。中断屏蔽字可动态改变中断处理优先级，实现多重中断/中断嵌套。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">中断系统<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：中断请求寄存器记录请求；中断判优电路按中断响应优先级选择；CPU 在“开中断”状态下执行完当前指令后响应中断。中断向量表根据中断类型号定位服务程序入口。中断屏蔽字可动态改变中断处理优先级，实现多重中断/中断嵌套。</li>
 
 </ul>
-
-<h4>常见题型</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">常见题型</span>
+    <span class="section-card-count">(4)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 
 <li>I/O 软件层次及各层功能对应；printf → write → 系统调用 → VFS → 驱动 → 中断的调用关系。</li>
@@ -4984,9 +5449,15 @@ FIFO算法 LRU算法 口＜0 位 cache写策略<br/>
 <li>文件描述符、inode、目录项、VFS 的作用辨析。</li>
 
 </ul>
-
-<h4>典型例题</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">典型例题</span>
+    <span class="section-card-count">(3)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block">
 
 <div class="example-title"><strong>例 6.1</strong></div>
@@ -5806,9 +6277,15 @@ DMA控制U 0 方式下，CPU只需在最初的DMA初始化和最后处理“DMA�
 时介入，而无须参与整个数据传送过程，因而CPU用于VO的开销非常小。</p></div>
 
 </div>
-
-<h4>同步练习</h4>
-
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #10b981;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">同步练习</span>
+    <span class="section-card-count">(2)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block exercise">
 
 <div class="example-title"><span class="example-tag">习题</span><strong>练 1</strong></div>
@@ -5868,26 +6345,10 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 (11) " 0 端口的编址方式有哪两种？各有何特点？<br/>
 
 (1 2 )为什么中断控制器把中断类型号放V 0总线的数据线上而不是放在地址线上?</p></div>
-
+  </div>
 </div>
-
-<h4>易错点</h4>
-
-<ul>
-
-<li>DMA 方式由 DMA 控制器直接控制数据传送，CPU 只在开始和结束时介入；DMA 结束仍通过中断通知 CPU。</li>
-
-<li>中断响应需要保存断点（由 CPU 保存）和现场（由中断服务程序保存），中断返回前需恢复现场；保护和恢复现场期间必须关中断。</li>
-
-<li>统一编址把 I/O 端口当作内存单元访问，可用任意访存指令；独立编址需要专用 I/O 指令，程序可读性更好但灵活性差。</li>
-
-<li>中断响应优先级由判优电路决定，中断处理优先级由中断屏蔽字动态设定，两者不要混淆。</li>
-
-<li>系统调用通过自陷指令从用户态转入内核态，开销较大，因为涉及上下文切换和权限检查。</li>
-
-</ul>
-
-</div></div></div></article>
+<a href="../../练习测验.html?subject=13015&chapter=6" class="lg-quiz-btn">📝 去练习测验 →</a>
+</div></div></div></div></article>
 
 <script>
 
@@ -6047,13 +6508,7 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
 
 
-        var mLabel = document.createElement("span");
-
-        mLabel.className = "ss-mastery-label";
-
-        mLabel.textContent = "掌握度：";
-
-        controls.appendChild(mLabel);
+        // 掌握度标签已精简
 
 
 
@@ -6091,6 +6546,8 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
         count.id = "ss-count-" + chapterNum;
 
+        count.style.display = "none";
+
         controls.appendChild(count);
 
 
@@ -6099,17 +6556,7 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
 
 
-        if (data.keypoints) {
 
-          var kp = document.createElement("div");
-
-          kp.className = "ss-keypoints";
-
-          kp.innerHTML = "<strong>重难点：</strong>" + data.keypoints;
-
-          controls.insertAdjacentElement("afterend", kp);
-
-        }
 
 
 
@@ -6873,15 +7320,25 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
         summary.className = 'lg-chapter-summary';
 
-        summary.innerHTML = '<span style="font-weight:700;">📋 本章概览</span>' +
+        var chMeta = chapterEl.dataset.meta || '';
 
-            '<span class="lg-stat lg-stat-key"><span class="lg-stat-dot"></span>🔴 重点 ' + (counts['重点']||0) + '</span>' +
+        var chPages = chapterEl.dataset.pages || '';
 
-            '<span class="lg-stat lg-stat-normal"><span class="lg-stat-dot"></span>🟡 一般 ' + (counts['一般']||0) + '</span>' +
+        var totalItems = (counts['重点']||0) + (counts['一般']||0) + (counts['了解']||0);
 
-            '<span class="lg-stat lg-stat-survey"><span class="lg-stat-dot"></span>🟢 了解 ' + (counts['了解']||0) + '</span>' +
+        summary.innerHTML = '<span class="ch-meta-tag">' + chMeta + '</span>' +
 
-            '<span style="color:#6366f1;font-size:11px;">💡 悬停知识点查看学习建议</span>';
+            '<span class="ch-pages">' + chPages + '</span>' +
+
+            '<span class="ch-items">' + totalItems + '/18 知识点</span>' +
+
+            '<span style="margin-left:auto;display:flex;gap:6px;">' +
+
+            '<span class="ch-tag ch-tag-key">🔴 重点 ' + (counts['重点']||0) + '</span>' +
+
+            '<span class="ch-tag ch-tag-normal">🟡 一般 ' + (counts['一般']||0) + '</span>' +
+
+            '</span>';
 
         chapterEl.insertBefore(summary, chapterEl.firstChild);
 
@@ -6891,17 +7348,33 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
         filterBar.className = 'lg-filter-bar';
 
+        var totalCount = (counts['重点']||0) + (counts['一般']||0) + (counts['了解']||0);
+
         filterBar.innerHTML =
 
-            '<button class="lg-filter-btn active" data-filter="all">全部</button>' +
+            '<button class="lg-filter-btn active" data-filter="all">全部 ' + totalCount + '</button>' +
 
-            '<button class="lg-filter-btn" data-filter="重点">🔴 重点</button>' +
+            '<button class="lg-filter-btn" data-filter="重点">🔴 重点 ' + (counts['重点']||0) + '</button>' +
 
-            '<button class="lg-filter-btn" data-filter="一般">🟡 一般</button>' +
+            '<button class="lg-filter-btn" data-filter="一般">🟡 一般 ' + (counts['一般']||0) + '</button>' +
 
-            '<button class="lg-filter-btn" data-filter="了解">🟢 了解</button>';
+            '<button class="lg-filter-btn" data-filter="了解">🟢 了解 ' + (counts['了解']||0) + '</button>';
 
         chapterEl.insertBefore(filterBar, chapterEl.children[1]);
+
+
+
+        // 添加去练习测验按钮
+
+        var quizBtn = document.createElement('a');
+
+        quizBtn.className = 'lg-quiz-btn';
+
+        quizBtn.href = '../../练习测验.html?subject=13015&chapter=' + chapterNum;
+
+        quizBtn.innerHTML = '📝 去练习测验 →';
+
+        chapterEl.appendChild(quizBtn);
 
 
 
@@ -6940,6 +7413,8 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
 
         keyTerms.forEach(function(kpSpan) {
+
+            if (kpSpan.querySelector('.lg-badge')) return;
 
             var kpText = kpSpan.textContent.trim();
 
@@ -7097,7 +7572,7 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
                 if (matchChapter(chName, key)) {
 
-                    matched = key;
+                    matched = subjectData[key];
 
                     break;
 
@@ -7107,7 +7582,7 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
             if (matched) {
 
-                annotateChapter(ch, matched, subjectData);
+                annotateChapter(ch, key, subjectData);
 
             }
 
@@ -7155,6 +7630,12 @@ if (origSwitch) {
 
 </script>
 
+<script>
+function toggleCollapse(header) {
+  const card = header.closest('.collapse-card');
+  card.classList.toggle('open');
+}
+</script>
 </body>
 
 </html>

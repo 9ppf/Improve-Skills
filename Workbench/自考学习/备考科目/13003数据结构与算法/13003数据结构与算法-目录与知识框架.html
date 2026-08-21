@@ -464,6 +464,180 @@
 .chapter-tab-btn.hidden-chapter-tab.active { display: inline-flex !important; }
 .chapter-tab-pane.active { display: block !important; }
 
+
+    /* === 新增：章节精讲卡片化 === */
+    .section-card {
+        background: var(--bg2);
+        border-radius: 10px;
+        padding: 0.8rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        margin-bottom: 0.6rem;
+    }
+    .section-card-header {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        gap: 8px;
+    }
+    .section-card-title {
+        font-size: 0.74rem;
+        font-weight: 700;
+        color: var(--ink);
+    }
+    .section-card-count {
+        font-size: 0.66rem;
+        color: var(--muted);
+        font-weight: 500;
+    }
+    .section-card .chevron {
+        margin-left: auto;
+        font-size: 0.7rem;
+        color: var(--muted);
+        transition: transform 0.2s;
+    }
+    .section-card.open .chevron {
+        transform: rotate(90deg);
+    }
+    .section-card-body {
+        display: none;
+        margin-top: 0.5rem;
+    }
+    .section-card.open .section-card-body {
+        display: block;
+    }
+
+    /* 知识点标签 */
+    .lg-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 11px;
+        padding: 1px 6px;
+        border-radius: 8px;
+        margin-left: 6px;
+        vertical-align: middle;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .lg-priority-key { color: #dc2626; }
+    .lg-priority-normal { color: #d97706; }
+    .lg-priority-survey { color: #64748b; }
+    .lg-badge.lg-priority-key { background: #fee2e2; border: 1px solid #fecaca; }
+    .lg-badge.lg-priority-normal { background: #fef3c7; border: 1px solid #fde68a; }
+    .lg-badge.lg-priority-survey { background: #f1f5f9; border: 1px solid #e2e8f0; }
+
+    .lg-kp-item {
+        position: relative;
+        padding: 6px 10px;
+        border-radius: 6px;
+        margin-bottom: 4px;
+        transition: background 0.2s;
+        list-style: none;
+    }
+    .lg-kp-item.lg-priority-key { background: rgba(254, 226, 226, 0.4); color: #dc2626; }
+    .lg-kp-item.lg-priority-normal { background: rgba(254, 243, 199, 0.3); color: #d97706; }
+    .lg-kp-item.lg-priority-survey { background: rgba(241, 245, 249, 0.3); color: #64748b; opacity: 0.75; }
+
+    .kt-priority-key { color: #dc2626; font-weight: 700; }
+    .kt-priority-normal { color: #d97706; font-weight: 700; }
+    .kt-priority-survey { color: #64748b; font-weight: 700; }
+
+    .lg-howto {
+        font-size: 12px;
+        color: #6366f1;
+        margin-top: 4px;
+        padding: 4px 8px;
+        background: rgba(99, 102, 241, 0.06);
+        border-radius: 6px;
+        display: none;
+    }
+    .lg-kp-item:hover .lg-howto { display: block; }
+
+    /* 章节信息条 */
+    .lg-chapter-summary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.72rem;
+        margin-bottom: 0.6rem;
+        flex-wrap: wrap;
+    }
+    .ch-meta-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.68rem;
+        font-weight: 600;
+        background: rgba(37, 99, 235, 0.08);
+        color: #3b82f6;
+    }
+    .ch-pages { color: var(--muted); }
+    .ch-items { color: var(--ink); font-weight: 500; }
+    .ch-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.66rem;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 999px;
+    }
+    .ch-tag-key { background: rgba(239, 68, 68, 0.10); color: #dc2626; }
+    .ch-tag-normal { background: rgba(245, 158, 11, 0.10); color: #d97706; }
+
+    /* 筛选器 */
+    .lg-filter-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 0.6rem;
+        flex-wrap: wrap;
+    }
+    .lg-filter-btn {
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        border: 1.5px solid var(--rule);
+        background: #fff;
+        cursor: pointer;
+        color: var(--muted);
+        font-weight: 500;
+        transition: all 0.15s;
+    }
+    .lg-filter-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+    .lg-filter-btn.active {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        border-color: transparent;
+        font-weight: 600;
+    }
+
+    /* 测验按钮 */
+    .lg-quiz-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.7rem 1rem;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-top: 0.8rem;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .lg-quiz-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    }
+
+    /* 隐藏旧样式 */
+    .framework-chapter > h3 { display: none; }
+    .framework-chapter h4 { display: none; }
 </style>
 </head>
 <body>
@@ -715,24 +889,48 @@
 <span class="exam-tag">主线记忆法</span>每种数据结构都从三个维度学：逻辑结构是什么？存储结构怎么实现？基本操作（增删改查）的时间复杂度是多少？这样不容易把概念记混。
         </div>
 </div></div><div class="chapter-tab-pane" data-tab="chapter-1"><div class="framework-chapter">
+<h3 style="display:none;">第1章 绪论</h3>
+
 <h3>第 1 章 绪论</h3>
-<h4>核心概念</h4>
+<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">核心概念</span>
+    <span class="section-card-count">(8)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">数据、数据元素、数据项</span>：数据是计算机程序处理对象的集合；数据元素是数据的基本单位；数据项是数据的最小不可分割单位。例如学生基本信息表中，一行是一个数据元素，学号、姓名等是数据项。</li>
-<li><span class="key-term">数据结构三要素</span>：逻辑结构（数据元素之间的关系）、存储结构（在计算机中的表示）、数据运算（施加在数据上的操作）。</li>
-<li><span class="key-term">逻辑结构</span>：集合、线性结构、树结构、图结构。线性结构一对一，树结构一对多，图结构多对多。</li>
-<li><span class="key-term">存储结构</span>：顺序存储、链式存储、索引存储、散列（哈希）存储。不同存储结构会影响基本操作的实现效率。</li>
-<li><span class="key-term">抽象数据类型（ADT）</span>：由数据对象、数据关系及基本操作组成，独立于具体实现。</li>
-<li><span class="key-term">算法 5 特性</span>：输入（0 或多个）、输出（1 或多个）、有穷性、确定性、可行性。</li>
-<li><span class="key-term">时间复杂度 / 空间复杂度</span>：随问题规模 n 增长的增长函数主项，用大 O 表示上界，大 Ω 表示下界，大 Θ 表示上下界相同。</li>
-<li><span class="key-term">算法设计策略</span>：递推法、迭代法、递归法、贪心法、分治法、动态规划法。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">数据、数据元素、数据项<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：数据是计算机程序处理对象的集合；数据元素是数据的基本单位；数据项是数据的最小不可分割单位。例如学生基本信息表中，一行是一个数据元素，学号、姓名等是数据项。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">数据结构三要素<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：逻辑结构（数据元素之间的关系）、存储结构（在计算机中的表示）、数据运算（施加在数据上的操作）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">逻辑结构<span class="lg-badge lg-priority-key">🔴 <span>🧠</span> 重点·背诵</span></span>：集合、线性结构、树结构、图结构。线性结构一对一，树结构一对多，图结构多对多。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">存储结构<span class="lg-badge lg-priority-key">🔴 <span>🧠</span> 重点·背诵</span></span>：顺序存储、链式存储、索引存储、散列（哈希）存储。不同存储结构会影响基本操作的实现效率。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">抽象数据类型（ADT）<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：由数据对象、数据关系及基本操作组成，独立于具体实现。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">算法 5 特性<span class="lg-badge lg-priority-normal">🟡 <span>🧠</span> 一般·背诵</span></span>：输入（0 或多个）、输出（1 或多个）、有穷性、确定性、可行性。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">时间复杂度 / 空间复杂度<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：随问题规模 n 增长的增长函数主项，用大 O 表示上界，大 Ω 表示下界，大 Θ 表示上下界相同。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">算法设计策略<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：递推法、迭代法、递归法、贪心法、分治法、动态规划法。</li>
 </ul>
-<h4>必会公式</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">必会公式</span>
+    <span class="section-card-count">(2)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 <li>时间复杂度阶：O(1) < O(log₂n) < O(n) < O(n log₂n) < O(n²) < O(2ⁿ) < O(n!)</li>
 <li>顺序存储地址：LOC(aᵢ) = LOC(a₀) + i × L（0 起始），或 LOC(aᵢ) = LOC(a₁) + (i−1) × L（1 起始）。</li>
 </ul>
-<h4>常见题型</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">常见题型</span>
+    <span class="section-card-count">(5)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 <li>根据实例区分数据、数据元素、数据项。</li>
 <li>判断逻辑结构/存储结构的类别。</li>
@@ -740,7 +938,15 @@
 <li>用类 C 语言描述简单算法或定义抽象数据类型。</li>
 <li>区分递推、递归、分治、动态规划等基本策略。</li>
 </ul>
-<h4>典型例题</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">典型例题</span>
+    <span class="section-card-count">(3)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block">
 <div class="example-title"><strong>例 1-1</strong></div>
 <div class="example-statement"><p>学生信息示例。<br/>
@@ -871,7 +1077,15 @@ O<br/>
 作，也就是实现“如何做”。</p></div>
 <div class="example-solution"></div>
 </div>
-<h4>同步练习</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #10b981;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">同步练习</span>
+    <span class="section-card-count">(2)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block exercise">
 <div class="example-title"><span class="example-tag">习题</span><strong>练 1</strong></div>
 <div class="example-statement"><p>在数据结构与算法中，从逻辑上可以把数据结构分为________<br/>
@@ -884,13 +1098,25 @@ C .内部结构和外部结构 D .动态结构和静态结构</p></div>
 <div class="example-statement"><p>数据元素可以细分为________ o<br/>
 A .数据项 B .字符 C .二进制位 D .数据记录</p></div>
 </div>
-<h4>易错点</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">易错点</span>
+    <span class="section-card-count">(4)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 <li>逻辑结构与存储结构是两个层面：同一逻辑结构可用多种存储结构实现，不同存储结构会影响基本操作的实现效率。</li>
 <li>算法的输入可以为 0 个，但输出至少 1 个。</li>
 <li>O(1) 表示常数阶，不代表只执行 1 次操作；大 O 表示上界，通常取最低阶。</li>
 <li>数据元素是基本单位，数据项是最小单位，不要混淆。</li>
 </ul>
+  </div>
+</div>
+
+<a class="lg-quiz-btn" href="../../练习测验.html?subject=13003&chapter=1">📝 去练习测验 →</a>
 </div></div><div class="chapter-tab-pane" data-tab="chapter-2"><div class="framework-chapter">
 <h3>第 2 章 线性表</h3>
 <h4>核心概念</h4>
@@ -2516,7 +2742,15 @@ i=i n j=i<br/>
         return m ? parseInt(m[1]) : null;
       }
 
-      function initChapter(chapterEl) {
+      
+    window.toggleCollapse = function(headerEl) {
+      var card = headerEl.closest('.collapse-card');
+      if (card) {
+        card.classList.toggle('open');
+      }
+    }
+
+    function initChapter(chapterEl) {
         var h3 = chapterEl.querySelector("h3");
         if (!h3) return;
         var chapterNum = extractChapterNum(h3);
@@ -2559,12 +2793,7 @@ i=i n j=i<br/>
 
         h3.insertAdjacentElement("afterend", controls);
 
-        if (data.keypoints) {
-          var kp = document.createElement("div");
-          kp.className = "ss-keypoints";
-          kp.innerHTML = "<strong>重难点：</strong>" + data.keypoints;
-          controls.insertAdjacentElement("afterend", kp);
-        }
+        
 
         var kpIdx = 0;
         chapterEl.querySelectorAll("ul").forEach(function(ul) {
@@ -2732,6 +2961,7 @@ i=i n j=i<br/>
 // ===== Learning Guide Annotations v2 =====
 (function() {
     var LG_SUBJECT = '数据结构';
+    var LG_SUBJECT_CODE = '13003';
     var LG_DATA = null;
 
     function fetchGuide() {
@@ -2848,7 +3078,7 @@ i=i n j=i<br/>
         return '🟡';
     }
 
-    function annotateChapter(chapterEl, chapterName, guideData) {
+    function annotateChapter(chapterEl, chapterName, guideData, subjectCode) {
         if (!guideData || !guideData[chapterName]) return;
         if (chapterEl.dataset.lgAnnotated) return;
         chapterEl.dataset.lgAnnotated = '1';
@@ -2861,20 +3091,26 @@ i=i n j=i<br/>
 
         var summary = document.createElement('div');
         summary.className = 'lg-chapter-summary';
-        summary.innerHTML = '<span style="font-weight:700;">📋 本章概览</span>' +
-            '<span class="lg-stat lg-stat-key"><span class="lg-stat-dot"></span>🔴 重点 ' + (counts['重点']||0) + '</span>' +
-            '<span class="lg-stat lg-stat-normal"><span class="lg-stat-dot"></span>🟡 一般 ' + (counts['一般']||0) + '</span>' +
-            '<span class="lg-stat lg-stat-survey"><span class="lg-stat-dot"></span>🟢 了解 ' + (counts['了解']||0) + '</span>' +
-            '<span style="color:#6366f1;font-size:11px;">💡 悬停知识点查看学习建议</span>';
+        var chMeta = chapterEl.dataset.meta || '';
+        var chPages = chapterEl.dataset.pages || '';
+        var totalItems = (counts['重点']||0) + (counts['一般']||0) + (counts['了解']||0);
+        summary.innerHTML = '<span class="ch-meta-tag">' + chMeta + '</span>' +
+            '<span class="ch-pages">' + chPages + '</span>' +
+            '<span class="ch-items">' + totalItems + '/18 知识点</span>' +
+            '<span style="margin-left:auto;display:flex;gap:6px;">' +
+            '<span class="ch-tag ch-tag-key">🔴 重点 ' + (counts['重点']||0) + '</span>' +
+            '<span class="ch-tag ch-tag-normal">🟡 一般 ' + (counts['一般']||0) + '</span>' +
+            '</span>';
         chapterEl.insertBefore(summary, chapterEl.firstChild);
 
         var filterBar = document.createElement('div');
         filterBar.className = 'lg-filter-bar';
+        var totalCount = (counts['重点']||0) + (counts['一般']||0) + (counts['了解']||0);
         filterBar.innerHTML =
-            '<button class="lg-filter-btn active" data-filter="all">全部</button>' +
-            '<button class="lg-filter-btn" data-filter="重点">🔴 重点</button>' +
-            '<button class="lg-filter-btn" data-filter="一般">🟡 一般</button>' +
-            '<button class="lg-filter-btn" data-filter="了解">🟢 了解</button>';
+            '<button class="lg-filter-btn active" data-filter="all">全部 ' + totalCount + '</button>' +
+            '<button class="lg-filter-btn" data-filter="重点">🔴 重点 ' + (counts['重点']||0) + '</button>' +
+            '<button class="lg-filter-btn" data-filter="一般">🟡 一般 ' + (counts['一般']||0) + '</button>' +
+            '<button class="lg-filter-btn" data-filter="了解">🟢 了解 ' + (counts['了解']||0) + '</button>';
         chapterEl.insertBefore(filterBar, chapterEl.children[1]);
 
         filterBar.addEventListener('click', function(e) {
@@ -2895,6 +3131,7 @@ i=i n j=i<br/>
         var keyTerms = chapterEl.querySelectorAll('.key-term');
 
         keyTerms.forEach(function(kpSpan) {
+            if (kpSpan.querySelector('.lg-badge')) return;
             var kpText = kpSpan.textContent.trim();
             var matched = findBestMatch(kpText, topics);
 
@@ -2973,12 +3210,12 @@ i=i n j=i<br/>
             var matched = null;
             for (var key in subjectData) {
                 if (matchChapter(chName, key)) {
-                    matched = key;
+                    matched = subjectData[key];
                     break;
                 }
             }
             if (matched) {
-                annotateChapter(ch, matched, subjectData);
+                annotateChapter(ch, key, subjectData, LG_SUBJECT_CODE);
             }
         });
     }

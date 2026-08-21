@@ -464,6 +464,180 @@
 .chapter-tab-btn.hidden-chapter-tab.active { display: inline-flex !important; }
 .chapter-tab-pane.active { display: block !important; }
 
+
+    /* === 新增：章节精讲卡片化 === */
+    .section-card {
+        background: var(--bg2);
+        border-radius: 10px;
+        padding: 0.8rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        margin-bottom: 0.6rem;
+    }
+    .section-card-header {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        gap: 8px;
+    }
+    .section-card-title {
+        font-size: 0.74rem;
+        font-weight: 700;
+        color: var(--ink);
+    }
+    .section-card-count {
+        font-size: 0.66rem;
+        color: var(--muted);
+        font-weight: 500;
+    }
+    .section-card .chevron {
+        margin-left: auto;
+        font-size: 0.7rem;
+        color: var(--muted);
+        transition: transform 0.2s;
+    }
+    .section-card.open .chevron {
+        transform: rotate(90deg);
+    }
+    .section-card-body {
+        display: none;
+        margin-top: 0.5rem;
+    }
+    .section-card.open .section-card-body {
+        display: block;
+    }
+
+    /* 知识点标签 */
+    .lg-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 11px;
+        padding: 1px 6px;
+        border-radius: 8px;
+        margin-left: 6px;
+        vertical-align: middle;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .lg-priority-key { color: #dc2626; }
+    .lg-priority-normal { color: #d97706; }
+    .lg-priority-survey { color: #64748b; }
+    .lg-badge.lg-priority-key { background: #fee2e2; border: 1px solid #fecaca; }
+    .lg-badge.lg-priority-normal { background: #fef3c7; border: 1px solid #fde68a; }
+    .lg-badge.lg-priority-survey { background: #f1f5f9; border: 1px solid #e2e8f0; }
+
+    .lg-kp-item {
+        position: relative;
+        padding: 6px 10px;
+        border-radius: 6px;
+        margin-bottom: 4px;
+        transition: background 0.2s;
+        list-style: none;
+    }
+    .lg-kp-item.lg-priority-key { background: rgba(254, 226, 226, 0.4); color: #dc2626; }
+    .lg-kp-item.lg-priority-normal { background: rgba(254, 243, 199, 0.3); color: #d97706; }
+    .lg-kp-item.lg-priority-survey { background: rgba(241, 245, 249, 0.3); color: #64748b; opacity: 0.75; }
+
+    .kt-priority-key { color: #dc2626; font-weight: 700; }
+    .kt-priority-normal { color: #d97706; font-weight: 700; }
+    .kt-priority-survey { color: #64748b; font-weight: 700; }
+
+    .lg-howto {
+        font-size: 12px;
+        color: #6366f1;
+        margin-top: 4px;
+        padding: 4px 8px;
+        background: rgba(99, 102, 241, 0.06);
+        border-radius: 6px;
+        display: none;
+    }
+    .lg-kp-item:hover .lg-howto { display: block; }
+
+    /* 章节信息条 */
+    .lg-chapter-summary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.72rem;
+        margin-bottom: 0.6rem;
+        flex-wrap: wrap;
+    }
+    .ch-meta-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.68rem;
+        font-weight: 600;
+        background: rgba(37, 99, 235, 0.08);
+        color: #3b82f6;
+    }
+    .ch-pages { color: var(--muted); }
+    .ch-items { color: var(--ink); font-weight: 500; }
+    .ch-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.66rem;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 999px;
+    }
+    .ch-tag-key { background: rgba(239, 68, 68, 0.10); color: #dc2626; }
+    .ch-tag-normal { background: rgba(245, 158, 11, 0.10); color: #d97706; }
+
+    /* 筛选器 */
+    .lg-filter-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 0.6rem;
+        flex-wrap: wrap;
+    }
+    .lg-filter-btn {
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        border: 1.5px solid var(--rule);
+        background: #fff;
+        cursor: pointer;
+        color: var(--muted);
+        font-weight: 500;
+        transition: all 0.15s;
+    }
+    .lg-filter-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+    .lg-filter-btn.active {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        border-color: transparent;
+        font-weight: 600;
+    }
+
+    /* 测验按钮 */
+    .lg-quiz-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.7rem 1rem;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-top: 0.8rem;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .lg-quiz-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    }
+
+    /* 隐藏旧样式 */
+    .framework-chapter > h3 { display: none; }
+    .framework-chapter h4 { display: none; }
 </style>
 </head>
 <body>
@@ -663,20 +837,36 @@
 </ol><div class="callout">
 <span class="exam-tag">主线记忆法</span>每章都从"定义 → 性质/定理 → 计算/证明方法"三个维度学，配合真值表、关系矩阵、图的矩阵表示等工具，不容易把概念记混。
         </div></section></div><div class="chapter-tab-pane" data-chapter="1" data-tab="chapter-1"><div class="framework-chapter">
+<h3 style="display:none;">第1章 命题与命题公式</h3>
+
 <h3>第 1 章 命题与命题公式</h3>
-<h4>核心概念</h4>
+<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">核心概念</span>
+    <span class="section-card-count">(9)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">命题</span>：能判断真假的陈述句，真值唯一（真 T/1 或假 F/0）。疑问句、感叹句、祈使句、悖论都不是命题。</li>
-<li><span class="key-term">命题标识符</span>：表示具体命题时为命题常项/常量；仅表示命题位置时为命题变元/变项，变元需指派后才取确定真值。</li>
-<li><span class="key-term">联结词</span>：否定 ¬、合取 ∧、析取 ∨、条件（蕴涵）→、双条件（等价）↔；其中析取 ∨ 为“相容或”，异或需用 (p∧¬q)∨(¬p∧q) 表示。</li>
-<li><span class="key-term">复合命题</span>：由原子命题通过联结词联结而成；注意自然语言连接词的多义性，“只要…就…”“只有…才…”等需准确对应 →。</li>
-<li><span class="key-term">合式公式（命题公式）</span>：按递归定义构成的符号串；最外层括号及不影响运算次序的括号可省略。</li>
-<li><span class="key-term">真值表</span>：列出公式在 2ⁿ 组指派下的真值；成真指派使公式为真，成假指派使公式为假。</li>
-<li><span class="key-term">公式类型</span>：重言式（永真式）、矛盾式（永假式）、可满足式；可用真值表或等值演算判别。</li>
-<li><span class="key-term">等值演算</span>：利用基本等值式（交换律、结合律、分配律、德摩根律、吸收律、蕴涵/等价等值式等）进行等价变换。</li>
-<li><span class="key-term">联结词完备集</span>：能表示一切命题公式的联结词集合，如 {¬,∧,∨}、{¬,∨}、{¬,∧}、{↑}（与非）、{↓}（或非）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">命题<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：能判断真假的陈述句，真值唯一（真 T/1 或假 F/0）。疑问句、感叹句、祈使句、悖论都不是命题。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">命题标识符<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：表示具体命题时为命题常项/常量；仅表示命题位置时为命题变元/变项，变元需指派后才取确定真值。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">联结词<span class="lg-badge lg-priority-key">🔴 <span>🧠</span> 重点·背诵</span></span>：否定 ¬、合取 ∧、析取 ∨、条件（蕴涵）→、双条件（等价）↔；其中析取 ∨ 为“相容或”，异或需用 (p∧¬q)∨(¬p∧q) 表示。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">复合命题<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：由原子命题通过联结词联结而成；注意自然语言连接词的多义性，“只要…就…”“只有…才…”等需准确对应 →。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">合式公式（命题公式）<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：按递归定义构成的符号串；最外层括号及不影响运算次序的括号可省略。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">真值表<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：列出公式在 2ⁿ 组指派下的真值；成真指派使公式为真，成假指派使公式为假。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">公式类型<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：重言式（永真式）、矛盾式（永假式）、可满足式；可用真值表或等值演算判别。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">等值演算<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：利用基本等值式（交换律、结合律、分配律、德摩根律、吸收律、蕴涵/等价等值式等）进行等价变换。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">联结词完备集<span class="lg-badge lg-priority-key">🔴 <span>🧠</span> 重点·背诵</span></span>：能表示一切命题公式的联结词集合，如 {¬,∧,∨}、{¬,∨}、{¬,∧}、{↑}（与非）、{↓}（或非）。</li>
 </ul>
-<h4>常见题型</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">常见题型</span>
+    <span class="section-card-count">(5)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 <li>判断给定句子是否为命题，并说明真值。</li>
 <li>自然语言复合命题的符号化翻译（注意“或”的相容/相斥、条件的前件后件）。</li>
@@ -684,7 +874,15 @@
 <li>用等值演算化简公式、证明等值式、判断公式类型。</li>
 <li>判断联结词集合是否完备，用完备集表示给定公式。</li>
 </ul>
-<h4>典型例题</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">典型例题</span>
+    <span class="section-card-count">(3)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block">
 <div class="example-title"><strong>例 1.1</strong></div>
 <div class="example-statement"><p>判断下列句子中哪些构成命题。<br/>
@@ -779,7 +977,15 @@ F F F
 同学”中的“与”用在主语中，它连接的是两个并列的主语，而不是两个原子命题。所以
 这个命题并不是合取命题，实际上，它仅仅是一个原子命题。</pre></div>
 </div>
-<h4>同步练习</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #10b981;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">同步练习</span>
+    <span class="section-card-count">(2)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <div class="example-block exercise">
 <div class="example-title"><span class="example-tag">单项选择题</span><strong>练 1</strong></div>
 <div class="example-statement"><p>下列语句中哪个是真命题？ 0</p>
@@ -792,7 +998,15 @@ C.如果1+2 =3,那么雪是黑的。 D.如果1+2=5,那么雪是黑的。</p></di
 o<br/>
 A. A B. — C. ∨ D.6</p></div>
 </div>
-<h4>易错点</h4>
+  </div>
+</div>
+<div class="section-card collapse-card " style="border-left:4px solid #ef4444;">
+  <div class="section-card-header" onclick="toggleCollapse(this)">
+    <span class="section-card-title">易错点</span>
+    <span class="section-card-count">(5)</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-card-body collapse-body">
 <ul>
 <li>蕴涵式 p→q 仅在 p 真 q 假时为假，其余三种情况均为真；前件为假时整个条件式为真。</li>
 <li>“只有 q 才 p” 应符号化为 p→q，而不是 q→p；要区分充分条件与必要条件。</li>
@@ -800,6 +1014,10 @@ A. A B. — C. ∨ D.6</p></div>
 <li>联结词运算优先级：¬ > ∧ > ∨ > → > ↔；遇到 →、↔ 时建议加括号避免歧义。</li>
 <li>等值演算要熟记并正确运用德摩根律、分配律和吸收律，注意 ¬(p→q) ⇔ p∧¬q。</li>
 </ul>
+  </div>
+</div>
+
+<a class="lg-quiz-btn" href="../../练习测验.html?subject=02324&chapter=1">📝 去练习测验 →</a>
 </div></div><div class="chapter-tab-pane" data-chapter="2" data-tab="chapter-2"><div class="framework-chapter">
 <h3>第 2 章 命题逻辑的推理理论</h3>
 <h4>核心概念</h4>
@@ -1948,7 +2166,15 @@ D.连通但删去一条边则不连通的图</p></div>
         return m ? parseInt(m[1]) : null;
       }
 
-      function initChapter(chapterEl) {
+      
+    window.toggleCollapse = function(headerEl) {
+      var card = headerEl.closest('.collapse-card');
+      if (card) {
+        card.classList.toggle('open');
+      }
+    }
+
+    function initChapter(chapterEl) {
         var h3 = chapterEl.querySelector("h3");
         if (!h3) return;
         var chapterNum = extractChapterNum(h3);
@@ -1991,12 +2217,7 @@ D.连通但删去一条边则不连通的图</p></div>
 
         h3.insertAdjacentElement("afterend", controls);
 
-        if (data.keypoints) {
-          var kp = document.createElement("div");
-          kp.className = "ss-keypoints";
-          kp.innerHTML = "<strong>重难点：</strong>" + data.keypoints;
-          controls.insertAdjacentElement("afterend", kp);
-        }
+        
 
         var kpIdx = 0;
         chapterEl.querySelectorAll("ul").forEach(function(ul) {
@@ -2163,6 +2384,7 @@ D.连通但删去一条边则不连通的图</p></div>
 // ===== Learning Guide Annotations v2 =====
 (function() {
     var LG_SUBJECT = '离散数学';
+    var LG_SUBJECT_CODE = '02324';
     var LG_DATA = null;
 
     function fetchGuide() {
@@ -2279,7 +2501,7 @@ D.连通但删去一条边则不连通的图</p></div>
         return '🟡';
     }
 
-    function annotateChapter(chapterEl, chapterName, guideData) {
+    function annotateChapter(chapterEl, chapterName, guideData, subjectCode) {
         if (!guideData || !guideData[chapterName]) return;
         if (chapterEl.dataset.lgAnnotated) return;
         chapterEl.dataset.lgAnnotated = '1';
@@ -2292,20 +2514,26 @@ D.连通但删去一条边则不连通的图</p></div>
 
         var summary = document.createElement('div');
         summary.className = 'lg-chapter-summary';
-        summary.innerHTML = '<span style="font-weight:700;">📋 本章概览</span>' +
-            '<span class="lg-stat lg-stat-key"><span class="lg-stat-dot"></span>🔴 重点 ' + (counts['重点']||0) + '</span>' +
-            '<span class="lg-stat lg-stat-normal"><span class="lg-stat-dot"></span>🟡 一般 ' + (counts['一般']||0) + '</span>' +
-            '<span class="lg-stat lg-stat-survey"><span class="lg-stat-dot"></span>🟢 了解 ' + (counts['了解']||0) + '</span>' +
-            '<span style="color:#6366f1;font-size:11px;">💡 悬停知识点查看学习建议</span>';
+        var chMeta = chapterEl.dataset.meta || '';
+        var chPages = chapterEl.dataset.pages || '';
+        var totalItems = (counts['重点']||0) + (counts['一般']||0) + (counts['了解']||0);
+        summary.innerHTML = '<span class="ch-meta-tag">' + chMeta + '</span>' +
+            '<span class="ch-pages">' + chPages + '</span>' +
+            '<span class="ch-items">' + totalItems + '/18 知识点</span>' +
+            '<span style="margin-left:auto;display:flex;gap:6px;">' +
+            '<span class="ch-tag ch-tag-key">🔴 重点 ' + (counts['重点']||0) + '</span>' +
+            '<span class="ch-tag ch-tag-normal">🟡 一般 ' + (counts['一般']||0) + '</span>' +
+            '</span>';
         chapterEl.insertBefore(summary, chapterEl.firstChild);
 
         var filterBar = document.createElement('div');
         filterBar.className = 'lg-filter-bar';
+        var totalCount = (counts['重点']||0) + (counts['一般']||0) + (counts['了解']||0);
         filterBar.innerHTML =
-            '<button class="lg-filter-btn active" data-filter="all">全部</button>' +
-            '<button class="lg-filter-btn" data-filter="重点">🔴 重点</button>' +
-            '<button class="lg-filter-btn" data-filter="一般">🟡 一般</button>' +
-            '<button class="lg-filter-btn" data-filter="了解">🟢 了解</button>';
+            '<button class="lg-filter-btn active" data-filter="all">全部 ' + totalCount + '</button>' +
+            '<button class="lg-filter-btn" data-filter="重点">🔴 重点 ' + (counts['重点']||0) + '</button>' +
+            '<button class="lg-filter-btn" data-filter="一般">🟡 一般 ' + (counts['一般']||0) + '</button>' +
+            '<button class="lg-filter-btn" data-filter="了解">🟢 了解 ' + (counts['了解']||0) + '</button>';
         chapterEl.insertBefore(filterBar, chapterEl.children[1]);
 
         filterBar.addEventListener('click', function(e) {
@@ -2326,6 +2554,7 @@ D.连通但删去一条边则不连通的图</p></div>
         var keyTerms = chapterEl.querySelectorAll('.key-term');
 
         keyTerms.forEach(function(kpSpan) {
+            if (kpSpan.querySelector('.lg-badge')) return;
             var kpText = kpSpan.textContent.trim();
             var matched = findBestMatch(kpText, topics);
 
@@ -2404,12 +2633,12 @@ D.连通但删去一条边则不连通的图</p></div>
             var matched = null;
             for (var key in subjectData) {
                 if (matchChapter(chName, key)) {
-                    matched = key;
+                    matched = subjectData[key];
                     break;
                 }
             }
             if (matched) {
-                annotateChapter(ch, matched, subjectData);
+                annotateChapter(ch, key, subjectData, LG_SUBJECT_CODE);
             }
         });
     }
