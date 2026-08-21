@@ -437,9 +437,13 @@ function renderTree() {
         if (searchQuery && visibleTotal === 0) return '';
 
         const categoriesHtml = ws.categories.map(cat => {
-          const catCollapsed = collapsed.has(catKey(ws, cat)) && !searchQuery;
           const itemsHtml = renderItems(ws, cat, cat.items, 0);
 
+          if (cat.flat) {
+            return itemsHtml;
+          }
+
+          const catCollapsed = collapsed.has(catKey(ws, cat)) && !searchQuery;
           return `
             <div class="tree-node ${catCollapsed ? 'collapsed' : ''}">
               <div class="tree-row header">

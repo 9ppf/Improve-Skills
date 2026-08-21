@@ -8,6 +8,7 @@
     {
       "name": "高考语文",
       "icon": "📝",
+      "flat": true,
       "iconBg": "blue-soft",
       "items": [
         {

@@ -9,6 +9,7 @@
       "name": "备考科目",
       "icon": "📚",
       "iconBg": "blue-soft",
+      "flat": true,
       "items": [
         {
           "name": "计算机系统原理",
@@ -196,6 +197,7 @@
       "name": "未考科目",
       "icon": "📝",
       "iconBg": "green-soft",
+      "flat": true,
       "items": [
         {
           "name": "英语（二）",

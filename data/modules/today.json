@@ -9,6 +9,7 @@
       "name": "今日学习",
       "icon": "📋",
       "iconBg": "blue-soft",
+      "flat": true,
       "items": [
         {
           "name": "今日学习流",

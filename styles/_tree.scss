@@ -34,9 +34,9 @@
 .row-main:focus-visible { box-shadow: inset 0 0 0 2px var(--accent-blue); }
 
 .tree-chevron {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--light);
-  width: 14px;
+  width: 12px;
   text-align: center;
   transition: transform 0.2s var(--ease);
   flex-shrink: 0;
@@ -44,21 +44,7 @@
 
 .tree-node.collapsed > .tree-row .tree-chevron { transform: rotate(-90deg); }
 
-.tree-icon {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  line-height: 1;
-  flex-shrink: 0;
-  cursor: pointer;
-  transition: transform 0.15s var(--ease), background-color 0.15s ease;
-}
-
-.tree-icon:hover { transform: scale(1.12); }
+.tree-icon { display: none; }
 
 .tree-label {
   flex: 1;
@@ -68,28 +54,37 @@
   text-overflow: ellipsis;
 }
 
+/* L1：工作区/模块标题 */
 .tree-row.header .tree-label {
-  font-weight: 600;
-  font-size: 0.92rem;
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: var(--ink);
 }
 
+/* L2：科目/文件夹 */
 .tree-row.header.folder-item {
   margin-left: 0;
 }
 
 .tree-row.header.folder-item .tree-label {
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.76rem;
+  color: var(--muted);
 }
 
-.tree-row.leaf .tree-label { font-size: 0.88rem; }
+/* L3：叶子节点 */
+.tree-row.leaf .tree-label {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--light);
+}
 
 .tree-count {
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.62rem;
+  font-weight: 600;
   color: var(--muted);
   background: var(--surface);
-  padding: 2px 7px;
+  padding: 1px 6px;
   border-radius: 999px;
   border: 1px solid var(--rule);
   flex-shrink: 0;
@@ -148,49 +143,12 @@
 }
 
 /* 叶子节点 */
-.leaf-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: var(--light);
-  transition: transform 0.2s var(--ease), background 0.2s ease;
-}
+.leaf-dot { display: none; }
 
 .tree-row.leaf.active { background: var(--brand-soft); }
-.tree-row.leaf.active .leaf-dot { background: var(--brand); transform: scale(1.2); }
 .tree-row.leaf.active .tree-label { color: var(--brand-text); font-weight: 600; }
-.leaf-dot.public { background: var(--accent-cyan); }
-.leaf-dot.core { background: var(--accent-purple); }
-.leaf-dot.practice { background: var(--accent-coral); }
-.leaf-dot.task { background: var(--accent-green); }
 
-.leaf-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.leaf-code {
-  font-size: 0.68rem;
-  color: var(--light);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-
-.leaf-progress {
-  width: 26px;
-  height: 3px;
-  background: var(--rule);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.leaf-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
-  border-radius: 999px;
-}
+.leaf-meta { display: none; }
 
 /* 空状态提示 */
 .tree-empty {

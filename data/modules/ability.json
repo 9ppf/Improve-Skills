@@ -9,6 +9,7 @@
       "name": "总览",
       "icon": "📊",
       "iconBg": "blue-soft",
+      "flat": true,
       "items": [
         {
           "name": "学习进度驾驶舱",
