@@ -1118,6 +1118,69 @@ def check_no_tmp_directory() -> list[str]:
     return []
 
 
+def check_commit_acceptance_tag() -> list[str]:
+    """检查暂存区是否有变更，如果有，检查是否有验收通过标记。
+
+    通过 .git/COMMIT_EDITMSG 或环境变量获取提交信息，
+    如果提交信息中不包含 [验收通过] 标记，发出警告。
+    在 pre-commit 阶段还没有提交信息，所以只做提醒。
+    """
+    import subprocess as sp
+
+    root = SKILLS_DIR.parent.parent
+
+    # 检查是否有暂存的变更（如果没有就不需要检查）
+    git_exe = find_git_exe()
+    if not git_exe:
+        return []
+
+    try:
+        result = sp.run(
+            [git_exe, 'diff', '--cached', '--name-only'],
+            cwd=str(root), capture_output=True, text=True, encoding='utf-8', errors='replace',
+            timeout=10
+        )
+        staged_files = [f for f in result.stdout.strip().split('\n') if f.strip()]
+        if not staged_files:
+            return []  # 没有暂存的变更，跳过检查
+    except Exception:
+        return []
+
+    # 检查是否有提交信息文件（pre-commit 时可能有）
+    commit_msg_path = root / '.git' / 'COMMIT_EDITMSG'
+    has_tag = False
+    if commit_msg_path.exists():
+        msg = commit_msg_path.read_text(encoding='utf-8', errors='replace')
+        if '[验收通过]' in msg:
+            has_tag = True
+
+    if has_tag:
+        return []
+
+    # 有暂存变更但提交信息中没有验收通过标记
+    warnings = [
+        '提交信息中未检测到 [验收通过] 标记',
+        '  请按 documentation-versioning skill 流程：',
+        '  1. 完成后先给用户验收',
+        '  2. 用户回复"可以提交"后再提交',
+        '  3. 提交信息格式：<type>: <描述> [验收通过]',
+    ]
+    return warnings
+
+
+def find_git_exe():
+    """查找可用的 git 可执行文件"""
+    git_candidates = ['git', r'E:\Git\Git\cmd\git.exe']
+    import subprocess as sp
+    for candidate in git_candidates:
+        try:
+            sp.run([candidate, '--version'], capture_output=True, timeout=10)
+            return candidate
+        except (FileNotFoundError, sp.TimeoutExpired):
+            continue
+    return None
+
+
 def check_no_workbench_intermediate() -> list[str]:
     """Warn if Workbench/ contains intermediate product subdirectories."""
     root = SKILLS_DIR.parent.parent
@@ -1179,6 +1242,7 @@ def main() -> int:
     summary_sync_warnings = check_summary_version_sync()
     tmp_dir_warnings = check_no_tmp_directory()
     workbench_temp_warnings = check_no_workbench_intermediate()
+    acceptance_tag_warnings = check_commit_acceptance_tag()
 
     # 结构性变更检查：如果检测到结构性变更但未走确认流程，发出警告
     import importlib.util
@@ -1212,7 +1276,7 @@ def main() -> int:
         naming_warnings + generic_global_warnings +
         comment_warnings + backup_warnings + json_naming_warnings +
         date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings
+        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings + acceptance_tag_warnings
     )
     all_warnings = critical_warnings + advisory_warnings
 
