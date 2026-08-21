@@ -1053,15 +1053,19 @@ def check_changelog_coverage() -> list[str]:
 
 
 def check_summary_version_sync() -> list[str]:
-    """检查工作台搭建总结.md 的版本号是否与 CHANGELOG.md 最新版本一致。
+    """检查工作台搭建总结.md 和 文件说明.md 的版本号是否与 CHANGELOG.md 最新版本一致。
 
     工作台搭建总结.md 头部声明「当前文档版本：vX.X.X」，
+    文件说明.md 头部声明「最后更新：vX.X.X」，
     应与 CHANGELOG.md 的最新版本章节保持同步。
-    不一致时警告，防止该文档被遗漏更新。
+    不一致时警告，防止文档被遗漏更新。
     """
     root = SKILLS_DIR.parent.parent
     summary_path = root / '工作台搭建总结.md'
     changelog_path = root / 'CHANGELOG.md'
+    filedoc_path = root / '文件说明.md'
+
+    warnings = []
 
     if not summary_path.exists():
         return ['工作台搭建总结.md not found']
@@ -1071,24 +1075,61 @@ def check_summary_version_sync() -> list[str]:
     summary_content = summary_path.read_text(encoding='utf-8')
     changelog_content = changelog_path.read_text(encoding='utf-8')
 
-    # 从工作台搭建总结.md 提取当前文档版本
-    summary_match = re.search(r'当前文档版本[：:]\s*(v[\d.]+)', summary_content)
-    if not summary_match:
-        return ['工作台搭建总结.md 未找到「当前文档版本」标记']
-    summary_version = summary_match.group(1)
-
     # 从 CHANGELOG.md 提取最新版本号（第一个 ## vX.X.X）
     changelog_match = re.search(r'\n## (v[\d.]+)\b', changelog_content)
     if not changelog_match:
         return ['CHANGELOG.md 未找到版本章节']
     changelog_version = changelog_match.group(1)
 
-    if summary_version != changelog_version:
-        return [
-            f'工作台搭建总结.md 版本号 {summary_version} 与 CHANGELOG.md 最新版本 {changelog_version} 不一致'
-        ]
+    # 检查工作台搭建总结.md
+    summary_match = re.search(r'当前文档版本[：:]\s*(v[\d.]+)', summary_content)
+    if not summary_match:
+        warnings.append('工作台搭建总结.md 未找到「当前文档版本」标记')
+    else:
+        summary_version = summary_match.group(1)
+        if summary_version != changelog_version:
+            warnings.append(
+                f'工作台搭建总结.md 版本号 {summary_version} 与 CHANGELOG.md 最新版本 {changelog_version} 不一致'
+            )
 
+    # 检查文件说明.md
+    if filedoc_path.exists():
+        filedoc_content = filedoc_path.read_text(encoding='utf-8')
+        filedoc_match = re.search(r'最后更新[：:].*?v([\d.]+)', filedoc_content)
+        if not filedoc_match:
+            warnings.append('文件说明.md 未找到「最后更新」版本标记')
+        else:
+            filedoc_version = 'v' + filedoc_match.group(1)
+            if filedoc_version != changelog_version:
+                warnings.append(
+                    f'文件说明.md 版本号 {filedoc_version} 与 CHANGELOG.md 最新版本 {changelog_version} 不一致'
+                )
+
+    return warnings
+
+
+def check_no_tmp_directory() -> list[str]:
+    """Warn if tmp/ directory exists (should be temp/ only)."""
+    root = SKILLS_DIR.parent.parent
+    tmp_dir = root / 'tmp'
+    if tmp_dir.exists():
+        return ['tmp/ directory exists — use temp/ instead (per 版本控制规范.md)']
     return []
+
+
+def check_no_workbench_intermediate() -> list[str]:
+    """Warn if Workbench/ contains intermediate product subdirectories."""
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    if not workbench.exists():
+        return []
+    forbidden_names = {'中间产物', 'tmp', 'temp', 'demo', 'draft'}
+    warnings = []
+    for item in workbench.rglob('*'):
+        if item.is_dir() and item.name in forbidden_names:
+            rel = item.relative_to(root)
+            warnings.append(f'{rel} — Workbench 下禁止存放中间产物，应移至 temp/（per 版本控制规范.md）')
+    return warnings
 
 
 def validate(html: str) -> list[str]:
@@ -1133,11 +1174,14 @@ def main() -> int:
     dir_sync_warnings = check_directory_structure_sync()
     changelog_coverage_warnings = check_changelog_coverage()
     summary_sync_warnings = check_summary_version_sync()
+    tmp_dir_warnings = check_no_tmp_directory()
+    workbench_temp_warnings = check_no_workbench_intermediate()
     all_warnings = (
         doc_warnings + naming_warnings + generic_global_warnings +
         comment_warnings + backup_warnings + json_naming_warnings +
         date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings + summary_sync_warnings
+        dir_sync_warnings + changelog_coverage_warnings + summary_sync_warnings +
+        tmp_dir_warnings + workbench_temp_warnings
     )
     if all_warnings:
         print('Warnings:')
