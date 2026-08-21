@@ -1283,6 +1283,44 @@ def main() -> int:
     except Exception as e:
         temp_clean_warnings.append(f'temp 目录规范检查失败：{e}')
 
+    # CSS 规范检查（设计稿还原 Skill 配套）
+    css_standard_warnings = []
+    try:
+        css_spec = importlib.util.spec_from_file_location(
+            "check_css_standards",
+            os.path.join(SKILLS_DIR, 'check_css_standards.py')
+        )
+        css_module = importlib.util.module_from_spec(css_spec)
+        css_spec.loader.exec_module(css_module)
+        css_issues = css_module.check_css_standards()
+        if css_issues:
+            css_standard_warnings.append(f'CSS 规范检查发现 {len(css_issues)} 个问题：')
+            for c in css_issues[:5]:
+                css_standard_warnings.append(f'  - {c}')
+            if len(css_issues) > 5:
+                css_standard_warnings.append(f'  ... 还有 {len(css_issues)-5} 个')
+    except Exception as e:
+        css_standard_warnings.append(f'CSS 规范检查失败：{e}')
+
+    # 知识点优先级标注检查
+    priority_label_warnings = []
+    try:
+        pl_spec = importlib.util.spec_from_file_location(
+            "check_priority_labels",
+            os.path.join(SKILLS_DIR, 'check_priority_labels.py')
+        )
+        pl_module = importlib.util.module_from_spec(pl_spec)
+        pl_spec.loader.exec_module(pl_module)
+        pl_issues = pl_module.check_priority_labels()
+        if pl_issues:
+            priority_label_warnings.append(f'知识点优先级标注检查发现 {len(pl_issues)} 个问题：')
+            for p in pl_issues[:5]:
+                priority_label_warnings.append(f'  - {p}')
+            if len(pl_issues) > 5:
+                priority_label_warnings.append(f'  ... 还有 {len(pl_issues)-5} 个')
+    except Exception as e:
+        priority_label_warnings.append(f'知识点优先级标注检查失败：{e}')
+
     # 结构性变更检查：如果检测到结构性变更但未走确认流程，发出警告
     sc_spec = importlib.util.spec_from_file_location(
         "check_structural_change",
@@ -1314,7 +1352,7 @@ def main() -> int:
         naming_warnings + generic_global_warnings +
         comment_warnings + backup_warnings + json_naming_warnings +
         date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings + acceptance_tag_warnings + file_doc_warnings + temp_clean_warnings
+        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings + acceptance_tag_warnings + file_doc_warnings + temp_clean_warnings + css_standard_warnings + priority_label_warnings
     )
     all_warnings = critical_warnings + advisory_warnings
 
