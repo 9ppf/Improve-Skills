@@ -14,6 +14,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import importlib.util
 from pathlib import Path
 
 # 通用 class 黑名单：模块内容中不应直接使用这些过于宽泛的类名
@@ -1244,8 +1245,26 @@ def main() -> int:
     workbench_temp_warnings = check_no_workbench_intermediate()
     acceptance_tag_warnings = check_commit_acceptance_tag()
 
+    # 文件说明完整性检查
+    file_doc_warnings = []
+    try:
+        fd_spec = importlib.util.spec_from_file_location(
+            "check_file_doc_coverage",
+            os.path.join(SKILLS_DIR, 'check_file_doc_coverage.py')
+        )
+        fd_module = importlib.util.module_from_spec(fd_spec)
+        fd_spec.loader.exec_module(fd_module)
+        missing, found = fd_module.check_file_doc_coverage()
+        if missing:
+            file_doc_warnings.append(f'文件说明.md 缺少 {len(missing)} 个文件/目录的记录：')
+            for m in missing[:5]:
+                file_doc_warnings.append(f'  - {m}')
+            if len(missing) > 5:
+                file_doc_warnings.append(f'  ... 还有 {len(missing)-5} 个')
+    except Exception as e:
+        file_doc_warnings.append(f'文件说明完整性检查失败：{e}')
+
     # 结构性变更检查：如果检测到结构性变更但未走确认流程，发出警告
-    import importlib.util
     sc_spec = importlib.util.spec_from_file_location(
         "check_structural_change",
         os.path.join(SKILLS_DIR, 'check_structural_change.py')
@@ -1276,7 +1295,7 @@ def main() -> int:
         naming_warnings + generic_global_warnings +
         comment_warnings + backup_warnings + json_naming_warnings +
         date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings + acceptance_tag_warnings
+        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings + acceptance_tag_warnings + file_doc_warnings
     )
     all_warnings = critical_warnings + advisory_warnings
 
