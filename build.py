@@ -395,9 +395,11 @@ def _build_module_workspace(data: dict) -> tuple[str, str]:
             cat_items.append('              {\n                ' + ',\n                '.join(fields) + '\n              }')
 
         items_joined = ',\n'.join(cat_items) if cat_items else ''
+        cat_flat = 'flat: true,' if category.get('flat') else ''
         categories.append(
             f'''          {{
             name: '{cat_name}', icon: '{cat_icon}', iconBg: '{cat_icon_bg}',
+            {cat_flat}
             items: [
 {items_joined}
             ]
