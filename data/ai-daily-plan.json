@@ -11,7 +11,7 @@
           "chapter": "第1章",
           "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -19,7 +19,7 @@
           "chapter": "第1章",
           "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -35,7 +35,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -43,7 +43,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -105,7 +105,7 @@
           "chapter": "第1章",
           "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -113,7 +113,7 @@
           "chapter": "第1章",
           "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -129,7 +129,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -137,7 +137,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -199,7 +199,7 @@
           "chapter": "第1章",
           "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -207,7 +207,7 @@
           "chapter": "第1章",
           "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -223,7 +223,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -231,7 +231,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -293,7 +293,7 @@
           "chapter": "第1章",
           "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -301,7 +301,7 @@
           "chapter": "第1章",
           "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -317,7 +317,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -325,7 +325,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -387,7 +387,7 @@
           "chapter": "第1章",
           "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -395,7 +395,7 @@
           "chapter": "第1章",
           "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
           "hours": 0.93,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -411,7 +411,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -419,7 +419,7 @@
           "chapter": "第1章",
           "topic": "课后练习 30min",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -481,7 +481,7 @@
           "chapter": "第1章",
           "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -489,7 +489,7 @@
           "chapter": "第1章",
           "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",
@@ -543,7 +543,7 @@
           "chapter": "第1章",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "core2",
@@ -551,7 +551,7 @@
           "chapter": "第1章",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
-          "done": false
+          "done": true
         },
         {
           "tag": "key",

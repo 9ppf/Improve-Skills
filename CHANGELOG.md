@@ -4,6 +4,25 @@
 
 ---
 
+## v2.19.2
+
+**发布时间**：2026-08-21 23:25（北京时间）
+
+### 2026-08-21 — 知识框架样式1:1还原设计稿
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html` | 样式1:1对齐设计稿：header margin-bottom 1rem→0.8rem；section去除border；chapter-grid margin改为0.6rem bottom；ch-card hover阴影0.08→0.1；accent主色#2563eb→#3b82f6（12处）；progress/review/mastered边框色统一为设计稿值；kf-stats-mini/kf-pill/ss-stat gap 3px→4px；kf-subject-tag添加margin-left:6px |
+| `Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html` | accent主色#2563eb→#3b82f6（11处） |
+| `Workbench/自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html` | accent主色#2563eb→#3b82f6（11处） |
+| `data/modules/self-study.json` | 知识框架contentUrl版本号 v2.4.4→v2.4.5 |
+| `AGENT_HANDOFF.md` | 版本号更新至 v2.19.2，版本历史表新增 v2.19.2 条目，项目描述更新 |
+| `工作台搭建总结.md` | 版本号同步至 v2.19.2，新增 v2.19.2 版本记录 |
+| `文件说明.md` | 版本号同步至 v2.19.2 |
+| `Workbench/此刻便是春天.html` | 构建产物同步更新 |
+
+---
+
 ## v2.19.1
 
 **发布时间**：2026-08-21 18:43（北京时间）
