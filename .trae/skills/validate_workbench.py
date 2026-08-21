@@ -10,6 +10,7 @@ edit, run it to catch regressions such as:
 """
 
 import re
+import os
 import subprocess
 import sys
 import tempfile
@@ -1179,6 +1180,28 @@ def main() -> int:
     tmp_dir_warnings = check_no_tmp_directory()
     workbench_temp_warnings = check_no_workbench_intermediate()
 
+    # 结构性变更检查：如果检测到结构性变更但未走确认流程，发出警告
+    import importlib.util
+    sc_spec = importlib.util.spec_from_file_location(
+        "check_structural_change",
+        os.path.join(SKILLS_DIR, 'check_structural_change.py')
+    )
+    sc_module = importlib.util.module_from_spec(sc_spec)
+    structural_change_warnings = []
+    try:
+        sc_spec.loader.exec_module(sc_module)
+        changed = sc_module.get_changed_files()
+        is_structural, reasons = sc_module.detect_structural_changes(changed)
+        if is_structural:
+            has_approval, _ = sc_module.check_commit_message_has_confirmation()
+            if not has_approval:
+                structural_change_warnings.append('检测到结构性变更，但未检测到方案确认标记')
+                for reason in reasons[:3]:
+                    structural_change_warnings.append(f'  - {reason}')
+                structural_change_warnings.append('  请按 structural-change-workflow skill 流程先确认方案再执行')
+    except Exception as e:
+        structural_change_warnings.append(f'结构性变更检查失败：{e}')
+
     # Critical warnings: block commit in --strict mode
     critical_warnings = (
         doc_warnings + summary_sync_warnings +
@@ -1189,7 +1212,7 @@ def main() -> int:
         naming_warnings + generic_global_warnings +
         comment_warnings + backup_warnings + json_naming_warnings +
         date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings
+        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings
     )
     all_warnings = critical_warnings + advisory_warnings
 
