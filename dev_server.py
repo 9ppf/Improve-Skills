@@ -111,6 +111,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_save_mastery()
         elif self.path == '/api/quiz-bank':
             self._handle_save_quiz('bank')
+        elif self.path == '/api/quiz-records':
+            self._handle_append_quiz_record()
         elif self.path == '/api/quiz-ai':
             self._handle_save_quiz('ai')
         elif self.path == '/api/ai-plan':
@@ -142,12 +144,16 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_mastery()
         elif self.path.startswith('/api/quiz-bank'):
             self._handle_load_quiz('bank')
+        elif self.path.startswith('/api/quiz-records'):
+            self._handle_load_quiz('records')
         elif self.path.startswith('/api/quiz-ai'):
             self._handle_load_quiz('ai')
         elif self.path.startswith('/api/ai-plan'):
             self._handle_load_ai_plan()
         elif self.path.startswith('/api/ai-conv'):
             self._handle_load_ai_conv()
+        elif self.path.startswith('/api/study-plan'):
+            self._handle_load_study_plan()
         else:
             super().do_GET()
 
@@ -304,6 +310,40 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             return
         self._send_json(200, {'status': 'ok'})
 
+    def _handle_append_quiz_record(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject field'})
+            return
+        record = data.get('record')
+        if not record:
+            self._send_json(400, {'error': 'Missing record field'})
+            return
+        filename = f'quiz-records-{subject}.json'
+        path = ROOT / 'data' / filename
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                records = json.load(f)
+            if not isinstance(records, list):
+                records = []
+        except (FileNotFoundError, json.JSONDecodeError):
+            records = []
+        records.append(record)
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(records, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write: {e}'})
+            return
+        self._send_json(200, {'status': 'ok', 'total': len(records)})
+
     def _handle_load_ai_plan(self):
         path = ROOT / 'data' / 'ai-daily-plan.json'
         try:
@@ -330,8 +370,18 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             return
         self._send_json(200, {'status': 'ok'})
 
+    def _handle_load_study_plan(self):
+        path = ROOT / 'data' / 'study-plan.json'
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {}
+        self._send_json(200, data)
+
     def _handle_load_ai_conv(self):
         path = ROOT / 'data' / 'ai-conversation.json'
+
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 data = json.load(f)

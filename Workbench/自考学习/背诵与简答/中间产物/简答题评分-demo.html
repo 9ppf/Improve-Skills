@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>简答题评分 Demo</title>
+<style>
+  :root {
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --green: #10b981;
+    --green-light: #d1fae5;
+    --coral: #ef4444;
+    --coral-light: #fee2e2;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --bg-soft: #f9fafb;
+    --text: #1f2937;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #f0f9ff 0%, #fdf4ff 50%, #f0fdf4 100%);
+    min-height: 100vh;
+    color: var(--text);
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 760px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 1.5rem; }
+  .header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p { font-size: 0.85rem; color: var(--muted); }
+  .subject-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 1rem;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .subject-tab {
+    padding: 0.4rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .subject-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .subject-tab.active {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+  }
+  .stats-bar {
+    display: flex; gap: 0.8rem; margin-bottom: 1rem;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .stat-item {
+    background: #fff; padding: 0.5rem 1rem; border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-size: 0.8rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .stat-item .num { font-weight: 700; font-size: 1rem; }
+  .stat-item.mastered .num { color: var(--green); }
+  .stat-item.unsure .num { color: var(--amber); }
+  .stat-item.unknown .num { color: var(--coral); }
+  .practice-list { display: flex; flex-direction: column; gap: 1rem; }
+  .problem-card {
+    background: #fff; border-radius: 12px; padding: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--accent2);
+    transition: box-shadow 0.2s;
+  }
+  .problem-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .problem-card.mastered { border-left-color: var(--green); }
+  .problem-card.unsure { border-left-color: var(--amber); }
+  .problem-card.unknown { border-left-color: var(--coral); }
+  .problem-meta {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 0.6rem;
+  }
+  .problem-chapter { font-size: 0.75rem; color: var(--muted); }
+  .problem-badge {
+    display: inline-block; font-size: 0.7rem;
+    padding: 0.15rem 0.6rem; border-radius: 999px;
+    background: rgba(139,92,246,0.12); color: #7c3aed; font-weight: 600;
+  }
+  .problem-question {
+    font-size: 0.95rem; font-weight: 600;
+    line-height: 1.6; margin-bottom: 0.8rem;
+  }
+  .answer-textarea {
+    width: 100%; min-height: 80px; padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 0.88rem; font-family: inherit; line-height: 1.6;
+    resize: vertical; transition: border-color 0.2s;
+  }
+  .answer-textarea:focus { outline: none; border-color: var(--accent); }
+  .answer-textarea:disabled { background: var(--bg-soft); color: var(--muted); }
+  .submit-row {
+    display: flex; gap: 0.5rem; align-items: center;
+    margin-top: 0.6rem; justify-content: flex-end;
+  }
+  .submit-btn {
+    padding: 0.5rem 1.5rem; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #fff; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .submit-btn:hover { opacity: 0.9; }
+  .submit-btn.done { background: var(--muted); cursor: default; }
+  .symbol-toggle {
+    font-size: 0.75rem; color: var(--muted); cursor: pointer;
+    margin-top: 0.4rem; display: inline-block;
+  }
+  .symbol-palette {
+    display: flex; flex-wrap: wrap; gap: 0.3rem;
+    margin-top: 0.5rem; padding: 0.5rem;
+    background: var(--bg-soft); border-radius: 6px;
+  }
+  .symbol-btn {
+    padding: 0.2rem 0.5rem; border: 1px solid var(--border);
+    border-radius: 4px; background: #fff; font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .symbol-btn:hover { background: rgba(59,130,246,0.1); }
+
+  /* 评分结果区 */
+  .score-result {
+    margin-top: 0.8rem; display: none;
+  }
+  .score-result.show { display: block; }
+  .score-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.6rem; flex-wrap: wrap;
+  }
+  .score-badge {
+    padding: 0.3rem 0.8rem; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 700;
+  }
+  .score-badge.mastered { background: var(--green-light); color: var(--green); }
+  .score-badge.unsure { background: var(--amber-light); color: #92400e; }
+  .score-badge.unknown { background: var(--coral-light); color: var(--coral); }
+  .score-detail { font-size: 0.8rem; color: var(--muted); }
+
+  /* 要点对比列表 */
+  .points-list {
+    list-style: none; padding: 0; margin: 0 0 0.6rem 0;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .point-item {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border);
+    font-size: 0.82rem; line-height: 1.5;
+  }
+  .point-item:last-child { border-bottom: none; }
+  .point-item.hit { background: var(--green-light); }
+  .point-item.miss { background: #fff; }
+  .point-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .point-text { flex: 1; }
+  .point-label { font-weight: 600; }
+  .point-synonyms { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .point-synonyms .match { color: var(--green); font-weight: 600; }
+
+  /* 参考答案 */
+  .reference-answer {
+    margin-top: 0.6rem; padding: 0.7rem 0.8rem;
+    background: var(--bg-soft); border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 0.85rem; line-height: 1.6; display: none;
+  }
+  .reference-answer.show { display: block; }
+  .reference-label { font-weight: 700; font-size: 0.78rem; color: var(--accent); margin-bottom: 0.3rem; }
+
+  /* 自评覆盖 */
+  .self-eval {
+    margin-top: 0.8rem; padding: 0.6rem 0.8rem;
+    background: rgba(139,92,246,0.06); border-radius: 8px;
+    display: none;
+  }
+  .self-eval.show { display: block; }
+  .self-eval-label {
+    font-size: 0.78rem; color: var(--accent2);
+    margin-bottom: 0.4rem; font-weight: 600;
+  }
+  .self-eval-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .self-eval-btn {
+    padding: 0.35rem 0.8rem; border: 1.5px solid var(--border);
+    border-radius: 8px; background: #fff; font-size: 0.78rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .self-eval-btn:hover { border-color: var(--accent2); }
+  .self-eval-btn.selected {
+    background: var(--accent2); color: #fff; border-color: var(--accent2);
+  }
+
+  .empty-state {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--muted); font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📝 简答题评分</h1>
+    <p>要点匹配 + 分级评分 · 命中要点自动判分 · 支持自评覆盖</p>
+  </div>
+
+  <div class="subject-tabs">
+    <button class="subject-tab active" onclick="switchSubject('13015')">系统原理</button>
+    <button class="subject-tab" onclick="switchSubject('02324')">离散数学</button>
+    <button class="subject-tab" onclick="switchSubject('13003')">数据结构</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item mastered">🟢 已掌握 <span class="num" id="statMastered">0</span></div>
+    <div class="stat-item unsure">🟡 不熟练 <span class="num" id="statUnsure">0</span></div>
+    <div class="stat-item unknown">🔴 不会 <span class="num" id="statUnknown">0</span></div>
+  </div>
+
+  <div class="practice-list" id="practiceList"></div>
+</div>
+
+<script>
+  var QUIZ_SYMBOLS = ['×','÷','=','≠','≈','≤','≥','<','>','±','²','³','ⁿ','√','π','Σ','∞','%','①','②','③','④','⑤','α','β','γ','δ','θ','λ','μ','σ','φ','ψ','ω','Δ','∈','∪','∩','⊆','⊇','∅','∀','∃','→','↔','¬','∧','∨','⊕','⊢'];
+
+  var questions = {
+    '13015': [
+      {
+        id: 'sa1',
+        chapter: '第1章 计算机系统概述',
+        question: '简述冯·诺依曼计算机结构的核心特点。',
+        points: [
+          { point: '存储程序', synonyms: ['程序存储', 'stored program', '程序和数据一起存储', '指令和数据存入存储器', '程序存入存储器'], weight: 1 },
+          { point: '五大部件', synonyms: ['运算器控制器存储器输入输出', '五大部件', '5个部件', '运算器 控制器 存储器 输入 输出', '运算器和控制器和存储器'], weight: 1 },
+          { point: '二进制表示', synonyms: ['二进制', '指令用二进制', '0和1表示', '数据和指令都用二进制', '二进制编码'], weight: 1 },
+          { point: '顺序执行', synonyms: ['顺序执行', '按地址顺序执行', '逐条执行指令', '串行执行'], weight: 1 }
+        ],
+        referenceAnswer: '冯·诺依曼结构的核心特点是：①存储程序，程序和数据以同等地位存入存储器；②计算机由运算器、控制器、存储器、输入设备和输出设备五大部件组成；③指令和数据均用二进制表示；④指令按地址顺序执行。',
+        passThreshold: 3
+      },
+      {
+        id: 'sa2',
+        chapter: '第3章 存储系统',
+        question: '简述Cache的工作原理及其加速比计算的基本思路。',
+        points: [
+          { point: '局部性原理', synonyms: ['局部性', '空间局部性', '时间局部性', '程序局部性', '局部性原理'], weight: 1 },
+          { point: '命中与缺失', synonyms: ['命中', '缺失', 'hit', 'miss', '命中率和缺失率'], weight: 1 },
+          { point: '平均访问时间公式', synonyms: ['平均访问时间', 'h×tc+(1-h)×tm', '命中时间×命中率+缺失时间×缺失率', 'AMAT'], weight: 1 },
+          { point: '加速比', synonyms: ['加速比', 'speedup', '不命中率倒数', 'tm/平均访问时间'], weight: 1 }
+        ],
+        referenceAnswer: 'Cache基于程序局部性原理（时间局部性和空间局部性），将近期常用的数据块从主存复制到高速Cache中。CPU访问时先查Cache，命中则直接读取，未命中则从主存取数据并调入Cache。平均访问时间 = h×tc + (1-h)×tm，其中h为命中率。加速比 = tm / 平均访问时间。',
+        passThreshold: 2
+      },
+      {
+        id: 'sa3',
+        chapter: '第4章 指令系统',
+        question: '简述指令流水线的基本原理及影响流水线效率的主要因素。',
+        points: [
+          { point: '并行执行', synonyms: ['并行', '重叠执行', '同时执行多条指令', '流水线并行'], weight: 1 },
+          { point: '分级取指译码执行', synonyms: ['取指译码执行', 'IF ID EX MEM WB', '流水段', '流水线分级'], weight: 1 },
+          { point: '数据冲突', synonyms: ['数据冲突', '数据相关', '数据冒险', 'data hazard'], weight: 1 },
+          { point: '控制冲突', synonyms: ['控制冲突', '分支冲突', '控制冒险', 'control hazard'], weight: 1 },
+          { point: '结构冲突', synonyms: ['结构冲突', '资源冲突', '结构冒险', 'structural hazard'], weight: 1 }
+        ],
+        referenceAnswer: '指令流水线将指令执行过程分为多个阶段（如取指IF、译码ID、执行EX、访存MEM、写回WB），使多条指令在不同阶段并行执行，提高吞吐率。影响效率的主要因素有三类冲突：数据冲突（数据相关）、控制冲突（分支指令）和结构冲突（资源竞争）。',
+        passThreshold: 3
+      }
+    ],
+    '02324': [
+      {
+        id: 'sa4',
+        chapter: '第1章 命题逻辑',
+        question: '简述命题公式的主析取范式和主合取范式的区别及求法。',
+        points: [
+          { point: '主析取范式定义', synonyms: ['析取', '主析取', '极大项', '析取范式', 'DNF'], weight: 1 },
+          { point: '主合取范式定义', synonyms: ['合取', '主合取', '极小项', '合取范式', 'CNF'], weight: 1 },
+          { point: '真值表法', synonyms: ['真值表', '真值表法', '列真值表'], weight: 1 },
+          { point: '等值演算法', synonyms: ['等值演算', '等价变换', '分配律德摩根律', '等值演算法'], weight: 1 }
+        ],
+        referenceAnswer: '主析取范式是命题公式的所有极小项的析取，主合取范式是所有极大项的合取。求法有两种：①真值表法——真值为1的行对应极小项取析取得主析取范式，真值为0的行对应极大项取合取得主合取范式；②等值演算法——利用等价律（分配律、德摩根律等）将公式化为标准形式。',
+        passThreshold: 2
+      },
+      {
+        id: 'sa5',
+        chapter: '第2章 集合论',
+        question: '简述集合的五大基本运算及其含义。',
+        points: [
+          { point: '并集', synonyms: ['并', 'A∪B', 'union', '并集'], weight: 1 },
+          { point: '交集', synonyms: ['交', 'A∩B', 'intersection', '交集'], weight: 1 },
+          { point: '差集', synonyms: ['差', 'A-B', '差集', '相对补'], weight: 1 },
+          { point: '补集', synonyms: ['补', 'A\'', '补集', '绝对补', '~A'], weight: 1 },
+          { point: '对称差', synonyms: ['对称差', 'A△B', 'A⊕B', 'symmetric difference'], weight: 1 }
+        ],
+        referenceAnswer: '集合的五大基本运算：①并集 A∪B = {x | x∈A 或 x∈B}；②交集 A∩B = {x | x∈A 且 x∈B}；③差集 A-B = {x | x∈A 且 x∉B}；④补集 A\' = E-A（E为全集）；⑤对称差 A△B = (A-B)∪(B-A) = (A∪B)-(A∩B)。',
+        passThreshold: 3
+      },
+      {
+        id: 'sa6',
+        chapter: '第4章 图论',
+        question: '简述树的定义及其主要性质。',
+        points: [
+          { point: '连通无回路', synonyms: ['连通且无回路', '连通无环', '无回路连通图', '连通无圈'], weight: 1 },
+          { point: 'n个顶点n-1条边', synonyms: ['n-1条边', '顶点数减1', 'e=n-1', 'n个点n-1条边'], weight: 1 },
+          { point: '任意两点唯一路径', synonyms: ['唯一路径', '恰一条路径', '两点间有且仅有一条路径'], weight: 1 },
+          { point: '等价定义', synonyms: ['等价', '六种等价定义', '充要条件', '等价定义'], weight: 1 }
+        ],
+        referenceAnswer: '树是连通且无回路的无向图。主要性质：①n个顶点的树恰有n-1条边；②树中任意两个顶点之间存在唯一路径；③在树中任意去掉一条边则不连通；④在树中任意两顶点间加一条边则形成回路；⑤树是无回路且边数最多的连通图，也是连通且边数最少的无回路图。',
+        passThreshold: 2
+      }
+    ],
+    '13003': [
+      {
+        id: 'sa7',
+        chapter: '第3章 栈和队列',
+        question: '简述栈和队列的区别及其各自的应用场景。',
+        points: [
+          { point: '栈后进先出', synonyms: ['后进先出', 'LIFO', '栈LIFO', '后进先出LIFO'], weight: 1 },
+          { point: '队列先进先出', synonyms: ['先进先出', 'FIFO', '队列FIFO', '先进先出FIFO'], weight: 1 },
+          { point: '栈的应用', synonyms: ['函数调用', '递归', '表达式求值', '括号匹配', '回溯', '栈的应用'], weight: 1 },
+          { point: '队列的应用', synonyms: ['缓冲', '排队', '任务调度', '广度优先搜索', 'BFS', '消息队列', '队列的应用'], weight: 1 }
+        ],
+        referenceAnswer: '栈是后进先出（LIFO）的线性表，只能在栈顶进行插入和删除，常用于函数调用管理、递归、表达式求值、括号匹配和回溯算法。队列是先进先出（FIFO）的线性表，在队尾插入、队头删除，常用于缓冲区管理、任务调度、广度优先搜索（BFS）和消息队列。',
+        passThreshold: 3
+      },
+      {
+        id: 'sa8',
+        chapter: '第5章 树',
+        question: '简述二叉树的主要性质（三大特征）。',
+        points: [
+          { point: '第i层最多2^(i-1)', synonyms: ['2的i-1次方', '2^(i-1)', '第i层2^i-1', '每层最多节点数'], weight: 1 },
+          { point: '深度k最多2^k-1', synonyms: ['2的k次方减1', '2^k-1', '深度k最多2^k-1', '总结点数上限'], weight: 1 },
+          { point: '叶子数与度为2节点关系', synonyms: ['n0=n2+1', '叶子等于度2加1', '叶子节点数=度2节点数+1', 'n0等于n2加1'], weight: 1 }
+        ],
+        referenceAnswer: '二叉树的三大性质：①第i层上最多有2^(i-1)个节点（i≥1）；②深度为k的二叉树最多有2^k-1个节点（k≥1）；③对于任意二叉树，若度为0的节点数为n0，度为2的节点数为n2，则n0 = n2 + 1。',
+        passThreshold: 2
+      },
+      {
+        id: 'sa9',
+        chapter: '第8章 排序',
+        question: '比较快速排序和归并排序的异同点。',
+        points: [
+          { point: '快排不稳定归并稳定', synonyms: ['快速排序不稳定', '归并排序稳定', '稳定性不同', '快排不稳定', '归并稳定'], weight: 1 },
+          { point: '平均时间复杂度', synonyms: ['O(nlogn)', 'nlogn', '都是nlogn', '平均O(nlogn)', '时间复杂度相同'], weight: 1 },
+          { point: '空间复杂度不同', synonyms: ['快排O(logn)', '归并O(n)', '空间复杂度不同', '快排空间小', '归并需要额外空间'], weight: 1 },
+          { point: '分治思想', synonyms: ['分治', '分治法', 'divide and conquer', '都是分治'], weight: 1 }
+        ],
+        referenceAnswer: '相同点：两者都基于分治思想，平均时间复杂度均为O(nlogn)。不同点：①稳定性——快速排序不稳定，归并排序稳定；②空间复杂度——快速排序平均O(logn)（递归栈），归并排序O(n)（需要辅助数组）；③快排是原地排序，归并排序需要额外空间；④最坏情况——快排退化为O(n²)，归并始终O(nlogn)。',
+        passThreshold: 2
+      }
+    ]
+  };
+
+  var currentSubject = '13015';
+  var results = {}; // {id: {score, total, level, hits: [], selfOverride: null}}
+
+  function switchSubject(code) {
+    currentSubject = code;
+    document.querySelectorAll('.subject-tab').forEach(function(btn, i) {
+      btn.classList.toggle('active', ['13015','02324','13003'][i] === code);
+    });
+    results = {};
+    updateStats();
+    render();
+  }
+
+  function normalize(str) {
+    if (!str) return '';
+    return str.replace(/\s+/g, '').replace(/[，。、；：""''（）\(\)\[\]\{\}]/g, '').toLowerCase();
+  }
+
+  function matchPoints(userAnswer, points) {
+    var normUser = normalize(userAnswer);
+    var hits = [];
+    var totalWeight = 0;
+    var hitWeight = 0;
+
+    points.forEach(function(p) {
+      totalWeight += p.weight;
+      var allTerms = [p.point].concat(p.synonyms || []);
+      var matched = false;
+      var matchedTerm = null;
+
+      for (var i = 0; i < allTerms.length; i++) {
+        var normTerm = normalize(allTerms[i]);
+        if (!normTerm) continue;
+        if (normUser.indexOf(normTerm) >= 0) {
+          matched = true;
+          matchedTerm = allTerms[i];
+          break;
+        }
+      }
+
+      hits.push({
+        point: p.point,
+        synonyms: p.synonyms || [],
+        matched: matched,
+        matchedTerm: matchedTerm,
+        weight: p.weight
+      });
+      if (matched) hitWeight += p.weight;
+    });
+
+    return { hits: hits, score: hitWeight, total: totalWeight };
+  }
+
+  function getLevel(score, total, passThreshold) {
+    if (score >= passThreshold) return 'mastered';
+    if (score >= Math.ceil(passThreshold * 0.5)) return 'unsure';
+    return 'unknown';
+  }
+
+  function levelText(level) {
+    if (level === 'mastered') return { text: '已掌握', icon: '🟢', class: 'mastered' };
+    if (level === 'unsure') return { text: '不熟练', icon: '🟡', class: 'unsure' };
+    return { text: '不会', icon: '🔴', class: 'unknown' };
+  }
+
+  function submitAnswer(qId) {
+    if (results[qId]) return;
+    var list = questions[currentSubject];
+    var q = list.find(function(x) { return x.id === qId; });
+    if (!q) return;
+    var textarea = document.getElementById('input-' + qId);
+    if (!textarea) return;
+    var userAns = textarea.value.trim();
+    if (!userAns) {
+      alert('请先输入答案');
+      return;
+    }
+
+    var match = matchPoints(userAns, q.points);
+    var level = getLevel(match.score, match.total, q.passThreshold);
+    results[qId] = {
+      score: match.score,
+      total: match.total,
+      level: level,
+      hits: match.hits,
+      selfOverride: null
+    };
+    updateStats();
+    render();
+  }
+
+  function selfEval(qId, level) {
+    if (!results[qId]) return;
+    results[qId].selfOverride = level;
+    updateStats();
+    render();
+  }
+
+  function getCurrentLevel(qId) {
+    var r = results[qId];
+    if (!r) return null;
+    return r.selfOverride || r.level;
+  }
+
+  function updateStats() {
+    var ids = Object.keys(results);
+    var mastered = 0, unsure = 0, unknown = 0;
+    ids.forEach(function(id) {
+      var lv = getCurrentLevel(id);
+      if (lv === 'mastered') mastered++;
+      else if (lv === 'unsure') unsure++;
+      else unknown++;
+    });
+    document.getElementById('statMastered').textContent = mastered;
+    document.getElementById('statUnsure').textContent = unsure;
+    document.getElementById('statUnknown').textContent = unknown;
+  }
+
+  function render() {
+    var list = document.getElementById('practiceList');
+    var cards = questions[currentSubject] || [];
+    if (cards.length === 0) {
+      list.innerHTML = '<div class="empty-state">该科目暂无简答题</div>';
+      return;
+    }
+
+    list.innerHTML = cards.map(function(q) {
+      var r = results[q.id];
+      var level = r ? getCurrentLevel(q.id) : null;
+      var lt = level ? levelText(level) : null;
+      var cardClass = level ? lt.class : '';
+      var btnText = r ? '已完成' : '提交';
+      var btnDone = r ? 'done' : '';
+
+      // 评分结果
+      var scoreHTML = '';
+      if (r) {
+        var overrideLevel = r.selfOverride || r.level;
+        var olt = levelText(overrideLevel);
+
+        // 要点列表
+        var pointsHTML = r.hits.map(function(h) {
+          var icon = h.matched ? '✅' : '⬜';
+          var cls = h.matched ? 'hit' : 'miss';
+          var synHTML = h.synonyms.length > 0
+            ? '<div class="point-synonyms">同义词：' + h.synonyms.map(function(s) {
+                return '<span class="' + (h.matchedTerm === s ? 'match' : '') + '">' + s + '</span>';
+              }).join('、') + '</div>'
+            : '';
+          return '<li class="point-item ' + cls + '">' +
+            '<span class="point-icon">' + icon + '</span>' +
+            '<div class="point-text"><span class="point-label">' + h.point + '</span>' +
+            (h.matched && h.matchedTerm && h.matchedTerm !== h.point ? ' <span style="color:var(--green);font-size:0.75rem;">（命中：' + h.matchedTerm + '）</span>' : '') +
+            synHTML + '</div></li>';
+        }).join('');
+
+        scoreHTML = '<div class="score-result show">' +
+          '<div class="score-header">' +
+            '<span class="score-badge ' + olt.class + '">' + olt.icon + ' ' + olt.text + '</span>' +
+            '<span class="score-detail">得分 ' + r.score + '/' + r.total +
+            (r.selfOverride ? '（自评覆盖：系统评为' + levelText(r.level).text + '）' : '') + '</span>' +
+          '</div>' +
+          '<ul class="points-list">' + pointsHTML + '</ul>' +
+          '<div class="reference-answer show"><div class="reference-label">📖 参考答案</div>' + q.referenceAnswer + '</div>' +
+          '<div class="self-eval show"><div class="self-eval-label">系统评分准确吗？你可以自评覆盖：</div>' +
+            '<div class="self-eval-buttons">' +
+              '<button class="self-eval-btn ' + (overrideLevel === 'mastered' ? 'selected' : '') + '" onclick="selfEval(\'' + q.id + '\',\'mastered\')">🟢 完全掌握</button>' +
+              '<button class="self-eval-btn ' + (overrideLevel === 'unsure' ? 'selected' : '') + '" onclick="selfEval(\'' + q.id + '\',\'unsure\')">🟡 部分掌握</button>' +
+              '<button class="self-eval-btn ' + (overrideLevel === 'unknown' ? 'selected' : '') + '" onclick="selfEval(\'' + q.id + '\',\'unknown\')">🔴 不会</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      return '<div class="problem-card ' + cardClass + '" id="card-' + q.id + '">' +
+        '<div class="problem-meta">' +
+          '<span class="problem-chapter">' + q.chapter + '</span>' +
+          '<span class="problem-badge">📝 简答题</span>' +
+        '</div>' +
+        '<div class="problem-question">' + q.question + '</div>' +
+        '<textarea class="answer-textarea" id="input-' + q.id + '" placeholder="输入你的答案..."' + (r ? ' disabled' : '') + '></textarea>' +
+        '<span class="symbol-toggle" onclick="toggleSymbols(\'' + q.id + '\')">🔣 特殊符号</span>' +
+        '<div class="symbol-palette" id="sym-' + q.id + '" style="display:none;">' +
+          QUIZ_SYMBOLS.map(function(s) {
+            return '<button type="button" class="symbol-btn" onclick="insertSymbol(\'' + q.id + '\',\'' + s + '\')">' + s + '</button>';
+          }).join('') +
+        '</div>' +
+        '<div class="submit-row">' +
+          '<button class="submit-btn ' + btnDone + '" onclick="submitAnswer(\'' + q.id + '\')"' + (r ? ' disabled' : '') + '>' + btnText + '</button>' +
+        '</div>' +
+        scoreHTML +
+      '</div>';
+    }).join('');
+  }
+
+  function toggleSymbols(qId) {
+    var pal = document.getElementById('sym-' + qId);
+    if (!pal) return;
+    pal.style.display = pal.style.display === 'none' ? '' : 'none';
+  }
+
+  function insertSymbol(qId, sym) {
+    var ta = document.getElementById('input-' + qId);
+    if (!ta || ta.disabled) return;
+    var start = ta.selectionStart || 0;
+    var end = ta.selectionEnd || 0;
+    var val = ta.value;
+    ta.value = val.substring(0, start) + sym + val.substring(end);
+    ta.selectionStart = ta.selectionEnd = start + sym.length;
+    ta.focus();
+  }
+
+  render();
+</script>
+</body>
+</html>

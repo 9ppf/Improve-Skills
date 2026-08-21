@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>计算练习 Demo</title>
+<style>
+  :root {
+    --primary: #3b82f6;
+    --primary-light: #dbeafe;
+    --green: #10b981;
+    --green-light: #d1fae5;
+    --coral: #ef4444;
+    --coral-light: #fee2e2;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --purple: #8b5cf6;
+    --purple-light: #ede9fe;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --bg-soft: #f9fafb;
+    --text: #1f2937;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #f0f9ff 0%, #fdf4ff 50%, #f0fdf4 100%);
+    min-height: 100vh;
+    color: var(--text);
+    padding: 2rem 1rem;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .subject-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .subject-tab {
+    padding: 0.4rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .subject-tab:hover { border-color: var(--primary); color: var(--primary); }
+  .subject-tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .stats-bar {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    background: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .stat-item .num { font-weight: 700; font-size: 1rem; }
+  .stat-item.correct .num { color: var(--green); }
+  .stat-item.wrong .num { color: var(--coral); }
+  .stat-item.accuracy .num { color: var(--primary); }
+  .practice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .problem-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--purple);
+    transition: box-shadow 0.2s;
+  }
+  .problem-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .problem-card.correct { border-left-color: var(--green); }
+  .problem-card.wrong { border-left-color: var(--coral); }
+  .problem-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+  }
+  .problem-chapter {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .problem-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: var(--purple-light);
+    color: var(--purple);
+    font-weight: 600;
+  }
+  .problem-question {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+  }
+  .problem-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .answer-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  .answer-input {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .answer-input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .submit-btn {
+    padding: 0 1.2rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), #6366f1);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .submit-btn:hover { opacity: 0.9; }
+  .submit-btn.done { background: var(--muted); cursor: default; }
+  .symbol-toggle {
+    font-size: 0.75rem;
+    color: var(--muted);
+    cursor: pointer;
+    margin-top: 0.4rem;
+    display: inline-block;
+  }
+  .symbol-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--bg-soft);
+    border-radius: 6px;
+  }
+  .symbol-btn {
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #fff;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .symbol-btn:hover { background: var(--primary-light); }
+  .feedback {
+    margin-top: 0.8rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .feedback.wrong {
+    background: var(--coral-light);
+    color: var(--coral);
+  }
+  .solution {
+    margin-top: 0.8rem;
+    padding: 0.8rem;
+    background: var(--bg-soft);
+    border-radius: 8px;
+    display: none;
+  }
+  .solution.show { display: block; }
+  .formula-box {
+    background: var(--green-light);
+    border-left: 3px solid var(--green);
+    padding: 0.5rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-bottom: 0.6rem;
+  }
+  .steps-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.6rem 0;
+  }
+  .steps-list li {
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+  .steps-list li:last-child { border-bottom: none; }
+  .final-answer {
+    background: var(--amber-light);
+    padding: 0.5rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #92400e;
+  }
+  .view-solution-link {
+    font-size: 0.75rem;
+    color: var(--primary);
+    cursor: pointer;
+    margin-top: 0.5rem;
+    text-decoration: underline;
+    display: inline-block;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🧮 计算练习</h1>
+    <p>刷题模式 · 答对自动升级掌握度 · 答错自动标记薄弱点</p>
+  </div>
+
+  <div class="subject-tabs">
+    <button class="subject-tab active" onclick="switchSubject('13015')">系统原理</button>
+    <button class="subject-tab" onclick="switchSubject('02324')">离散数学</button>
+    <button class="subject-tab" onclick="switchSubject('13003')">数据结构</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item correct">✅ 正确 <span class="num" id="statCorrect">0</span></div>
+    <div class="stat-item wrong">❌ 错误 <span class="num" id="statWrong">0</span></div>
+    <div class="stat-item accuracy">📊 正确率 <span class="num" id="statAccuracy">0%</span></div>
+  </div>
+
+  <div class="practice-list" id="practiceList"></div>
+</div>
+
+<script>
+  const QUIZ_SYMBOLS = ['×','÷','=','≠','≈','≤','≥','<','>','±','²','³','ⁿ','√','∛','π','Σ','∫','∞','%','‰','°','′','″','①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','α','β','γ','δ','ε','θ','λ','μ','σ','φ','ψ','ω','Δ'];
+
+  let currentSubject = '13015';
+  let allCards = {};
+  let results = {}; // {cardId: true/false}
+
+  function loadCards() {
+    const codes = ['13015', '02324', '13003'];
+    const dataBase = '/data';
+    Promise.all(codes.map(function(code) {
+      return fetch(dataBase + '/recite-cards-' + code + '.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          allCards[code] = data.filter(function(c) { return c.cardType === 'calculation'; });
+        })
+        .catch(function() { allCards[code] = []; });
+    })).then(function() {
+      render();
+    });
+  }
+
+  function switchSubject(code) {
+    currentSubject = code;
+    document.querySelectorAll('.subject-tab').forEach(function(btn, i) {
+      btn.classList.toggle('active', ['13015','02324','13003'][i] === code);
+    });
+    results = {};
+    updateStats();
+    render();
+  }
+
+  function render() {
+    const list = document.getElementById('practiceList');
+    const cards = allCards[currentSubject] || [];
+    if (cards.length === 0) {
+      list.innerHTML = '<div class="empty-state">该科目暂无计算卡</div>';
+      return;
+    }
+    list.innerHTML = cards.map(function(c, i) {
+      const result = results[c.id];
+      const cardClass = result === true ? 'correct' : result === false ? 'wrong' : '';
+      const feedbackClass = result === true ? 'correct' : result === false ? 'wrong' : '';
+      const feedbackText = result === true ? '✅ 回答正确！' : result === false ? '❌ 答案不正确' : '';
+      const btnText = result !== undefined ? '已完成' : '提交';
+      const btnDone = result !== undefined ? 'done' : '';
+      const showSolution = result !== undefined;
+      const solutionClass = showSolution ? 'show' : '';
+
+      let stepsHTML = '';
+      if (c.steps && c.steps.length) {
+        stepsHTML = '<ul class="steps-list">';
+        c.steps.forEach(function(s, si) {
+          stepsHTML += '<li><b>步骤' + (si+1) + '：</b>' + s + '</li>';
+        });
+        stepsHTML += '</ul>';
+      }
+
+      return '<div class="problem-card ' + cardClass + '" id="card-' + c.id + '">' +
+        '<div class="problem-meta">' +
+        '<span class="problem-chapter">' + (c.chapter || '') + '</span>' +
+        '<span class="problem-badge">🧮 计算题</span>' +
+        '</div>' +
+        '<div class="problem-question">' + c.question + '</div>' +
+        (c.hint ? '<div class="problem-hint">💡 提示：' + c.hint + '</div>' : '') +
+        '<div class="answer-row">' +
+        '<input type="text" class="answer-input" id="input-' + c.id + '" placeholder="输入你的答案..."' + (result !== undefined ? ' disabled' : '') + ' onkeydown="if(event.key===\'Enter\'){submitAnswer(' + c.id + ')}">' +
+        '<button class="submit-btn ' + btnDone + '" onclick="submitAnswer(' + c.id + ')"' + (result !== undefined ? ' disabled' : '') + '>' + btnText + '</button>' +
+        '</div>' +
+        '<span class="symbol-toggle" onclick="toggleSymbols(' + c.id + ')">🔣 特殊符号</span>' +
+        '<div class="symbol-palette" id="sym-' + c.id + '" style="display:none;">' +
+        QUIZ_SYMBOLS.map(function(s) {
+          return '<button type="button" class="symbol-btn" onclick="insertSymbol(' + c.id + ',\'' + s + '\')">' + s + '</button>';
+        }).join('') +
+        '</div>' +
+        '<div class="feedback ' + feedbackClass + ' ' + (result !== undefined ? 'show' : '') + '" id="fb-' + c.id + '">' + feedbackText + '</div>' +
+        (result === false ? '<span class="view-solution-link" onclick="toggleSolution(' + c.id + ')">查看解析 →</span>' : '') +
+        '<div class="solution ' + solutionClass + '" id="sol-' + c.id + '">' +
+        (c.formula ? '<div class="formula-box"><b>公式：</b>' + c.formula + '</div>' : '') +
+        stepsHTML +
+        (c.answer ? '<div class="final-answer">最终答案：' + c.answer + '</div>' : '') +
+        '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function submitAnswer(cardId) {
+    if (results[cardId] !== undefined) return;
+    const input = document.getElementById('input-' + cardId);
+    const cards = allCards[currentSubject];
+    const c = cards.find(function(x) { return x.id === cardId; });
+    if (!c || !input) return;
+    const userAns = input.value.trim();
+    if (!userAns) {
+      const fb = document.getElementById('fb-' + cardId);
+      fb.className = 'feedback show wrong';
+      fb.textContent = '请先输入答案';
+      return;
+    }
+    const correct = c.answer || '';
+    const aliases = c.answerAliases || [];
+    const allAnswers = [correct].concat(aliases);
+    const isCorrect = allAnswers.some(function(a) {
+      if (!a) return false;
+      const normA = a.replace(/\s+/g, '').toLowerCase();
+      const normU = userAns.replace(/\s+/g, '').toLowerCase();
+      return normA === normU || normA.indexOf(normU) >= 0 || normU.indexOf(normA) >= 0;
+    });
+    results[cardId] = isCorrect;
+    updateStats();
+    render();
+  }
+
+  function updateStats() {
+    const vals = Object.values(results);
+    const correct = vals.filter(function(v) { return v === true; }).length;
+    const wrong = vals.filter(function(v) { return v === false; }).length;
+    const total = vals.length;
+    const acc = total > 0 ? Math.round(correct / total * 100) : 0;
+    document.getElementById('statCorrect').textContent = correct;
+    document.getElementById('wrong') ? null : null;
+    document.getElementById('statWrong').textContent = wrong;
+    document.getElementById('statAccuracy').textContent = acc + '%';
+  }
+
+  function toggleSymbols(cardId) {
+    const pal = document.getElementById('sym-' + cardId);
+    if (!pal) return;
+    pal.style.display = pal.style.display === 'none' ? '' : 'none';
+  }
+
+  function insertSymbol(cardId, sym) {
+    const input = document.getElementById('input-' + cardId);
+    if (!input) return;
+    const start = input.selectionStart || 0;
+    const end = input.selectionEnd || 0;
+    const val = input.value;
+    input.value = val.substring(0, start) + sym + val.substring(end);
+    input.selectionStart = input.selectionEnd = start + sym.length;
+    input.focus();
+  }
+
+  function toggleSolution(cardId) {
+    const sol = document.getElementById('sol-' + cardId);
+    if (!sol) return;
+    sol.classList.toggle('show');
+  }
+
+  loadCards();
+</script>
+</body>
+</html>

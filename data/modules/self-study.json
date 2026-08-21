@@ -49,6 +49,16 @@
               "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.17.0"
             },
             {
+              "name": "练习测验",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "待填充",
+              "current": "5种题型 · 自动评分",
+              "tasks": [],
+              "review": "计算机系统原理练习测验，含选择/填空/计算/简答/论述题。",
+              "contentUrl": "自考学习/背诵与简答/练习测验.html?subject=13015&v=2.18.4"
+            },
+            {
               "name": "复盘总结",
               "type": "self-study",
               "stage": "待填充",
@@ -99,6 +109,16 @@
               "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.17.0"
             },
             {
+              "name": "练习测验",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "待填充",
+              "current": "4种题型 · 自动评分",
+              "tasks": [],
+              "review": "离散数学练习测验，含选择/填空/计算/证明题。",
+              "contentUrl": "自考学习/背诵与简答/练习测验.html?subject=02324&v=2.18.4"
+            },
+            {
               "name": "复盘总结",
               "type": "self-study",
               "stage": "待填充",
@@ -147,6 +167,16 @@
               "tasks": [],
               "review": "数据结构与算法核心概念与简答题背诵。",
               "contentUrl": "自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.17.0"
+            },
+            {
+              "name": "练习测验",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "待填充",
+              "current": "5种题型 · 自动评分",
+              "tasks": [],
+              "review": "数据结构与算法练习测验，含选择/填空/计算/简答/论述题。",
+              "contentUrl": "自考学习/背诵与简答/练习测验.html?subject=13003&v=2.18.4"
             },
             {
               "name": "复盘总结",

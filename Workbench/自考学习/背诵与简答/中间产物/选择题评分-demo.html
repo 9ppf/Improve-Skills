@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>选择题评分 Demo</title>
+<style>
+  :root {
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --green: #10b981;
+    --green-light: #d1fae5;
+    --coral: #ef4444;
+    --coral-light: #fee2e2;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --bg-soft: #f9fafb;
+    --text: #1f2937;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #f0f9ff 0%, #fdf4ff 50%, #f0fdf4 100%);
+    min-height: 100vh;
+    color: var(--text);
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 760px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 1.5rem; }
+  .header h1 {
+    font-size: 1.5rem; margin-bottom: 0.3rem;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header p { font-size: 0.85rem; color: var(--muted); }
+
+  /* 科目 + 题型双筛选 */
+  .filter-row {
+    display: flex; gap: 0.5rem; margin-bottom: 1rem;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .subject-tab, .type-tab {
+    padding: 0.4rem 1rem; border: 1.5px solid var(--border);
+    border-radius: 999px; background: #fff; font-size: 0.85rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .subject-tab:hover, .type-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .subject-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .type-tab.active { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+
+  .stats-bar {
+    display: flex; gap: 0.8rem; margin-bottom: 1rem;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .stat-item {
+    background: #fff; padding: 0.5rem 1rem; border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-size: 0.8rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .stat-item .num { font-weight: 700; font-size: 1rem; }
+  .stat-item.correct .num { color: var(--green); }
+  .stat-item.wrong .num { color: var(--coral); }
+  .stat-item.accuracy .num { color: var(--accent); }
+
+  .practice-list { display: flex; flex-direction: column; gap: 1rem; }
+  .problem-card {
+    background: #fff; border-radius: 12px; padding: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--accent2);
+    transition: box-shadow 0.2s;
+  }
+  .problem-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .problem-card.correct { border-left-color: var(--green); }
+  .problem-card.wrong { border-left-color: var(--coral); }
+
+  .problem-meta {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 0.6rem;
+  }
+  .problem-chapter { font-size: 0.75rem; color: var(--muted); }
+  .problem-badge {
+    display: inline-block; font-size: 0.7rem;
+    padding: 0.15rem 0.6rem; border-radius: 999px;
+    font-weight: 600;
+  }
+  .badge-single { background: rgba(59,130,246,0.12); color: #2563eb; }
+  .badge-multi { background: rgba(139,92,246,0.12); color: #7c3aed; }
+  .badge-judge { background: rgba(16,185,129,0.12); color: #059669; }
+
+  .problem-question {
+    font-size: 0.95rem; font-weight: 600;
+    line-height: 1.6; margin-bottom: 0.8rem;
+  }
+
+  /* 选项列表 */
+  .option-list { display: flex; flex-direction: column; gap: 0.4rem; }
+  .option-item {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    padding: 0.6rem 0.8rem; border: 1.5px solid var(--border);
+    border-radius: 8px; cursor: pointer; transition: all 0.15s;
+    font-size: 0.88rem; line-height: 1.5;
+  }
+  .option-item:hover { border-color: var(--accent); background: rgba(59,130,246,0.04); }
+  .option-item.selected {
+    border-color: var(--accent); background: rgba(59,130,246,0.08);
+  }
+  .option-item.disabled { cursor: default; }
+  .option-item.disabled:hover { border-color: var(--border); background: #fff; }
+  .option-letter {
+    flex-shrink: 0; width: 1.6rem; height: 1.6rem;
+    border-radius: 50%; border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.78rem; color: var(--muted);
+    transition: all 0.15s;
+  }
+  .option-item.selected .option-letter {
+    border-color: var(--accent); background: var(--accent); color: #fff;
+  }
+  /* 提交后正确/错误着色 */
+  .option-item.show-correct {
+    border-color: var(--green); background: var(--green-light);
+  }
+  .option-item.show-correct .option-letter {
+    border-color: var(--green); background: var(--green); color: #fff;
+  }
+  .option-item.show-wrong {
+    border-color: var(--coral); background: var(--coral-light);
+  }
+  .option-item.show-wrong .option-letter {
+    border-color: var(--coral); background: var(--coral); color: #fff;
+  }
+  .option-text { flex: 1; padding-top: 1px; }
+
+  .submit-row {
+    display: flex; gap: 0.5rem; align-items: center;
+    margin-top: 0.8rem; justify-content: flex-end;
+  }
+  .submit-btn {
+    padding: 0.5rem 1.5rem; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #fff; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .submit-btn:hover { opacity: 0.9; }
+  .submit-btn.done { background: var(--muted); cursor: default; }
+
+  /* 反馈区 */
+  .feedback {
+    margin-top: 0.8rem; padding: 0.7rem 0.8rem;
+    border-radius: 8px; font-size: 0.85rem; display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--green-light); color: var(--green); }
+  .feedback.wrong { background: var(--coral-light); color: var(--coral); }
+  .feedback .answer-detail { font-weight: 600; margin-bottom: 0.3rem; }
+
+  .explanation {
+    margin-top: 0.6rem; padding: 0.7rem 0.8rem;
+    background: var(--bg-soft); border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 0.83rem; line-height: 1.6; display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation-label { font-weight: 700; font-size: 0.78rem; color: var(--accent); margin-bottom: 0.3rem; }
+
+  .empty-state {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--muted); font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📋 选择题评分</h1>
+    <p>单选 / 多选 / 判断 · 精确匹配 · 自动评分 · 解析展示</p>
+  </div>
+
+  <div class="filter-row">
+    <button class="subject-tab active" onclick="switchSubject('13015')">系统原理</button>
+    <button class="subject-tab" onclick="switchSubject('02324')">离散数学</button>
+    <button class="subject-tab" onclick="switchSubject('13003')">数据结构</button>
+  </div>
+  <div class="filter-row">
+    <button class="type-tab active" onclick="switchType('all')">全部题型</button>
+    <button class="type-tab" onclick="switchType('single')">单选题</button>
+    <button class="type-tab" onclick="switchType('multi')">多选题</button>
+    <button class="type-tab" onclick="switchType('judge')">判断题</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item correct">✅ 正确 <span class="num" id="statCorrect">0</span></div>
+    <div class="stat-item wrong">❌ 错误 <span class="num" id="statWrong">0</span></div>
+    <div class="stat-item accuracy">📊 正确率 <span class="num" id="statAccuracy">0%</span></div>
+  </div>
+
+  <div class="practice-list" id="practiceList"></div>
+</div>
+
+<script>
+  var questions = {
+    '13015': [
+      {
+        id: 'ch1', type: 'single', chapter: '第1章 计算机系统概述',
+        question: '冯·诺依曼计算机的核心工作方式是？',
+        options: ['存储程序方式', '流水线方式', '微程序方式', '并行处理方式'],
+        answer: 'A',
+        explanation: '冯·诺依曼计算机的核心特点是"存储程序"，即程序和数据预先存入存储器，机器按指令顺序自动执行。流水线、微程序、并行处理都是后来的改进技术。'
+      },
+      {
+        id: 'ch2', type: 'single', chapter: '第3章 存储系统',
+        question: '某Cache的命中率为95%，Cache存取时间为10ns，主存存取时间为100ns，则平均访问时间为？',
+        options: ['14.5ns', '15ns', '19ns', '95ns'],
+        answer: 'A',
+        explanation: '平均访问时间 = h×tc + (1-h)×tm = 0.95×10 + 0.05×100 = 9.5 + 5 = 14.5ns。'
+      },
+      {
+        id: 'ch3', type: 'multi', chapter: '第4章 指令系统',
+        question: '下列哪些是RISC的特点？（多选）',
+        options: ['指令长度固定', '丰富的寻址方式', '寄存器数量多', '流水线执行', '复杂的指令格式'],
+        answer: 'ACD',
+        explanation: 'RISC特点：①指令长度固定、格式简单；②寄存器数量多（减少访存）；③以流水线方式执行。CISC才有丰富的寻址方式和复杂的指令格式。'
+      },
+      {
+        id: 'ch4', type: 'judge', chapter: '第1章 计算机系统概述',
+        question: 'CPU的CPI（Cycles Per Instruction）越低，计算机性能一定越好。',
+        options: ['正确', '错误'],
+        answer: 'B',
+        explanation: 'CPI低只说明执行每条指令所需的时钟周期少，但整体性能还取决于主频和指令数量。MIPS = 主频 / (CPI × 10^6)，如果主频很低，CPI低也不一定性能好。'
+      }
+    ],
+    '02324': [
+      {
+        id: 'ch5', type: 'single', chapter: '第1章 命题逻辑',
+        question: '命题公式 P→Q 的逆否命题是？',
+        options: ['Q→P', '¬Q→¬P', '¬P→¬Q', 'P↔Q'],
+        answer: 'B',
+        explanation: 'P→Q 的逆否命题是 ¬Q→¬P。原命题与逆否命题等价，这是命题逻辑中的重要等价式。'
+      },
+      {
+        id: 'ch6', type: 'single', chapter: '第2章 集合论',
+        question: '设A={1,2,3}，B={2,3,4}，则A△B（对称差）等于？',
+        options: ['{2,3}', '{1,4}', '{1,2,3,4}', '∅'],
+        answer: 'B',
+        explanation: '对称差 A△B = (A-B)∪(B-A) = {1}∪{4} = {1,4}。也可以用 A△B = (A∪B)-(A∩B) = {1,2,3,4}-{2,3} = {1,4}。'
+      },
+      {
+        id: 'ch7', type: 'multi', chapter: '第4章 图论',
+        question: '下列关于无向连通图的性质，哪些是正确的？（多选）',
+        options: ['连通图必有生成树', '树是边数最少的连通图', 'n个顶点的树有n条边', '树中任意两点有唯一路径', '连通图中删去任意一条边仍连通'],
+        answer: 'ABD',
+        explanation: '①连通图必有生成树（正确，BFS/DFS可构造）；②树是边数最少的连通图（正确，n个顶点的树恰n-1条边）；③n个顶点的树有n条边（错误，应为n-1条）；④树中任意两点有唯一路径（正确）；⑤删去任意一条边仍连通（错误，删去树的一条边就不连通了）。'
+      },
+      {
+        id: 'ch8', type: 'judge', chapter: '第3章 代数系统',
+        question: '如果一个群的所有元素都满足交换律，则该群一定是阿贝尔群（交换群）。',
+        options: ['正确', '错误'],
+        answer: 'A',
+        explanation: '阿贝尔群（交换群）的定义就是运算满足交换律的群。所以如果群的所有元素都满足交换律，它就是阿贝尔群。'
+      }
+    ],
+    '13003': [
+      {
+        id: 'ch9', type: 'single', chapter: '第5章 树',
+        question: '深度为k的完全二叉树最多有多少个节点？（k≥1）',
+        options: ['2^k', '2^k - 1', '2^(k-1)', '2^(k+1) - 1'],
+        answer: 'B',
+        explanation: '深度为k的满二叉树有2^k - 1个节点。完全二叉树每层都填满时就是满二叉树，所以最多2^k - 1个节点。'
+      },
+      {
+        id: 'ch10', type: 'single', chapter: '第8章 排序',
+        question: '下列排序算法中，最坏时间复杂度为O(n²)的有？（单选最典型的）',
+        options: ['归并排序', '堆排序', '快速排序', '基数排序'],
+        answer: 'C',
+        explanation: '快速排序最坏情况（已排序数组）退化为O(n²)，平均为O(nlogn)。归并排序和堆排序最坏也是O(nlogn)。基数排序为O(d(n+r))。'
+      },
+      {
+        id: 'ch11', type: 'multi', chapter: '第3章 栈和队列',
+        question: '下列关于栈和队列的说法，哪些是正确的？（多选）',
+        options: ['栈是LIFO结构', '队列是FIFO结构', '栈和队列都是线性结构', '队列可以用来实现函数递归调用', '栈可以用来实现表达式求值'],
+        answer: 'ABCE',
+        explanation: '①栈LIFO（正确）；②队列FIFO（正确）；③都是线性结构（正确）；④函数递归调用用栈实现而非队列（错误）；⑤栈用于表达式求值（正确，如后缀表达式求值）。'
+      },
+      {
+        id: 'ch12', type: 'judge', chapter: '第6章 图',
+        question: '用邻接矩阵存储无向图时，矩阵一定是对称的。',
+        options: ['正确', '错误'],
+        answer: 'A',
+        explanation: '无向图的邻接矩阵中，A[i][j] = A[j][i]（因为边(i,j)和(j,i)是同一条边），所以一定对称。有向图则不一定对称。'
+      }
+    ]
+  };
+
+  var currentSubject = '13015';
+  var currentType = 'all';
+  var results = {}; // {id: true/false}
+  var selections = {}; // {id: ['A', 'B', ...]}
+
+  function switchSubject(code) {
+    currentSubject = code;
+    document.querySelectorAll('.subject-tab').forEach(function(btn, i) {
+      btn.classList.toggle('active', ['13015','02324','13003'][i] === code);
+    });
+    results = {}; selections = {};
+    updateStats(); render();
+  }
+  function switchType(type) {
+    currentType = type;
+    document.querySelectorAll('.type-tab').forEach(function(btn, i) {
+      btn.classList.toggle('active', ['all','single','multi','judge'][i] === type);
+    });
+    results = {}; selections = {};
+    updateStats(); render();
+  }
+
+  function getFiltered() {
+    var list = questions[currentSubject] || [];
+    if (currentType === 'all') return list;
+    return list.filter(function(q) { return q.type === currentType; });
+  }
+
+  function typeBadge(q) {
+    if (q.type === 'single') return '<span class="problem-badge badge-single">单选题</span>';
+    if (q.type === 'multi') return '<span class="problem-badge badge-multi">多选题</span>';
+    return '<span class="problem-badge badge-judge">判断题</span>';
+  }
+
+  function toggleOption(qId, letter) {
+    if (results[qId] !== undefined) return;
+    var q = getFiltered().find(function(x) { return x.id === qId; });
+    if (!q) return;
+    if (!selections[qId]) selections[qId] = [];
+
+    if (q.type === 'multi') {
+      var idx = selections[qId].indexOf(letter);
+      if (idx >= 0) selections[qId].splice(idx, 1);
+      else selections[qId].push(letter);
+    } else {
+      selections[qId] = [letter];
+    }
+    render();
+  }
+
+  function submitAnswer(qId) {
+    if (results[qId] !== undefined) return;
+    var q = getFiltered().find(function(x) { return x.id === qId; });
+    if (!q) return;
+    var sel = selections[qId] || [];
+    if (sel.length === 0) { alert('请先选择答案'); return; }
+    var userAns = sel.sort().join('');
+    var correct = q.answer;
+    var isCorrect = userAns === correct;
+    results[qId] = isCorrect;
+    updateStats(); render();
+  }
+
+  function updateStats() {
+    var vals = Object.values(results);
+    var correct = vals.filter(function(v) { return v === true; }).length;
+    var wrong = vals.filter(function(v) { return v === false; }).length;
+    var total = vals.length;
+    var acc = total > 0 ? Math.round(correct / total * 100) : 0;
+    document.getElementById('statCorrect').textContent = correct;
+    document.getElementById('statWrong').textContent = wrong;
+    document.getElementById('statAccuracy').textContent = acc + '%';
+  }
+
+  function render() {
+    var list = document.getElementById('practiceList');
+    var cards = getFiltered();
+    if (cards.length === 0) {
+      list.innerHTML = '<div class="empty-state">该筛选条件下暂无题目</div>';
+      return;
+    }
+    list.innerHTML = cards.map(function(q) {
+      var result = results[q.id];
+      var sel = selections[q.id] || [];
+      var cardClass = result === true ? 'correct' : result === false ? 'wrong' : '';
+      var done = result !== undefined;
+      var btnText = done ? '已完成' : '提交';
+      var btnClass = done ? 'done' : '';
+
+      var optionsHTML = q.options.map(function(opt, i) {
+        var letter = String.fromCharCode(65 + i);
+        var selected = sel.indexOf(letter) >= 0;
+        var cls = '';
+        if (done) {
+          var correctLetters = q.answer.split('');
+          if (correctLetters.indexOf(letter) >= 0) cls = 'show-correct';
+          else if (selected) cls = 'show-wrong';
+          cls += ' disabled';
+        } else if (selected) cls = 'selected';
+        return '<div class="option-item ' + cls + '" onclick="toggleOption(\'' + q.id + '\',\'' + letter + '\')">' +
+          '<span class="option-letter">' + letter + '</span>' +
+          '<span class="option-text">' + opt + '</span>' +
+        '</div>';
+      }).join('');
+
+      var feedbackHTML = '';
+      if (done) {
+        var fbClass = result ? 'correct' : 'wrong';
+        var fbText = result ? '✅ 回答正确！' : '❌ 答案不正确';
+        var yourAns = sel.sort().join('');
+        var correctAns = q.answer;
+        feedbackHTML = '<div class="feedback show ' + fbClass + '">' +
+          '<div class="answer-detail">' + fbText + '</div>' +
+          '<div>你的答案：' + yourAns + ' ｜ 正确答案：' + correctAns + '</div>' +
+        '</div>';
+      }
+
+      var explanationHTML = done
+        ? '<div class="explanation show"><div class="explanation-label">📖 解析</div>' + q.explanation + '</div>'
+        : '';
+
+      return '<div class="problem-card ' + cardClass + '" id="card-' + q.id + '">' +
+        '<div class="problem-meta">' +
+          '<span class="problem-chapter">' + q.chapter + '</span>' +
+          typeBadge(q) +
+        '</div>' +
+        '<div class="problem-question">' + q.question + '</div>' +
+        '<div class="option-list">' + optionsHTML + '</div>' +
+        '<div class="submit-row">' +
+          '<button class="submit-btn ' + btnClass + '" onclick="submitAnswer(\'' + q.id + '\')"' + (done ? ' disabled' : '') + '>' + btnText + '</button>' +
+        '</div>' +
+        feedbackHTML +
+        explanationHTML +
+      '</div>';
+    }).join('');
+  }
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>证明题评分 Demo</title>
+<style>
+  :root {
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --green: #10b981;
+    --green-light: #d1fae5;
+    --coral: #ef4444;
+    --coral-light: #fee2e2;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --bg-soft: #f9fafb;
+    --text: #1f2937;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #f0f9ff 0%, #fdf4ff 50%, #f0fdf4 100%);
+    min-height: 100vh; color: var(--text); padding: 2rem 1rem;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 1.5rem; }
+  .header h1 {
+    font-size: 1.5rem; margin-bottom: 0.3rem;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header p { font-size: 0.85rem; color: var(--muted); }
+
+  .stats-bar {
+    display: flex; gap: 0.8rem; margin-bottom: 1rem;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .stat-item {
+    background: #fff; padding: 0.5rem 1rem; border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-size: 0.8rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .stat-item .num { font-weight: 700; font-size: 1rem; }
+  .stat-item.mastered .num { color: var(--green); }
+  .stat-item.unsure .num { color: var(--amber); }
+  .stat-item.unknown .num { color: var(--coral); }
+
+  .practice-list { display: flex; flex-direction: column; gap: 1rem; }
+  .problem-card {
+    background: #fff; border-radius: 12px; padding: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--accent2);
+    transition: box-shadow 0.2s;
+  }
+  .problem-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .problem-card.mastered { border-left-color: var(--green); }
+  .problem-card.unsure { border-left-color: var(--amber); }
+  .problem-card.unknown { border-left-color: var(--coral); }
+
+  .problem-meta {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 0.6rem;
+  }
+  .problem-chapter { font-size: 0.75rem; color: var(--muted); }
+  .problem-badge {
+    display: inline-block; font-size: 0.7rem;
+    padding: 0.15rem 0.6rem; border-radius: 999px;
+    background: rgba(139,92,246,0.12); color: #7c3aed; font-weight: 600;
+  }
+  .problem-question {
+    font-size: 0.95rem; font-weight: 600;
+    line-height: 1.6; margin-bottom: 0.5rem;
+  }
+
+  /* 方法选择 */
+  .method-box {
+    margin-bottom: 0.8rem; padding: 0.6rem 0.8rem;
+    background: rgba(59,130,246,0.06); border-radius: 8px;
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+  .method-label {
+    font-size: 0.8rem; color: var(--accent); font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .method-hint {
+    font-size: 0.78rem; color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* 步骤引导 */
+  .steps-guide {
+    margin-bottom: 0.8rem; padding: 0.6rem 0.8rem;
+    background: var(--bg-soft); border-radius: 8px;
+    border-left: 3px solid var(--amber);
+  }
+  .steps-guide-label {
+    font-size: 0.78rem; color: #92400e; font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .steps-list {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .steps-list li {
+    padding: 0.2rem 0; font-size: 0.8rem; line-height: 1.5;
+    color: var(--muted);
+  }
+  .steps-list li::before {
+    content: '▸ '; color: var(--amber);
+  }
+
+  .answer-textarea {
+    width: 100%; min-height: 140px; padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 0.88rem; font-family: inherit; line-height: 1.7;
+    resize: vertical; transition: border-color 0.2s;
+  }
+  .answer-textarea:focus { outline: none; border-color: var(--accent); }
+  .answer-textarea:disabled { background: var(--bg-soft); color: var(--muted); }
+
+  .symbol-toggle {
+    font-size: 0.75rem; color: var(--muted); cursor: pointer;
+    margin-top: 0.4rem; display: inline-block;
+  }
+  .symbol-palette {
+    display: flex; flex-wrap: wrap; gap: 0.3rem;
+    margin-top: 0.5rem; padding: 0.5rem;
+    background: var(--bg-soft); border-radius: 6px;
+  }
+  .symbol-btn {
+    padding: 0.2rem 0.5rem; border: 1px solid var(--border);
+    border-radius: 4px; background: #fff; font-size: 0.8rem; cursor: pointer;
+  }
+  .symbol-btn:hover { background: rgba(59,130,246,0.1); }
+
+  .submit-row {
+    display: flex; gap: 0.5rem; align-items: center;
+    margin-top: 0.6rem; justify-content: flex-end;
+  }
+  .submit-btn {
+    padding: 0.5rem 1.5rem; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #fff; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .submit-btn:hover { opacity: 0.9; }
+  .submit-btn.done { background: var(--muted); cursor: default; }
+
+  /* 评分结果 */
+  .score-result { margin-top: 0.8rem; display: none; }
+  .score-result.show { display: block; }
+  .score-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.6rem; flex-wrap: wrap;
+  }
+  .score-badge {
+    padding: 0.3rem 0.8rem; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 700;
+  }
+  .score-badge.mastered { background: var(--green-light); color: var(--green); }
+  .score-badge.unsure { background: var(--amber-light); color: #92400e; }
+  .score-badge.unknown { background: var(--coral-light); color: var(--coral); }
+  .score-detail { font-size: 0.8rem; color: var(--muted); }
+
+  /* 关键步骤检查 */
+  .key-steps-list {
+    list-style: none; padding: 0; margin: 0 0 0.6rem 0;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .key-step-item {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border);
+    font-size: 0.82rem; line-height: 1.5;
+  }
+  .key-step-item:last-child { border-bottom: none; }
+  .key-step-item.hit { background: var(--green-light); }
+  .key-step-item.miss { background: #fff; }
+  .key-step-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .key-step-text { flex: 1; }
+  .key-step-label { font-weight: 600; }
+  .key-step-desc { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  /* 参考证明 */
+  .reference-proof {
+    margin-top: 0.6rem; padding: 0.8rem;
+    background: var(--bg-soft); border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 0.83rem; line-height: 1.8; display: none;
+  }
+  .reference-proof.show { display: block; }
+  .reference-label { font-weight: 700; font-size: 0.78rem; color: var(--accent); margin-bottom: 0.3rem; }
+  .proof-step {
+    padding: 0.2rem 0; padding-left: 0.5rem;
+    border-left: 2px solid var(--border);
+    margin: 0.2rem 0;
+  }
+
+  /* 自评 */
+  .self-eval {
+    margin-top: 0.8rem; padding: 0.6rem 0.8rem;
+    background: rgba(139,92,246,0.06); border-radius: 8px; display: none;
+  }
+  .self-eval.show { display: block; }
+  .self-eval-label { font-size: 0.78rem; color: var(--accent2); margin-bottom: 0.4rem; font-weight: 600; }
+  .self-eval-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .self-eval-btn {
+    padding: 0.35rem 0.8rem; border: 1.5px solid var(--border);
+    border-radius: 8px; background: #fff; font-size: 0.78rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .self-eval-btn:hover { border-color: var(--accent2); }
+  .self-eval-btn.selected { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🔬 证明题评分</h1>
+    <p>规定证明方法 · 关键步骤检查 · 参考证明对比 · 自评引导</p>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item mastered">🟢 已掌握 <span class="num" id="statMastered">0</span></div>
+    <div class="stat-item unsure">🟡 不熟练 <span class="num" id="statUnsure">0</span></div>
+    <div class="stat-item unknown">🔴 不会 <span class="num" id="statUnknown">0</span></div>
+  </div>
+
+  <div class="practice-list" id="practiceList"></div>
+</div>
+
+<script>
+  var QUIZ_SYMBOLS = ['¬','∧','∨','→','↔','⊕','⊢','⇔','⇒','∀','∃','∈','∪','∩','⊆','⊇','∅','≡','≠','≤','≥','<','>','~','^','|','0','1','T','F','P','Q','R','S','⇒','∴','∵','⟺'];
+
+  var questions = [
+    {
+      id: 'pf1',
+      chapter: '第1章 命题逻辑',
+      question: '证明：P→Q ⇔ ¬P∨Q（蕴含等值式）',
+      method: '等值演算法',
+      methodHint: '从左式出发，利用等值演算法逐步变换为右式。注意每步标注使用的等值律。',
+      steps: [
+        { desc: '起始：P→Q', keywords: ['P→Q','P蕴含Q','左边','左式','起始'], hint: '写出左式' },
+        { desc: '蕴含等值式：P→Q ⇔ ¬P∨Q', keywords: ['¬P∨Q','蕴含等值','蕴含等值式','¬P或Q','非P∨Q'], hint: '关键一步：应用蕴含等值式' },
+        { desc: '结论：得到右式 ¬P∨Q', keywords: ['QED','得证','证毕','结论','右边','右式'], hint: '写出结论' }
+      ],
+      referenceProof: [
+        '等值演算法证明 P→Q ⇔ ¬P∨Q：',
+        '步骤1：从左式出发，P→Q',
+        '步骤2：应用蕴含等值式 A→B ⇔ ¬A∨B，得 P→Q ⇔ ¬P∨Q',
+        '步骤3：结论：P→Q ⇔ ¬P∨Q，证毕。'
+      ],
+      passThreshold: 2
+    },
+    {
+      id: 'pf2',
+      chapter: '第1章 命题逻辑',
+      question: '证明：¬(P∧Q) ⇔ ¬P∨¬Q（德摩根律）',
+      method: '真值表法',
+      methodHint: '构造 P、Q、¬(P∧Q)、¬P∨¬Q 四列真值表，验证两列完全相同。',
+      steps: [
+        { desc: '表头包含P、Q、¬(P∧Q)、¬P∨¬Q', keywords: ['表头','P Q ¬(P∧Q) ¬P∨¬Q','四列','列标题'], hint: '写出真值表表头' },
+        { desc: 'P=T,Q=T行：¬(T∧T)=F，¬T∨¬T=F', keywords: ['FF','F F','=F','=假','都是F'], hint: '第一行两列值相同(F)' },
+        { desc: 'P=T,Q=F行：¬(T∧F)=T，¬T∨¬F=T', keywords: ['TT','T T','=T','=真','都是T'], hint: '第二行两列值相同(T)' },
+        { desc: 'P=F,Q=T行：¬(F∧T)=T，¬F∨¬T=T', keywords: ['TT','T T','都是T','=T'], hint: '第三行两列值相同(T)' },
+        { desc: 'P=F,Q=F行：¬(F∧F)=T，¬F∨¬F=T', keywords: ['TT','T T','都是T','=T'], hint: '第四行两列值相同(T)' },
+        { desc: '结论：两列完全相同，故等值', keywords: ['完全相同','两列相同','等值','证毕','得证','QED'], hint: '得出等值结论' }
+      ],
+      referenceProof: [
+        '真值表法证明 ¬(P∧Q) ⇔ ¬P∨¬Q：',
+        'P | Q | ¬(P∧Q) | ¬P∨¬Q',
+        'T | T |   F     |   F',
+        'T | F |   T     |   T',
+        'F | T |   T     |   T',
+        'F | F |   T     |   T',
+        '两列 ¬(P∧Q) 和 ¬P∨¬Q 的值完全相同，故 ¬(P∧Q) ⇔ ¬P∨¬Q，证毕。'
+      ],
+      passThreshold: 4
+    },
+    {
+      id: 'pf3',
+      chapter: '第1章 命题逻辑',
+      question: '前提：P→Q, P。证明：Q（分离规则/假言推理）',
+      method: '推理证明法',
+      methodHint: '使用推理规则（P规则、T规则）逐步推导。注意标注每步使用的规则。',
+      steps: [
+        { desc: '前提1：P→Q（前提）', keywords: ['P→Q','前提1','前提P蕴含Q','假言前提'], hint: '列出前提1' },
+        { desc: '前提2：P（前提）', keywords: ['P','前提2','前提P'], hint: '列出前提2' },
+        { desc: '由P→Q和P，应用分离规则得Q', keywords: ['分离规则','假言推理','MP','modus ponens','得Q','推出Q'], hint: '关键推理步骤' },
+        { desc: '结论：Q', keywords: ['Q','证毕','得证','结论Q','QED'], hint: '写出结论' }
+      ],
+      referenceProof: [
+        '推理证明法证明 Q：',
+        '步骤1：P→Q          （前提）',
+        '步骤2：P             （前提）',
+        '步骤3：Q             （由步骤1、2，应用分离规则MP）',
+        '结论：Q 得证。'
+      ],
+      passThreshold: 3
+    },
+    {
+      id: 'pf4',
+      chapter: '第1章 命题逻辑',
+      question: '证明：P→Q, Q→R ⊢ P→R（假言三段论/链式推理）',
+      method: '推理证明法',
+      methodHint: '利用两个蕴含式链式推导。可用T规则+蕴含等值式，或CP规则。',
+      steps: [
+        { desc: '前提1：P→Q', keywords: ['P→Q','前提1','前提P蕴含Q'], hint: '列出前提1' },
+        { desc: '前提2：Q→R', keywords: ['Q→R','前提2','前提Q蕴含R'], hint: '列出前提2' },
+        { desc: '应用假言三段论/传递律：P→Q, Q→R 得 P→R', keywords: ['假言三段论','链式推理','传递','HS','transitivity','三段论','传递律'], hint: '关键推理规则' },
+        { desc: '结论：P→R', keywords: ['P→R','证毕','得证','结论P→R','QED'], hint: '写出结论' }
+      ],
+      referenceProof: [
+        '推理证明法证明 P→R：',
+        '方法一（直接推理）：',
+        '步骤1：P→Q          （前提）',
+        '步骤2：Q→R          （前提）',
+        '步骤3：P→R          （由步骤1、2，应用假言三段论HS）',
+        '结论：P→R 得证。',
+        '',
+        '方法二（CP规则）：',
+        '步骤1：P→Q          （前提）',
+        '步骤2：Q→R          （前提）',
+        '步骤3：P             （附加前提，CP规则）',
+        '步骤4：Q             （步骤1、3，MP）',
+        '步骤5：R             （步骤2、4，MP）',
+        '步骤6：P→R          （步骤3→5，CP规则，消去附加前提）',
+        '结论：P→R 得证。'
+      ],
+      passThreshold: 3
+    },
+    {
+      id: 'pf5',
+      chapter: '第1章 命题逻辑',
+      question: '证明：¬Q, P→Q ⊢ ¬P（拒取式/否定后件）',
+      method: '推理证明法',
+      methodHint: '利用否定后件推出前件的否定。可用T规则+等值演算，或直接使用拒取式规则。',
+      steps: [
+        { desc: '前提1：¬Q', keywords: ['¬Q','非Q','前提1','前提非Q','~Q'], hint: '列出前提1' },
+        { desc: '前提2：P→Q', keywords: ['P→Q','前提2','前提P蕴含Q'], hint: '列出前提2' },
+        { desc: '由P→Q得等值式¬Q→¬P（逆否）', keywords: ['逆否','¬Q→¬P','等值','逆否命题','¬P'], hint: '等值变换' },
+        { desc: '由¬Q和¬Q→¬P，MP得¬P', keywords: ['分离规则','MP','假言推理','得¬P','推出¬P','非P'], hint: '关键推理步骤' },
+        { desc: '结论：¬P', keywords: ['¬P','证毕','得证','结论¬P','QED','非P'], hint: '写出结论' }
+      ],
+      referenceProof: [
+        '推理证明法证明 ¬P：',
+        '方法一（利用逆否命题）：',
+        '步骤1：¬Q            （前提）',
+        '步骤2：P→Q          （前提）',
+        '步骤3：P→Q ⇔ ¬Q→¬P   （等值演算，逆否命题）',
+        '步骤4：¬Q→¬P          （由步骤2，T规则）',
+        '步骤5：¬P             （由步骤1、4，MP）',
+        '结论：¬P 得证。',
+        '',
+        '方法二（直接用拒取式MT）：',
+        '步骤1：P→Q, ¬Q ⊢ ¬P  （拒取式 Modus Tollens）',
+        '结论：¬P 得证。'
+      ],
+      passThreshold: 3
+    },
+    {
+      id: 'pf6',
+      chapter: '第1章 命题逻辑',
+      question: '证明：(P→Q)∧(P→R) ⇔ P→(Q∧R)（条件的分配律）',
+      method: '等值演算法',
+      methodHint: '从左式出发，利用分配律、蕴含等值式等逐步变换。也可双向推导。',
+      steps: [
+        { desc: '起始：(P→Q)∧(P→R)', keywords: ['(P→Q)∧(P→R)','左式','左边','起始','起始式'], hint: '写出左式' },
+        { desc: '蕴含等值式变换：(¬P∨Q)∧(¬P∨R)', keywords: ['¬P∨Q','¬P∨R','蕴含等值','(¬P∨Q)∧(¬P∨R)'], hint: '应用蕴含等值式' },
+        { desc: '分配律：¬P∨(Q∧R)', keywords: ['¬P∨(Q∧R)','分配律','¬P或(Q∧R)','提取公因子'], hint: '应用分配律' },
+        { desc: '逆蕴含等值式：P→(Q∧R)', keywords: ['P→(Q∧R)','逆蕴含','蕴含等值','右式'], hint: '应用逆蕴含等值式' },
+        { desc: '结论：得证', keywords: ['证毕','得证','QED','结论','等值'], hint: '写出结论' }
+      ],
+      referenceProof: [
+        '等值演算法证明 (P→Q)∧(P→R) ⇔ P→(Q∧R)：',
+        '步骤1：左式 = (P→Q)∧(P→R)',
+        '步骤2：= (¬P∨Q)∧(¬P∨R)    （蕴含等值式）',
+        '步骤3：= ¬P∨(Q∧R)          （分配律：A∨B ∧ A∨C = A∨(B∧C)）',
+        '步骤4：= P→(Q∧R)            （逆蕴含等值式 ¬A∨B = A→B）',
+        '步骤5：结论：(P→Q)∧(P→R) ⇔ P→(Q∧R)，证毕。'
+      ],
+      passThreshold: 3
+    }
+  ];
+
+  var results = {};
+
+  function normalize(str) {
+    if (!str) return '';
+    return str.replace(/\s+/g, '').replace(/[，。、；：""''（）\(\)\[\]\{\}]/g, '').toLowerCase();
+  }
+
+  function matchSteps(userAnswer, steps) {
+    var normUser = normalize(userAnswer);
+    var hits = [];
+    var total = steps.length, hitCount = 0;
+    steps.forEach(function(s) {
+      var matched = false, matchedTerm = null;
+      for (var i = 0; i < s.keywords.length; i++) {
+        var normTerm = normalize(s.keywords[i]);
+        if (!normTerm) continue;
+        if (normUser.indexOf(normTerm) >= 0) { matched = true; matchedTerm = s.keywords[i]; break; }
+      }
+      hits.push({ desc: s.desc, keywords: s.keywords, matched: matched, matchedTerm: matchedTerm, hint: s.hint });
+      if (matched) hitCount++;
+    });
+    return { hits: hits, score: hitCount, total: total };
+  }
+
+  function getLevel(score, total, passThreshold) {
+    if (score >= passThreshold) return 'mastered';
+    if (score >= Math.ceil(passThreshold * 0.5)) return 'unsure';
+    return 'unknown';
+  }
+
+  function levelText(level) {
+    if (level === 'mastered') return { text: '已掌握', icon: '🟢', class: 'mastered' };
+    if (level === 'unsure') return { text: '不熟练', icon: '🟡', class: 'unsure' };
+    return { text: '不会', icon: '🔴', class: 'unknown' };
+  }
+
+  function submitAnswer(qId) {
+    if (results[qId]) return;
+    var q = questions.find(function(x) { return x.id === qId; });
+    if (!q) return;
+    var ta = document.getElementById('input-' + qId);
+    if (!ta) return;
+    var userAns = ta.value.trim();
+    if (!userAns) { alert('请先输入证明过程'); return; }
+    var match = matchSteps(userAns, q.steps);
+    var level = getLevel(match.score, match.total, q.passThreshold);
+    results[qId] = { score: match.score, total: match.total, level: level, hits: match.hits, selfOverride: null };
+    updateStats(); render();
+  }
+
+  function selfEval(qId, level) {
+    if (!results[qId]) return;
+    results[qId].selfOverride = level;
+    updateStats(); render();
+  }
+
+  function getCurrentLevel(qId) {
+    var r = results[qId];
+    if (!r) return null;
+    return r.selfOverride || r.level;
+  }
+
+  function updateStats() {
+    var ids = Object.keys(results);
+    var m = 0, u = 0, n = 0;
+    ids.forEach(function(id) {
+      var lv = getCurrentLevel(id);
+      if (lv === 'mastered') m++; else if (lv === 'unsure') u++; else n++;
+    });
+    document.getElementById('statMastered').textContent = m;
+    document.getElementById('statUnsure').textContent = u;
+    document.getElementById('statUnknown').textContent = n;
+  }
+
+  function render() {
+    var list = document.getElementById('practiceList');
+    if (questions.length === 0) { list.innerHTML = '<div class="empty-state">暂无证明题</div>'; return; }
+
+    list.innerHTML = questions.map(function(q) {
+      var r = results[q.id];
+      var level = r ? getCurrentLevel(q.id) : null;
+      var lt = level ? levelText(level) : null;
+      var cardClass = level ? lt.class : '';
+      var btnText = r ? '已完成' : '提交';
+      var btnDone = r ? 'done' : '';
+
+      var scoreHTML = '';
+      if (r) {
+        var overrideLevel = r.selfOverride || r.level;
+        var olt = levelText(overrideLevel);
+        var stepsHTML = r.hits.map(function(h) {
+          var icon = h.matched ? '✅' : '⬜';
+          var cls = h.matched ? 'hit' : 'miss';
+          return '<li class="key-step-item ' + cls + '">' +
+            '<span class="key-step-icon">' + icon + '</span>' +
+            '<div class="key-step-text">' +
+              '<span class="key-step-label">' + h.desc + '</span>' +
+              (h.matched && h.matchedTerm ? ' <span style="color:var(--green);font-size:0.75rem;">（命中：' + h.matchedTerm + '）</span>' : '') +
+              (!h.matched ? '<div class="key-step-desc">期望关键词：' + h.keywords.slice(0, 3).join('、') + '…</div>' : '') +
+            '</div></li>';
+        }).join('');
+
+        var proofHTML = q.referenceProof.map(function(line) {
+          if (line === '') return '<br>';
+          if (line.indexOf('步骤') >= 0 || line.indexOf('结论') >= 0) {
+            return '<div class="proof-step">' + line + '</div>';
+          }
+          if (line.indexOf('方法') >= 0) {
+            return '<div style="font-weight:600;margin-top:0.4rem;">' + line + '</div>';
+          }
+          return '<div>' + line + '</div>';
+        }).join('');
+
+        scoreHTML = '<div class="score-result show">' +
+          '<div class="score-header">' +
+            '<span class="score-badge ' + olt.class + '">' + olt.icon + ' ' + olt.text + '</span>' +
+            '<span class="score-detail">关键步骤命中 ' + r.score + '/' + r.total + '（通过线 ' + q.passThreshold + '）' +
+            (r.selfOverride ? ' · 自评覆盖' : '') + '</span>' +
+          '</div>' +
+          '<ul class="key-steps-list">' + stepsHTML + '</ul>' +
+          '<div class="reference-proof show"><div class="reference-label">📖 参考证明（' + q.method + '）</div>' + proofHTML + '</div>' +
+          '<div class="self-eval show"><div class="self-eval-label">证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？</div>' +
+            '<div class="self-eval-buttons">' +
+              '<button class="self-eval-btn ' + (overrideLevel === 'mastered' ? 'selected' : '') + '" onclick="selfEval(\'' + q.id + '\',\'mastered\')">🟢 完全掌握</button>' +
+              '<button class="self-eval-btn ' + (overrideLevel === 'unsure' ? 'selected' : '') + '" onclick="selfEval(\'' + q.id + '\',\'unsure\')">🟡 部分掌握</button>' +
+              '<button class="self-eval-btn ' + (overrideLevel === 'unknown' ? 'selected' : '') + '" onclick="selfEval(\'' + q.id + '\',\'unknown\')">🔴 不会</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      return '<div class="problem-card ' + cardClass + '" id="card-' + q.id + '">' +
+        '<div class="problem-meta">' +
+          '<span class="problem-chapter">' + q.chapter + '</span>' +
+          '<span class="problem-badge">🔬 证明题</span>' +
+        '</div>' +
+        '<div class="problem-question">' + q.question + '</div>' +
+        '<div class="method-box">' +
+          '<div class="method-label">📐 规定证明方法：' + q.method + '</div>' +
+          '<div class="method-hint">' + q.methodHint + '</div>' +
+        '</div>' +
+        '<textarea class="answer-textarea" id="input-' + q.id + '" placeholder="按上述方法写出证明过程..."' + (r ? ' disabled' : '') + '></textarea>' +
+        '<span class="symbol-toggle" onclick="toggleSymbols(\'' + q.id + '\')">🔣 逻辑符号面板</span>' +
+        '<div class="symbol-palette" id="sym-' + q.id + '" style="display:none;">' +
+          QUIZ_SYMBOLS.map(function(s) { return '<button type="button" class="symbol-btn" onclick="insertSymbol(\'' + q.id + '\',\'' + s + '\')">' + s + '</button>'; }).join('') +
+        '</div>' +
+        '<div class="submit-row">' +
+          '<button class="submit-btn ' + btnDone + '" onclick="submitAnswer(\'' + q.id + '\')"' + (r ? ' disabled' : '') + '>' + btnText + '</button>' +
+        '</div>' +
+        scoreHTML +
+      '</div>';
+    }).join('');
+  }
+
+  function toggleSymbols(qId) {
+    var pal = document.getElementById('sym-' + qId);
+    if (!pal) return;
+    pal.style.display = pal.style.display === 'none' ? '' : 'none';
+  }
+
+  function insertSymbol(qId, sym) {
+    var ta = document.getElementById('input-' + qId);
+    if (!ta || ta.disabled) return;
+    var start = ta.selectionStart || 0, end = ta.selectionEnd || 0;
+    var val = ta.value;
+    ta.value = val.substring(0, start) + sym + val.substring(end);
+    ta.selectionStart = ta.selectionEnd = start + sym.length;
+    ta.focus();
+  }
+
+  render();
+</script>
+</body>
+</html>
