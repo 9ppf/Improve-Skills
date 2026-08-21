@@ -67,14 +67,22 @@
 }
 
 .tree-row.header.folder-item .tree-label {
-  font-weight: 500;
-  font-size: 0.76rem;
-  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--ink);
 }
 
 /* L3：叶子节点 */
+.tree-row.leaf .row-main {
+  border-left: 2px solid var(--rule);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding-left: 12px;
+}
+
+.tree-row.leaf:hover .row-main { border-left-color: var(--rule-strong); }
+
 .tree-row.leaf .tree-label {
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 400;
   color: var(--light);
 }
@@ -146,6 +154,7 @@
 .leaf-dot { display: none; }
 
 .tree-row.leaf.active { background: var(--brand-soft); }
+.tree-row.leaf.active .row-main { border-left-color: var(--brand); }
 .tree-row.leaf.active .tree-label { color: var(--brand-text); font-weight: 600; }
 
 .leaf-meta { display: none; }
