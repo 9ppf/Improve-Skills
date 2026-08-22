@@ -835,7 +835,7 @@
 
     }
 
-    .chapter-tab-pane.zk-active { display: block; }
+    .chapter-tab-pane.zk-active { display: block; opacity: 1; }
 
     @keyframes tabFadeIn {
 
@@ -1131,7 +1131,7 @@
 
 /* ===== Display Fix ===== */
 
-.chapter-tab-pane.zk-active { display: block !important; }
+.chapter-tab-pane.zk-active { display: block !important; opacity: 1 !important; }
 
 
 
@@ -7343,6 +7343,9 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
         chapterEl.insertBefore(filterBar, chapterEl.children[1]);
 
 
+
+        
+        var chapterNum = chapterEl.dataset.chapter || '';
 
         // 添加去练习测验按钮
 
