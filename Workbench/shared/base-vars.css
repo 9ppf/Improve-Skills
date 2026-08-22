@@ -1,0 +1,40 @@
+/* ============================================================
+ * base-vars.css — 此刻便是春天 全局设计变量
+ * 所有工作台页面共享，禁止在页面 :root 中覆盖
+ * 页面特有变量请在 body 作用域中定义
+ * ============================================================ */
+
+:root {
+  /* —— 背景与表面 —— */
+  --bg: #f8fafc;
+  --bg2: rgba(255, 255, 255, 0.72);
+
+  /* —— 文字 —— */
+  --ink: #1e293b;
+  --muted: #64748b;
+
+  /* —— 分割线/边框 —— */
+  --rule: #e2e8f0;
+
+  /* —— 主色 —— */
+  --accent: #2563eb;
+  --accent2: #8b5cf6;
+  --accent-soft: #eff6ff;
+
+  /* —— 语义色 —— */
+  --green: #059669;
+  --coral: #e11d48;
+  --amber: #d97706;
+  --orange: #ea580c;
+
+  /* —— 代码块 —— */
+  --code-bg: #1e1e2e;
+  --code-text: #cdd6f4;
+
+  /* —— 字体 —— */
+  --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+
+  /* —— 布局 —— */
+  --max: 860px;
+}

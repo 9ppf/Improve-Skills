@@ -36,6 +36,17 @@
 | `.trae/skills/check_priority_labels.py` | 扩展为全章节扫描（find_all_core_concepts_sections），不再只查第一个核心概念板块 |
 | `.trae/skills/validate_workbench.py` | CSS 检查增加基线扫描调用 |
 | `项目约束总览.md` | 更新校验脚本索引：补充 critical 标记、CSS 基线扫描、全章节优先级检查、githooks 路径 |
+| `Workbench/shared/base-vars.css` | 新增：全局设计变量共享文件（17 个标准变量） |
+| `Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html` | P0 删除 :root 块引入 base-vars.css + P1 .active→.zk-active + li{}→ul li{} |
+| `Workbench/自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html` | 同上 |
+| `Workbench/自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html` | 同上 |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html` | P0 + P1 .active→.zk-active .show→.zk-show |
+| `Workbench/自考学习/背诵与简答/练习测验.html` | P0 --text→--ink --border→--rule + P1 .active/.show/.selected/.disabled/.header/.container 全部加前缀 |
+| `Workbench/自考学习/复盘总结/复盘总结-章节复盘.html` | P0 + P1 .active→.zk-active |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | P0 + P1 .active→.zk-active |
+| `Workbench/Python基础/python-knowledge-tree.html` | P0 + P1 .show→.zk-show |
+| `Workbench/ai-learning/ai-knowledge-tree.html` | P0 + P1 .show→.zk-show |
+| `Workbench/ai-learning/job-skill-tree.html` | P0 + P1 .active→.zk-active .show→.zk-show |
 
 ---
 

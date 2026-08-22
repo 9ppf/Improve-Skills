@@ -5,21 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>核心概念背诵卡</title>
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --bg2: rgba(255, 255, 255, 0.72);
-      --ink: #1e293b;
-      --muted: #64748b;
-      --rule: #e2e8f0;
-      --accent: #2563eb;
-      --accent2: #8b5cf6;
-      --green: #059669;
-      --coral: #e11d48;
-      --amber: #d97706;
-      --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-      --max: 860px;
-    }
+  <link rel="stylesheet" href="../../shared/base-vars.css">
+<style>
+    
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; }
@@ -73,7 +61,7 @@
       border-color: var(--accent);
       color: var(--accent);
     }
-    .recite-tab.active {
+    .recite-tab.zk-active {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
@@ -130,12 +118,12 @@
     }
     .card-type-btn:last-child { border-right: none; }
     .card-type-btn:hover { background: #f1f5f9; }
-    .card-type-btn.active {
+    .card-type-btn.zk-active {
       background: var(--accent);
       color: #fff;
     }
-    .card-type-btn.memory.active { background: var(--accent); }
-    .card-type-btn.calc.active { background: var(--accent2); }
+    .card-type-btn.memory.zk-active { background: var(--accent); }
+    .card-type-btn.calc.zk-active { background: var(--accent2); }
 
     .recite-stats {
       display: flex;
@@ -300,8 +288,8 @@
     .recite-card-btn.unsure { color: var(--amber); border-color: var(--amber); }
     .recite-card-btn.unknown { color: var(--coral); border-color: var(--coral); }
     .recite-card-btn:hover { opacity: 0.8; }
-    .recite-card-btn.active { background: currentColor; }
-    .recite-card-btn.active span { color: #fff; }
+    .recite-card-btn.zk-active { background: currentColor; }
+    .recite-card-btn.zk-active span { color: #fff; }
 
     .recite-mastery {
       display: inline-block;
@@ -353,7 +341,7 @@
       font-size: 0.75rem;
       display: none;
     }
-    .calc-card-feedback.show { display: block; }
+    .calc-card-feedback.zk-show { display: block; }
     .calc-card-feedback.correct {
       background: rgba(5, 150, 105, 0.10);
       color: var(--green);
@@ -504,7 +492,7 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .recite-view-btn.active {
+    .recite-view-btn.zk-active {
       background: linear-gradient(135deg, #2563eb, #8b5cf6);
       border-color: #2563eb;
       color: #fff;
@@ -587,7 +575,7 @@
 <body>
   <article class="recite-page">
     <div class="recite-view-tabs">
-      <button class="recite-view-btn active" data-view="today" id="btnViewToday">📌 今日任务</button>
+      <button class="recite-view-btn zk-active" data-view="today" id="btnViewToday">📌 今日任务</button>
       <button class="recite-view-btn" data-view="total" id="btnViewTotal">📚 总任务</button>
     </div>
 
@@ -621,7 +609,7 @@
       <h2 id="cardsTitle">🎴 今日卡片</h2>
       <div class="recite-filter" id="cardFilter">
         <div class="card-type-filter">
-          <button class="card-type-btn active" onclick="setCardTypeFilter('all', this)">全部卡片</button>
+          <button class="card-type-btn zk-active" onclick="setCardTypeFilter('all', this)">全部卡片</button>
           <button class="card-type-btn memory" onclick="setCardTypeFilter('memory', this)">🧠 记忆卡</button>
           <button class="card-type-btn calc" onclick="setCardTypeFilter('calculation', this)">🧮 计算卡</button>
         </div>
@@ -1268,7 +1256,7 @@
     function switchView(view) {
       currentView = view;
       document.querySelectorAll('.recite-view-btn').forEach(function(btn) {
-        btn.classList.toggle('active', btn.dataset.view === view);
+        btn.classList.toggle('zk-active', btn.dataset.view === view);
       });
       renderAll();
     }
@@ -1283,9 +1271,9 @@
     function setCardTypeFilter(type, btn) {
       currentCardType = type;
       btn.parentElement.querySelectorAll('.card-type-btn').forEach(function(b) {
-        b.classList.remove('active');
+        b.classList.remove('zk-active');
       });
-      btn.classList.add('active');
+      btn.classList.add('zk-active');
       renderCards();
     }
     document.getElementById('filterChapter').addEventListener('change', renderCards);

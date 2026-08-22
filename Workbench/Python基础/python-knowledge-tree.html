@@ -8,22 +8,9 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Python 知识点详解</title>
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --bg2: rgba(255, 255, 255, 0.72);
-      --ink: #1e293b;
-      --muted: #64748b;
-      --rule: #e2e8f0;
-      --accent: #2563eb;
-      --accent2: #8b5cf6;
-      --accent-soft: #eff6ff;
-      --code-bg: #1e1e2e;
-      --code-text: #cdd6f4;
-      --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-      --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
-      --max: 900px;
-    }
+  <link rel="stylesheet" href="../shared/base-vars.css">
+<style>
+    
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; scroll-behavior: smooth; }
     body {
@@ -73,13 +60,13 @@
       font-weight: 600; color: var(--muted); transition: all 0.2s; text-align: center;
     }
     .stage-tab:hover { border-color: var(--accent2); color: var(--accent); }
-    .stage-tab.active {
+    .stage-tab.zk-active {
       border-color: var(--accent); background: var(--accent-soft); color: var(--accent);
     }
     .stage-tab .stage-num { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.15rem; }
-    .stage-tab.active .stage-num { color: var(--accent2); }
+    .stage-tab.zk-active .stage-num { color: var(--accent2); }
     .stage-tab .stage-count { font-size: 0.78rem; color: var(--muted); }
-    .stage-tab.active .stage-count { color: var(--accent); }
+    .stage-tab.zk-active .stage-count { color: var(--accent); }
 
     .stage-banner {
       background: linear-gradient(135deg, var(--accent-soft), rgba(139, 92, 246, 0.05));
@@ -144,7 +131,7 @@
     .kp-answer-toggle .kp-answer-icon { transition: transform 0.25s ease; display: inline-block; }
     .kp-answer-toggle.open .kp-answer-icon { transform: rotate(180deg); }
     .kp-answer-wrap { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.2s ease; opacity: 0; }
-    .kp-answer-wrap.show { max-height: 800px; opacity: 1; }
+    .kp-answer-wrap.zk-show { max-height: 800px; opacity: 1; }
     .kp-layer.ai { background: var(--accent-soft); border-radius: 0 0 14px 14px; }
     .kp-layer.ai h3 { color: var(--accent); }
     .kp-layer.demo { background: #f0fdf4; }
@@ -573,7 +560,7 @@
       stageTabs.innerHTML = STAGES.map(function(st) {
         var count = KP.filter(function(k) { return k.s === st.id; }).length;
         var checked = KP.filter(function(k) { return k.s === st.id && loadState()[k.id]; }).length;
-        return '<button class="stage-tab' + (st.id === currentStage ? " active" : "") + '" data-stage="' + st.id + '">' +
+        return '<button class="stage-tab' + (st.id === currentStage ?" active" : "") + '" data-stage="' + st.id + '">' +
           '<span class="stage-num">' + st.weeks + '</span>' +
           st.name +
           '<span class="stage-count">' + checked + "/" + count + '</span>' +
@@ -659,12 +646,12 @@
         btn.addEventListener("click", function() {
           var wrap = this.nextElementSibling;
           var label = this.querySelector("span:first-child");
-          if (wrap.classList.contains("show")) {
-            wrap.classList.remove("show");
+          if (wrap.classList.contains('zk-show')) {
+            wrap.classList.remove('zk-show');
             this.classList.remove("open");
             label.textContent = "查看参考答案";
           } else {
-            wrap.classList.add("show");
+            wrap.classList.add('zk-show');
             this.classList.add("open");
             label.textContent = "收起参考答案";
           }

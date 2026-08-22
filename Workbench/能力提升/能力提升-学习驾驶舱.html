@@ -5,24 +5,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>学习驾驶舱 · 统筹计划与进度总览</title>
+<link rel="stylesheet" href="../shared/base-vars.css">
 <style>
-:root {
-  --bg: #f8fafc;
-  --bg2: rgba(255, 255, 255, 0.72);
-  --ink: #1e293b;
-  --muted: #64748b;
-  --rule: #e2e8f0;
-  --accent: #2563eb;
-  --accent2: #8b5cf6;
-  --accent-soft: #eff6ff;
-  --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-  --font-mono: "JetBrains Mono", Consolas, monospace;
-  --max: 860px;
+body {
   --pass: #10b981;
   --warn: #f59e0b;
   --fail: #ef4444;
   --info: #3b82f6;
 }
+
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -93,7 +84,7 @@ article.dash-page {
   color: var(--accent);
 }
 
-.dash-view-btn.active {
+.dash-view-btn.zk-active {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #fff;
   border: none;
@@ -346,12 +337,12 @@ article.dash-page {
   white-space: nowrap;
 }
 .dash-tab:hover { color: var(--ink); }
-.dash-tab.active {
+.dash-tab.zk-active {
   color: var(--accent);
   border-bottom-color: var(--accent);
 }
 .dash-panel { display: none; }
-.dash-panel.active { display: block; }
+.dash-panel.zk-active { display: block; }
 
 /* ---------- Completion Panel ---------- */
 .comp-section { margin-bottom: 1.5rem; }
@@ -674,7 +665,7 @@ article.dash-page {
   color: var(--accent);
 }
 
-.wk-phase-nav button.active {
+.wk-phase-nav button.zk-active {
   background: #fff;
   color: var(--accent);
   box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
@@ -1510,7 +1501,7 @@ article.dash-page {
       <button class="dash-btn dash-btn-secondary dash-view-btn" data-view="roadmap">🗺️ 学习路线</button>
     </div>
 
-  <div class="dash-panel active" id="panel-dashboard">
+  <div class="dash-panel zk-active" id="panel-dashboard">
     <!-- 倒计时 -->
     <div class="dash-countdown-row" id="countdownRow"></div>
 
@@ -2211,8 +2202,8 @@ function updatePhaseNav() {
   if (!nav) return;
   var btns = nav.querySelectorAll('button');
   btns.forEach(function(btn, i) {
-    if (i === currentPhase) btn.classList.add('active');
-    else btn.classList.remove('active');
+    if (i === currentPhase) btn.classList.add('zk-active');
+    else btn.classList.remove('zk-active');
   });
 }
 
@@ -3278,10 +3269,10 @@ function renderCompletion() {
 document.querySelectorAll('.dash-view-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
     var view = this.getAttribute('data-view');
-    document.querySelectorAll('.dash-view-btn').forEach(function(b) { b.classList.remove('active'); });
-    document.querySelectorAll('.dash-panel').forEach(function(p) { p.classList.remove('active'); });
-    this.classList.add('active');
-    document.getElementById('panel-' + view).classList.add('active');
+    document.querySelectorAll('.dash-view-btn').forEach(function(b) { b.classList.remove('zk-active'); });
+    document.querySelectorAll('.dash-panel').forEach(function(p) { p.classList.remove('zk-active'); });
+    this.classList.add('zk-active');
+    document.getElementById('panel-' + view).classList.add('zk-active');
     if (view === 'completion') renderCompletion();
   });
 });

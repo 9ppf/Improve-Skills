@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>约束体系基线问题清单 — 此刻便是春天</title>
+<style>
+:root {
+  --bg: #f8f6f0;
+  --bg2: #ffffff;
+  --accent: #4a7c59;
+  --accent2: #6b9b5a;
+  --text: #2d3416;
+  --muted: #6b7d5a;
+  --border: #d4d0c4;
+  --red: #c0392b;
+  --orange: #e67e22;
+  --yellow: #f1c40f;
+  --green: #27ae60;
+  --p0-bg: #fce4e4;
+  --p1-bg: #fef3e2;
+  --p2-bg: #fffde7;
+  --p3-bg: #f0f7e8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+h1 {
+  font-size: 1.6rem;
+  margin: 0 0 8px;
+  color: var(--accent);
+}
+.meta {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 24px;
+}
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.summary-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+.summary-card .num {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.summary-card .label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.summary-card.p0 .num { color: var(--red); }
+.summary-card.p1 .num { color: var(--orange); }
+.summary-card.p2 .num { color: #b8860b; }
+.summary-card.p3 .num { color: var(--green); }
+
+h2 {
+  font-size: 1.15rem;
+  margin: 36px 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+  color: var(--accent);
+}
+h3 {
+  font-size: 1rem;
+  margin: 24px 0 10px;
+  color: var(--text);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+}
+th, td {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+th {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+tr:nth-child(even) td {
+  background: var(--bg2);
+}
+tr.p0 td { background: var(--p0-bg); }
+tr.p1 td { background: var(--p1-bg); }
+tr.p2 td { background: var(--p2-bg); }
+tr.p3 td { background: var(--p3-bg); }
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tag.p0 { background: var(--red); color: #fff; }
+.tag.p1 { background: var(--orange); color: #fff; }
+.tag.p2 { background: #b8860b; color: #fff; }
+.tag.p3 { background: var(--green); color: #fff; }
+.badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge.red { background: var(--p0-bg); color: var(--red); }
+.badge.green { background: var(--p3-bg); color: var(--green); }
+.desc {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 4px 0 0;
+}
+.bar-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+.bar-track {
+  flex: 1;
+  height: 14px;
+  background: var(--border);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 7px;
+  min-width: 2px;
+}
+.bar-fill.missing { background: var(--red); }
+.bar-fill.complete { background: var(--green); }
+.bar-label {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  min-width: 110px;
+}
+.note {
+  background: #fffde7;
+  border-left: 4px solid #b8860b;
+  padding: 12px 16px;
+  border-radius: 0 4px 4px 0;
+  margin: 16px 0;
+  font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>约束体系基线问题清单</h1>
+  <div class="meta">生成时间：2026-08-22 | v2.20.0 | 检测范围：11 个核心页面 CSS + 3 科知识框架优先级标注</div>
+
+  <div class="summary-cards">
+    <div class="summary-card p0">
+      <div class="num">62</div>
+      <div class="label">P0 严重</div>
+    </div>
+    <div class="summary-card p1">
+      <div class="num">53</div>
+      <div class="label">P1 高</div>
+    </div>
+    <div class="summary-card p2">
+      <div class="num">0</div>
+      <div class="label">P2 中</div>
+    </div>
+    <div class="summary-card p3">
+      <div class="num">52</div>
+      <div class="label">P3 低</div>
+    </div>
+  </div>
+
+  <p class="desc">CSS 基线扫描共发现 167 个问题，优先级标注发现 132 个缺失标签（合计 299 个问题）。以下按严重程度排序。</p>
+
+  <!-- ============ CSS 违规 ============ -->
+  <h2>一、CSS 基线违规（167 个）</h2>
+
+  <h3>1.1 按严重程度汇总</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">级别</th>
+        <th>违规类型</th>
+        <th style="width:60px">数量</th>
+        <th>风险说明</th>
+        <th>修复建议</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="p0">
+        <td><span class="tag p0">P0 严重</span></td>
+        <td>修改全局 CSS 变量</td>
+        <td style="text-align:center;font-weight:700">58</td>
+        <td>页面级 <code>:root</code> 重新定义 <code>--accent</code> / <code>--bg</code> 等变量，可能影响 iframe 上下文中的全局样式一致性</td>
+        <td>改用模块级变量或直接引用全局变量，不在页面 <code>&lt;style&gt;</code> 中覆盖 <code>:root</code></td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0 严重</span></td>
+        <td>!important 滥用</td>
+        <td style="text-align:center;font-weight:700">4</td>
+        <td>强制覆盖优先级，后续修改困难，易引发样式死锁</td>
+        <td>通过提高选择器特异性替代 !important</td>
+      </tr>
+      <tr class="p1">
+        <td><span class="tag p1">P1 高</span></td>
+        <td>裸类名（无模块前缀）</td>
+        <td style="text-align:center;font-weight:700">50</td>
+        <td>使用 <code>.active</code> / <code>.show</code> / <code>.container</code> 等通用类名，与 Bootstrap 等框架冲突风险高</td>
+        <td>加模块前缀，如 <code>.zk-active</code> / <code>.zk-show</code></td>
+      </tr>
+      <tr class="p1">
+        <td><span class="tag p1">P1 高</span></td>
+        <td>全局标签选择器</td>
+        <td style="text-align:center;font-weight:700">3</td>
+        <td>直接使用 <code>li {}</code> 等标签选择器，影响页面所有同类标签</td>
+        <td>改为 <code>.模块名 li</code> 限定范围</td>
+      </tr>
+      <tr class="p3">
+        <td><span class="tag p3">P3 低</span></td>
+        <td>硬编码色值</td>
+        <td style="text-align:center;font-weight:700">10</td>
+        <td>共 879 处硬编码颜色值（分散在 10 个页面），不符合设计系统规范</td>
+        <td>统一使用 CSS 变量 <code>var(--accent)</code> 等</td>
+      </tr>
+      <tr class="p3">
+        <td><span class="tag p3">P3 低</span></td>
+        <td>行内静态样式</td>
+        <td style="text-align:center;font-weight:700">42</td>
+        <td>行内 style 中写 color/font-size/width/padding 等静态值，无法统一维护</td>
+        <td>抽到 CSS 类中</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.2 P0 严重 — 修改全局 CSS 变量（58 个）</h3>
+  <p class="desc">页面 <code>&lt;style&gt;</code> 中重新定义 <code>:root</code> 变量，可能导致 iframe 上下文中全局样式被污染。</p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">级别</th>
+        <th>页面</th>
+        <th>覆盖的变量</th>
+        <th style="width:60px">数量</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>02324离散数学-目录与知识框架</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code></td>
+        <td style="text-align:center;font-weight:700">5</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>13003数据结构与算法-目录与知识框架</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code></td>
+        <td style="text-align:center;font-weight:700">5</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>13015计算机系统原理-目录与知识框架</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code> <code>--green</code></td>
+        <td style="text-align:center;font-weight:700">7</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>背诵与简答-核心概念背诵卡</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code> <code>--green</code> <code>--amber</code></td>
+        <td style="text-align:center;font-weight:700">7</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>练习测验</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--text</code> <code>--muted</code> <code>--border</code> <code>--green</code> <code>--amber</code></td>
+        <td style="text-align:center;font-weight:700">7</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>复盘总结-章节复盘</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code> <code>--green</code> <code>--amber</code></td>
+        <td style="text-align:center;font-weight:700">7</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>能力提升-学习驾驶舱</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code></td>
+        <td style="text-align:center;font-weight:700">5</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>python-knowledge-tree</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code></td>
+        <td style="text-align:center;font-weight:700">5</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>ai-knowledge-tree</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code></td>
+        <td style="text-align:center;font-weight:700">5</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>job-skill-tree</td>
+        <td><code>--accent</code> <code>--accent2</code> <code>--bg</code> <code>--bg2</code> <code>--muted</code> <code>--green</code></td>
+        <td style="text-align:center;font-weight:700">6</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.3 P0 严重 — !important 滥用（4 个）</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">级别</th>
+        <th>页面</th>
+        <th>使用次数</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>02324离散数学-目录与知识框架</td>
+        <td style="text-align:center;font-weight:700;color:var(--red)">2 次</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>13003数据结构与算法-目录与知识框架</td>
+        <td style="text-align:center;font-weight:700;color:var(--red)">2 次</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>13015计算机系统原理-目录与知识框架</td>
+        <td style="text-align:center;font-weight:700;color:var(--red)">6 次</td>
+      </tr>
+      <tr class="p0">
+        <td><span class="tag p0">P0</span></td>
+        <td>job-skill-tree</td>
+        <td style="text-align:center;font-weight:700;color:var(--red)">1 次</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.4 P1 高 — 裸类名（50 个）</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">级别</th>
+        <th>裸类名</th>
+        <th>出现页面</th>
+        <th style="width:60px">总次数</th>
+        <th>建议前缀</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td><code>.active</code></td>
+        <td>离散数学、数据结构、计算机系统、背诵卡、练习测验、复盘、能力提升、Python树、AI树、技能树（10 页面）</td>
+        <td style="text-align:center;font-weight:700">33</td>
+        <td><code>.zk-active</code> 等</td>
+      </tr>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td><code>.show</code></td>
+        <td>背诵卡、练习测验、复盘、Python树、AI树、技能树（6 页面）</td>
+        <td style="text-align:center;font-weight:700">9</td>
+        <td><code>.zk-show</code> 等</td>
+      </tr>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td><code>.selected</code></td>
+        <td>练习测验</td>
+        <td style="text-align:center;font-weight:700">2</td>
+        <td><code>.quiz-selected</code></td>
+      </tr>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td><code>.disabled</code></td>
+        <td>练习测验</td>
+        <td style="text-align:center;font-weight:700">1</td>
+        <td><code>.quiz-disabled</code></td>
+      </tr>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td><code>.header</code></td>
+        <td>练习测验</td>
+        <td style="text-align:center;font-weight:700">1</td>
+        <td><code>.quiz-header</code></td>
+      </tr>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td><code>.container</code></td>
+        <td>练习测验</td>
+        <td style="text-align:center;font-weight:700">1</td>
+        <td><code>.quiz-container</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.5 P1 高 — 全局标签选择器（3 个）</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">级别</th>
+        <th>选择器</th>
+        <th>出现页面</th>
+        <th style="width:60px">数量</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td><code>li {}</code></td>
+        <td>离散数学、数据结构、计算机系统（3 页面）</td>
+        <td style="text-align:center;font-weight:700">3</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.6 P3 低 — 硬编码色值（10 个页面，879 处）</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">级别</th>
+        <th>页面</th>
+        <th style="width:100px">硬编码色值数</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>13015计算机系统原理-目录与知识框架</td><td style="text-align:center;font-weight:700;color:var(--red)">172 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>02324离散数学-目录与知识框架</td><td style="text-align:center;font-weight:700">132 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>13003数据结构与算法-目录与知识框架</td><td style="text-align:center;font-weight:700">132 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>能力提升-学习驾驶舱</td><td style="text-align:center;font-weight:700">130 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>job-skill-tree</td><td style="text-align:center;font-weight:700">102 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>复盘总结-章节复盘</td><td style="text-align:center;font-weight:700">79 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>练习测验</td><td style="text-align:center;font-weight:700">78 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>背诵与简答-核心概念背诵卡</td><td style="text-align:center;font-weight:700">67 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>python-knowledge-tree</td><td style="text-align:center;font-weight:700">44 处</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>ai-knowledge-tree</td><td style="text-align:center;font-weight:700">31 处</td></tr>
+    </tbody>
+  </table>
+  <p class="desc">注：硬编码色值数量是"每个页面 1 条告警"，告警中标注了色值出现次数（如 172 处），上表"硬编码色值数"列指的是该次数。</p>
+
+  <h3>1.7 P3 低 — 行内静态样式（42 个）</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">级别</th>
+        <th>页面</th>
+        <th>行内属性</th>
+        <th style="width:60px">数量</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>练习测验</td><td>color ×10, padding ×2, font-size ×1</td><td style="text-align:center;font-weight:700">13</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>能力提升-学习驾驶舱</td><td>width ×9</td><td style="text-align:center;font-weight:700">9</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>job-skill-tree</td><td>color ×7, font-size ×2, width ×1</td><td style="text-align:center;font-weight:700">10</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>13015计算机系统原理</td><td>color ×3</td><td style="text-align:center;font-weight:700">3</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>python-knowledge-tree</td><td>color ×2</td><td style="text-align:center;font-weight:700">2</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>复盘总结-章节复盘</td><td>color ×1, font-size ×1</td><td style="text-align:center;font-weight:700">2</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>背诵与简答-核心概念背诵卡</td><td>color ×1, font-size ×1</td><td style="text-align:center;font-weight:700">2</td></tr>
+      <tr class="p3"><td><span class="tag p3">P3</span></td><td>ai-knowledge-tree</td><td>width ×1</td><td style="text-align:center;font-weight:700">1</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============ 优先级标注 ============ -->
+  <h2>二、知识点优先级标注缺失（132 个）</h2>
+  <p class="desc">扩展为全章节扫描后发现：离散数学 9 章 87 个知识点、数据结构 8 章 62 个知识点，大部分缺少优先级标签。</p>
+
+  <h3>2.1 各科目汇总</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">级别</th>
+        <th>科目</th>
+        <th style="width:60px">章节数</th>
+        <th style="width:80px">知识点总数</th>
+        <th style="width:80px">缺标签数</th>
+        <th style="width:80px">缺颜色数</th>
+        <th style="width:80px">完整标注</th>
+        <th>完成率</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td>02324离散数学</td>
+        <td style="text-align:center">9</td>
+        <td style="text-align:center">87</td>
+        <td style="text-align:center;font-weight:700;color:var(--red)">78</td>
+        <td style="text-align:center">0</td>
+        <td style="text-align:center;font-weight:700;color:var(--green)">9</td>
+        <td>
+          <div class="bar-container">
+            <div class="bar-track">
+              <div class="bar-fill complete" style="width:10.3%"></div>
+              <div class="bar-fill missing" style="width:89.7%;margin-left:-2px"></div>
+            </div>
+            <span class="bar-label">10.3%</span>
+          </div>
+        </td>
+      </tr>
+      <tr class="p1">
+        <td><span class="tag p1">P1</span></td>
+        <td>13003数据结构与算法</td>
+        <td style="text-align:center">8</td>
+        <td style="text-align:center">62</td>
+        <td style="text-align:center;font-weight:700;color:var(--red)">54</td>
+        <td style="text-align:center">0</td>
+        <td style="text-align:center;font-weight:700;color:var(--green)">8</td>
+        <td>
+          <div class="bar-container">
+            <div class="bar-track">
+              <div class="bar-fill complete" style="width:12.9%"></div>
+              <div class="bar-fill missing" style="width:87.1%;margin-left:-2px"></div>
+            </div>
+            <span class="bar-label">12.9%</span>
+          </div>
+        </td>
+      </tr>
+      <tr class="p3">
+        <td><span class="tag p3">P3</span></td>
+        <td>13015计算机系统原理</td>
+        <td style="text-align:center">6</td>
+        <td style="text-align:center">41</td>
+        <td style="text-align:center;color:var(--green)">0</td>
+        <td style="text-align:center">0</td>
+        <td style="text-align:center;font-weight:700;color:var(--green)">41</td>
+        <td>
+          <div class="bar-container">
+            <div class="bar-track">
+              <div class="bar-fill complete" style="width:100%"></div>
+            </div>
+            <span class="bar-label">100%</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>说明：</strong>计算机系统原理已 100% 完成标注（6 章 41 个知识点全部有标签+颜色）。离散数学和数据结构仅有第 1 章的知识点标注完成，其余章节（共 15 章 132 个知识点）全部缺少优先级标签。
+  </div>
+
+  <!-- ============ 按页面汇总 ============ -->
+  <h2>三、按页面违规分布</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px">页面</th>
+        <th>P0</th>
+        <th>P1</th>
+        <th>P3</th>
+        <th style="width:60px">合计</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>练习测验</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">7</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">6</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">14</td>
+        <td style="text-align:center;font-weight:700">27</td>
+      </tr>
+      <tr>
+        <td>背诵与简答-核心概念背诵卡</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">7</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">6</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">9</td>
+        <td style="text-align:center;font-weight:700">22</td>
+      </tr>
+      <tr>
+        <td>13015计算机系统原理</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">7</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">6</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">4</td>
+        <td style="text-align:center;font-weight:700">17</td>
+      </tr>
+      <tr>
+        <td>02324离散数学</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">5</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">7</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">2</td>
+        <td style="text-align:center;font-weight:700">14</td>
+      </tr>
+      <tr>
+        <td>13003数据结构与算法</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">5</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">7</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">2</td>
+        <td style="text-align:center;font-weight:700">14</td>
+      </tr>
+      <tr>
+        <td>job-skill-tree</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">6</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">5</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">13</td>
+        <td style="text-align:center;font-weight:700">24</td>
+      </tr>
+      <tr>
+        <td>复盘总结-章节复盘</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">7</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">2</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">2</td>
+        <td style="text-align:center;font-weight:700">11</td>
+      </tr>
+      <tr>
+        <td>能力提升-学习驾驶舱</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">5</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">4</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">10</td>
+        <td style="text-align:center;font-weight:700">19</td>
+      </tr>
+      <tr>
+        <td>python-knowledge-tree</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">5</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">2</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">3</td>
+        <td style="text-align:center;font-weight:700">10</td>
+      </tr>
+      <tr>
+        <td>ai-knowledge-tree</td>
+        <td style="text-align:center;color:var(--red);font-weight:700">5</td>
+        <td style="text-align:center;color:var(--orange);font-weight:700">2</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">2</td>
+        <td style="text-align:center;font-weight:700">9</td>
+      </tr>
+      <tr style="font-weight:700;background:var(--accent);color:#fff">
+        <td>合计</td>
+        <td style="text-align:center">62</td>
+        <td style="text-align:center">53</td>
+        <td style="text-align:center">52</td>
+        <td style="text-align:center">167</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>修复优先级建议：</strong><br>
+    1. 先修 P0 的 62 个全局变量覆盖（模式统一，批量处理快）<br>
+    2. 再修 P0 的 4 个 !important（逐个评估替代方案）<br>
+    3. P1 的 50 个裸类名可模块化重构时一起改<br>
+    4. P1 的 132 个缺失优先级标签需要逐章阅读教材后标注（工作量大但价值高）<br>
+    5. P3 的硬编码色值和行内样式可随日常维护逐步替换
+  </div>
+
+</div>
+</body>
+</html>

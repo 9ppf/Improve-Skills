@@ -14,30 +14,10 @@
 
 <title>13015 计算机系统原理 · 目录与知识框架</title>
 
+<link rel="stylesheet" href="../../../shared/base-vars.css">
 <style>
 
-    :root {
-
-      --bg: linear-gradient(135deg, #f0f9ff 0%, #fdf4ff 50%, #f0fdf4 100%);
-
-      --bg2: #fff;
-
-      --ink: #1e293b;
-
-      --muted: #64748b;
-
-      --rule: #e2e8f0;
-
-      --accent: #3b82f6;
-
-      --accent2: #8b5cf6;
-      --green: #10b981;
-
-      --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-
-      --max: 640px;
-
-    }
+    
 
 
 
@@ -286,7 +266,7 @@
 
     }
 
-    li { margin-bottom: 0.3rem; }
+    ul li { margin-bottom: 0.3rem; }
 
 
 
@@ -521,7 +501,7 @@
 
     .kf-week-card ul { padding: 0 0.8rem 0.5rem 1.5rem; font-size: 0.72rem; color: var(--ink); margin: 0; }
 
-    .kf-week-card li { margin-bottom: 0.2rem; }
+    .kf-week-card ul li { margin-bottom: 0.2rem; }
 
 
 
@@ -605,13 +585,13 @@
 
     .ss-mastery-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    .ss-mastery-btn.active[data-level="0"] { background: #94a3b8; border-color: #94a3b8; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="0"] { background: #94a3b8; border-color: #94a3b8; color: #fff; }
 
-    .ss-mastery-btn.active[data-level="1"] { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="1"] { background: #3b82f6; border-color: #3b82f6; color: #fff; }
 
-    .ss-mastery-btn.active[data-level="2"] { background: #16a34a; border-color: #16a34a; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="2"] { background: #16a34a; border-color: #16a34a; color: #fff; }
 
-    .ss-mastery-btn.active[data-level="3"] { background: #ea580c; border-color: #ea580c; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="3"] { background: #ea580c; border-color: #ea580c; color: #fff; }
 
     .ss-chapter-count { font-size: 0.72rem; color: var(--muted); margin-left: auto; }
 
@@ -807,7 +787,7 @@
 
     }
 
-    .chapter-tab-btn.active {
+    .chapter-tab-btn.zk-active {
 
       background: linear-gradient(135deg, #3b82f6, #8b5cf6);
 
@@ -855,7 +835,7 @@
 
     }
 
-    .chapter-tab-pane.active { display: block; }
+    .chapter-tab-pane.zk-active { display: block; }
 
     @keyframes tabFadeIn {
 
@@ -1143,7 +1123,7 @@
 
 }
 
-.lg-filter-btn.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+.lg-filter-btn.zk-active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
 
 .lg-filter-btn:hover { opacity: 0.8; }
 
@@ -1151,7 +1131,7 @@
 
 /* ===== Display Fix ===== */
 
-.chapter-tab-pane.active { display: block !important; }
+.chapter-tab-pane.zk-active { display: block !important; }
 
 
 
@@ -1263,7 +1243,7 @@
 
     }
 
-    .lg-filter-btn.active {
+    .lg-filter-btn.zk-active {
 
         background: linear-gradient(135deg, var(--accent), var(--accent2));
 
@@ -1449,13 +1429,13 @@
 
 </header>
 
-<div class="chapter-tabs" id="primaryTabs"><button class="chapter-tab-btn active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn" data-tab="chapter-detail"><span class="chapter-tab-text">章节精讲</span></button></div><div class="chapter-tabs" id="secondaryTabs" style="display:none;"><button class="chapter-tab-btn" data-chapter="1" data-tab="chapter-1"><span class="chapter-tab-text">第 1 章</span></button><button class="chapter-tab-btn" data-chapter="2" data-tab="chapter-2"><span class="chapter-tab-text">第 2 章</span></button><button class="chapter-tab-btn" data-chapter="3" data-tab="chapter-3"><span class="chapter-tab-text">第 3 章</span></button><button class="chapter-tab-btn" data-chapter="4" data-tab="chapter-4"><span class="chapter-tab-text">第 4 章</span></button><button class="chapter-tab-btn" data-chapter="5" data-tab="chapter-5"><span class="chapter-tab-text">第 5 章</span></button><button class="chapter-tab-btn" data-chapter="6" data-tab="chapter-6"><span class="chapter-tab-text">第 6 章</span></button></div>
+<div class="chapter-tabs" id="primaryTabs"><button class="chapter-tab-btn zk-active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn" data-tab="chapter-detail"><span class="chapter-tab-text">章节精讲</span></button></div><div class="chapter-tabs" id="secondaryTabs" style="display:none;"><button class="chapter-tab-btn" data-chapter="1" data-tab="chapter-1"><span class="chapter-tab-text">第 1 章</span></button><button class="chapter-tab-btn" data-chapter="2" data-tab="chapter-2"><span class="chapter-tab-text">第 2 章</span></button><button class="chapter-tab-btn" data-chapter="3" data-tab="chapter-3"><span class="chapter-tab-text">第 3 章</span></button><button class="chapter-tab-btn" data-chapter="4" data-tab="chapter-4"><span class="chapter-tab-text">第 4 章</span></button><button class="chapter-tab-btn" data-chapter="5" data-tab="chapter-5"><span class="chapter-tab-text">第 5 章</span></button><button class="chapter-tab-btn" data-chapter="6" data-tab="chapter-6"><span class="chapter-tab-text">第 6 章</span></button></div>
 
 
 
 
 
-<div class="chapter-tab-content"><div class="chapter-tab-pane active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
+<div class="chapter-tab-content"><div class="chapter-tab-pane zk-active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
 
 <div class="ss-dashboard-top">
 
@@ -2036,7 +2016,7 @@
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">必会公式</span>
     <span class="section-card-count">(4)</span>
@@ -2056,7 +2036,7 @@
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(4)</span>
@@ -2076,7 +2056,7 @@
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(2)</span>
@@ -2278,7 +2258,7 @@ CPU2000)、讨④服务器性能测试集(SPECweb99)等。<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(?)</span>
@@ -2338,7 +2318,7 @@ MFLOPS GFLOPS TFLOPS PFLOPS EFLOPS</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(?)</span>
@@ -2395,7 +2375,7 @@ MFLOPS GFLOPS TFLOPS PFLOPS EFLOPS</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">必会公式</span>
     <span class="section-card-count">(5)</span>
@@ -2413,7 +2393,7 @@ MFLOPS GFLOPS TFLOPS PFLOPS EFLOPS</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(5)</span>
@@ -2435,7 +2415,7 @@ MFLOPS GFLOPS TFLOPS PFLOPS EFLOPS</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(3)</span>
@@ -2491,7 +2471,7 @@ l6 lo lo<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(?)</span>
@@ -2537,7 +2517,7 @@ l6 lo lo<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(?)</span>
@@ -2594,7 +2574,7 @@ l6 lo lo<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(4)</span>
@@ -2616,7 +2596,7 @@ l6 lo lo<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(2)</span>
@@ -4054,7 +4034,7 @@ FFFOH,真值为-10000B = -1 6 ,结果为-6+（-16）= -2 2 ,验证正确。</p><
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(?)</span>
@@ -4114,7 +4094,7 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(?)</span>
@@ -4171,7 +4151,7 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">必会公式</span>
     <span class="section-card-count">(4)</span>
@@ -4187,7 +4167,7 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(3)</span>
@@ -4209,7 +4189,7 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(2)</span>
@@ -4219,7 +4199,7 @@ SSE指令集 SIMD 多媒体扩展通用寄存器 栈 (Stack)<br/>
 
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(?)</span>
@@ -4293,7 +4273,7 @@ ELF头 节头表 程序头表 只读代码段 可读/写数据段<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(?)</span>
@@ -4350,7 +4330,7 @@ ELF头 节头表 程序头表 只读代码段 可读/写数据段<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">必会公式</span>
     <span class="section-card-count">(4)</span>
@@ -4370,7 +4350,7 @@ ELF头 节头表 程序头表 只读代码段 可读/写数据段<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(4)</span>
@@ -4392,7 +4372,7 @@ ELF头 节头表 程序头表 只读代码段 可读/写数据段<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(3)</span>
@@ -5306,7 +5286,7 @@ o
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(?)</span>
@@ -5374,7 +5354,7 @@ FIFO算法 LRU算法 口＜0 位 cache写策略<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(?)</span>
@@ -5429,7 +5409,7 @@ FIFO算法 LRU算法 口＜0 位 cache写策略<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(4)</span>
@@ -5451,7 +5431,7 @@ FIFO算法 LRU算法 口＜0 位 cache写策略<br/>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(3)</span>
@@ -6279,7 +6259,7 @@ DMA控制U 0 方式下，CPU只需在最初的DMA初始化和最后处理“DMA�
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #10b981;">
+<div class="section-card collapse-card" style="border-left:4px solid #10b981;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(2)</span>
@@ -6674,7 +6654,7 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
           ch.querySelectorAll(".ss-mastery-btn").forEach(function(btn) {
 
-            btn.classList.toggle("active", parseInt(btn.dataset.level) === mastery);
+            btn.classList.toggle('zk-active', parseInt(btn.dataset.level) === mastery);
 
           });
 
@@ -6874,11 +6854,11 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
           primaryBtns.forEach(function(btn) {
 
-            btn.classList.toggle("active", btn.dataset.tab === tabId);
+            btn.classList.toggle('zk-active', btn.dataset.tab === tabId);
 
           });
 
-          tabPanes.forEach(function(pane) { pane.classList.remove("active"); });
+          tabPanes.forEach(function(pane) { pane.classList.remove('zk-active'); });
 
           secondaryBar.style.display = "flex";
 
@@ -6902,17 +6882,17 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
           primaryBtns.forEach(function(btn) {
 
-            btn.classList.toggle("active", btn.dataset.tab === tabId);
+            btn.classList.toggle('zk-active', btn.dataset.tab === tabId);
 
           });
 
           secondaryBar.style.display = "none";
 
-          secondaryBtns.forEach(function(btn) { btn.classList.remove("active"); });
+          secondaryBtns.forEach(function(btn) { btn.classList.remove('zk-active'); });
 
           tabPanes.forEach(function(pane) {
 
-            pane.classList.toggle("active", pane.dataset.tab === tabId);
+            pane.classList.toggle('zk-active', pane.dataset.tab === tabId);
 
           });
 
@@ -6932,13 +6912,13 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
         secondaryBtns.forEach(function(btn) {
 
-          btn.classList.toggle("active", btn.dataset.tab === tabId);
+          btn.classList.toggle('zk-active', btn.dataset.tab === tabId);
 
         });
 
         tabPanes.forEach(function(pane) {
 
-          pane.classList.toggle("active", pane.dataset.tab === tabId);
+          pane.classList.toggle('zk-active', pane.dataset.tab === tabId);
 
         });
 
@@ -7352,7 +7332,7 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
         filterBar.innerHTML =
 
-            '<button class="lg-filter-btn active" data-filter="all">全部 ' + totalCount + '</button>' +
+            '<button class="lg-filter-btn zk-active" data-filter="all">全部 ' + totalCount + '</button>' +
 
             '<button class="lg-filter-btn" data-filter="重点">🔴 重点 ' + (counts['重点']||0) + '</button>' +
 
@@ -7382,9 +7362,9 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
             if (e.target.classList.contains('lg-filter-btn')) {
 
-                filterBar.querySelectorAll('.lg-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+                filterBar.querySelectorAll('.lg-filter-btn').forEach(function(b) { b.classList.remove('zk-active'); });
 
-                e.target.classList.add('active');
+                e.target.classList.add('zk-active');
 
                 var filter = e.target.dataset.filter;
 

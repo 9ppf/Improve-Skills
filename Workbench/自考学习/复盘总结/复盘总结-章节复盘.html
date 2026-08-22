@@ -5,21 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>章节复盘总结 · 自考学习</title>
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --bg2: rgba(255, 255, 255, 0.72);
-      --ink: #1e293b;
-      --muted: #64748b;
-      --rule: #e2e8f0;
-      --accent: #2563eb;
-      --accent2: #8b5cf6;
-      --coral: #e11d48;
-      --green: #059669;
-      --amber: #d97706;
-      --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-      --max: 920px;
-    }
+  <link rel="stylesheet" href="../../shared/base-vars.css">
+<style>
+    
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; }
@@ -266,13 +254,13 @@
       font-family: inherit;
     }
     .ss-feature-tab:hover { color: var(--accent); }
-    .ss-feature-tab.active {
+    .ss-feature-tab.zk-active {
       background: #fff;
       color: var(--accent);
       box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
     }
     .ss-feature-panel { display: none; }
-    .ss-feature-panel.active { display: block; }
+    .ss-feature-panel.zk-active { display: block; }
 
     /* ============ 通用状态：加载 / 错误 / 空 ============ */
     .ss-loading { text-align: center; color: var(--muted); padding: 2.5rem 1rem; font-size: 0.92rem; }
@@ -477,13 +465,13 @@
       <div class="ss-review-subject">当前科目：<b id="subjectName">—</b></div>
     </header>
     <div class="ss-feature-tabs" id="featureTabs">
-      <button class="ss-feature-tab active" data-feature="review">📝 章节复盘</button>
+      <button class="ss-feature-tab zk-active" data-feature="review">📝 章节复盘</button>
       <button class="ss-feature-tab" data-feature="wrong">❌ 错题反思</button>
       <button class="ss-feature-tab" data-feature="bank">📚 题库管理</button>
     </div>
 
     <!-- 功能 1：章节复盘 -->
-    <div class="ss-feature-panel active" id="featureReview" data-feature="review">
+    <div class="ss-feature-panel zk-active" id="featureReview" data-feature="review">
     <div id="reviewInsight"></div>
     <section class="ss-review-dashboard" aria-label="复盘进度">
       <div class="ss-dashboard-top">
@@ -843,10 +831,10 @@
       function switchFeature(feature) {
         currentFeature = feature;
         document.querySelectorAll('.ss-feature-tab').forEach(function(t) {
-          t.classList.toggle('active', t.dataset.feature === feature);
+          t.classList.toggle('zk-active', t.dataset.feature === feature);
         });
         document.querySelectorAll('.ss-feature-panel').forEach(function(p) {
-          p.classList.toggle('active', p.dataset.feature === feature);
+          p.classList.toggle('zk-active', p.dataset.feature === feature);
         });
         if (feature !== 'bank') closeBankForm();
         loadActiveFeature();

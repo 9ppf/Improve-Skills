@@ -7,18 +7,13 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>岗位技能图谱</title>
-  <style>
-    :root {
-      --bg: #f8fafc; --bg2: rgba(255,255,255,0.72);
-      --ink: #1e293b; --muted: #64748b; --rule: #e2e8f0;
-      --accent: #2563eb; --accent2: #8b5cf6; --accent-soft: #eff6ff;
-      --green: #16a34a; --green-soft: rgba(22,163,74,0.08);
-      --orange: #ea580c; --orange-soft: rgba(234,88,12,0.08);
-      --code-bg: #1e1e2e; --code-text: #cdd6f4;
-      --font: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
-      --font-mono: "JetBrains Mono","SF Mono",Consolas,monospace;
-      --max: 920px;
-    }
+  <link rel="stylesheet" href="../shared/base-vars.css">
+<style>
+    body {
+  --green-soft: rgba(22,163,74,0.08);
+  --orange-soft: rgba(234,88,12,0.08);
+}
+
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{font-size:16px;scroll-behavior:smooth}
     body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.75;padding:1.5rem 1rem}
@@ -37,7 +32,7 @@
     .stage-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
     .stage-tab{padding:0.45rem 1rem;border-radius:10px;font-size:0.85rem;font-weight:600;border:1px solid var(--rule);background:#fff;color:var(--muted);cursor:pointer;transition:all 0.2s}
     .stage-tab:hover{border-color:var(--accent);color:var(--accent)}
-    .stage-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stage-tab.zk-active{background:var(--accent);color:#fff;border-color:var(--accent)}
     .stage-tab .stage-count{font-size:0.72rem;opacity:0.8;margin-left:0.3rem}
 
     .kp-list{display:flex;flex-direction:column;gap:0.8rem}
@@ -64,7 +59,7 @@
     .kp-copy-btn.copied{background:rgba(166,227,161,0.25);color:#a6e3a1;opacity:1}
     pre.kp-code{background:var(--code-bg);color:var(--code-text);padding:0.9rem 1rem;border-radius:10px;overflow-x:auto;font-family:var(--font-mono);font-size:0.82rem;line-height:1.6}
     .kp-answer-wrap{max-height:0;overflow:hidden;opacity:0;transition:max-height 0.3s ease,opacity 0.3s ease}
-    .kp-answer-wrap.show{max-height:2000px;opacity:1}
+    .kp-answer-wrap.zk-show{max-height:2000px;opacity:1}
     .kp-answer-toggle{font-size:0.8rem;font-weight:600;color:var(--accent);cursor:pointer;border:none;background:none;padding:0.3rem 0;display:flex;align-items:center;gap:0.3rem}
     .kp-answer-toggle:hover{text-decoration:underline}
     .kp-answer-toggle .arrow{transition:transform 0.3s ease;display:inline-block}
@@ -83,7 +78,7 @@
   .today-tasks h3{font-size:0.8rem;color:#64748b;margin:0 0 0.6rem;font-weight:600}
   .today-task-item{padding:0.6rem 0.8rem;margin-bottom:0.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all 0.2s;min-height:60px}
   .today-task-item:hover{border-color:#2563eb;box-shadow:0 2px 8px rgba(37,99,235,0.1)}
-  .today-task-item.active{border-color:#2563eb;background:#eff6ff}
+  .today-task-item.zk-active{border-color:#2563eb;background:#eff6ff}
   .today-task-item .tt-stage{font-size:0.7rem;color:#8b5cf6;font-weight:600;margin-bottom:0.2rem}
   .today-task-item .tt-title{font-size:0.8rem;color:#1e293b;line-height:1.4}
   .today-task-item .tt-time{font-size:0.7rem;color:#64748b;margin-top:0.2rem}
@@ -127,7 +122,7 @@
   .prereq-expand{font-size:0.68rem;color:#2563eb;cursor:pointer;background:none;border:none;padding:0.2rem 0.4rem;border-radius:4px;transition:background 0.2s}
   .prereq-expand:hover{background:#eff6ff}
   .prereq-content{display:none;margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed #e2e8f0}
-  .prereq-content.show{display:block}
+  .prereq-content.zk-show{display:block}
   .prereq-concept{font-size:0.75rem;color:#475569;line-height:1.6;margin-bottom:0.5rem}
   .prereq-steps{list-style:decimal;padding-left:1.2rem;margin:0}
   .prereq-steps li{font-size:0.73rem;color:#1e293b;line-height:1.6;margin-bottom:0.3rem}
@@ -140,7 +135,7 @@
   .kp-guide-layer h3{font-size:0.8rem;color:#2563eb;margin:0 0 0.5rem}
   .kp-guide-toggle{cursor:pointer;color:#2563eb;font-size:0.75rem;font-weight:600}
   .kp-guide-content{display:none;margin-top:0.5rem}
-  .kp-guide-content.show{display:block}
+  .kp-guide-content.zk-show{display:block}
 
   /* 响应式：窄屏垂直堆叠 */
   @media(max-width:640px){
@@ -631,7 +626,7 @@
   window.toggleAnswer=function(btn){
     btn.classList.toggle('open');
     var wrap=btn.nextElementSibling;
-    if(wrap){wrap.classList.toggle('show')}
+    if(wrap){wrap.classList.toggle('zk-show')}
     btn.innerHTML=btn.classList.contains('open')?
       '收起参考答案 <span class="arrow">▼</span>':
       '查看参考答案 <span class="arrow">▼</span>';
@@ -765,8 +760,8 @@
     var items=tasksEl.querySelectorAll('.today-task-item');
     items.forEach(function(item){
       item.addEventListener('click',function(){
-        items.forEach(function(x){x.classList.remove('active');});
-        this.classList.add('active');
+        items.forEach(function(x){x.classList.remove('zk-active');});
+        this.classList.add('zk-active');
         var idx=parseInt(this.getAttribute('data-task-idx'));
         renderTodayGuide(week.tasks[idx]);
       });
@@ -906,11 +901,11 @@
       btn.addEventListener('click',function(){
         var content=this.closest('.prereq-item').querySelector('.prereq-content');
         if(content){
-          if(content.classList.contains('show')){
-            content.classList.remove('show');
+          if(content.classList.contains('zk-show')){
+            content.classList.remove('zk-show');
             this.textContent='展开 ▼';
           }else{
-            content.classList.add('show');
+            content.classList.add('zk-show');
             this.textContent='收起 ▲';
           }
         }

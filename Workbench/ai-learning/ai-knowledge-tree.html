@@ -8,24 +8,13 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>AI 知识图谱</title>
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --bg2: rgba(255, 255, 255, 0.72);
-      --ink: #1e293b;
-      --muted: #64748b;
-      --rule: #e2e8f0;
-      --accent: #2563eb;
-      --accent2: #8b5cf6;
-      --accent-soft: #eff6ff;
-      --warn: #d97706;
-      --warn-soft: #fffbeb;
-      --code-bg: #1e1e2e;
-      --code-text: #cdd6f4;
-      --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-      --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
-      --max: 920px;
-    }
+  <link rel="stylesheet" href="../shared/base-vars.css">
+<style>
+    body {
+  --warn: #d97706;
+  --warn-soft: #fffbeb;
+}
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; scroll-behavior: smooth; }
     body {
@@ -54,7 +43,7 @@
       border: 1px solid var(--rule); background: #fff; color: var(--muted); cursor: pointer; transition: all 0.2s;
     }
     .stage-tab:hover { border-color: var(--accent); color: var(--accent); }
-    .stage-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .stage-tab.zk-active { background: var(--accent); color: #fff; border-color: var(--accent); }
     .stage-tab .stage-count { font-size: 0.72rem; opacity: 0.8; margin-left: 0.3rem; }
 
     .kp-list { display: flex; flex-direction: column; gap: 0.8rem; }
@@ -108,7 +97,7 @@
     .kp-answer-icon { font-size: 0.7rem; transition: transform 0.2s; }
     .kp-answer-toggle.open .kp-answer-icon { transform: rotate(180deg); }
     .kp-answer-wrap { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s, opacity 0.3s; }
-    .kp-answer-wrap.show { max-height: 800px; opacity: 1; }
+    .kp-answer-wrap.zk-show { max-height: 800px; opacity: 1; }
     .kp-layer.ai { background: var(--accent-soft); border-radius: 0 0 14px 14px; }
     .kp-layer.ai h3 { color: var(--accent); }
     .kp-layer.demo { background: #f0fdf4; }
@@ -469,12 +458,12 @@
       btn.addEventListener("click", function() {
         var wrap = this.nextElementSibling;
         var label = this.querySelector("span:first-child");
-        if (wrap.classList.contains("show")) {
-          wrap.classList.remove("show");
+        if (wrap.classList.contains('zk-show')) {
+          wrap.classList.remove('zk-show');
           this.classList.remove("open");
           label.textContent = "查看参考答案";
         } else {
-          wrap.classList.add("show");
+          wrap.classList.add('zk-show');
           this.classList.add("open");
           label.textContent = "收起参考答案";
         }

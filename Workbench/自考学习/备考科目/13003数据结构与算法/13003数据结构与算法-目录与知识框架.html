@@ -6,18 +6,9 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>13003 数据结构与算法 · 目录与知识框架</title>
+<link rel="stylesheet" href="../../../shared/base-vars.css">
 <style>
-    :root {
-      --bg: #f8fafc;
-      --bg2: rgba(255, 255, 255, 0.72);
-      --ink: #1e293b;
-      --muted: #64748b;
-      --rule: #e2e8f0;
-      --accent: #3b82f6;
-      --accent2: #8b5cf6;
-      --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-      --max: 860px;
-    }
+    
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; }
@@ -129,7 +120,7 @@
       margin-left: 1.25rem;
       margin-bottom: 0.75rem;
     }
-    li { margin-bottom: 0.4rem; }
+    ul li { margin-bottom: 0.4rem; }
 
     .framework-chapter {
       margin-bottom: 1.5rem;
@@ -235,10 +226,10 @@
       cursor: pointer; font-family: inherit; transition: all 0.15s;
     }
     .ss-mastery-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .ss-mastery-btn.active[data-level="0"] { background: #94a3b8; border-color: #94a3b8; color: #fff; }
-    .ss-mastery-btn.active[data-level="1"] { background: #3b82f6; border-color: #3b82f6; color: #fff; }
-    .ss-mastery-btn.active[data-level="2"] { background: #16a34a; border-color: #16a34a; color: #fff; }
-    .ss-mastery-btn.active[data-level="3"] { background: #ea580c; border-color: #ea580c; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="0"] { background: #94a3b8; border-color: #94a3b8; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="1"] { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="2"] { background: #16a34a; border-color: #16a34a; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="3"] { background: #ea580c; border-color: #ea580c; color: #fff; }
     .ss-chapter-count { font-size: 0.8rem; color: var(--muted); margin-left: auto; }
     .ss-keypoints {
       font-size: 0.88rem; color: var(--ink); margin-bottom: 0.75rem;
@@ -331,7 +322,7 @@
       background: rgba(37, 99, 235, 0.08);
       color: var(--accent);
     }
-    .chapter-tab-btn.active {
+    .chapter-tab-btn.zk-active {
       background: linear-gradient(135deg, #3b82f6, #8b5cf6);
       color: #fff;
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
@@ -353,7 +344,7 @@
       display: none;
       animation: tabFadeIn 0.25s ease;
     }
-    .chapter-tab-pane.active { display: block; }
+    .chapter-tab-pane.zk-active { display: block; }
     @keyframes tabFadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
@@ -457,12 +448,12 @@
     cursor: pointer;
     transition: all 0.2s;
 }
-.lg-filter-btn.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+.lg-filter-btn.zk-active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
 .lg-filter-btn:hover { opacity: 0.8; }
 
 /* ===== Display Fix ===== */
-.chapter-tab-btn.hidden-chapter-tab.active { display: inline-flex !important; }
-.chapter-tab-pane.active { display: block !important; }
+.chapter-tab-btn.hidden-chapter-tab.zk-active { display: inline-flex !important; }
+.chapter-tab-pane.zk-active { display: block !important; }
 
 
     /* === 新增：章节精讲卡片化 === */
@@ -607,7 +598,7 @@
         border-color: var(--accent);
         color: var(--accent);
     }
-    .lg-filter-btn.active {
+    .lg-filter-btn.zk-active {
         background: linear-gradient(135deg, var(--accent), var(--accent2));
         color: #fff;
         border-color: transparent;
@@ -645,7 +636,7 @@
 <div class="callout">
 <strong>例题说明：</strong>以下「典型例题」与「同步练习」是从教材 PDF 自动提取的，部分符号、数字或字母可能存在 OCR 识别误差。若发现题面与教材不一致，请以纸质教材为准。
     </div>
-<main><div class="chapter-tabs"><button class="chapter-tab-btn active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn" data-chapter="1" data-tab="chapter-1"><span class="chapter-tab-text">第 1 章 绪论</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="2" data-tab="chapter-2"><span class="chapter-tab-text">第 2 章 线性表</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="3" data-tab="chapter-3"><span class="chapter-tab-text">第 3 章 栈和队列</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="4" data-tab="chapter-4"><span class="chapter-tab-text">第 4 章 数组、广义表和串</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="5" data-tab="chapter-5"><span class="chapter-tab-text">第 5 章 树与二叉树</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="6" data-tab="chapter-6"><span class="chapter-tab-text">第 6 章 图结构</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="7" data-tab="chapter-7"><span class="chapter-tab-text">第 7 章 内部排序</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="8" data-tab="chapter-8"><span class="chapter-tab-text">第 8 章 查找</span><span class="chapter-tab-dot"></span></button></div><div class="chapter-tab-content"><div class="chapter-tab-pane active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
+<main><div class="chapter-tabs"><button class="chapter-tab-btn zk-active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn" data-chapter="1" data-tab="chapter-1"><span class="chapter-tab-text">第 1 章 绪论</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="2" data-tab="chapter-2"><span class="chapter-tab-text">第 2 章 线性表</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="3" data-tab="chapter-3"><span class="chapter-tab-text">第 3 章 栈和队列</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="4" data-tab="chapter-4"><span class="chapter-tab-text">第 4 章 数组、广义表和串</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="5" data-tab="chapter-5"><span class="chapter-tab-text">第 5 章 树与二叉树</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="6" data-tab="chapter-6"><span class="chapter-tab-text">第 6 章 图结构</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="7" data-tab="chapter-7"><span class="chapter-tab-text">第 7 章 内部排序</span><span class="chapter-tab-dot"></span></button><button class="chapter-tab-btn" data-chapter="8" data-tab="chapter-8"><span class="chapter-tab-text">第 8 章 查找</span><span class="chapter-tab-dot"></span></button></div><div class="chapter-tab-content"><div class="chapter-tab-pane zk-active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
 <div class="ss-dashboard-top">
 <span class="ss-dashboard-label">掌握进度</span>
 <span class="ss-dashboard-count"><b id="ss-mastered-count">0</b> / <span id="ss-total-count">0</span> 章已掌握</span>
@@ -911,7 +902,7 @@
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">必会公式</span>
     <span class="section-card-count">(2)</span>
@@ -924,7 +915,7 @@
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(5)</span>
@@ -940,7 +931,7 @@
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(3)</span>
@@ -1079,7 +1070,7 @@ O<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #10b981;">
+<div class="section-card collapse-card" style="border-left:4px solid #10b981;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(2)</span>
@@ -1100,7 +1091,7 @@ A .数据项 B .字符 C .二进制位 D .数据记录</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card " style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card" style="border-left:4px solid #ef4444;">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(4)</span>
@@ -2852,7 +2843,7 @@ i=i n j=i<br/>
           if (mastery === 2) masteredCount++;
 
           ch.querySelectorAll(".ss-mastery-btn").forEach(function(btn) {
-            btn.classList.toggle("active", parseInt(btn.dataset.level) === mastery);
+            btn.classList.toggle('zk-active', parseInt(btn.dataset.level) === mastery);
           });
           ch.dataset.mastery = mastery;
 
@@ -2911,10 +2902,10 @@ i=i n j=i<br/>
 
       function switchTab(tabId) {
         tabBtns.forEach(function(btn) {
-          btn.classList.toggle("active", btn.dataset.tab === tabId);
+          btn.classList.toggle('zk-active', btn.dataset.tab === tabId);
         });
         tabPanes.forEach(function(pane) {
-          pane.classList.toggle("active", pane.dataset.tab === tabId);
+          pane.classList.toggle('zk-active', pane.dataset.tab === tabId);
         });
         try { localStorage.setItem(STORAGE_TAB_KEY, tabId); } catch(e) {}
         var tabsEl = document.querySelector('.chapter-tabs');
@@ -3107,7 +3098,7 @@ i=i n j=i<br/>
         filterBar.className = 'lg-filter-bar';
         var totalCount = (counts['重点']||0) + (counts['一般']||0) + (counts['了解']||0);
         filterBar.innerHTML =
-            '<button class="lg-filter-btn active" data-filter="all">全部 ' + totalCount + '</button>' +
+            '<button class="lg-filter-btn zk-active" data-filter="all">全部 ' + totalCount + '</button>' +
             '<button class="lg-filter-btn" data-filter="重点">🔴 重点 ' + (counts['重点']||0) + '</button>' +
             '<button class="lg-filter-btn" data-filter="一般">🟡 一般 ' + (counts['一般']||0) + '</button>' +
             '<button class="lg-filter-btn" data-filter="了解">🟢 了解 ' + (counts['了解']||0) + '</button>';
@@ -3115,8 +3106,8 @@ i=i n j=i<br/>
 
         filterBar.addEventListener('click', function(e) {
             if (e.target.classList.contains('lg-filter-btn')) {
-                filterBar.querySelectorAll('.lg-filter-btn').forEach(function(b) { b.classList.remove('active'); });
-                e.target.classList.add('active');
+                filterBar.querySelectorAll('.lg-filter-btn').forEach(function(b) { b.classList.remove('zk-active'); });
+                e.target.classList.add('zk-active');
                 var filter = e.target.dataset.filter;
                 chapterEl.querySelectorAll('.lg-kp-item').forEach(function(item) {
                     if (filter === 'all' || item.dataset.priority === filter) {
