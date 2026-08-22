@@ -28,6 +28,10 @@
 | `.trae/skills/validate_workbench.py` | 修复中文文件名 bug：check_commit_acceptance_tag() 的 git diff 加 -c core.quotepath=false |
 | `文件说明.md` | 补全 11 个缺失文件记录 + 添加「最后更新」版本标记 |
 | `githooks/commit-msg` | 新增 commit-msg hook：检查提交信息含 [验收通过]，兼容 BOM 和 Windows 换行符，豁免 merge/revert |
+| `.trae/skills/validate_workbench.py` | 结构性变更+验收标记从 advisory 升级为 critical（strict 模式阻止提交） |
+| `.trae/skills/check_structural_change.py` | 废弃 .structural-change-approved 文件机制，改为检查 commit message 中 [方案已确认] 标记 |
+| `.trae/skills/structural-change-workflow/SKILL.md` | 新增第5步提交规范：结构性变更需 [方案已确认] [验收通过] 双标记 |
+| `githooks/commit-msg` | 升级：调用 Python 检测结构性变更（staged_only），结构性变更提交缺 [方案已确认] 时拦截 |
 
 ---
 

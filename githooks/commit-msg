@@ -1,27 +1,69 @@
 #!/bin/sh
-# commit-msg hook: 检查提交信息中是否包含 [验收通过] 标记
+# commit-msg hook: 检查提交信息标记
+# - 所有提交必须有 [验收通过] 标记
+# - 结构性变更提交还必须有 [方案已确认] 标记
 # 如需跳过（不推荐），使用 git commit --no-verify
 
 commit_msg_file="$1"
-# 去除 BOM 和 \r（Windows 换行符兼容）
-commit_msg=$(sed '1s/^\xEF\xBB\xBF//' "$commit_msg_file" | tr -d '\r')
 
-# 检查是否包含 [验收通过] 标记
-if echo "$commit_msg" | grep -q '\[验收通过\]'; then
-    exit 0
+# 查找 Python
+PYTHON=""
+if command -v python >/dev/null 2>&1; then
+    PYTHON="python"
+elif [ -f "/e/Python/python.exe" ]; then
+    PYTHON="/e/Python/python.exe"
 fi
 
-# 如果是 merge commit 或 revert，跳过检查
+# merge commit 或 revert 跳过所有检查
+commit_msg=$(sed '1s/^\xEF\xBB\xBF//' "$commit_msg_file" | tr -d '\r')
 if echo "$commit_msg" | grep -qE '^Merge |^Revert '; then
     exit 0
 fi
 
-echo ""
-echo "❌ 提交信息中未检测到 [验收通过] 标记！"
-echo "   请按 documentation-versioning skill 流程："
-echo "   1. 完成后先给用户验收"
-echo "   2. 用户回复'可以提交'后再提交"
-echo "   3. 提交信息格式：<type>: <描述> [验收通过]"
-echo ""
-echo "   如需跳过（不推荐），使用 'git commit --no-verify'"
-exit 1
+# 检查 [验收通过] 标记
+has_acceptance=false
+if echo "$commit_msg" | grep -q '\[验收通过\]'; then
+    has_acceptance=true
+fi
+
+# 检查是否结构性变更（调用 Python 检测）
+is_structural=false
+if [ -n "$PYTHON" ]; then
+    result=$($PYTHON -c "
+import sys, os
+sys.path.insert(0, '.trae/skills')
+from check_structural_change import get_changed_files, detect_structural_changes
+changed = get_changed_files(staged_only=True)
+is_s, _ = detect_structural_changes(changed)
+print('true' if is_s else 'false')
+" 2>/dev/null)
+    if [ "$result" = "true" ]; then
+        is_structural=true
+    fi
+fi
+
+# 检查 [方案已确认] 标记
+has_approval=false
+if echo "$commit_msg" | grep -q '\[方案已确认\]'; then
+    has_approval=true
+fi
+
+# 判断是否通过
+errors=""
+
+if [ "$has_acceptance" = "false" ]; then
+    errors="${errors}❌ 提交信息中未检测到 [验收通过] 标记！\n   提交信息格式：<type>: <描述> [验收通过]\n"
+fi
+
+if [ "$is_structural" = "true" ] && [ "$has_approval" = "false" ]; then
+    errors="${errors}❌ 检测到结构性变更，但提交信息中未检测到 [方案已确认] 标记！\n   结构性变更提交格式：<type>: <描述> [方案已确认] [验收通过]\n"
+fi
+
+if [ -n "$errors" ]; then
+    echo ""
+    echo "$errors" | sed 's/\\n/\n/g'
+    echo "   如需跳过（不推荐），使用 'git commit --no-verify'"
+    exit 1
+fi
+
+exit 0

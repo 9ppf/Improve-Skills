@@ -47,22 +47,29 @@ def run_git(args):
         return ''
 
 
-def get_changed_files():
-    """获取本次变更的文件列表（staged + unstaged）"""
+def get_changed_files(staged_only=False):
+    """获取本次变更的文件列表
+    staged_only=False（默认）：staged + unstaged + untracked（用于全量检测）
+    staged_only=True：只检查暂存区（用于 pre-commit，只关心会被提交的文件）
+    """
+    files = set()
+
     # 暂存区的变更
     staged = run_git(['diff', '--cached', '--name-only'])
-    # 未暂存的变更
-    unstaged = run_git(['diff', '--name-only'])
-    # 未追踪的文件
-    untracked = run_git(['ls-files', '--others', '--exclude-standard'])
-
-    files = set()
     for line in staged.split('\n'):
         if line.strip():
             files.add(line.strip())
+
+    if staged_only:
+        return files
+
+    # 未暂存的变更
+    unstaged = run_git(['diff', '--name-only'])
     for line in unstaged.split('\n'):
         if line.strip():
             files.add(line.strip())
+    # 未追踪的文件
+    untracked = run_git(['ls-files', '--others', '--exclude-standard'])
     for line in untracked.split('\n'):
         if line.strip():
             files.add(line.strip())
@@ -135,14 +142,16 @@ def detect_structural_changes(changed_files):
 
 
 def check_commit_message_has_confirmation():
-    """检查提交信息中是否有方案确认标记"""
-    # 尝试从环境变量或 git 配置中获取当前提交信息
-    # pre-commit 时还没有 commit message，所以检查暂存区是否有方案文档
-    # 或者检查是否存在 .structural-change-approved 文件
-
-    approved_file = ROOT / '.structural-change-approved'
-    if approved_file.exists():
-        return True, approved_file.read_text(encoding='utf-8').strip()
+    """检查提交信息中是否有方案确认标记 [方案已确认]"""
+    # pre-commit 阶段提交信息还没写，检查 COMMIT_EDITMSG（可能包含上次的或正在编辑的）
+    commit_msg_path = ROOT / '.git' / 'COMMIT_EDITMSG'
+    if commit_msg_path.exists():
+        try:
+            msg = commit_msg_path.read_text(encoding='utf-8', errors='replace')
+            if '[方案已确认]' in msg:
+                return True, '[方案已确认] 标记已在提交信息中'
+        except Exception:
+            pass
 
     return False, ''
 
@@ -174,9 +183,7 @@ def main():
         warnings.append('  请按 structural-change-workflow skill 流程：')
         warnings.append('  1. 先列方案（含完成标准）')
         warnings.append('  2. 用户确认后再执行')
-        warnings.append('  3. 确认后在项目根目录创建 .structural-change-approved 文件')
-        warnings.append('     内容为用户确认的方案摘要')
-        warnings.append('  4. 提交后删除该文件')
+        warnings.append('  3. 提交信息中加 [方案已确认] 标记')
 
     for w in warnings:
         print(f'  - {w}' if w.startswith('  ') else w)

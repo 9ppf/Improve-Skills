@@ -1330,7 +1330,7 @@ def main() -> int:
     structural_change_warnings = []
     try:
         sc_spec.loader.exec_module(sc_module)
-        changed = sc_module.get_changed_files()
+        changed = sc_module.get_changed_files(staged_only=True)
         is_structural, reasons = sc_module.detect_structural_changes(changed)
         if is_structural:
             has_approval, _ = sc_module.check_commit_message_has_confirmation()
@@ -1345,14 +1345,15 @@ def main() -> int:
     # Critical warnings: block commit in --strict mode
     critical_warnings = (
         doc_warnings + summary_sync_warnings +
-        tmp_dir_warnings + workbench_temp_warnings
+        tmp_dir_warnings + workbench_temp_warnings +
+        structural_change_warnings + acceptance_tag_warnings
     )
     # Advisory warnings: print but don't block
     advisory_warnings = (
         naming_warnings + generic_global_warnings +
         comment_warnings + backup_warnings + json_naming_warnings +
         date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings + structural_change_warnings + acceptance_tag_warnings + file_doc_warnings + temp_clean_warnings + css_standard_warnings + priority_label_warnings
+        dir_sync_warnings + changelog_coverage_warnings + file_doc_warnings + temp_clean_warnings + css_standard_warnings + priority_label_warnings
     )
     all_warnings = critical_warnings + advisory_warnings
 
