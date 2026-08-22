@@ -1137,7 +1137,7 @@ def check_commit_acceptance_tag() -> list[str]:
 
     try:
         result = sp.run(
-            [git_exe, 'diff', '--cached', '--name-only'],
+            [git_exe, '-c', 'core.quotepath=false', 'diff', '--cached', '--name-only'],
             cwd=str(root), capture_output=True, text=True, encoding='utf-8', errors='replace',
             timeout=10
         )

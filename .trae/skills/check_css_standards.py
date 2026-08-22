@@ -36,10 +36,10 @@ TAG_SELECTORS = {'div', 'p', 'span', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h
 
 
 def get_git_changed_html_files():
-    """获取 git 中变更的 HTML 文件列表"""
+    """获取 git 中变更的 HTML 文件列表（关闭 quotepath 避免中文文件名被转义）"""
     try:
         result = subprocess.run(
-            ['git', 'diff', '--name-only', 'HEAD'],
+            ['git', '-c', 'core.quotepath=false', 'diff', '--name-only', 'HEAD'],
             cwd=ROOT, capture_output=True, text=True, encoding='utf-8'
         )
         files = [f.strip() for f in result.stdout.strip().split('\n') if f.strip()]

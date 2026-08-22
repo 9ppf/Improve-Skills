@@ -19,6 +19,15 @@
 | `Workbench/自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html` | 章节精讲样式全面升级（与系统原理对齐）：同上；版本号 v2.4.4 |
 | `data/modules/self-study.json` | 三科知识框架版本号更新 |
 | `AGENT_HANDOFF.md` | 版本号更新为 v2.20.0，版本记录表新增 v2.20.0 条目 |
+| `用户偏好与AI协作建议.md` | v2.20 更新：用户性格速写、工作模式三档位、设计稿还原规范、新Agent忠告 |
+| `工作台搭建总结.md` | 版本号同步至 v2.20.0 |
+| `文件约束隐患与规避方案.md` | v2.20.x Skill 化建设进度更新 |
+| `.trae/skills/ui-design-restoration/SKILL.md` | 设计稿还原 Skill 文档更新 |
+| `.trae/skills/check_structural_change.py` | 修复中文文件名 bug：run_git() 加 -c core.quotepath=false |
+| `.trae/skills/check_css_standards.py` | 修复中文文件名 bug：get_git_changed_html_files() 加 -c core.quotepath=false |
+| `.trae/skills/validate_workbench.py` | 修复中文文件名 bug：check_commit_acceptance_tag() 的 git diff 加 -c core.quotepath=false |
+| `文件说明.md` | 补全 11 个缺失文件记录 + 添加「最后更新」版本标记 |
+| `githooks/commit-msg` | 新增 commit-msg hook：检查提交信息含 [验收通过]，兼容 BOM 和 Windows 换行符，豁免 merge/revert |
 
 ---
 

@@ -32,10 +32,10 @@ WORKBENCH_DIR = ROOT / 'Workbench'
 
 
 def run_git(args):
-    """运行 git 命令并返回输出"""
+    """运行 git 命令并返回输出（关闭 quotepath 避免中文文件名被转义）"""
     try:
         result = subprocess.run(
-            ['git'] + args,
+            ['git', '-c', 'core.quotepath=false'] + args,
             cwd=str(ROOT),
             capture_output=True,
             text=True,

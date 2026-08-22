@@ -1,0 +1,27 @@
+#!/bin/sh
+# commit-msg hook: 检查提交信息中是否包含 [验收通过] 标记
+# 如需跳过（不推荐），使用 git commit --no-verify
+
+commit_msg_file="$1"
+# 去除 BOM 和 \r（Windows 换行符兼容）
+commit_msg=$(sed '1s/^\xEF\xBB\xBF//' "$commit_msg_file" | tr -d '\r')
+
+# 检查是否包含 [验收通过] 标记
+if echo "$commit_msg" | grep -q '\[验收通过\]'; then
+    exit 0
+fi
+
+# 如果是 merge commit 或 revert，跳过检查
+if echo "$commit_msg" | grep -qE '^Merge |^Revert '; then
+    exit 0
+fi
+
+echo ""
+echo "❌ 提交信息中未检测到 [验收通过] 标记！"
+echo "   请按 documentation-versioning skill 流程："
+echo "   1. 完成后先给用户验收"
+echo "   2. 用户回复'可以提交'后再提交"
+echo "   3. 提交信息格式：<type>: <描述> [验收通过]"
+echo ""
+echo "   如需跳过（不推荐），使用 'git commit --no-verify'"
+exit 1
