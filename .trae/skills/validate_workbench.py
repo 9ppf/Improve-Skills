@@ -1294,11 +1294,19 @@ def main() -> int:
         css_spec.loader.exec_module(css_module)
         css_issues = css_module.check_css_standards()
         if css_issues:
-            css_standard_warnings.append(f'CSS 规范检查发现 {len(css_issues)} 个问题：')
+            css_standard_warnings.append(f'CSS 增量规范检查发现 {len(css_issues)} 个问题：')
             for c in css_issues[:5]:
                 css_standard_warnings.append(f'  - {c}')
             if len(css_issues) > 5:
                 css_standard_warnings.append(f'  ... 还有 {len(css_issues)-5} 个')
+        # 基线扫描核心页面
+        baseline_issues = css_module.check_css_baseline()
+        if baseline_issues:
+            css_standard_warnings.append(f'CSS 基线扫描发现 {len(baseline_issues)} 个问题：')
+            for c in baseline_issues[:5]:
+                css_standard_warnings.append(f'  - {c}')
+            if len(baseline_issues) > 5:
+                css_standard_warnings.append(f'  ... 还有 {len(baseline_issues)-5} 个')
     except Exception as e:
         css_standard_warnings.append(f'CSS 规范检查失败：{e}')
 

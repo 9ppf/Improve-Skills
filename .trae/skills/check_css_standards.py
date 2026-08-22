@@ -163,12 +163,11 @@ def check_file(filepath):
 
 
 def check_css_standards():
-    """检查所有变更的 HTML 文件的 CSS 规范"""
+    """检查变更 HTML 文件的 CSS 规范（增量模式）"""
     changed_files = get_git_changed_html_files()
     all_issues = []
 
     if not changed_files:
-        # 如果没有变更文件，返回空（不检查整个项目，太多历史问题）
         return all_issues
 
     for f in changed_files:
@@ -178,15 +177,46 @@ def check_css_standards():
     return all_issues
 
 
+# 全量基线扫描的核心页面（只扫关键页面，避免全量扫描太多历史问题）
+BASELINE_FILES = [
+    'Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html',
+    'Workbench/自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html',
+    'Workbench/自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html',
+    'Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html',
+    'Workbench/自考学习/背诵与简答/练习测验.html',
+    'Workbench/自考学习/复盘总结/复盘总结-章节复盘.html',
+    'Workbench/今日学习/today-flow.html',
+    'Workbench/能力提升/能力提升-学习驾驶舱.html',
+    'Workbench/Python基础/python-knowledge-tree.html',
+    'Workbench/ai-learning/ai-knowledge-tree.html',
+    'Workbench/ai-learning/job-skill-tree.html',
+]
+
+
+def check_css_baseline():
+    """全量基线扫描：检查核心页面的 CSS 规范"""
+    all_issues = []
+    for f in BASELINE_FILES:
+        issues = check_file(f)
+        all_issues.extend(issues)
+    return all_issues
+
+
 if __name__ == "__main__":
-    issues = check_css_standards()
+    # --baseline 模式：全量扫描核心页面
+    if '--baseline' in sys.argv:
+        issues = check_css_baseline()
+        label = 'CSS 基线'
+    else:
+        issues = check_css_standards()
+        label = 'CSS 增量'
     if issues:
-        print(f"[WARN] CSS 规范检查发现 {len(issues)} 个问题：")
+        print(f"[WARN] {label}规范检查发现 {len(issues)} 个问题：")
         for i in issues[:10]:
             print(f"  - {i}")
         if len(issues) > 10:
             print(f"  ... 还有 {len(issues)-10} 个")
         sys.exit(1)
     else:
-        print("[OK] CSS 规范检查通过")
+        print(f"[OK] {label}规范检查通过")
         sys.exit(0)

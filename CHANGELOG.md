@@ -32,6 +32,10 @@
 | `.trae/skills/check_structural_change.py` | 废弃 .structural-change-approved 文件机制，改为检查 commit message 中 [方案已确认] 标记 |
 | `.trae/skills/structural-change-workflow/SKILL.md` | 新增第5步提交规范：结构性变更需 [方案已确认] [验收通过] 双标记 |
 | `githooks/commit-msg` | 升级：调用 Python 检测结构性变更（staged_only），结构性变更提交缺 [方案已确认] 时拦截 |
+| `.trae/skills/check_css_standards.py` | 新增 check_css_baseline() 全量基线扫描（11个核心页面），支持 --baseline 参数 |
+| `.trae/skills/check_priority_labels.py` | 扩展为全章节扫描（find_all_core_concepts_sections），不再只查第一个核心概念板块 |
+| `.trae/skills/validate_workbench.py` | CSS 检查增加基线扫描调用 |
+| `项目约束总览.md` | 更新校验脚本索引：补充 critical 标记、CSS 基线扫描、全章节优先级检查、githooks 路径 |
 
 ---
 

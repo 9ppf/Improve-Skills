@@ -31,19 +31,20 @@ SUBJECTS = {
 PRIORITY_MARKERS = ['🔴', '🟡', '🟢', '重点', '一般', '了解']
 
 
-def find_core_concepts_section(html_content):
-    """找到核心概念板块的内容"""
-    # 匹配核心概念板块（包含"核心概念"的卡片/section）
-    # 多种可能的结构
+def find_all_core_concepts_sections(html_content):
+    """找到所有章节的核心概念板块内容（每章都有一个核心概念板块）"""
+    sections = []
+    # 匹配所有"核心概念"标题后面的 ul 列表
     patterns = [
         r'核心概念.*?</div>\s*<ul>(.*?)</ul>',
         r'核心概念[\s\S]*?<ul>(.*?)</ul>',
     ]
     for pat in patterns:
-        m = re.search(pat, html_content, re.DOTALL | re.IGNORECASE)
-        if m:
-            return m.group(1)
-    return None
+        matches = re.findall(pat, html_content, re.DOTALL | re.IGNORECASE)
+        if matches:
+            sections.extend(matches)
+            break
+    return sections
 
 
 def extract_li_items(ul_html):
@@ -99,34 +100,30 @@ def check_subject(subject_name, filepath):
     except Exception as e:
         return [f'{subject_name}: 读取失败 {e}']
 
-    # 找核心概念板块
-    core_section = find_core_concepts_section(content)
-    if not core_section:
+    # 找所有章节的核心概念板块
+    core_sections = find_all_core_concepts_sections(content)
+    if not core_sections:
         # 可能是其他结构，不报（避免误报）
         return []
 
-    # 提取 li 项
-    items = extract_li_items(core_section)
-    if not items:
-        return []
-
-    # 检查每个知识点
+    # 汇总所有章节的知识点
     missing_priority = 0
     missing_color = 0
-    total = len(items)
+    total = 0
 
-    for item in items:
-        # 去掉纯空项
-        if not item.strip():
-            total -= 1
-            continue
-        if not has_priority_marker(item):
-            missing_priority += 1
-        elif not has_color_style(item):
-            missing_color += 1
+    for section in core_sections:
+        items = extract_li_items(section)
+        for item in items:
+            if not item.strip():
+                continue
+            total += 1
+            if not has_priority_marker(item):
+                missing_priority += 1
+            elif not has_color_style(item):
+                missing_color += 1
 
     if missing_priority > 0:
-        issues.append(f'{subject_name}: {missing_priority}/{total} 个知识点缺少优先级标签')
+        issues.append(f'{subject_name}: {missing_priority}/{total} 个知识点缺少优先级标签（共{len(core_sections)}章）')
     if missing_color > 0:
         issues.append(f'{subject_name}: {missing_color}/{total} 个有标签但缺少颜色区分')
 
