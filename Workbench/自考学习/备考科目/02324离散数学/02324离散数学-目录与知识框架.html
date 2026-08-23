@@ -1341,7 +1341,7 @@
 
         display: block;
 
-        width: 100%;
+        width: auto;
 
         text-align: center;
 
@@ -1359,7 +1359,7 @@
 
         font-weight: 600;
 
-        margin-top: 0.8rem;
+        margin: 0.8rem 0 0;
 
         box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
 
@@ -1495,7 +1495,7 @@
       <div class="kf-tip"><span class="kf-tag kf-tag-concept">概念</span>命题/谓词逻辑概念、集合运算恒等式、群/格的定义与性质需要精准背诵</div>
       <div class="kf-tip"><span class="kf-tag kf-tag-combo">综合</span>推理理论证明题（P/T/CP规则）、关系性质综合判断是综合题高频考点</div>
       <div class="kf-tip"><span class="kf-tag kf-tag-example">实例</span>邻接矩阵运算、图的遍历实例需要动手画图练习</div>
-    </div></div></div><div class="chapter-tab-pane" data-tab="knowledge-overview"><div class="kf-card" style="border-left:4px solid var(--accent2);"><div class="card-label">整体定位</div><div class="card-body">离散数学共9章194页，三大板块：① 逻辑推理（第1-3章）② 集合与关系（第4-5章）③ 代数与图论（第6-9章）。建议2周集中串讲。</div></div>
+    </div></div><div class="chapter-tab-pane" data-tab="knowledge-overview"><div class="kf-card" style="border-left:4px solid var(--accent2);"><div class="card-label">整体定位</div><div class="card-body">离散数学共9章194页，三大板块：① 逻辑推理（第1-3章）② 集合与关系（第4-5章）③ 代数与图论（第6-9章）。建议2周集中串讲。</div></div>
 
 <!-- 章节掌握度网格 -->
 
@@ -4441,21 +4441,6 @@ var LG_SUBJECT_CODE = '02324';
 
 
         
-        var chapterNum = chapterEl.dataset.chapter || '';
-
-        // 添加去练习测验按钮
-
-        var quizBtn = document.createElement('a');
-
-        quizBtn.className = 'lg-quiz-btn';
-
-        quizBtn.href = '../../练习测验.html?subject=02324&chapter=' + chapterNum;
-
-        quizBtn.innerHTML = '📝 去练习测验 →';
-
-        chapterEl.appendChild(quizBtn);
-
-
 
         filterBar.addEventListener('click', function(e) {
 

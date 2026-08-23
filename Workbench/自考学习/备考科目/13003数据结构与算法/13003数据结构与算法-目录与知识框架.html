@@ -1341,7 +1341,7 @@
 
         display: block;
 
-        width: 100%;
+        width: auto;
 
         text-align: center;
 
@@ -1359,7 +1359,7 @@
 
         font-weight: 600;
 
-        margin-top: 0.8rem;
+        margin: 0.8rem 0 0;
 
         box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
 
@@ -1510,7 +1510,7 @@
 
 <div class="kf-tip"><span class="kf-tag kf-tag-concept">概念</span>学位课要求：≥70 分，比及格线高 10 分，需要更扎实的掌握，不能只靠突击。</div>
 
-</div><div class="chapter-tab-pane" data-tab="knowledge-overview"><div class="kf-card" style="border-left:4px solid var(--accent2);"><div class="card-label">整体定位</div><div class="card-body">数据结构与算法共8章，从基本概念到各类数据结构的存储与操作，再到排序与查找算法，层层递进。全书按"数据的组织方式 → 操作实现 → 算法效率"主线串联。这是学位课，分数需≥70。</div></div>
+</div></div><div class="chapter-tab-pane" data-tab="knowledge-overview"><div class="kf-card" style="border-left:4px solid var(--accent2);"><div class="card-label">整体定位</div><div class="card-body">数据结构与算法共8章，从基本概念到各类数据结构的存储与操作，再到排序与查找算法，层层递进。全书按"数据的组织方式 → 操作实现 → 算法效率"主线串联。这是学位课，分数需≥70。</div></div>
 
 <!-- 章节掌握度网格 -->
 
@@ -3843,9 +3843,10 @@ i=i n j=i<br/>
 <li>线性探测易产生“聚集”现象；二次探测要求表长为 4k+3 的素数且负载不能太高。</li>
 <li>装填因子 α 越大，冲突越多；哈希表不适合按关键字排序或求第 k 小。</li>
 </ul>
-</div></div></div></main>
+</div>
   </div>
 <a href="../../练习测验.html?subject=13003&chapter=8" class="lg-quiz-btn">📝 去练习测验 →</a>
+</div></div>
 </div></div>
 </article>
 
@@ -4884,21 +4885,6 @@ var LG_SUBJECT_CODE = '13003';
 
 
         
-        var chapterNum = chapterEl.dataset.chapter || '';
-
-        // 添加去练习测验按钮
-
-        var quizBtn = document.createElement('a');
-
-        quizBtn.className = 'lg-quiz-btn';
-
-        quizBtn.href = '../../练习测验.html?subject=13003&chapter=' + chapterNum;
-
-        quizBtn.innerHTML = '📝 去练习测验 →';
-
-        chapterEl.appendChild(quizBtn);
-
-
 
         filterBar.addEventListener('click', function(e) {
 
@@ -5142,6 +5128,35 @@ if (origSwitch) {
 
     };
 
+}
+
+// ===== 去重：确保每个章节只有一个去练习测验按钮 =====
+function deduplicateQuizButtons() {
+    var panes = document.querySelectorAll('.chapter-tab-pane[data-chapter]');
+    panes.forEach(function(pane) {
+        var btns = pane.querySelectorAll('.lg-quiz-btn');
+        for (var i = 1; i < btns.length; i++) {
+            btns[i].remove();
+        }
+    });
+}
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(deduplicateQuizButtons, 200);
+        setTimeout(deduplicateQuizButtons, 1000);
+        setTimeout(deduplicateQuizButtons, 3000);
+    });
+} else {
+    setTimeout(deduplicateQuizButtons, 200);
+    setTimeout(deduplicateQuizButtons, 1000);
+    setTimeout(deduplicateQuizButtons, 3000);
+}
+var origSwitch3 = window.switchChapterTab;
+if (origSwitch3) {
+    window.switchChapterTab = function(tabId) {
+        if (origSwitch3) origSwitch3(tabId);
+        setTimeout(deduplicateQuizButtons, 300);
+    };
 }
 
 

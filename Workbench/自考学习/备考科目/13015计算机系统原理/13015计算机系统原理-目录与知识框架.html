@@ -1341,7 +1341,7 @@
 
         display: block;
 
-        width: 100%;
+        width: auto;
 
         text-align: center;
 
@@ -1359,7 +1359,7 @@
 
         font-weight: 600;
 
-        margin-top: 0.8rem;
+        margin: 0.8rem 0 0;
 
         box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
 
@@ -7345,21 +7345,6 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
 
         
-        var chapterNum = chapterEl.dataset.chapter || '';
-
-        // 添加去练习测验按钮
-
-        var quizBtn = document.createElement('a');
-
-        quizBtn.className = 'lg-quiz-btn';
-
-        quizBtn.href = '../../练习测验.html?subject=13015&chapter=' + chapterNum;
-
-        quizBtn.innerHTML = '📝 去练习测验 →';
-
-        chapterEl.appendChild(quizBtn);
-
-
 
         filterBar.addEventListener('click', function(e) {
 
