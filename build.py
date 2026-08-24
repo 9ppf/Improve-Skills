@@ -481,6 +481,9 @@ def _remove_path(path: Path) -> None:
     """Remove a file or directory tree, refusing protected paths."""
     if _is_protected(path):
         raise PermissionError(f'Refuse to remove protected path: {path}')
+    if not path.exists():
+        # 遍历期间路径可能已被删除（如并发清理或父目录先被移除），容错跳过
+        return
     if path.is_file():
         path.unlink()
     elif path.is_dir():

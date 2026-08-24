@@ -1315,13 +1315,12 @@ def check_localstorage_key_consistency() -> list[str]:
 
 
 def check_knowledge_framework_js_consistency() -> list[str]:
-    """检查三科知识框架页面的 JS 初始化函数和事件绑定是否一致。
+    """检查统一知识框架页面（方案A-1）的 JS 初始化与参数化支持是否完整。
 
-    隐患：从 13015 复制页面到 02324/13003 时，可能遗漏 JS 函数
-    （如 switchTab/switchChapter/initChapter），导致交互失效。
-
-    检查方法：以 13015 为基准，提取关键 JS 函数名，
-    检查 02324 和 13003 是否都包含这些函数。
+    方案A-1 后三科共用一个页面（02324离散数学-目录与知识框架.html），
+    通过 ?subject= 参数区分科目。本检查确认该页面：
+    1. 包含关键交互函数（switchTab/switchChapter/initChapter）
+    2. 包含三科参数化支持（SUBJECT_META 映射、URL 参数读取、window 暴露）
     """
     root = SKILLS_DIR.parent.parent
     workbench = root / 'Workbench'
@@ -1330,18 +1329,26 @@ def check_knowledge_framework_js_consistency() -> list[str]:
     if not workbench.exists():
         return warnings
 
-    # 三科页面路径
+    # 统一页面路径（方案A-1 唯一导航入口）
     pages = {
-        '13015': workbench / '自考学习' / '备考科目' / '13015计算机系统原理' / '13015计算机系统原理-目录与知识框架.html',
-        '13003': workbench / '自考学习' / '备考科目' / '13003数据结构与算法' / '13003数据结构与算法-目录与知识框架.html',
         '02324': workbench / '自考学习' / '备考科目' / '02324离散数学' / '02324离散数学-目录与知识框架.html',
     }
 
-    # 关键 JS 函数名（必须存在于每个知识框架页面中）
+    # 关键 JS 函数名（必须存在于统一知识框架页面中）
     required_functions = [
         'function switchTab(',
         'function switchChapter(',
         'function initChapter(',
+    ]
+
+    # 参数化支持标记（方案A-1：单页面支持三科）
+    required_params = [
+        "SUBJECT_META",
+        "SS_SUBJECT",
+        "location.search.match(/[?&]subject=",
+        "window.SS_SUBJECT",
+        "window.PLAN_SUBJECT",
+        '"ss_mastery_" + SS_SUBJECT',
     ]
 
     for code, filepath in pages.items():
@@ -1362,6 +1369,10 @@ def check_knowledge_framework_js_consistency() -> list[str]:
         for func in required_functions:
             if func not in js:
                 warnings.append(f'{rel}: 缺少关键 JS 函数 "{func.strip("(").strip()}"')
+
+        for param in required_params:
+            if param not in js:
+                warnings.append(f'{rel}: 缺少方案A-1 参数化标记 "{param}"')
 
     return warnings
 

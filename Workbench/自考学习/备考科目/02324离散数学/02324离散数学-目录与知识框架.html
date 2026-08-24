@@ -3493,11 +3493,46 @@ D.连通但删去一条边则不连通的图</p></div>
 
     (function() {
 
-      var STORAGE_KEY = "ss_mastery_02324";
+      // 科目参数化（方案A-1）：单页面通过 ?subject= 支持三科
+      // display=页面标题名 | plan=study-plan.json/learning-guide.json 科目键名
+      var SUBJECT_META = {
+        '13015': { display: '计算机系统原理', plan: '系统原理' },
+        '02324': { display: '离散数学', plan: '离散数学' },
+        '13003': { display: '数据结构与算法', plan: '数据结构' }
+      };
+      var SS_SUBJECT = '02324';
+      (function() {
+        try {
+          var m = (location.search.match(/[?&]subject=([^&]+)/) || [])[1];
+          if (m && SUBJECT_META[m]) SS_SUBJECT = m;
+        } catch(e) {}
+      })();
+      var SUBJECT_NAME = SUBJECT_META[SS_SUBJECT] ? SUBJECT_META[SS_SUBJECT].display : '离散数学';
+      var PLAN_SUBJECT = SUBJECT_META[SS_SUBJECT] ? SUBJECT_META[SS_SUBJECT].plan : '离散数学';
+
+      // 动态设置页面标题与科目标签
+      try {
+        document.title = SS_SUBJECT + ' ' + SUBJECT_NAME + ' · 目录与知识框架';
+        var kfTag = document.querySelector('.kf-subject-tag');
+        if (kfTag) kfTag.textContent = SS_SUBJECT + ' ' + SUBJECT_NAME;
+      } catch(e) {}
+
+      // 暴露给后续脚本模块（学习指南/JSON 驱动）使用
+      window.SS_SUBJECT = SS_SUBJECT;
+      window.SUBJECT_NAME = SUBJECT_NAME;
+      window.PLAN_SUBJECT = PLAN_SUBJECT;
+
+      // 修正兜底内容中练习测验链接的科目参数（默认写死 02324）
+      try {
+        var quizLinks = document.querySelectorAll('a[href*="练习测验.html?subject=02324"]');
+        for (var qi = 0; qi < quizLinks.length; qi++) {
+          quizLinks[qi].href = quizLinks[qi].href.replace('subject=02324', 'subject=' + SS_SUBJECT);
+        }
+      } catch(e) {}
+
+      var STORAGE_KEY = "ss_mastery_" + SS_SUBJECT;
 
       // ===== API Sync: localStorage + JSON dual write =====
-
-      var SS_SUBJECT = '02324';
 
       var _saveTimer = null;
 
@@ -4084,9 +4119,9 @@ D.连通但删去一条边则不连通的图</p></div>
 
       var secondaryBar = document.getElementById("secondaryTabs");
 
-      var STORAGE_TAB_KEY = "ss_active_tab_02324";
+      var STORAGE_TAB_KEY = "ss_active_tab_" + SS_SUBJECT;
 
-      var STORAGE_CH_KEY = "ss_active_chapter_02324";
+      var STORAGE_CH_KEY = "ss_active_chapter_" + SS_SUBJECT;
 
 
 
@@ -4232,7 +4267,7 @@ D.连通但删去一条边则不连通的图</p></div>
 
         try {
 
-          var stateRaw = localStorage.getItem("ss_mastery_02324");
+          var stateRaw = localStorage.getItem("ss_mastery_" + SS_SUBJECT);
 
           var state = stateRaw ? JSON.parse(stateRaw) : { mastery: {} };
 
@@ -4284,8 +4319,8 @@ D.连通但删去一条边则不连通的图</p></div>
 
 (function() {
 
-    var LG_SUBJECT = '离散数学';
-var LG_SUBJECT_CODE = '02324';
+    var LG_SUBJECT = PLAN_SUBJECT;
+var LG_SUBJECT_CODE = SS_SUBJECT;
 
     var LG_DATA = null;
 
@@ -4851,12 +4886,24 @@ function toggleCollapse(header) {
 </script>
 
 <script>
-// ===== 知识框架 JSON 数据驱动（02324 样板，方案A'） =====
-// 数据源：/data/knowledge-framework-02324.json + /data/study-plan.json
+// ===== 知识框架 JSON 数据驱动（三科共用，方案A'） =====
+// 数据源：/data/knowledge-framework-{subject}.json + /data/study-plan.json
 // 策略：JSON 加载成功后覆盖渲染三个 tab；静态 HTML 保留为降级兜底
 (function() {
+  // 科目参数化（方案A-1）：与掌握度脚本同源，读 ?subject= 参数
+  var SUBJECT_META = {
+    '13015': { display: '计算机系统原理', plan: '系统原理' },
+    '02324': { display: '离散数学', plan: '离散数学' },
+    '13003': { display: '数据结构与算法', plan: '数据结构' }
+  };
   var SUBJECT_CODE = '02324';
-  var SUBJECT_NAME = '离散数学';
+  try {
+    var sm = (location.search.match(/[?&]subject=([^&]+)/) || [])[1];
+    if (sm && SUBJECT_META[sm]) SUBJECT_CODE = sm;
+  } catch(e) {}
+  var SUBJECT_NAME = SUBJECT_META[SUBJECT_CODE] ? SUBJECT_META[SUBJECT_CODE].display : '离散数学';
+  var PLAN_SUBJECT = SUBJECT_META[SUBJECT_CODE] ? SUBJECT_META[SUBJECT_CODE].plan : '离散数学';
+  var SUBJECT_FRAME = '/data/knowledge-framework-' + SUBJECT_CODE + '.json';
 
   function apiUrl(p) {
     return (location.protocol === 'file:') ? 'http://localhost:8000' + p : p;
@@ -4924,6 +4971,22 @@ function toggleCollapse(header) {
 
   // ---- 渲染章节精讲 tab ----
   function renderChapters(fw) {
+    // 重建章节精讲 tab 顶部的章节导航按钮（静态 HTML 为 02324 的 9 章）
+    var secTabs = document.getElementById('secondaryTabs');
+    if (secTabs && fw.chapters && fw.chapters.length) {
+      secTabs.innerHTML = fw.chapters.map(function(ch) {
+        return '<button class="chapter-tab-btn" data-chapter="' + ch.id + '" data-tab="chapter-' + ch.id + '">第 ' + ch.id + ' 章</button>';
+      }).join('\n');
+    }
+    // 非 02324 科目时移除多余的静态章节 pane（避免残留 02324 内容）
+    if (SUBJECT_CODE !== '02324') {
+      var validIds = {};
+      (fw.chapters || []).forEach(function(ch) { validIds[ch.id] = 1; });
+      document.querySelectorAll('.chapter-tab-pane[data-tab^="chapter-"]').forEach(function(p) {
+        var pid = p.getAttribute('data-tab').replace('chapter-', '');
+        if (!validIds[pid]) p.remove();
+      });
+    }
     (fw.chapters || []).forEach(function(ch) {
       var pane = document.querySelector('.chapter-tab-pane[data-tab="chapter-' + ch.id + '"]');
       if (!pane) return;
@@ -4958,12 +5021,15 @@ function toggleCollapse(header) {
     }
 
     // 完整目录：仅替换含「第X章」的 toc-chapter，保留大纲/编者的话等静态条目
+    // 参数化后（?subject=13015/13003）静态条目为 02324 内容，非 02324 科目时一并移除
     var tocWrap = document.querySelector('[data-tab="knowledge-overview"] .collapse-body');
     if (tocWrap && fw.chapters && fw.chapters.length) {
       var staticParts = [];
-      tocWrap.querySelectorAll(':scope > .toc-chapter').forEach(function(el) {
-        if (!/第\s*\d+\s*章/.test(el.textContent)) staticParts.push(el);
-      });
+      if (SUBJECT_CODE === '02324') {
+        tocWrap.querySelectorAll(':scope > .toc-chapter').forEach(function(el) {
+          if (!/第\s*\d+\s*章/.test(el.textContent)) staticParts.push(el);
+        });
+      }
       var chapterToc = fw.chapters.map(function(ch) {
         var tagMap = { '核心': 'tag-core', '重点': 'tag-key', '常规': 'tag-regular' };
         var tagCls = tagMap[ch.priority] || 'tag-key';
@@ -5036,7 +5102,7 @@ function toggleCollapse(header) {
     var accordion = document.querySelector('[data-tab="study-plan"] .kf-accordion');
     if (!accordion || !plan || !plan.weeks) return;
     var weeks = plan.weeks.filter(function(w) {
-      return w.goals && w.goals.some(function(g) { return g.subject === SUBJECT_NAME; });
+      return w.goals && w.goals.some(function(g) { return g.subject === PLAN_SUBJECT; });
     });
     if (!weeks.length) return;
     var phases = [
@@ -5051,7 +5117,7 @@ function toggleCollapse(header) {
       html += '<details class="kf-week-card" style="--week-color:#8b5cf6;"' + (ph.phase === 0 ? ' open' : '') + '>';
       html += '<summary>' + esc(ph.name) + ' <span class="kf-week-meta">' + esc(extractWeekRange(pWeeks)) + '</span></summary><ul>';
       pWeeks.forEach(function(w) {
-        var subs = w.goals.filter(function(g) { return g.subject === SUBJECT_NAME; });
+        var subs = w.goals.filter(function(g) { return g.subject === PLAN_SUBJECT; });
         subs.forEach(function(g) {
           html += '<li><strong>' + esc(w.week) + '（' + esc(w.dates) + '）</strong>：' +
             esc(g.chapter ? g.chapter + ' ' : '') + esc(g.topic) + (g.done ? ' ✓' : '') + '</li>';
@@ -5064,7 +5130,7 @@ function toggleCollapse(header) {
 
   // ---- 初始化：并行加载两个 JSON，成功后渲染 ----
   Promise.all([
-    fetch(apiUrl('/data/knowledge-framework-' + SUBJECT_CODE + '.json')).then(function(r) { return r.json(); }),
+    fetch(apiUrl(SUBJECT_FRAME)).then(function(r) { return r.json(); }),
     fetch(apiUrl('/data/study-plan.json')).then(function(r) { return r.json(); })
   ]).then(function(results) {
     var fw = results[0];

@@ -4,6 +4,35 @@
 
 ---
 
+## v2.30.0
+
+**发布时间**：2026-08-24（北京时间）
+
+### 2026-08-24 — 知识框架单页参数化（方案A-1）：三科共用 02324 页面，?subject= 区分
+
+**核心变更**：知识框架三科页面合并为单一页面（`02324离散数学-目录与知识框架.html`），通过 URL 参数 `?subject=13015|02324|13003` 区分科目；删除 13015/13003 原 HTML 文件；localStorage 掌握度键按科目隔离（`ss_mastery_{科目代码}`）；数据源过滤改为 plan 键名（系统原理/离散数学/数据结构）。
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html` | 参数化改造（方案A-1）：SUBJECT_META 三科映射（display显示名/plan数据源键名双字段）；SS_SUBJECT/SUBJECT_CODE 从 `?subject=` 读取；localStorage 键（ss_mastery/ss_active_tab/ss_active_chapter）按科目动态化；页面标题/科目标签/练习测验链接按科目动态设置；学习计划与学习指南过滤改用 PLAN_SUBJECT（适配 study-plan.json/learning-guide.json 的科目键名）；完整目录在非02324科目时移除静态考试大纲/编者话等front matter；章节精讲tab按科目重建章节导航按钮并清理多余pane；变量经 window 暴露供学习指南/JSON驱动模块复用 |
+| `data/modules/self-study.json` | 三科知识框架 contentUrl 统一指向 02324 单页 + `?subject=` 参数（13015/02324/13003），版本号 v2.30.0 |
+| `Workbench/自考学习/备考科目/13015计算机系统原理/13015计算机系统原理-目录与知识框架.html` | 删除：原独立页面（导航已指向统一页面） |
+| `Workbench/自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html` | 删除：原独立页面（导航已指向统一页面） |
+| `.trae/skills/validate_workbench.py` | 知识框架JS一致性检查改为验证统一页面（02324）的参数化标记（SUBJECT_META/URL参数读取/window暴露/动态键名） |
+| `.trae/skills/check_priority_labels.py` | 检查范围收敛为统一页面（02324），知识点优先级数据以JSON为准 |
+| `.trae/skills/check_css_standards.py` | CSS基线扫描列表移除已删除的 13015/13003 页面 |
+| `build.py` | 修复清理阶段遍历目录时路径已消失的 FileNotFoundError（_remove_path 增加存在性容错） |
+| `data/knowledge-framework-13015.json` | meta.sourceFile 更新为统一页面路径（?subject=13015） |
+| `data/knowledge-framework-13003.json` | meta.sourceFile 更新为统一页面路径（?subject=13003） |
+| `data/mastery-progress.json` | 掌握度数据迁移标记（_migrated/toc 字段，5档体系数据演进） |
+| `AGENT_HANDOFF.md` | 版本号 v2.30.0；知识框架注册示例更新为统一页面 + subject 参数 |
+| `工作台搭建总结.md` | 版本号 v2.30.0；版本更新记录追加 v2.30.0 条目 |
+| `文件说明.md` | 版本号 v2.30.0；科目目录说明更新（13015/13003 无独立知识框架页，共用 02324 统一页面） |
+| `Workbench/ai-learning/ai-learning-plan.html` | 三科知识框架路径引用更新为统一页面 + subject 参数 |
+| `Workbench/此刻便是春天.html` | 构建产物：三科知识框架导航指向统一页面 |
+
+---
+
 ## v2.29.0
 
 **发布时间**：2026-08-24（北京时间）
