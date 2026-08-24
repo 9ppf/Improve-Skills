@@ -1988,13 +1988,13 @@ A .数据项 B .字符 C .二进制位 D .数据记录</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">线性表</span>：n（≥0）个数据元素的有限序列，元素之间是一对一关系。存在唯一的表头元素和表尾元素；除首元素外有唯一直接前驱，除尾元素外有唯一直接后继。</li>
-<li><span class="key-term">顺序表</span>：用地址连续的存储单元依次存储元素，支持随机访问，按序号查找为 O(1)。</li>
-<li><span class="key-term">单链表</span>：用任意存储单元存储元素，通过指针链接，按序号访问需 O(n)。</li>
-<li><span class="key-term">头结点</span>：在首结点前附加的结点，数据域可不存信息，作用是统一空表和非空表操作、简化插入删除。</li>
-<li><span class="key-term">循环链表 / 双向链表 / 双向循环链表</span>：循环链表尾结点指向头结点；双向链表有 prior 和 next 两个指针；双向循环链表兼具两者特点。</li>
-<li><span class="key-term">静态链表</span>：用数组模拟链表，数组元素包含数据域和游标（下一个元素下标），适用于不支持指针的语言。</li>
-<li><span class="key-term">空闲单元链表</span>：管理被删除结点的“伙伴链表”，需要新结点时优先从中获取，减少频繁 malloc/free 开销。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">线性表<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：n（≥0）个数据元素的有限序列，元素之间是一对一关系。存在唯一的表头元素和表尾元素；除首元素外有唯一直接前驱，除尾元素外有唯一直接后继。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">顺序表<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：用地址连续的存储单元依次存储元素，支持随机访问，按序号查找为 O(1)。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">单链表<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：用任意存储单元存储元素，通过指针链接，按序号访问需 O(n)。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">头结点<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：在首结点前附加的结点，数据域可不存信息，作用是统一空表和非空表操作、简化插入删除。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">循环链表 / 双向链表 / 双向循环链表<span class="lg-badge lg-priority-normal">🟡 <span>🧠</span> 一般·背诵</span></span>：循环链表尾结点指向头结点；双向链表有 prior 和 next 两个指针；双向循环链表兼具两者特点。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">静态链表<span class="lg-badge lg-priority-normal">🟡 <span>🧠</span> 一般·背诵</span></span>：用数组模拟链表，数组元素包含数据域和游标（下一个元素下标），适用于不支持指针的语言。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">空闲单元链表<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：管理被删除结点的“伙伴链表”，需要新结点时优先从中获取，减少频繁 malloc/free 开销。</li>
 </ul>
   </div>
 </div>
@@ -2272,12 +2272,12 @@ D .线性表采用顺序存储方式，必须占用一片连续的存储单元</
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">栈</span>：只允许在一端（栈顶）进行插入和删除，后进先出（LIFO）。顺序栈将栈底设在数组下标 0 处；链式栈将栈顶设在链表表头。</li>
-<li><span class="key-term">队列</span>：只允许在队尾插入、队头删除，先进先出（FIFO）。循环队列解决“假溢出”。</li>
-<li><span class="key-term">循环队列</span>：常用“牺牲一个单元”区分空和满：队空 front == rear；队满 (rear+1) % MaxSize == front。</li>
-<li><span class="key-term">双端队列</span>：两端均可插入和删除；输入受限/输出受限双端队列可得到不同的输出序列。</li>
-<li><span class="key-term">栈的应用</span>：括号匹配、中缀表达式转后缀表达式、后缀表达式求值、递归模拟、回溯法。</li>
-<li><span class="key-term">队列的应用</span>：层序遍历、操作系统调度、缓冲区、用栈模拟队列等。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">栈<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：只允许在一端（栈顶）进行插入和删除，后进先出（LIFO）。顺序栈将栈底设在数组下标 0 处；链式栈将栈顶设在链表表头。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">队列<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：只允许在队尾插入、队头删除，先进先出（FIFO）。循环队列解决“假溢出”。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">循环队列<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：常用“牺牲一个单元”区分空和满：队空 front == rear；队满 (rear+1) % MaxSize == front。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">双端队列<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：两端均可插入和删除；输入受限/输出受限双端队列可得到不同的输出序列。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">栈的应用<span class="lg-badge lg-priority-normal">🟡 <span>🔧</span> 一般·应用</span></span>：括号匹配、中缀表达式转后缀表达式、后缀表达式求值、递归模拟、回溯法。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">队列的应用<span class="lg-badge lg-priority-normal">🟡 <span>🔧</span> 一般·应用</span></span>：层序遍历、操作系统调度、缓冲区、用栈模拟队列等。</li>
 </ul>
   </div>
 </div>
@@ -2421,12 +2421,12 @@ A. 2 B. 3 C. 4 D. 5</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">多维数组存储</span>：行主序（最右下标变化最快）和列主序（最左下标变化最快）。</li>
-<li><span class="key-term">数组地址计算</span>：LOC(aᵢⱼ) = LOC(a₀₀) + (i × n + j) × L（行主序，0 起始）；注意下标起始和每维元素个数。</li>
-<li><span class="key-term">特殊矩阵压缩</span>：对称矩阵只存下三角/上三角；三角矩阵增加一个常量存储；稀疏矩阵常用三元组表（行号、列号、值）。</li>
-<li><span class="key-term">广义表</span>：元素可以是原子或子表。表头是第一个元素，表尾是其余元素组成的子表；长度是顶层元素个数，深度是嵌套层数。</li>
-<li><span class="key-term">串的模式匹配</span>：BF 算法（暴力匹配，O(mn)）和 KMP 算法（O(m+n)）。</li>
-<li><span class="key-term">特征向量 next 数组</span>：KMP 的核心，表示模式串前缀与后缀的最长公共长度；next[0] 通常取 −1（或 0，视教材约定）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">多维数组存储<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：行主序（最右下标变化最快）和列主序（最左下标变化最快）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">数组地址计算<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：LOC(aᵢⱼ) = LOC(a₀₀) + (i × n + j) × L（行主序，0 起始）；注意下标起始和每维元素个数。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">特殊矩阵压缩<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：对称矩阵只存下三角/上三角；三角矩阵增加一个常量存储；稀疏矩阵常用三元组表（行号、列号、值）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">广义表<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：元素可以是原子或子表。表头是第一个元素，表尾是其余元素组成的子表；长度是顶层元素个数，深度是嵌套层数。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">串的模式匹配<span class="lg-badge lg-priority-normal">🟡 <span>🧠</span> 一般·背诵</span></span>：BF 算法（暴力匹配，O(mn)）和 KMP 算法（O(m+n)）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">特征向量 next 数组<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：KMP 的核心，表示模式串前缀与后缀的最长公共长度；next[0] 通常取 −1（或 0，视教材约定）。</li>
 </ul>
   </div>
 </div>
@@ -2715,15 +2715,15 @@ A. 4 字节 B. 5字节 C. 6字节 D. 7字节</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">树的基本术语</span>：根、叶子（终端结点）、分支结点、父结点、子结点、兄弟、祖先、后代、结点的度、树的度、层、深度、高度、路径长度、森林。</li>
-<li><span class="key-term">二叉树性质</span>：第 i 层最多 2^{i−1} 个结点；深度为 k 的二叉树最多 2^k − 1 个结点；n₀ = n₂ + 1（叶子数 = 度为 2 的结点数 + 1）。</li>
-<li><span class="key-term">满二叉树 / 完全二叉树</span>：满二叉树每层都满；完全二叉树最后一层从左到右连续。n 个结点的完全二叉树深度为 ⌊log₂n⌋ + 1。</li>
-<li><span class="key-term">遍历</span>：前序（根左右）、中序（左根右）、后序（左右根）、层序；递归与非递归实现。</li>
-<li><span class="key-term">线索二叉树</span>：利用空指针域指向遍历序列中的前驱和后继；中序线索化后左空指针指前驱、右空指针指向后继。</li>
-<li><span class="key-term">堆</span>：完全二叉树，大根堆父≥子，小根堆父≤子；用于优先队列和堆排序。基本操作：建堆、插入、删除堆顶、整理（筛选）。</li>
-<li><span class="key-term">树/森林与二叉树的转换</span>：树的孩子-兄弟表示法与二叉链表一一对应；森林可转化为二叉树。</li>
-<li><span class="key-term">哈夫曼树</span>：带权路径长度（WPL）最小的二叉树；构造时每次合并权值最小的两棵树。</li>
-<li><span class="key-term">哈夫曼编码</span>：前缀编码（任一编码不是其他编码的前缀），用于数据压缩；带权平均码长等于 WPL。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">树的基本术语<span class="lg-badge lg-priority-key">🔴 <span>🧠</span> 重点·背诵</span></span>：根、叶子（终端结点）、分支结点、父结点、子结点、兄弟、祖先、后代、结点的度、树的度、层、深度、高度、路径长度、森林。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">二叉树性质<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：第 i 层最多 2^{i−1} 个结点；深度为 k 的二叉树最多 2^k − 1 个结点；n₀ = n₂ + 1（叶子数 = 度为 2 的结点数 + 1）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">满二叉树 / 完全二叉树<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：满二叉树每层都满；完全二叉树最后一层从左到右连续。n 个结点的完全二叉树深度为 ⌊log₂n⌋ + 1。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">遍历<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：前序（根左右）、中序（左根右）、后序（左右根）、层序；递归与非递归实现。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">线索二叉树<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：利用空指针域指向遍历序列中的前驱和后继；中序线索化后左空指针指前驱、右空指针指向后继。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">堆<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：完全二叉树，大根堆父≥子，小根堆父≤子；用于优先队列和堆排序。基本操作：建堆、插入、删除堆顶、整理（筛选）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">树/森林与二叉树的转换<span class="lg-badge lg-priority-normal">🟡 <span>🔧</span> 一般·应用</span></span>：树的孩子-兄弟表示法与二叉链表一一对应；森林可转化为二叉树。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">哈夫曼树<span class="lg-badge lg-priority-key">🔴 <span>🔧</span> 重点·应用</span></span>：带权路径长度（WPL）最小的二叉树；构造时每次合并权值最小的两棵树。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">哈夫曼编码<span class="lg-badge lg-priority-key">🔴 <span>🔧</span> 重点·应用</span></span>：前缀编码（任一编码不是其他编码的前缀），用于数据压缩；带权平均码长等于 WPL。</li>
 </ul>
   </div>
 </div>
@@ -3057,13 +3057,13 @@ C .孩子-兄弟表示法 口顺序存储表示法</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">图的基本术语</span>：顶点、边/弧、有向图、无向图、完全图、子图、邻接点、顶点的度（无向）、入度/出度（有向）、路径、回路、连通图、连通分量、强连通图。</li>
-<li><span class="key-term">图的存储</span>：邻接矩阵（适合稠密图，空间 O(n²)）、邻接表（适合稀疏图，空间 O(n+e)）、逆邻接表、十字链表、邻接多重表。</li>
-<li><span class="key-term">DFS / BFS</span>：深度优先搜索类似树的前序遍历，用递归/栈实现；广度优先搜索类似树的层序遍历，用队列实现。</li>
-<li><span class="key-term">最小生成树</span>：Prim 算法（从顶点出发，逐步选最小边，适合稠密图）；Kruskal 算法（按边权排序，逐步加边，适合稀疏图）。</li>
-<li><span class="key-term">拓扑排序</span>：对 DAG 排序，使对每条边 (u,v)，u 在 v 之前；可用入度表 + 队列/栈实现。</li>
-<li><span class="key-term">关键路径</span>：AOE 网中从源点到汇点的最长路径，决定工程最短工期；关键活动满足 e = l（最早开始 = 最迟开始）。</li>
-<li><span class="key-term">最短路径</span>：Dijkstra 算法（单源最短路径，不能有负权）；Floyd 算法（所有顶点间最短路径，可负权但不能有负回路）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">图的基本术语<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：顶点、边/弧、有向图、无向图、完全图、子图、邻接点、顶点的度（无向）、入度/出度（有向）、路径、回路、连通图、连通分量、强连通图。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">图的存储<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：邻接矩阵（适合稠密图，空间 O(n²)）、邻接表（适合稀疏图，空间 O(n+e)）、逆邻接表、十字链表、邻接多重表。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">DFS / BFS<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：深度优先搜索类似树的前序遍历，用递归/栈实现；广度优先搜索类似树的层序遍历，用队列实现。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">最小生成树<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：Prim 算法（从顶点出发，逐步选最小边，适合稠密图）；Kruskal 算法（按边权排序，逐步加边，适合稀疏图）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">拓扑排序<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：对 DAG 排序，使对每条边 (u,v)，u 在 v 之前；可用入度表 + 队列/栈实现。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">关键路径<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：AOE 网中从源点到汇点的最长路径，决定工程最短工期；关键活动满足 e = l（最早开始 = 最迟开始）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">最短路径<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：Dijkstra 算法（单源最短路径，不能有负权）；Floyd 算法（所有顶点间最短路径，可负权但不能有负回路）。</li>
 </ul>
   </div>
 </div>
@@ -3229,15 +3229,15 @@ A. n-l B. n C. n+1 D. nlogn</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">排序基本概念</span>：关键字、主关键字、次关键字、升序/降序、稳定排序、内部排序/外部排序、逆序对、比较次数、交换次数。</li>
-<li><span class="key-term">直接插入排序</span>：将元素插入前面已排序子段的合适位置；最好 O(n)，最坏 O(n²)，稳定。</li>
-<li><span class="key-term">希尔排序</span>：按增量分组插入排序，逐步缩小增量；不稳定。</li>
-<li><span class="key-term">起泡排序</span>：相邻元素两两比较交换；最好 O(n)，最坏 O(n²)，稳定。</li>
-<li><span class="key-term">快速排序</span>：选枢轴，划分左右，递归排序；平均 O(n log₂n)，最坏 O(n²)，不稳定；枢轴选择影响效率（如三元取中）。</li>
-<li><span class="key-term">直接选择排序</span>：每次选最小元素放到前面；O(n²)，不稳定。</li>
-<li><span class="key-term">堆排序</span>：建初始堆 + 不断取堆顶并调整；O(n log₂n)，不稳定。</li>
-<li><span class="key-term">归并排序</span>：分治法，递归或非递归实现；O(n log₂n)，稳定，需要 O(n) 辅助空间。</li>
-<li><span class="key-term">基数排序</span>：按位分配与收集；O(d(n+r))，稳定。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">排序基本概念<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：关键字、主关键字、次关键字、升序/降序、稳定排序、内部排序/外部排序、逆序对、比较次数、交换次数。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">直接插入排序<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：将元素插入前面已排序子段的合适位置；最好 O(n)，最坏 O(n²)，稳定。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">希尔排序<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：按增量分组插入排序，逐步缩小增量；不稳定。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">起泡排序<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：相邻元素两两比较交换；最好 O(n)，最坏 O(n²)，稳定。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">快速排序<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：选枢轴，划分左右，递归排序；平均 O(n log₂n)，最坏 O(n²)，不稳定；枢轴选择影响效率（如三元取中）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">直接选择排序<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：每次选最小元素放到前面；O(n²)，不稳定。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">堆排序<span class="lg-badge lg-priority-normal">🟡 <span>🔧</span> 一般·应用</span></span>：建初始堆 + 不断取堆顶并调整；O(n log₂n)，不稳定。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">归并排序<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：分治法，递归或非递归实现；O(n log₂n)，稳定，需要 O(n) 辅助空间。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">基数排序<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：按位分配与收集；O(d(n+r))，稳定。</li>
 </ul>
   </div>
 </div>
@@ -3582,16 +3582,16 @@ A」插入排序 B .选择排序 C .起泡排序 注快速排序</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">平均查找长度（ASL）</span>：衡量查找效率的指标，ASL = ΣPᵢCᵢ；成功查找 ASL 与失败 ASL 计算方式不同。</li>
-<li><span class="key-term">顺序查找</span>：适用于任意顺序表/链表；成功 ASL = (n+1)/2（等概率）。</li>
-<li><span class="key-term">折半查找（二分查找）</span>：仅适用于关键字有序的顺序表；判定树深度 ⌊log₂n⌋ + 1；ASL ≈ log₂(n+1) − 1。</li>
-<li><span class="key-term">分块查找（索引顺序查找）</span>：块间有序、块内无序；ASL 与块大小有关。</li>
-<li><span class="key-term">二叉排序树（BST）</span>：左子树关键字 < 根 < 右子树关键字；中序遍历得到有序序列；最坏退化为链表，ASL = O(n)。</li>
-<li><span class="key-term">平衡二叉树（AVL）</span>：任意结点左右子树高度差 ≤1；通过 LL、RR、LR、RL 四种旋转保持平衡，查找效率 O(log₂n)。</li>
-<li><span class="key-term">B 树 / B+ 树</span>：多路平衡查找树；B 树关键字分布在所有结点，B+ 树关键字集中在叶子，叶子间链指针便于范围查找。</li>
-<li><span class="key-term">哈希表</span>：通过哈希函数直接定位存储位置；理想 O(1)。</li>
-<li><span class="key-term">冲突解决</span>：开放定址法（线性探测、二次探测、双重散列）、链地址法。</li>
-<li><span class="key-term">装填因子 α</span>：α = 元素个数 / 表长；α 越大冲突越多，查找效率越低。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">平均查找长度（ASL）<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：衡量查找效率的指标，ASL = ΣPᵢCᵢ；成功查找 ASL 与失败 ASL 计算方式不同。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">顺序查找<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：适用于任意顺序表/链表；成功 ASL = (n+1)/2（等概率）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">折半查找（二分查找）<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：仅适用于关键字有序的顺序表；判定树深度 ⌊log₂n⌋ + 1；ASL ≈ log₂(n+1) − 1。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">分块查找（索引顺序查找）<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：块间有序、块内无序；ASL 与块大小有关。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">二叉排序树（BST）<span class="lg-badge lg-priority-key">🔴 <span>🔧</span> 重点·应用</span></span>：左子树关键字 < 根 < 右子树关键字；中序遍历得到有序序列；最坏退化为链表，ASL = O(n)。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">平衡二叉树（AVL）<span class="lg-badge lg-priority-key">🔴 <span>🔧</span> 重点·应用</span></span>：任意结点左右子树高度差 ≤1；通过 LL、RR、LR、RL 四种旋转保持平衡，查找效率 O(log₂n)。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">B 树 / B+ 树<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：多路平衡查找树；B 树关键字分布在所有结点，B+ 树关键字集中在叶子，叶子间链指针便于范围查找。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">哈希表<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：通过哈希函数直接定位存储位置；理想 O(1)。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">冲突解决<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：开放定址法（线性探测、二次探测、双重散列）、链地址法。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">装填因子 α<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：α = 元素个数 / 表长；α 越大冲突越多，查找效率越低。</li>
 </ul>
   </div>
 </div>

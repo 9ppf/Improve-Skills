@@ -216,6 +216,12 @@
 
     .toc-section {
 
+      display: flex;
+
+      align-items: center;
+
+      gap: 0.4rem;
+
       margin-bottom: 0.3rem;
 
       font-size: 0.72rem;
@@ -224,6 +230,12 @@
 
     .toc-subsection {
 
+      display: flex;
+
+      align-items: center;
+
+      gap: 0.4rem;
+
       margin-left: 1.25rem;
 
       color: var(--muted);
@@ -231,6 +243,53 @@
       font-size: 0.76rem;
 
     }
+
+    /* 目录小节掌握状态点（5 档） */
+    .toc-dot {
+
+      flex-shrink: 0;
+
+      display: inline-flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      width: 1.05rem;
+
+      height: 1.05rem;
+
+      border-radius: 50%;
+
+      border: 1.5px solid #d1d5db;
+
+      background: #fff;
+
+      color: #64748b;
+
+      font-size: 0.6rem;
+
+      line-height: 1;
+
+      cursor: pointer;
+
+      transition: all 0.15s ease;
+
+      user-select: none;
+
+    }
+
+    .toc-dot:hover { transform: scale(1.15); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+
+    .toc-dot[data-mastery="0"] { border-color: #d1d5db; color: #9ca3af; background: #f9fafb; }
+
+    .toc-dot[data-mastery="1"] { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+
+    .toc-dot[data-mastery="2"] { border-color: #ef4444; color: #ef4444; background: #fef2f2; }
+
+    .toc-dot[data-mastery="3"] { border-color: #f59e0b; color: #d97706; background: #fffbeb; }
+
+    .toc-dot[data-mastery="4"] { border-color: #10b981; color: #059669; background: #ecfdf5; }
 
 
 
@@ -585,13 +644,16 @@
 
     .ss-mastery-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+    /* 5 档按钮：0灰 1蓝 2红 3橙 4绿 */
     .ss-mastery-btn.zk-active[data-level="0"] { background: #94a3b8; border-color: #94a3b8; color: #fff; }
 
     .ss-mastery-btn.zk-active[data-level="1"] { background: #3b82f6; border-color: #3b82f6; color: #fff; }
 
-    .ss-mastery-btn.zk-active[data-level="2"] { background: #16a34a; border-color: #16a34a; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="2"] { background: #ef4444; border-color: #ef4444; color: #fff; }
 
-    .ss-mastery-btn.zk-active[data-level="3"] { background: #ea580c; border-color: #ea580c; color: #fff; }
+    .ss-mastery-btn.zk-active[data-level="3"] { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+
+    .ss-mastery-btn.zk-active[data-level="4"] { background: #10b981; border-color: #10b981; color: #fff; }
 
     .ss-chapter-count { font-size: 0.72rem; color: var(--muted); margin-left: auto; }
 
@@ -908,9 +970,12 @@
 
     .ch-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.1); transform: translateY(-1px); }
 
-    .ch-card[data-mastery="2"] { border-left: 4px solid #10b981; }
+    /* 章节掌握度 5 档：0灰 1蓝 2红 3橙 4绿 */
+    .ch-card[data-mastery="4"] { border-left: 4px solid #10b981; }
 
     .ch-card[data-mastery="1"] { border-left: 4px solid #3b82f6; }
+
+    .ch-card[data-mastery="2"] { border-left: 4px solid #ef4444; }
 
     .ch-card[data-mastery="3"] { border-left: 4px solid #f59e0b; }
 
@@ -924,13 +989,18 @@
 
     .ch-card .ch-icon { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #fff; flex-shrink: 0; }
 
-    .ch-card[data-mastery="2"] .ch-status { color: #047857; }
+    /* 5 档：4绿 1蓝 2红 3橙 0灰 */
+    .ch-card[data-mastery="4"] .ch-status { color: #047857; }
 
-    .ch-card[data-mastery="2"] .ch-icon { background: #10b981; }
+    .ch-card[data-mastery="4"] .ch-icon { background: #10b981; }
 
     .ch-card[data-mastery="1"] .ch-status { color: #1d4ed8; }
 
     .ch-card[data-mastery="1"] .ch-icon { background: #3b82f6; }
+
+    .ch-card[data-mastery="2"] .ch-status { color: #b91c1c; }
+
+    .ch-card[data-mastery="2"] .ch-icon { background: #ef4444; }
 
     .ch-card[data-mastery="3"] .ch-status { color: #b45309; }
 
@@ -957,19 +1027,9 @@
     .collapse-card .collapse-body { display: none; margin-top: 0.4rem; }
     .collapse-card.open .collapse-body { display: block; }
 
-    /* Chapter cards using class instead of data-mastery */
-    .ch-card.mastered { border-left: 4px solid #10b981; }
-    .ch-card.mastered .ch-status { color: #047857; }
-    .ch-card.mastered .ch-icon { background: #10b981; }
-    .ch-card.progress { border-left: 4px solid #3b82f6; }
-    .ch-card.progress .ch-status { color: #1d4ed8; }
-    .ch-card.progress .ch-icon { background: #3b82f6; }
-    .ch-card.review { border-left: 4px solid #f59e0b; }
-    .ch-card.review .ch-status { color: #b45309; }
-    .ch-card.review .ch-icon { background: #f59e0b; }
-    .ch-card.idle { border-left: 4px solid #d1d5db; }
-    .ch-card.idle .ch-status { color: var(--muted); }
-    .ch-card.idle .ch-icon { background: #d1d5db; }
+    /* 章节掌握度由 data-mastery 属性驱动（syncUI 设置），不再使用 class 名 */
+
+    .ch-card { border-left: 4px solid #d1d5db; }
 
 
 /* ===== Learning Guide Annotations ===== */
@@ -1500,47 +1560,47 @@
 <!-- 章节掌握度网格 -->
 
 <div class="chapter-grid" id="chapterGrid">
-    <div class="ch-card progress" data-chapter="1" onclick="switchChapterTab('chapter-1')">
+    <div class="ch-card" data-mastery="1" data-chapter="1" onclick="switchChapterTab('chapter-1')">
       <div class="ch-name">第1章 命题与命题公式</div>
       <div class="ch-meta">中等 · P17-33</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
     </div>
-    <div class="ch-card progress" data-chapter="2" onclick="switchChapterTab('chapter-2')">
+    <div class="ch-card" data-mastery="1" data-chapter="2" onclick="switchChapterTab('chapter-2')">
       <div class="ch-name">第2章 命题逻辑的推理理论</div>
       <div class="ch-meta">难点 · P37-51</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
     </div>
-    <div class="ch-card progress" data-chapter="3" onclick="switchChapterTab('chapter-3')">
+    <div class="ch-card" data-mastery="1" data-chapter="3" onclick="switchChapterTab('chapter-3')">
       <div class="ch-name">第3章 谓词逻辑</div>
       <div class="ch-meta">难点 · P53-64</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
     </div>
-    <div class="ch-card progress" data-chapter="4" onclick="switchChapterTab('chapter-4')">
+    <div class="ch-card" data-mastery="1" data-chapter="4" onclick="switchChapterTab('chapter-4')">
       <div class="ch-name">第4章 集合</div>
       <div class="ch-meta">中等 · P66-78</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
     </div>
-    <div class="ch-card progress" data-chapter="5" onclick="switchChapterTab('chapter-5')">
+    <div class="ch-card" data-mastery="1" data-chapter="5" onclick="switchChapterTab('chapter-5')">
       <div class="ch-name">第5章 关系与函数</div>
       <div class="ch-meta">难点 · P81-104</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
     </div>
-    <div class="ch-card progress" data-chapter="6" onclick="switchChapterTab('chapter-6')">
+    <div class="ch-card" data-mastery="1" data-chapter="6" onclick="switchChapterTab('chapter-6')">
       <div class="ch-name">第6章 代数系统的一般概念</div>
       <div class="ch-meta">中等 · P107-122</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
     </div>
-    <div class="ch-card progress" data-chapter="7" onclick="switchChapterTab('chapter-7')">
+    <div class="ch-card" data-mastery="1" data-chapter="7" onclick="switchChapterTab('chapter-7')">
       <div class="ch-name">第7章 格与布尔代数</div>
       <div class="ch-meta">中等 · P125-135</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
     </div>
-    <div class="ch-card progress" data-chapter="8" onclick="switchChapterTab('chapter-8')">
+    <div class="ch-card" data-mastery="1" data-chapter="8" onclick="switchChapterTab('chapter-8')">
       <div class="ch-name">第8章 图</div>
       <div class="ch-meta">中等 · P135-144</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
     </div>
-    <div class="ch-card progress" data-chapter="9" onclick="switchChapterTab('chapter-9')">
+    <div class="ch-card" data-mastery="1" data-chapter="9" onclick="switchChapterTab('chapter-9')">
       <div class="ch-name">第9章 图的应用</div>
       <div class="ch-meta">中等 · P146-160</div>
       <div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">学习中</span></div>
@@ -2019,15 +2079,15 @@ A. A B. — C. ∨ D.6</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">文字、简单合取式、简单析取式</span>：命题变元或其否定称为文字；有限个文字的合取为简单合取式，析取为简单析取式。</li>
-<li><span class="key-term">范式</span>：由有限个简单合取式之析取构成的为析取范式；由有限个简单析取式之合取构成的为合取范式。</li>
-<li><span class="key-term">小项（极小项）</span>：含全部 n 个命题变元的简单合取式，每个变元以原形或否定形出现且仅出现一次；编码规则：变元真值为 1 记 1，为 0 记 0。</li>
-<li><span class="key-term">大项（极大项）</span>：含全部 n 个命题变元的简单析取式；编码规则与小项相反：变元真值为 1 记 0，为 0 记 1。</li>
-<li><span class="key-term">主析取范式</span>：由小项的析取组成，与给定公式等值且唯一；真值表中成真赋值对应的小项之析取即为主析取范式。</li>
-<li><span class="key-term">主合取范式</span>：由大项的合取组成，与给定公式等值且唯一；真值表中成假赋值对应的大项之合取即为主合取范式。</li>
-<li><span class="key-term">主范式关系</span>：若主析取范式含 k 个小项，则主合取范式含 2ⁿ−k 个大项，二者下标互补。</li>
-<li><span class="key-term">有效推理</span>：H₁∧H₂∧…∧H_n ⇒ C 当且仅当 H₁∧H₂∧…∧H_n→C 为重言式。</li>
-<li><span class="key-term">推理规则</span>：P 规则（前提引入）、T 规则（结论/等值置换引入）、CP 规则（结论为条件式时引入前件为附加前提）、归谬法（结论否定引入推出矛盾）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">文字、简单合取式、简单析取式<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：命题变元或其否定称为文字；有限个文字的合取为简单合取式，析取为简单析取式。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">范式<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：由有限个简单合取式之析取构成的为析取范式；由有限个简单析取式之合取构成的为合取范式。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">小项（极小项）<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：含全部 n 个命题变元的简单合取式，每个变元以原形或否定形出现且仅出现一次；编码规则：变元真值为 1 记 1，为 0 记 0。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">大项（极大项）<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：含全部 n 个命题变元的简单析取式；编码规则与小项相反：变元真值为 1 记 0，为 0 记 1。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">主析取范式<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：由小项的析取组成，与给定公式等值且唯一；真值表中成真赋值对应的小项之析取即为主析取范式。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">主合取范式<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：由大项的合取组成，与给定公式等值且唯一；真值表中成假赋值对应的大项之合取即为主合取范式。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">主范式关系<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：若主析取范式含 k 个小项，则主合取范式含 2ⁿ−k 个大项，二者下标互补。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">有效推理<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：H₁∧H₂∧…∧H_n ⇒ C 当且仅当 H₁∧H₂∧…∧H_n→C 为重言式。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">推理规则<span class="lg-badge lg-priority-key">🔴 <span>🧠</span> 重点·背诵</span></span>：P 规则（前提引入）、T 规则（结论/等值置换引入）、CP 规则（结论为条件式时引入前件为附加前提）、归谬法（结论否定引入推出矛盾）。</li>
 </ul>
   </div>
 </div>
@@ -2326,16 +2386,16 @@ A. P NQ B. P ¬Q C. ¬P AQ D.¬PJQ</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">个体词、谓词与量词</span>：个体词是研究对象（常项/变项）；谓词描述个体性质或关系；量词包括全称量词 ∀ 与存在量词 ∃。</li>
-<li><span class="key-term">个体域（论域）</span>：个体变项的取值范围；未指明时默认为全总个体域，此时需引入特性谓词。</li>
-<li><span class="key-term">特性谓词</span>：在全总个体域中限定讨论范围；全称量词后特性谓词用 → 连接，存在量词后用 ∧ 连接。</li>
-<li><span class="key-term">约束变元与自由变元</span>：受量词约束的出现为约束出现，反之为自由出现；同一变元在同一公式中可同时有约束和自由出现。</li>
-<li><span class="key-term">换名规则与代入规则</span>：约束变元改名规则把指导变元及辖域内约束出现换成本辖域未出现的新符号；自由变元代入规则把自由变元用公式中未出现的新符号替换所有出现。</li>
-<li><span class="key-term">谓词公式</span>：原子谓词公式经联结词、量词有限次组合而成；最外层括号可省略，量词后括号不可省略。</li>
-<li><span class="key-term">量词否定转换</span>：¬∀xP(x) ⇔ ∃x¬P(x)；¬∃xP(x) ⇔ ∀x¬P(x)。</li>
-<li><span class="key-term">谓词演算等值式与蕴涵式</span>：量词对 ∧/∨ 的分配、辖域扩张与收缩、消去量词等。</li>
-<li><span class="key-term">前束范式</span>：所有量词均位于公式最前面且作用域延伸至公式末尾；任意谓词公式都存在与之等值的前束范式。</li>
-<li><span class="key-term">谓词推理规则</span>：全称 instantiation (UI)、存在 instantiation (EI)、全称 generalization (UG)、存在 generalization (EG)；EI 必须引入新的特指常量。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">个体词、谓词与量词<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：个体词是研究对象（常项/变项）；谓词描述个体性质或关系；量词包括全称量词 ∀ 与存在量词 ∃。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">个体域（论域）<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：个体变项的取值范围；未指明时默认为全总个体域，此时需引入特性谓词。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">特性谓词<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：在全总个体域中限定讨论范围；全称量词后特性谓词用 → 连接，存在量词后用 ∧ 连接。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">约束变元与自由变元<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：受量词约束的出现为约束出现，反之为自由出现；同一变元在同一公式中可同时有约束和自由出现。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">换名规则与代入规则<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：约束变元改名规则把指导变元及辖域内约束出现换成本辖域未出现的新符号；自由变元代入规则把自由变元用公式中未出现的新符号替换所有出现。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">谓词公式<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：原子谓词公式经联结词、量词有限次组合而成；最外层括号可省略，量词后括号不可省略。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">量词否定转换<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：¬∀xP(x) ⇔ ∃x¬P(x)；¬∃xP(x) ⇔ ∀x¬P(x)。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">谓词演算等值式与蕴涵式<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：量词对 ∧/∨ 的分配、辖域扩张与收缩、消去量词等。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">前束范式<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：所有量词均位于公式最前面且作用域延伸至公式末尾；任意谓词公式都存在与之等值的前束范式。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">谓词推理规则<span class="lg-badge lg-priority-normal">🟡 <span>🧠</span> 一般·背诵</span></span>：全称 instantiation (UI)、存在 instantiation (EI)、全称 generalization (UG)、存在 generalization (EG)；EI 必须引入新的特指常量。</li>
 </ul>
   </div>
 </div>
@@ -2499,14 +2559,14 @@ C. R(a) VR(6) AR(c) D. R(a) Y R(b) ' R(c)</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">集合</span>：互不相同对象的无序汇集；元素与集合的关系是 ∈ 或 ∉。</li>
-<li><span class="key-term">子集、真子集与集合相等</span>：A⊆B 当且仅当 ∀x(x∈A→x∈B)；A⊂B 要求 A⊆B 且 A≠B；A=B 当且仅当 A⊆B 且 B⊆A。</li>
-<li><span class="key-term">空集 ∅</span>：不含任何元素，是任何集合的子集；注意 ∅ ≠ {∅}。</li>
-<li><span class="key-term">集合运算</span>：并 A∪B、交 A∩B、差 A−B（相对补）、绝对补 ∼A=E−A、对称差 A⊕B=(A−B)∪(B−A)。</li>
-<li><span class="key-term">幂集 P(A)</span>：A 的所有子集构成的集合，|P(A)| = 2^|A|；当 |A|=0 时 P(A)={∅}。</li>
-<li><span class="key-term">有序对与笛卡尔积</span>：有序对 (a,b) 顺序固定；A×B={(a,b)|a∈A,b∈B}，|A×B|=|A|·|B|。</li>
-<li><span class="key-term">集合运算恒等式</span>：幂等律、结合律、交换律、分配律、德摩根律、吸收律、零律、同一律、排中律、否定律等。</li>
-<li><span class="key-term">有限集计数</span>：|A∪B| = |A|+|B|−|A∩B|；差集 A−B = A∩∼B = A−(A∩B)。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">集合<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：互不相同对象的无序汇集；元素与集合的关系是 ∈ 或 ∉。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">子集、真子集与集合相等<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：A⊆B 当且仅当 ∀x(x∈A→x∈B)；A⊂B 要求 A⊆B 且 A≠B；A=B 当且仅当 A⊆B 且 B⊆A。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">空集 ∅<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：不含任何元素，是任何集合的子集；注意 ∅ ≠ {∅}。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">集合运算<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：并 A∪B、交 A∩B、差 A−B（相对补）、绝对补 ∼A=E−A、对称差 A⊕B=(A−B)∪(B−A)。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">幂集 P(A)<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：A 的所有子集构成的集合，|P(A)| = 2^|A|；当 |A|=0 时 P(A)={∅}。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">有序对与笛卡尔积<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：有序对 (a,b) 顺序固定；A×B={(a,b)|a∈A,b∈B}，|A×B|=|A|·|B|。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">集合运算恒等式<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：幂等律、结合律、交换律、分配律、德摩根律、吸收律、零律、同一律、排中律、否定律等。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">有限集计数<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：|A∪B| = |A|+|B|−|A∩B|；差集 A−B = A∩∼B = A−(A∩B)。</li>
 </ul>
   </div>
 </div>
@@ -2635,17 +2695,17 @@ C. D. {2,⑵}</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">关系</span>：笛卡尔积 A×B 的子集；A 到 B 的二元关系是有序对的集合；关系可用集合、关系矩阵、关系图三种方式表示。</li>
-<li><span class="key-term">关系性质</span>：自反性、反自反性、对称性、反对称性、传递性；注意“自反”与“反自反”不是互为否定。</li>
-<li><span class="key-term">逆关系与复合关系</span>：R⁻¹ = {<b,a> | <a,b>∈R}；R∘S（右复合）= {<a,c> | ∃b(<a,b>∈R ∧ <b,c>∈S)}；复合满足结合律，一般不满足交换律。</li>
-<li><span class="key-term">关系矩阵的布尔运算</span>：用布尔加（∨）与布尔乘（∧）求关系的并、交、复合；M_{R∘S}=M_R ⊙ M_S（布尔矩阵乘法）。</li>
-<li><span class="key-term">关系的闭包</span>：自反闭包 r(R)=R∪I_A、对称闭包 s(R)=R∪R⁻¹、传递闭包 t(R)=R∪R²∪…∪Rⁿ（n=|A|）；闭包是包含 R 的最小具有相应性质的关系。</li>
-<li><span class="key-term">等价关系</span>：自反、对称、传递；等价类 [a]_R = {x∈A | aRx}，同一等价类中元素互相等价；等价关系与集合划分一一对应。</li>
-<li><span class="key-term">相容关系</span>：自反且对称的关系（不要求传递），朋友关系是典型的相容关系。</li>
-<li><span class="key-term">偏序关系与偏序集</span>：自反、反对称、传递；可用哈斯图直观表示；特殊元素包括最大元/最小元、极大元/极小元、上界/下界、上确界/下确界。</li>
-<li><span class="key-term">全序与良序</span>：全序要求任意两元素可比；良序要求任何非空子集都有最小元（良序必全序，全序不必良序）。</li>
-<li><span class="key-term">函数（映射）</span>：A 到 B 的特殊关系，要求定义域中每个元素有唯一像；分单射、满射、双射。</li>
-<li><span class="key-term">复合函数与反函数</span>：复合顺序与定义域、值域匹配；双射函数存在反函数，反函数也是双射。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">关系<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：笛卡尔积 A×B 的子集；A 到 B 的二元关系是有序对的集合；关系可用集合、关系矩阵、关系图三种方式表示。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">关系性质<span class="lg-badge lg-priority-key">🔴 <span>🧠</span> 重点·背诵</span></span>：自反性、反自反性、对称性、反对称性、传递性；注意“自反”与“反自反”不是互为否定。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">逆关系与复合关系<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：R⁻¹ = {<b,a> | <a,b>∈R}；R∘S（右复合）= {<a,c> | ∃b(<a,b>∈R ∧ <b,c>∈S)}；复合满足结合律，一般不满足交换律。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">关系矩阵的布尔运算<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：用布尔加（∨）与布尔乘（∧）求关系的并、交、复合；M_{R∘S}=M_R ⊙ M_S（布尔矩阵乘法）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">关系的闭包<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：自反闭包 r(R)=R∪I_A、对称闭包 s(R)=R∪R⁻¹、传递闭包 t(R)=R∪R²∪…∪Rⁿ（n=|A|）；闭包是包含 R 的最小具有相应性质的关系。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">等价关系<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：自反、对称、传递；等价类 [a]_R = {x∈A | aRx}，同一等价类中元素互相等价；等价关系与集合划分一一对应。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">相容关系<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：自反且对称的关系（不要求传递），朋友关系是典型的相容关系。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">偏序关系与偏序集<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：自反、反对称、传递；可用哈斯图直观表示；特殊元素包括最大元/最小元、极大元/极小元、上界/下界、上确界/下确界。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">全序与良序<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：全序要求任意两元素可比；良序要求任何非空子集都有最小元（良序必全序，全序不必良序）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">函数（映射）<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：A 到 B 的特殊关系，要求定义域中每个元素有唯一像；分单射、满射、双射。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">复合函数与反函数<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：复合顺序与定义域、值域匹配；双射函数存在反函数，反函数也是双射。</li>
 </ul>
   </div>
 </div>
@@ -2769,17 +2829,17 @@ D. R = ( <1,1>,<1,2>,<3,1>,<3,2>,<3,3>,<4,1>,<4,3>}</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">运算与封闭性</span>：n 元运算是 Aⁿ→A 的映射；运算在集合 S 上封闭指 ∀a,b∈S，a*b∈S。</li>
-<li><span class="key-term">代数系统</span>：非空集合连同其上的若干运算组成，记作 <S, *, ∘, …>；代数常数（特异元素）常写入系统记号中。</li>
-<li><span class="key-term">运算性质</span>：结合律、交换律、幂等律、分配律、吸收律；判断时可通过运算表或定义验证。</li>
-<li><span class="key-term">特殊元素</span>：幺元（单位元）e 满足 e*a=a*e=a；零元 θ 满足 θ*a=a*θ=θ；幂等元 a 满足 a*a=a；逆元 a⁻¹ 满足 a*a⁻¹=a⁻¹*a=e。幺元、零元若存在则唯一。</li>
-<li><span class="key-term">子代数</span>：B⊆S，B 对原代数系统所有运算封闭且含相同代数常数，则 <B, …> 为子代数；整个代数和仅含代数常数的最小闭集称为平凡子代数。</li>
-<li><span class="key-term">半群、独异点、群</span>：半群 = 封闭 + 结合；独异点 = 半群 + 幺元；群 = 独异点 + 每个元素有逆元。</li>
-<li><span class="key-term">群的性质</span>：消去律成立；群中唯一的幂等元是幺元；非平凡群无零元；方程 ax=b 与 ya=b 在群中有唯一解。</li>
-<li><span class="key-term">元素的阶</span>：使 aⁿ=e 成立的最小正整数 n 称为 a 的阶 |a|；有限群中每个元素的阶均有限。</li>
-<li><span class="key-term">循环群</span>：存在生成元 g 使得群中每个元素都可表示为 g 的幂；循环群必为 Abel 群。</li>
-<li><span class="key-term">子群</span>：H⊆G 且 <H, *> 成群；判定定理：非空 H 对任意 a,b∈H 有 a*b⁻¹∈H（或 a*b∈H 且 a⁻¹∈H）。</li>
-<li><span class="key-term">环与域</span>：环是具两个二元运算（通常称加法、乘法）的代数系统，加法成群、乘法成半群且乘法对加法可分配；域是含幺、可交换、无零因子且每个非零元有逆元的环。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">运算与封闭性<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：n 元运算是 Aⁿ→A 的映射；运算在集合 S 上封闭指 ∀a,b∈S，a*b∈S。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">代数系统<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：非空集合连同其上的若干运算组成，记作 <S, *, ∘, …>；代数常数（特异元素）常写入系统记号中。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">运算性质<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：结合律、交换律、幂等律、分配律、吸收律；判断时可通过运算表或定义验证。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">特殊元素<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：幺元（单位元）e 满足 e*a=a*e=a；零元 θ 满足 θ*a=a*θ=θ；幂等元 a 满足 a*a=a；逆元 a⁻¹ 满足 a*a⁻¹=a⁻¹*a=e。幺元、零元若存在则唯一。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">子代数<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：B⊆S，B 对原代数系统所有运算封闭且含相同代数常数，则 <B, …> 为子代数；整个代数和仅含代数常数的最小闭集称为平凡子代数。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">半群、独异点、群<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：半群 = 封闭 + 结合；独异点 = 半群 + 幺元；群 = 独异点 + 每个元素有逆元。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">群的性质<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：消去律成立；群中唯一的幂等元是幺元；非平凡群无零元；方程 ax=b 与 ya=b 在群中有唯一解。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">元素的阶<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：使 aⁿ=e 成立的最小正整数 n 称为 a 的阶 |a|；有限群中每个元素的阶均有限。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">循环群<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：存在生成元 g 使得群中每个元素都可表示为 g 的幂；循环群必为 Abel 群。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">子群<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：H⊆G 且 <H, *> 成群；判定定理：非空 H 对任意 a,b∈H 有 a*b⁻¹∈H（或 a*b∈H 且 a⁻¹∈H）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">环与域<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：环是具两个二元运算（通常称加法、乘法）的代数系统，加法成群、乘法成半群且乘法对加法可分配；域是含幺、可交换、无零因子且每个非零元有逆元的环。</li>
 </ul>
   </div>
 </div>
@@ -2907,16 +2967,16 @@ A. x * y = max(x,y) B. x * y = min(x ,y)</p>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">格</span>：偏序集 <L, ≤> 中任意两个元素都有最大下界（下确界/交）和最小上界（上确界/并）；有限子集同理。</li>
-<li><span class="key-term">格的等价定义</span>：代数系统 <L, ∧, ∨> 满足交换律、结合律、吸收律，则 L 上可定义偏序使之为格，且 a∧b=inf{a,b}，a∨b=sup{a,b}。</li>
-<li><span class="key-term">格的运算与性质</span>：交 ∧、并 ∨ 满足交换律、结合律、幂等律、吸收律；格具有保序性。</li>
-<li><span class="key-term">对偶原理</span>：将格命题中的 ≤ 与 ≥、∧ 与 ∨ 互换得到对偶命题；若原命题对一切格为真，则对偶命题也对一切格为真。</li>
-<li><span class="key-term">子格</span>：S⊆L 且 S 对 ∧、∨ 封闭，则 <S, ∧, ∨> 为子格。</li>
-<li><span class="key-term">分配格</span>：满足 a∧(b∨c)=(a∧b)∨(a∧c) 与 a∨(b∧c)=(a∨b)∧(a∨c) 的格；链必为分配格，小于五元的格都是分配格。</li>
-<li><span class="key-term">非分配格的判定</span>：格 L 是分配格当且仅当 L 不含与钻石格或五角格同构的子格。</li>
-<li><span class="key-term">有界格与有补格</span>：存在全下界 0 与全上界 1 的格称为有界格；若每个元素都有补元，则称为有补格。</li>
-<li><span class="key-term">布尔代数</span>：有补分配格，每个元素有唯一补元；等价地，满足交换律、分配律、同一律、补元律的代数系统 <B, ∧, ∨, ', 0, 1>。</li>
-<li><span class="key-term">布尔代数性质</span>：双重否定律 (a')'=a，德摩根律 (a∧b)'=a'∨b'、(a∨b)'=a'∧b'。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">格<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：偏序集 <L, ≤> 中任意两个元素都有最大下界（下确界/交）和最小上界（上确界/并）；有限子集同理。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">格的等价定义<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：代数系统 <L, ∧, ∨> 满足交换律、结合律、吸收律，则 L 上可定义偏序使之为格，且 a∧b=inf{a,b}，a∨b=sup{a,b}。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">格的运算与性质<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：交 ∧、并 ∨ 满足交换律、结合律、幂等律、吸收律；格具有保序性。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">对偶原理<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：将格命题中的 ≤ 与 ≥、∧ 与 ∨ 互换得到对偶命题；若原命题对一切格为真，则对偶命题也对一切格为真。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">子格<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：S⊆L 且 S 对 ∧、∨ 封闭，则 <S, ∧, ∨> 为子格。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">分配格<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：满足 a∧(b∨c)=(a∧b)∨(a∧c) 与 a∨(b∧c)=(a∨b)∧(a∨c) 的格；链必为分配格，小于五元的格都是分配格。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">非分配格的判定<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：格 L 是分配格当且仅当 L 不含与钻石格或五角格同构的子格。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">有界格与有补格<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：存在全下界 0 与全上界 1 的格称为有界格；若每个元素都有补元，则称为有补格。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">布尔代数<span class="lg-badge lg-priority-key">🔴 <span>🧠</span> 重点·背诵</span></span>：有补分配格，每个元素有唯一补元；等价地，满足交换律、分配律、同一律、补元律的代数系统 <B, ∧, ∨, ', 0, 1>。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">布尔代数性质<span class="lg-badge lg-priority-normal">🟡 <span>🧠</span> 一般·背诵</span></span>：双重否定律 (a')'=a，德摩根律 (a∧b)'=a'∨b'、(a∨b)'=a'∧b'。</li>
 </ul>
   </div>
 </div>
@@ -3091,16 +3151,16 @@ C. aV(aA6)Wa D. a\] {a l\b) ＞ a</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">图</span>：G=<V,E>，V 为非空有限顶点集，E 为边集；边可表示为无序对（无向边）或有序对（有向边/弧）。</li>
-<li><span class="key-term">特殊图</span>：零图（无边）、平凡图（仅一个顶点）、完全图 Kₙ、有向完全图、简单图（无环无多重边）、多重图。</li>
-<li><span class="key-term">度</span>：无向图中与顶点关联的边数 deg(v)，环计 2；有向图中分入度 deg⁻(v) 与出度 deg⁺(v)，deg(v)=deg⁻(v)+deg⁺(v)。</li>
-<li><span class="key-term">握手定理</span>：无向图中 Σdeg(v)=2|E|；有向图中 Σdeg⁺(v)=Σdeg⁻(v)=|E|；奇顶点个数必为偶数。</li>
-<li><span class="key-term">通路、回路</span>：顶点与边的交替序列；简单通路/回路不重复边；初级通路/回路不重复顶点（初级回路即圈）。</li>
-<li><span class="key-term">连通性</span>：无向图分连通图与不连通图，极大连通子图为连通分支；有向图分强连通、单侧连通、弱连通。</li>
-<li><span class="key-term">割点、割边与割集</span>：删去后使图不再连通的顶点/边/顶点集/边集；树中每条非叶子边都是割边。</li>
-<li><span class="key-term">邻接矩阵 A</span>：A[i][j] 为从 v_i 到 v_j 的边数；简单图中为 0/1 布尔矩阵；无向图邻接矩阵对称。</li>
-<li><span class="key-term">邻接矩阵的幂</span>：Aᵏ[i][j] 表示从 v_i 到 v_j 长度为 k 的通路条数。</li>
-<li><span class="key-term">可达性矩阵 P</span>：P[i][j]=1 表示 v_i 可达 v_j；可由 B=A∨A²∨…∨Aⁿ 将非零元改 1 得到，或用 Warshall 算法。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">图<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：G=<V,E>，V 为非空有限顶点集，E 为边集；边可表示为无序对（无向边）或有序对（有向边/弧）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">特殊图<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：零图（无边）、平凡图（仅一个顶点）、完全图 Kₙ、有向完全图、简单图（无环无多重边）、多重图。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">度<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：无向图中与顶点关联的边数 deg(v)，环计 2；有向图中分入度 deg⁻(v) 与出度 deg⁺(v)，deg(v)=deg⁻(v)+deg⁺(v)。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">握手定理<span class="lg-badge lg-priority-key">🔴 <span>📐</span> 重点·计算</span></span>：无向图中 Σdeg(v)=2|E|；有向图中 Σdeg⁺(v)=Σdeg⁻(v)=|E|；奇顶点个数必为偶数。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">通路、回路<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：顶点与边的交替序列；简单通路/回路不重复边；初级通路/回路不重复顶点（初级回路即圈）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">连通性<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：无向图分连通图与不连通图，极大连通子图为连通分支；有向图分强连通、单侧连通、弱连通。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">割点、割边与割集<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：删去后使图不再连通的顶点/边/顶点集/边集；树中每条非叶子边都是割边。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">邻接矩阵 A<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：A[i][j] 为从 v_i 到 v_j 的边数；简单图中为 0/1 布尔矩阵；无向图邻接矩阵对称。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">邻接矩阵的幂<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：Aᵏ[i][j] 表示从 v_i 到 v_j 长度为 k 的通路条数。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">可达性矩阵 P<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：P[i][j]=1 表示 v_i 可达 v_j；可由 B=A∨A²∨…∨Aⁿ 将非零元改 1 得到，或用 Warshall 算法。</li>
 </ul>
   </div>
 </div>
@@ -3265,15 +3325,15 @@ A. 1 B. 2 C. 3 D. 4</p></div>
   </div>
   <div class="section-card-body collapse-body">
 <ul>
-<li><span class="key-term">欧拉通路/回路</span>：经过每条边一次且仅一次的通路/回路；无向连通图是欧拉图 ⟺ 无奇点；有欧拉通路但无回路 ⟺ 恰有两个奇点（半欧拉图）。</li>
-<li><span class="key-term">有向欧拉图</span>：强连通且每个顶点入度等于出度；有向半欧拉通路要求除起点、终点外其余顶点入度=出度。</li>
-<li><span class="key-term">哈密顿通路/回路</span>：经过每个顶点一次且仅一次的通路/回路；哈密顿图存在哈密顿回路；无简单充要判别法。</li>
-<li><span class="key-term">哈密顿图判定</span>：必要条件 ω(G−S)≤|S|；充分条件（Dirac/Ore 型）为任意两顶点度数之和 ≥ n（回路）或 ≥ n−1（通路）。</li>
-<li><span class="key-term">平面图</span>：能画在平面上且边仅在端点处相交；欧拉公式 v−e+r=2（连通平面图，r 含无限面）；库拉图斯基定理：平面图不含与 K₅ 或 K₃,₃ 同胚的子图。</li>
-<li><span class="key-term">树</span>：连通且无回路的无向图；n 个顶点的树有 n−1 条边；森林满足 e=n−w（w 为连通分支数）。</li>
-<li><span class="key-term">生成树与最小生成树</span>：连通图 G 的生成子图且为树；带权图中权最小的生成树为最小生成树，可用 Kruskal（避圈）算法或破圈法求解。</li>
-<li><span class="key-term">有根树、有序树、m 叉树</span>：有根树有唯一入度为 0 的根；有序树中子结点有顺序；m 叉树每个结点最多 m 个儿子；完全 m 叉树非叶结点恰有 m 个儿子。</li>
-<li><span class="key-term">二叉树遍历</span>：先序（根左右）、中序（左根右）、后序（左右根）；任意二叉树的三种遍历序列中，叶子结点的相对次序不变。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">欧拉通路/回路<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：经过每条边一次且仅一次的通路/回路；无向连通图是欧拉图 ⟺ 无奇点；有欧拉通路但无回路 ⟺ 恰有两个奇点（半欧拉图）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">有向欧拉图<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：强连通且每个顶点入度等于出度；有向半欧拉通路要求除起点、终点外其余顶点入度=出度。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">哈密顿通路/回路<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：经过每个顶点一次且仅一次的通路/回路；哈密顿图存在哈密顿回路；无简单充要判别法。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">哈密顿图判定<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：必要条件 ω(G−S)≤|S|；充分条件（Dirac/Ore 型）为任意两顶点度数之和 ≥ n（回路）或 ≥ n−1（通路）。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">平面图<span class="lg-badge lg-priority-normal">🟡 <span>📐</span> 一般·计算</span></span>：能画在平面上且边仅在端点处相交；欧拉公式 v−e+r=2（连通平面图，r 含无限面）；库拉图斯基定理：平面图不含与 K₅ 或 K₃,₃ 同胚的子图。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">树<span class="lg-badge lg-priority-normal">🟡 <span>🧠</span> 一般·背诵</span></span>：连通且无回路的无向图；n 个顶点的树有 n−1 条边；森林满足 e=n−w（w 为连通分支数）。</li>
+<li class="lg-kp-item lg-priority-key"><span class="key-term kt-priority-key">生成树与最小生成树<span class="lg-badge lg-priority-key">🔴 <span>💡</span> 重点·理解</span></span>：连通图 G 的生成子图且为树；带权图中权最小的生成树为最小生成树，可用 Kruskal（避圈）算法或破圈法求解。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">有根树、有序树、m 叉树<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：有根树有唯一入度为 0 的根；有序树中子结点有顺序；m 叉树每个结点最多 m 个儿子；完全 m 叉树非叶结点恰有 m 个儿子。</li>
+<li class="lg-kp-item lg-priority-normal"><span class="key-term kt-priority-normal">二叉树遍历<span class="lg-badge lg-priority-normal">🟡 <span>💡</span> 一般·理解</span></span>：先序（根左右）、中序（左根右）、后序（左右根）；任意二叉树的三种遍历序列中，叶子结点的相对次序不变。</li>
 </ul>
   </div>
 </div>
@@ -3502,7 +3562,10 @@ D.连通但删去一条边则不连通的图</p></div>
 
 
 
-      var MASTERY_LABELS = ["未开始", "学习中", "已掌握", "需复习"];
+      // 5 档掌握度：0待学习(灰) 1学习中(蓝) 2不会(红) 3不熟(橙) 4掌握(绿)
+      // 旧 4 档迁移：0→0 1→1 2(已掌握)→4(掌握) 3(需复习)→3(不熟)
+      var MASTERY_LABELS = ["待学习", "学习中", "不会", "不熟", "掌握"];
+      var LEGACY_MASTERY_MAP = { 0: 0, 1: 1, 2: 4, 3: 3 };
 
       var DIFFICULTY_LABELS = { 1: "基础", 2: "中等", 3: "难点" };
 
@@ -3528,9 +3591,27 @@ D.连通但删去一条边则不连通的图</p></div>
 
           var raw = localStorage.getItem(STORAGE_KEY);
 
-          return raw ? JSON.parse(raw) : { mastery: {}, kp: {} };
+          var state = raw ? JSON.parse(raw) : { mastery: {}, kp: {}, toc: {} };
 
-        } catch(e) { return { mastery: {}, kp: {} }; }
+          // 旧 4 档数据一次性迁移到 5 档（仅当未标记 _migrated 时执行）
+          if (!state._migrated && state.mastery) {
+            var needSave = false;
+            for (var k in state.mastery) {
+              var v = state.mastery[k];
+              if (typeof v === 'number' && v in LEGACY_MASTERY_MAP && LEGACY_MASTERY_MAP[v] !== v) {
+                state.mastery[k] = LEGACY_MASTERY_MAP[v];
+                needSave = true;
+              }
+            }
+            state._migrated = true;
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+            // 迁移后同步一次 API（若已加载完成）
+            if (_apiLoaded) saveStateToAPI(state);
+          }
+          if (!state.toc) state.toc = {};
+          return state;
+
+        } catch(e) { return { mastery: {}, kp: {}, toc: {} }; }
 
       }
 
@@ -3610,9 +3691,18 @@ D.连通但删去一条边则不连通的图</p></div>
           btn.textContent = lbl;
 
           btn.addEventListener("click", function() {
-
-            setMastery(chapterNum, level);
-
+            // 全自动判定模式：章节状态由知识点完成度自动计算，无需手动设置
+            var tip = document.createElement("div");
+            tip.className = "ss-mastery-tip";
+            tip.textContent = "章节状态由知识点完成度自动判定：≥50%掌握 · 40-49%不熟 · 20-39%学习中 · <20%待学习";
+            tip.style.cssText = "position:absolute;z-index:99;background:#1e293b;color:#fff;padding:6px 10px;border-radius:6px;font-size:12px;max-width:280px;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.2);pointer-events:none;";
+            var rect = btn.getBoundingClientRect();
+            tip.style.top = (rect.top - 8) + "px";
+            tip.style.left = rect.left + "px";
+            var oldTip = btn.closest(".framework-chapter").querySelector(".ss-mastery-tip");
+            if (oldTip) oldTip.remove();
+            document.body.appendChild(tip);
+            setTimeout(function() { tip.remove(); }, 2600);
           });
 
           btns.appendChild(btn);
@@ -3737,7 +3827,7 @@ D.连通但删去一条边则不连通的图</p></div>
 
         var masteredCount = 0;
 
-        var stats = [0, 0, 0, 0];
+        var stats = [0, 0, 0, 0, 0];
 
 
 
@@ -3747,11 +3837,22 @@ D.连通但删去一条边则不连通的图</p></div>
 
           if (!num) return;
 
-          var mastery = state.mastery[num] || 0;
+          // 全自动判定章节状态（与 ch-card 一致）
+          var totalKp = parseInt(ch.dataset.totalKp) || 0;
+          var doneKp = 0;
+          ch.querySelectorAll(".ss-kp-check").forEach(function(cb) {
+            if (state.kp[cb.dataset.kp]) doneKp++;
+          });
+          var ratio = totalKp > 0 ? (doneKp / totalKp) : 0;
+          var mastery;
+          if (ratio >= 0.5) mastery = 4;
+          else if (ratio >= 0.4) mastery = 3;
+          else if (ratio >= 0.2) mastery = 1;
+          else mastery = 0;
 
-          stats[mastery]++;
+          stats[mastery] = (stats[mastery] || 0) + 1;
 
-          if (mastery === 2) masteredCount++;
+          if (mastery === 4) masteredCount++;
 
 
 
@@ -3827,11 +3928,9 @@ D.连通但删去一条边则不连通的图</p></div>
 
 
 
-        // 同步章节掌握度网格
-
-        var GRID_ICONS = { 0: "○", 1: "○", 2: "✓", 3: "△" };
-
-        var GRID_LABELS = { 0: "未开始", 1: "学习中", 2: "已掌握", 3: "需复习" };
+        // 同步章节掌握度网格（5 档）
+        var GRID_ICONS = { 0: "○", 1: "○", 2: "✗", 3: "△", 4: "✓" };
+        var GRID_LABELS = { 0: "待学习", 1: "学习中", 2: "不会", 3: "不熟", 4: "掌握" };
 
         document.querySelectorAll(".ch-card").forEach(function(card) {
 
@@ -3839,7 +3938,22 @@ D.连通但删去一条边则不连通的图</p></div>
 
           if (!chNum) return;
 
-          var lvl = state.mastery[chNum] || 0;
+          // 全自动判定：由知识点完成比例决定章节状态
+          // ≥50% 掌握(4绿) | 40-49% 不熟(3橙) | 20-39% 学习中(1蓝) | <20% 待学习(0灰)
+          var chEl = document.querySelector('.framework-chapter[data-chapter="' + chNum + '"]');
+          var totalKp = chEl ? (parseInt(chEl.dataset.totalKp) || 0) : 0;
+          var doneKp = 0;
+          if (chEl) {
+            chEl.querySelectorAll(".ss-kp-check").forEach(function(cb) {
+              if (state.kp[cb.dataset.kp]) doneKp++;
+            });
+          }
+          var ratio = totalKp > 0 ? (doneKp / totalKp) : 0;
+          var lvl;
+          if (ratio >= 0.5) lvl = 4;
+          else if (ratio >= 0.4) lvl = 3;
+          else if (ratio >= 0.2) lvl = 1;
+          else lvl = 0;
 
           card.dataset.mastery = lvl;
 
@@ -3849,31 +3963,9 @@ D.连通但删去一条边则不连通的图</p></div>
 
           if (iconEl) iconEl.textContent = GRID_ICONS[lvl];
 
-          // 计算知识点进度
+          if (totalKp > 0) {
 
-          var chEl = document.querySelector('.framework-chapter[data-chapter="' + chNum + '"]');
-
-          if (chEl) {
-
-            var totalKp = parseInt(chEl.dataset.totalKp) || 0;
-
-            var doneKp = 0;
-
-            chEl.querySelectorAll(".ss-kp-check").forEach(function(cb) {
-
-              if (state.kp[cb.dataset.kp]) doneKp++;
-
-            });
-
-            if (totalKp > 0 && doneKp > 0) {
-
-              if (textEl) textEl.textContent = GRID_LABELS[lvl] + " " + doneKp + "/" + totalKp;
-
-            } else {
-
-              if (textEl) textEl.textContent = GRID_LABELS[lvl];
-
-            }
+            if (textEl) textEl.textContent = GRID_LABELS[lvl] + " " + doneKp + "/" + totalKp;
 
           } else {
 
@@ -3909,15 +4001,64 @@ D.连通但删去一条边则不连通的图</p></div>
 
 
 
+      // 供 JSON 数据驱动模块在重新渲染章节后调用：重挂掌握度 checkbox + 同步 UI
+      window.__reinitChapters = function() {
+        document.querySelectorAll(".framework-chapter").forEach(initChapter);
+        syncUI();
+      };
+
+      // ===== 目录小节级掌握状态（5 档，存 state.toc） =====
+      var TOC_DOT_ICONS = { 0: "○", 1: "◐", 2: "✗", 3: "△", 4: "●" };
+
+      function tocKey(chapterNum, title) {
+        return chapterNum + '::' + title;
+      }
+
+      window.__setTocMastery = function(chapterNum, title) {
+        var state = loadState();
+        if (!state.toc) state.toc = {};
+        var key = tocKey(chapterNum, title);
+        var cur = state.toc[key] || 0;
+        state.toc[key] = (cur + 1) % 5;
+        saveState(state);
+        window.__syncTocUI && window.__syncTocUI();
+        syncUI();
+      };
+
+      window.__syncTocUI = function() {
+        var state = loadState();
+        var dots = document.querySelectorAll('.toc-dot');
+        dots.forEach(function(dot) {
+          var ch = parseInt(dot.dataset.ch);
+          var title = dot.dataset.title || '';
+          var lvl = (state.toc && state.toc[tocKey(ch, title)]) || 0;
+          dot.dataset.mastery = lvl;
+          dot.textContent = TOC_DOT_ICONS[lvl] || '○';
+          dot.title = MASTERY_LABELS[lvl] || '';
+        });
+      };
+
+      // 为目录状态点绑定点击事件（事件委托，兼容 JSON 动态渲染）
+      document.addEventListener('click', function(e) {
+        var dot = e.target.closest('.toc-dot');
+        if (dot) {
+          window.__setTocMastery(parseInt(dot.dataset.ch), dot.dataset.title || '');
+        }
+      });
+
+
+
       document.getElementById("ss-reset-btn").addEventListener("click", function() {
 
         if (confirm("确定要重置全部掌握度进度吗？")) {
 
           localStorage.removeItem(STORAGE_KEY);
 
-        try { fetch("/api/mastery", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: SS_SUBJECT, data: { mastery: {}, kp: {} } }) }).catch(function(e) {}); } catch(e) {}
+        try { fetch("/api/mastery", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: SS_SUBJECT, data: { mastery: {}, kp: {}, toc: {} } }) }).catch(function(e) {}); } catch(e) {}
 
           syncUI();
+
+          window.__syncTocUI && window.__syncTocUI();
 
         }
 
@@ -4707,6 +4848,234 @@ function toggleCollapse(header) {
   const card = header.closest('.collapse-card');
   card.classList.toggle('open');
 }
+</script>
+
+<script>
+// ===== 知识框架 JSON 数据驱动（02324 样板，方案A'） =====
+// 数据源：/data/knowledge-framework-02324.json + /data/study-plan.json
+// 策略：JSON 加载成功后覆盖渲染三个 tab；静态 HTML 保留为降级兜底
+(function() {
+  var SUBJECT_CODE = '02324';
+  var SUBJECT_NAME = '离散数学';
+
+  function apiUrl(p) {
+    return (location.protocol === 'file:') ? 'http://localhost:8000' + p : p;
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ---- 工具：掌握度 badge 渲染 ----
+  var PRI_CLS = { '重点': 'key', '一般': 'normal', '了解': 'survey' };
+  var PRI_ICON = { '重点': '🔴', '一般': '🟡', '了解': '⚪' };
+  var LVL_ICON = { '理解': '💡', '背诵': '🧠', '计算': '📐', '应用': '🔧' };
+
+  function badgeHtml(pri, lvl) {
+    var cls = PRI_CLS[pri] || 'normal';
+    var icon = PRI_ICON[pri] || '🟡';
+    var lic = LVL_ICON[lvl] || '💡';
+    return '<span class="lg-badge lg-priority-' + cls + '">' + icon + ' <span>' + lic + '</span> ' +
+      esc(pri) + '·' + esc(lvl) + '</span>';
+  }
+
+  // ---- 渲染章节精讲卡片（section-card） ----
+  function renderSectionCard(sec) {
+    var type = sec.type;
+    var items = sec.items || [];
+    var color = '#3b82f6';
+    var open = (type === '核心概念') ? ' open' : '';
+    if (type === '核心概念') color = '#ef4444';
+    if (type === '常见题型') color = '#f59e0b';
+
+    var body = '';
+    if (type === '核心概念') {
+      var lis = items.map(function(it) {
+        var cls = PRI_CLS[it.priority] || 'normal';
+        var kt = '<li class="lg-kp-item lg-priority-' + cls + '">' +
+          '<span class="key-term kt-priority-' + cls + '">' + esc(it.term) + badgeHtml(it.priority, it.level) +
+          '</span>：' + esc(it.summary || '') + '</li>';
+        return kt;
+      }).join('\n');
+      body = '<ul>\n' + lis + '\n</ul>';
+    } else if (type === '典型例题' || type === '同步练习') {
+      body = items.map(function(it) {
+        var sol = it.solution ? '\n<div class="example-solution"><p>' + esc(it.solution) + '</p></div>' : '';
+        return '<div class="example-block">\n' +
+          '<div class="example-title"><strong>' + esc(it.title) + '</strong></div>\n' +
+          '<div class="example-statement"><p>' + esc(it.statement) + '</p></div>' + sol + '\n</div>';
+      }).join('\n');
+    } else {
+      // 必会公式 / 常见题型 / 易错点 / 必会操作与复杂度 / 必会对比表：普通 li
+      body = '<ul>\n' + items.map(function(it) {
+        return '<li>' + (typeof it === 'string' ? esc(it) : esc(it.text != null ? it.text : it.content)) + '</li>';
+      }).join('\n') + '\n</ul>';
+    }
+
+    return '<div class="section-card collapse-card' + open + '" style="border-left:4px solid ' + color + ';">\n' +
+      '  <div class="section-card-header" onclick="toggleCollapse(this)">\n' +
+      '    <span class="section-card-title">' + esc(type) + '</span>\n' +
+      '    <span class="section-card-count">(' + items.length + ')</span>\n' +
+      '    <span class="chevron">▶</span>\n  </div>\n' +
+      '  <div class="section-card-body collapse-body">\n' + body + '\n  </div>\n</div>';
+  }
+
+  // ---- 渲染章节精讲 tab ----
+  function renderChapters(fw) {
+    (fw.chapters || []).forEach(function(ch) {
+      var pane = document.querySelector('.chapter-tab-pane[data-tab="chapter-' + ch.id + '"]');
+      if (!pane) return;
+      var html = '<div class="framework-chapter" data-chapter="' + ch.id + '" data-meta="' +
+        esc(ch.difficulty) + '" data-pages="' + esc(ch.pages) + '">\n' +
+        '<h3 style="display:none;">' + esc(ch.name) + '</h3>\n' +
+        (ch.sections || []).map(renderSectionCard).join('\n') +
+        '\n</div>';
+      var old = pane.querySelector('.framework-chapter');
+      if (old) old.outerHTML = html;
+      else pane.innerHTML = html;
+    });
+    if (window.__reinitChapters) window.__reinitChapters();
+    if (window.lgAnnotate) setTimeout(window.lgAnnotate, 100);
+  }
+
+  // ---- 渲染知识总览 tab ----
+  function renderOverview(fw) {
+    // 整体定位
+    var body = document.querySelector('[data-tab="knowledge-overview"] .kf-card .card-body');
+    if (body && fw.meta && fw.meta.overview) body.textContent = fw.meta.overview;
+
+    // 章节掌握度网格（初始待学习，syncUI 会按 data-mastery 更新颜色）
+    var grid = document.getElementById('chapterGrid');
+    if (grid && fw.chapters && fw.chapters.length) {
+      grid.innerHTML = fw.chapters.map(function(ch) {
+        return '<div class="ch-card" data-chapter="' + ch.id + '" data-mastery="0" onclick="switchChapterTab(\'chapter-' + ch.id + '\')">\n' +
+          '<div class="ch-name">' + esc(ch.name) + '</div>\n' +
+          '<div class="ch-meta">' + esc(ch.difficulty) + ' · ' + esc(ch.pages) + '</div>\n' +
+          '<div class="ch-status"><span class="ch-icon">○</span><span class="ch-status-text">待学习</span></div>\n</div>';
+      }).join('\n');
+    }
+
+    // 完整目录：仅替换含「第X章」的 toc-chapter，保留大纲/编者的话等静态条目
+    var tocWrap = document.querySelector('[data-tab="knowledge-overview"] .collapse-body');
+    if (tocWrap && fw.chapters && fw.chapters.length) {
+      var staticParts = [];
+      tocWrap.querySelectorAll(':scope > .toc-chapter').forEach(function(el) {
+        if (!/第\s*\d+\s*章/.test(el.textContent)) staticParts.push(el);
+      });
+      var chapterToc = fw.chapters.map(function(ch) {
+        var tagMap = { '核心': 'tag-core', '重点': 'tag-key', '常规': 'tag-regular' };
+        var tagCls = tagMap[ch.priority] || 'tag-key';
+        var secs = (ch.toc || []).map(function(s) {
+          // 节级状态点 + 标题
+          var secHtml = '<div class="toc-section">' +
+            '<span class="toc-dot" data-ch="' + ch.id + '" data-title="' + esc(s.title) + '"></span>' +
+            '<span class="toc-section-text">' + esc(s.title) + '</span></div>';
+          var subs = (s.subsections || []).map(function(ss) {
+            return '<div class="toc-subsection">' +
+              '<span class="toc-dot" data-ch="' + ch.id + '" data-title="' + esc(ss) + '"></span>' +
+              '<span class="toc-subsection-text">' + esc(ss) + '</span></div>';
+          }).join('\n');
+          return secHtml + '\n' + subs;
+        }).join('\n');
+        return '<div class="toc-chapter">\n' +
+          '<div class="toc-title toc-title-link" onclick="switchChapterTab(\'chapter-' + ch.id + '\')" style="cursor:pointer;">' +
+          esc(ch.name) + ' <span class="tag ' + tagCls + '">' + esc(ch.priority || '重点') + '</span> ' +
+          '<span class="page">' + esc(ch.pages) + '</span></div>\n' +
+          '<div class="toc-sections">\n' + secs + '\n</div>\n</div>';
+      }).join('\n');
+      tocWrap.innerHTML = '';
+      staticParts.forEach(function(el) { tocWrap.appendChild(el); });
+      var tmp = document.createElement('div');
+      tmp.innerHTML = chapterToc;
+      while (tmp.firstChild) tocWrap.appendChild(tmp.firstChild);
+      // 渲染目录状态点
+      if (window.__syncTocUI) window.__syncTocUI();
+    }
+
+    // 学习提示：展示在知识总览、整体定位之前（数据用 meta.tips）
+    var tips = (fw.meta && fw.meta.tips) || [];
+    if (tips.length) {
+      // 必须限定 .chapter-tab-pane，避免误匹配到 data-tab="knowledge-overview" 的顶部 tab 按钮
+      var overviewPane = document.querySelector('.chapter-tab-pane[data-tab="knowledge-overview"]');
+      if (!overviewPane) return;
+      var tipsCard = overviewPane.querySelector('.kf-tips-card');
+      if (!tipsCard) {
+        tipsCard = document.createElement('div');
+        tipsCard.className = 'kf-tips-card';
+        var h2 = document.createElement('h2');
+        h2.textContent = '学习提示';
+        tipsCard.appendChild(h2);
+        // 插入到整体定位（第一个 .kf-card）之前
+        var firstCard = overviewPane.querySelector('.kf-card');
+        overviewPane.insertBefore(tipsCard, firstCard);
+      }
+      tipsCard.querySelectorAll('.kf-tip').forEach(function(el) { el.remove(); });
+      tips.forEach(function(t) {
+        var tip = document.createElement('div');
+        tip.className = 'kf-tip';
+        var tagCls = { '计算': 'kf-tag-calc', '概念': 'kf-tag-concept', '综合': 'kf-tag-combo', '实例': 'kf-tag-example' }[t.tag] || 'kf-tag-concept';
+        tip.innerHTML = '<span class="kf-tag ' + tagCls + '">' + esc(t.tag) + '</span>' + esc(t.text);
+        tipsCard.appendChild(tip);
+      });
+      // 隐藏学习计划 tab 里的旧 tips 卡片（避免重复）
+      var oldTips = document.querySelector('[data-tab="study-plan"] .kf-tips-card');
+      if (oldTips) oldTips.style.display = 'none';
+    }
+  }
+
+  // ---- 渲染学习计划 tab（study-plan.json 按 subject 过滤，三阶段） ----
+  function extractWeekRange(weeks) {
+    if (!weeks.length) return '';
+    var first = weeks[0], last = weeks[weeks.length - 1];
+    return first.week + '~' + last.week;
+  }
+
+  function renderStudyPlan(plan) {
+    var accordion = document.querySelector('[data-tab="study-plan"] .kf-accordion');
+    if (!accordion || !plan || !plan.weeks) return;
+    var weeks = plan.weeks.filter(function(w) {
+      return w.goals && w.goals.some(function(g) { return g.subject === SUBJECT_NAME; });
+    });
+    if (!weeks.length) return;
+    var phases = [
+      { phase: 0, name: '初级阶段：各章梳理+练习' },
+      { phase: 1, name: '中间阶段：重点难点突破' },
+      { phase: 2, name: '冲刺阶段：模拟考+题海' }
+    ];
+    var html = '';
+    phases.forEach(function(ph) {
+      var pWeeks = weeks.filter(function(w) { return (w.phase || 0) === ph.phase; });
+      if (!pWeeks.length) return;
+      html += '<details class="kf-week-card" style="--week-color:#8b5cf6;"' + (ph.phase === 0 ? ' open' : '') + '>';
+      html += '<summary>' + esc(ph.name) + ' <span class="kf-week-meta">' + esc(extractWeekRange(pWeeks)) + '</span></summary><ul>';
+      pWeeks.forEach(function(w) {
+        var subs = w.goals.filter(function(g) { return g.subject === SUBJECT_NAME; });
+        subs.forEach(function(g) {
+          html += '<li><strong>' + esc(w.week) + '（' + esc(w.dates) + '）</strong>：' +
+            esc(g.chapter ? g.chapter + ' ' : '') + esc(g.topic) + (g.done ? ' ✓' : '') + '</li>';
+        });
+      });
+      html += '</ul></details>';
+    });
+    accordion.innerHTML = html;
+  }
+
+  // ---- 初始化：并行加载两个 JSON，成功后渲染 ----
+  Promise.all([
+    fetch(apiUrl('/data/knowledge-framework-' + SUBJECT_CODE + '.json')).then(function(r) { return r.json(); }),
+    fetch(apiUrl('/data/study-plan.json')).then(function(r) { return r.json(); })
+  ]).then(function(results) {
+    var fw = results[0];
+    renderStudyPlan(results[1]);
+    renderOverview(fw);
+    renderChapters(fw);
+    console.log('[KF-JSON] 知识框架 JSON 数据渲染完成');
+  }).catch(function(e) {
+    console.warn('[KF-JSON] JSON 数据加载失败，使用静态内容兜底', e);
+  });
+})();
 </script>
 </body>
 

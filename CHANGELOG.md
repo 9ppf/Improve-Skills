@@ -4,6 +4,25 @@
 
 ---
 
+## v2.29.0
+
+**发布时间**：2026-08-24（北京时间）
+
+### 2026-08-24 — 三科知识框架JSON化 + 掌握度5档体系 + 章节状态全自动判定
+
+**核心变更**：三科知识框架从写死HTML提取为统一JSON数据源（含整体定位/学习提示/优先级标注），02324页面三tab全部JSON驱动；掌握度从4档扩展为5档（新增"不会"红色）；章节状态改为由知识点完成度全自动判定（≥50%掌握）。
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/knowledge-framework-13015.json` | 新增：知识框架单一数据源（6章41核心概念，含meta.overview/tips，schemaVersion 1.1.0） |
+| `data/knowledge-framework-02324.json` | 新增：知识框架单一数据源（9章87核心概念，含meta.overview/tips，schemaVersion 1.1.0） |
+| `data/knowledge-framework-13003.json` | 新增：知识框架单一数据源（8章62核心概念，含meta.overview/tips，schemaVersion 1.1.0） |
+| `Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html` | 三tab全部JSON驱动：学习计划（study-plan.json按科目过滤，初级/中间/冲刺三阶段卡片）、知识总览（overview/tips/章节网格/完整目录）、章节精讲（knowledge-framework渲染）；掌握度4档扩展为5档（待学习/学习中/不会/不熟/掌握），旧数据一次性迁移（_migrated标记防重复迁移）；完整目录每节/小节新增5档状态点toc-dot（点击循环切换，存state.toc经/api/mastery同步）；章节状态改为知识点完成度全自动判定（≥50%掌握/40-49%不熟/20-39%学习中/<20%待学习），掌握度按钮降级为只读规则提示；ch-card/ch-icon/掌握度按钮CSS同步5档颜色 |
+| `Workbench/自考学习/备考科目/13003数据结构与算法/13003数据结构与算法-目录与知识框架.html` | 旧版章节（第2-8章）知识点升级为新版带优先级badge格式，与第1章及JSON数据对齐 |
+| `data/mastery-progress.json` | 掌握度数据结构更新（toc字段支持目录小节状态） |
+
+---
+
 ## v2.28.0
 
 **发布时间**：2026-08-24（北京时间）
