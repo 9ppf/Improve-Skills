@@ -85,6 +85,32 @@ def is_new_file(filepath):
     return result == ''
 
 
+def _has_module_structure_diff(mj):
+    """分析模块 JSON 的 git diff，判断是否包含真正的结构变化。
+
+    只有模块/分类的 name、items、children 等结构键发生新增/删除
+    （对应 diff 中的 +/- 行）才算结构变更；版本号、contentUrl、
+    review 等字段值更新不算。
+    """
+    diff = run_git(['diff', '--cached', '--', mj])
+    if not diff:
+        diff = run_git(['diff', '--', mj])
+    if not diff:
+        return False
+    structural_keys = ('name', 'items', 'children', 'categories', 'modules', 'tabs')
+    for line in diff.split('\n'):
+        if not line.startswith(('+', '-')):
+            continue
+        if line.startswith(('+++', '---')):
+            continue
+        stripped = line[1:].strip()
+        # 结构键出现在行首（JSON 键），且该行是新增或删除
+        for key in structural_keys:
+            if re.match(rf'^"?{re.escape(key)}"?\s*:', stripped):
+                return True
+    return False
+
+
 def detect_structural_changes(changed_files):
     """检测结构性变更，返回 (is_structural, reasons)"""
     reasons = []
@@ -103,7 +129,10 @@ def detect_structural_changes(changed_files):
                 reasons.append(f'模块配置变更：{mj}（可能涉及模块/分类增删）')
             elif isinstance(content, dict):
                 if any(k in content for k in ['items', 'children', 'categories', 'modules', 'tabs']):
-                    reasons.append(f'模块配置结构变更：{mj}（可能涉及导航结构变化）')
+                    # 仅当 diff 中确有结构键增删时才判定为结构变更，
+                    # 避免版本号/contentUrl 更新被误报
+                    if _has_module_structure_diff(mj):
+                        reasons.append(f'模块配置结构变更：{mj}（可能涉及导航结构变化）')
         except (json.JSONDecodeError, UnicodeDecodeError):
             pass
 

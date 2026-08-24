@@ -349,16 +349,22 @@ def backup_workbench(path: Path = WORKBENCH) -> Path:
 
 def validate_js(html: str) -> None:
     """Run node --check on the embedded JS. Raise on syntax errors."""
+    import tempfile
     # 提取所有 <script> 标签内的 JS 代码
     scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL)
     js = '\n'.join(scripts)
-    tmp = Path(__file__).with_name('workbench_check.js')
-    tmp.write_text(js, encoding='utf-8')
+    # 使用独立临时文件，避免 Windows 下共享文件（workbench_check.js）被并发进程删除
+    # 或句柄占用导致 node --check 找不到文件（与 check_js_syntax_global 一致）
+    with tempfile.NamedTemporaryFile(
+        mode='w', suffix='.js', encoding='utf-8', delete=False
+    ) as tmp:
+        tmp.write(js)
+        tmp_path = tmp.name
     try:
         # 调用 node --check 做 JS 语法校验
-        result = subprocess.run(['node', '--check', str(tmp)], capture_output=True, text=True)
+        result = subprocess.run(['node', '--check', tmp_path], capture_output=True, text=True)
     finally:
-        tmp.unlink(missing_ok=True)
+        Path(tmp_path).unlink(missing_ok=True)
     if result.returncode != 0:
         raise SyntaxError(result.stderr)
 

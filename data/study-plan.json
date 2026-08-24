@@ -1,5 +1,5 @@
 {
-  "version": "v3.3.1",
+  "version": "v3.4.0",
   "examDate": "2026-10-24",
   "timeAllocation": {
     "total": "8h",
@@ -59,8 +59,8 @@
   "weeks": [
     {
       "week": "第1周",
-      "dates": "8/18 — 8/24",
-      "badge": "起点",
+      "dates": "8/25 — 8/31",
+      "badge": "",
       "phase": 0,
       "isCurrent": true,
       "goals": [
@@ -69,14 +69,14 @@
           "subject": "系统原理",
           "chapter": "第1章",
           "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-          "done": true
+          "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
           "chapter": "第1章",
           "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-          "done": true
+          "done": false
         },
         {
           "tag": "key",
@@ -85,37 +85,6 @@
           "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
           "done": false
         },
-        {
-          "tag": "py",
-          "subject": "AI工程",
-          "chapter": "KP1",
-          "topic": "Python工程化：venv/pip/项目结构 + 前置学习关卡",
-          "done": false
-        },
-        {
-          "tag": "ai",
-          "subject": "AI学习",
-          "chapter": "",
-          "topic": "小甲鱼Python入门 第1-5集（变量/字符串/列表/函数/模块）",
-          "done": false
-        },
-        {
-          "tag": "en",
-          "subject": "英语",
-          "chapter": "",
-          "topic": "单词 100 个 + 阅读判断 1 篇",
-          "done": false
-        }
-      ],
-      "milestone": "里程碑：三科第1章 + 岗位KP1前置学习通关 + Python基础入门"
-    },
-    {
-      "week": "第2周",
-      "dates": "8/25 — 8/31",
-      "badge": "",
-      "phase": 0,
-      "isCurrent": false,
-      "goals": [
         {
           "tag": "core",
           "subject": "系统原理",
@@ -173,10 +142,10 @@
           "done": false
         }
       ],
-      "milestone": "里程碑：系统原理1-2章 + 离散数学1-3章 + 数据结构1-2章 + 岗位KP2完成"
+      "milestone": "三科第1-2/3章补齐 + 系统原理第2章 + 离散数学1-3章 + 数据结构1-3章 + 岗位KP2完成"
     },
     {
-      "week": "第3周",
+      "week": "第2周",
       "dates": "9/1 — 9/7",
       "badge": "",
       "phase": 0,
@@ -242,7 +211,7 @@
       "milestone": "里程碑：系统原理第3章 + 数据结构第3章 + 岗位KP3完成 + 项目1开始"
     },
     {
-      "week": "第4周",
+      "week": "第3周",
       "dates": "9/8 — 9/14",
       "badge": "",
       "phase": 0,
@@ -308,7 +277,7 @@
       "milestone": "里程碑：系统原理4-5章 + 离散数学6-7章 + 岗位Stage1完成 + 项目1产出"
     },
     {
-      "week": "第5周",
+      "week": "第4周",
       "dates": "9/15 — 9/21",
       "badge": "阶段测",
       "phase": 0,
@@ -374,7 +343,7 @@
       "milestone": "里程碑：三科章节全部梳理完成 + 岗位Stage1通关 + 项目1定稿"
     },
     {
-      "week": "第6周",
+      "week": "第5周",
       "dates": "9/22 — 9/28",
       "badge": "中间",
       "phase": 1,
@@ -426,7 +395,7 @@
       "milestone": "里程碑：三科重难点攻克 + 真题分类练手 + 岗位Stage2启动"
     },
     {
-      "week": "第7周",
+      "week": "第6周",
       "dates": "9/29 — 10/5",
       "badge": "",
       "phase": 1,
@@ -478,7 +447,7 @@
       "milestone": "里程碑：三科真题完成 + 知识框架图 + 岗位Stage2完成 + 项目2产出"
     },
     {
-      "week": "第8周",
+      "week": "第7周",
       "dates": "10/6 — 10/12",
       "badge": "冲刺",
       "phase": 2,
@@ -523,7 +492,7 @@
       "milestone": "里程碑：全部科目模拟考开始 + 高频考点背诵 + 面试理论突击"
     },
     {
-      "week": "第9周",
+      "week": "第8周",
       "dates": "10/13 — 10/19",
       "badge": "",
       "phase": 2,
@@ -561,7 +530,7 @@
       "milestone": "里程碑：三科模拟考完成 + 串讲笔记定稿"
     },
     {
-      "week": "第10周",
+      "week": "第9周",
       "dates": "10/20 — 10/24",
       "badge": "考试",
       "phase": 2,
@@ -604,584 +573,57 @@
       "week": "第1周",
       "days": [
         {
-          "date": "8/18",
-          "weekday": "周一",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-              "hours": 0.93,
-              "done": false
-            },
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "—（第1天无复习）",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "py",
-              "subject": "AI工程",
-              "chapter": "KP1",
-              "topic": "Python工程化：venv/pip/项目结构 + 前置学习关卡",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "ai",
-              "subject": "AI学习",
-              "chapter": "",
-              "topic": "小甲鱼Python入门 第1-5集（变量/字符串/列表/函数/模块）",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "en",
-              "subject": "英语",
-              "chapter": "",
-              "topic": "单词 100 个 + 阅读判断 1 篇",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "合书复述当日所学 + 计划明日",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        },
-        {
-          "date": "8/19",
-          "weekday": "周二",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-              "hours": 0.93,
-              "done": false
-            },
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "间隔复习：前日内容回顾",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "py",
-              "subject": "AI工程",
-              "chapter": "KP1",
-              "topic": "Python工程化：venv/pip/项目结构 + 前置学习关卡",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "ai",
-              "subject": "AI学习",
-              "chapter": "",
-              "topic": "小甲鱼Python入门 第1-5集（变量/字符串/列表/函数/模块）",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "en",
-              "subject": "英语",
-              "chapter": "",
-              "topic": "单词 100 个 + 阅读判断 1 篇",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "合书复述当日所学 + 计划明日",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        },
-        {
-          "date": "8/20",
-          "weekday": "周三",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-              "hours": 0.93,
-              "done": false
-            },
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "间隔复习：前日内容回顾",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "py",
-              "subject": "AI工程",
-              "chapter": "KP1",
-              "topic": "Python工程化：venv/pip/项目结构 + 前置学习关卡",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "ai",
-              "subject": "AI学习",
-              "chapter": "",
-              "topic": "小甲鱼Python入门 第1-5集（变量/字符串/列表/函数/模块）",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "en",
-              "subject": "英语",
-              "chapter": "",
-              "topic": "单词 100 个 + 阅读判断 1 篇",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "合书复述当日所学 + 计划明日",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        },
-        {
-          "date": "8/21",
-          "weekday": "周四",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-              "hours": 0.93,
-              "done": false
-            },
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "间隔复习：前日内容回顾",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "py",
-              "subject": "AI工程",
-              "chapter": "KP1",
-              "topic": "Python工程化：venv/pip/项目结构 + 前置学习关卡",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "ai",
-              "subject": "AI学习",
-              "chapter": "",
-              "topic": "小甲鱼Python入门 第1-5集（变量/字符串/列表/函数/模块）",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "en",
-              "subject": "英语",
-              "chapter": "",
-              "topic": "单词 100 个 + 阅读判断 1 篇",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "合书复述当日所学 + 计划明日",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        },
-        {
-          "date": "8/22",
-          "weekday": "周五",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-              "hours": 0.93,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-              "hours": 0.93,
-              "done": false
-            },
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "课后练习 30min",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "间隔复习：前日内容回顾",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "py",
-              "subject": "AI工程",
-              "chapter": "KP1",
-              "topic": "Python工程化：venv/pip/项目结构 + 前置学习关卡",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "ai",
-              "subject": "AI学习",
-              "chapter": "",
-              "topic": "小甲鱼Python入门 第1-5集（变量/字符串/列表/函数/模块）",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "en",
-              "subject": "英语",
-              "chapter": "",
-              "topic": "单词 100 个 + 阅读判断 1 篇",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "合书复述当日所学 + 计划明日",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        },
-        {
-          "date": "8/23",
-          "weekday": "周六",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "错题复盘 + AI答疑",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "ai",
-              "subject": "AI学习",
-              "chapter": "",
-              "topic": "小甲鱼Python入门 第1-5集（变量/字符串/列表/函数/模块）",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "en",
-              "subject": "英语",
-              "chapter": "",
-              "topic": "单词 100 个 + 阅读判断 1 篇",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "自测结果分析 + 薄弱点记录",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        },
-        {
-          "date": "8/24",
-          "weekday": "周日",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "第1章",
-              "topic": "半休：间隔复习 + 错题重做",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "第1章",
-              "topic": "半休：间隔复习 + 错题重做",
-              "hours": 0.5,
-              "done": true
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "第1章",
-              "topic": "半休：间隔复习 + 错题重做",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "问AI本周不懂的点",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "week": "第2周",
-      "days": [
-        {
           "date": "8/25",
           "weekday": "周一",
           "tasks": [
+            {
+              "tag": "key",
+              "subject": "数据结构",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "core2",
+              "subject": "离散数学",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "core",
+              "subject": "系统原理",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "key",
+              "subject": "数据结构",
+              "chapter": "第1章",
+              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
+              "hours": 0.93,
+              "done": false
+            },
+            {
+              "tag": "core2",
+              "subject": "离散数学",
+              "chapter": "第1章",
+              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
+              "hours": 0.93,
+              "done": false
+            },
+            {
+              "tag": "core",
+              "subject": "系统原理",
+              "chapter": "第1章",
+              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
+              "hours": 0.93,
+              "done": false
+            },
             {
               "tag": "core",
               "subject": "系统原理",
@@ -1309,6 +751,54 @@
           "weekday": "周二",
           "tasks": [
             {
+              "tag": "key",
+              "subject": "数据结构",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "core2",
+              "subject": "离散数学",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "core",
+              "subject": "系统原理",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "key",
+              "subject": "数据结构",
+              "chapter": "第1章",
+              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
+              "hours": 0.93,
+              "done": false
+            },
+            {
+              "tag": "core2",
+              "subject": "离散数学",
+              "chapter": "第1章",
+              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
+              "hours": 0.93,
+              "done": false
+            },
+            {
+              "tag": "core",
+              "subject": "系统原理",
+              "chapter": "第1章",
+              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
+              "hours": 0.93,
+              "done": false
+            },
+            {
               "tag": "core",
               "subject": "系统原理",
               "chapter": "第2章",
@@ -1434,6 +924,54 @@
           "date": "8/27",
           "weekday": "周三",
           "tasks": [
+            {
+              "tag": "key",
+              "subject": "数据结构",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "core2",
+              "subject": "离散数学",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "core",
+              "subject": "系统原理",
+              "chapter": "第1章",
+              "topic": "课后练习 30min",
+              "hours": 0.5,
+              "done": false
+            },
+            {
+              "tag": "key",
+              "subject": "数据结构",
+              "chapter": "第1章",
+              "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
+              "hours": 0.93,
+              "done": false
+            },
+            {
+              "tag": "core2",
+              "subject": "离散数学",
+              "chapter": "第1章",
+              "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
+              "hours": 0.93,
+              "done": false
+            },
+            {
+              "tag": "core",
+              "subject": "系统原理",
+              "chapter": "第1章",
+              "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
+              "hours": 0.93,
+              "done": false
+            },
             {
               "tag": "core",
               "subject": "系统原理",
@@ -1943,7 +1481,7 @@
       ]
     },
     {
-      "week": "第3周",
+      "week": "第2周",
       "days": [
         {
           "date": "9/1",
@@ -2710,7 +2248,7 @@
       ]
     },
     {
-      "week": "第4周",
+      "week": "第3周",
       "days": [
         {
           "date": "9/8",
@@ -3477,7 +3015,7 @@
       ]
     },
     {
-      "week": "第5周",
+      "week": "第4周",
       "days": [
         {
           "date": "9/15",
@@ -4244,7 +3782,7 @@
       ]
     },
     {
-      "week": "第6周",
+      "week": "第5周",
       "days": [
         {
           "date": "9/22",
@@ -4819,7 +4357,7 @@
       ]
     },
     {
-      "week": "第7周",
+      "week": "第6周",
       "days": [
         {
           "date": "9/29",
@@ -4994,7 +4532,7 @@
           ]
         },
         {
-          "date": "9/31",
+          "date": "10/1",
           "weekday": "周三",
           "tasks": [
             {
@@ -5080,7 +4618,7 @@
           ]
         },
         {
-          "date": "10/1",
+          "date": "10/2",
           "weekday": "周四",
           "tasks": [
             {
@@ -5166,7 +4704,7 @@
           ]
         },
         {
-          "date": "11/2",
+          "date": "10/3",
           "weekday": "周五",
           "tasks": [
             {
@@ -5252,7 +4790,7 @@
           ]
         },
         {
-          "date": "12/3",
+          "date": "10/4",
           "weekday": "周六",
           "tasks": [
             {
@@ -5314,7 +4852,7 @@
           ]
         },
         {
-          "date": "1/4",
+          "date": "10/5",
           "weekday": "周日",
           "tasks": [
             {
@@ -5362,7 +4900,7 @@
       ]
     },
     {
-      "week": "第8周",
+      "week": "第7周",
       "days": [
         {
           "date": "10/6",
@@ -5889,7 +5427,7 @@
       ]
     },
     {
-      "week": "第9周",
+      "week": "第8周",
       "days": [
         {
           "date": "10/13",
@@ -6368,7 +5906,7 @@
       ]
     },
     {
-      "week": "第10周",
+      "week": "第9周",
       "days": [
         {
           "date": "10/20",
@@ -6715,98 +6253,6 @@
               "subject": "复盘",
               "chapter": "",
               "topic": "合书复述当日所学 + 计划明日",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        },
-        {
-          "date": "10/25",
-          "weekday": "周六",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "考前冲刺",
-              "topic": "错题终刷 + 考点速记 + 状态调整",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "考前冲刺",
-              "topic": "错题终刷 + 考点速记 + 状态调整",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "考前冲刺",
-              "topic": "错题终刷 + 考点速记 + 状态调整",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "错题复盘 + AI答疑",
-              "hours": 1.0,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "自测结果分析 + 薄弱点记录",
-              "hours": 0.5,
-              "done": false
-            }
-          ]
-        },
-        {
-          "date": "10/26",
-          "weekday": "周日",
-          "tasks": [
-            {
-              "tag": "core",
-              "subject": "系统原理",
-              "chapter": "考前冲刺",
-              "topic": "半休：间隔复习 + 错题重做",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "core2",
-              "subject": "离散数学",
-              "chapter": "考前冲刺",
-              "topic": "半休：间隔复习 + 错题重做",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "key",
-              "subject": "数据结构",
-              "chapter": "考前冲刺",
-              "topic": "半休：间隔复习 + 错题重做",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "考前状态调整",
-              "hours": 0.5,
-              "done": false
-            },
-            {
-              "tag": "review",
-              "subject": "复盘",
-              "chapter": "",
-              "topic": "问AI本周不懂的点",
               "hours": 0.5,
               "done": false
             }

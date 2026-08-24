@@ -13,6 +13,7 @@ study-plan-optimization/
 
 # Backups
 Workbench/此刻便是春天.html.bak-*
+data/*.bak-*
 *_备份_*/
 
 # Word temp files

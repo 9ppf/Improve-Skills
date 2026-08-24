@@ -4,6 +4,33 @@
 
 ---
 
+## v2.28.0
+
+**发布时间**：2026-08-24（北京时间）
+
+### 2026-08-24 — 计划9周方案 + 驾驶舱数据JSON化 + 练习测验多项修复
+
+**核心变更**：学习计划从10周压缩为9周（方案A），驾驶舱统筹计划彻底去除写死数据改为JSON驱动，练习测验新增AI单题解答并修复多项数据问题。
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/study-plan.json` | 方案A：删除原第1周（8/18-8/24），周次重编号为9周，新第1周（8/25-8/31）isCurrent=true并合并三科第1章内容；修复第6周日期错乱（9/31/11/2等）和第9周多余两天；版本号v3.4.0 |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | 删除写死的10周WEEK_DATA，统筹计划完全依赖study-plan.json；loadWeekData改为纯缓存读取，空数据显示"请启动本地服务器"提示；SCHEDULE_VERSION v3.4.1 |
+| `data/modules/ability.json` | 驾驶舱contentUrl版本号更新 |
+| `data/modules/self-study.json` | 三科知识框架页面版本号 v2.27.0→v2.28.0，练习测验版本号 v2.18.4→v2.18.10 |
+| `AGENT_HANDOFF.md` | 版本号同步至 v2.28.0 |
+| `工作台搭建总结.md` | 版本号同步至 v2.28.0，版本更新记录表新增 v2.27.0/v2.28.0 条目 |
+| `文件说明.md` | 版本号同步至 v2.28.0 |
+| `.gitignore` | 新增 `data/*.bak-*` 备份忽略规则 |
+| `Workbench/自考学习/背诵与简答/练习测验.html` | 修复AI出题"未知题型"显示bug（中文题型映射英文key）；今日任务章节前缀匹配修复；新增单题AI解答按钮（上下文感知+多轮对话）；刷新后恢复已答题记录（答题状态/得分/用户答案） |
+| `Workbench/此刻便是春天.html` | 构建产物更新 |
+| `data/ai-daily-plan.json` | 每日计划数据同步至8/25-8/31 |
+| `data/quiz-records-13015.json` | 答题记录数据更新 |
+| `data/mastery-progress.json` | 掌握度数据更新 |
+| `.trae/skills/reading_integration.py` | 修复 validate_js 使用共享文件 workbench_check.js 被并发进程删除导致构建失败，改用独立临时文件（与 check_js_syntax_global 一致） |
+
+---
+
 ## v2.27.0
 
 **发布时间**：2026-08-23（北京时间）

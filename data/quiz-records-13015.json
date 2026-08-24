@@ -22,5 +22,89 @@
     "total": 1,
     "level": "unknown",
     "session": "free-practice"
+  },
+  {
+    "questionId": "q-ch1",
+    "timestamp": "2026-08-24T07:37:46.722Z",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "free-practice"
+  },
+  {
+    "questionId": "q-ch2",
+    "timestamp": "2026-08-24T07:37:52.759Z",
+    "type": "choice",
+    "chapter": "第3章 存储系统",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "free-practice"
+  },
+  {
+    "questionId": "q-ch1",
+    "timestamp": "2026-08-24T07:56:13.428Z",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-ch4",
+    "timestamp": "2026-08-24T07:56:22.937Z",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-fb1",
+    "timestamp": "2026-08-24T07:56:48.199Z",
+    "type": "fill",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "存储数据 | 五 | 二进制",
+    "isCorrect": false,
+    "score": 2,
+    "total": 3,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-ca2",
+    "timestamp": "2026-08-24T08:07:18.608Z",
+    "type": "calculate",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "2ns",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-sa1",
+    "timestamp": "2026-08-24T09:16:10.510Z",
+    "type": "shortAnswer",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "1；计算机由运算器，控制器，存储器，输入设备和输出设备与部分组成；\n2：计算机采用’存储程序‘工作机制\n3：程序和指定都以二进制形式存在，但计算机应能区别他们",
+    "isCorrect": false,
+    "score": 2,
+    "total": 4,
+    "level": "unsure",
+    "session": "today-task"
   }
 ]
