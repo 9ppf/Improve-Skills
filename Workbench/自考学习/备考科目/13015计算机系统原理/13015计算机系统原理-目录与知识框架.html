@@ -6342,6 +6342,9 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
       var _saveTimer = null;
 
+      // 防止 API 数据加载完成前用户操作覆盖服务器数据
+      var _apiLoaded = false;
+
 
 
       function saveStateToAPI(state) {
@@ -6380,6 +6383,8 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
             .then(function(apiState) {
 
+              _apiLoaded = true;
+
               if (apiState && apiState.mastery && Object.keys(apiState.mastery).length > 0) {
 
                 try { localStorage.setItem(STORAGE_KEY, JSON.stringify(apiState)); } catch(e) {}
@@ -6390,9 +6395,9 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
 
             })
 
-            .catch(function(e) {});
+            .catch(function(e) { _apiLoaded = true; });
 
-        } catch(e) {}
+        } catch(e) { _apiLoaded = true; }
 
       }
 
@@ -6435,6 +6440,9 @@ V 0 硬件 V 0 软件 用户空间卜0 软件 内核空间 V 0 软件<br/>
       }
 
       function saveState(state) {
+
+        // API 数据未加载完成时跳过保存，防止空状态覆盖服务器数据
+        if (!_apiLoaded) return;
 
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
 

@@ -109,6 +109,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_update_plan()
         elif self.path == '/api/mastery':
             self._handle_save_mastery()
+        elif self.path == '/api/recite-mastery':
+            self._handle_save_recite_mastery()
         elif self.path == '/api/quiz-bank':
             self._handle_save_quiz('bank')
         elif self.path == '/api/quiz-records':
@@ -142,6 +144,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_health()
         elif self.path.startswith('/api/mastery'):
             self._handle_load_mastery()
+        elif self.path.startswith('/api/recite-mastery'):
+            self._handle_load_recite_mastery()
         elif self.path.startswith('/api/quiz-bank'):
             self._handle_load_quiz('bank')
         elif self.path.startswith('/api/quiz-records'):
@@ -266,6 +270,34 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         try:
             with open(path, 'w', encoding='utf-8') as f:
                 json.dump(existing, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write: {e}'})
+            return
+        self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_recite_mastery(self):
+        """加载背诵卡掌握程度（{question: mastery} 扁平结构）"""
+        path = ROOT / 'data' / 'recite-mastery.json'
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {}
+        self._send_json(200, data)
+
+    def _handle_save_recite_mastery(self):
+        """保存背诵卡掌握程度（{question: mastery} 扁平结构）"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        path = ROOT / 'data' / 'recite-mastery.json'
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return

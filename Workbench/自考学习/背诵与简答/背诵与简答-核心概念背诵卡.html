@@ -645,6 +645,8 @@
     var currentView = 'today';
     var currentCardType = 'all';
     window.__apiMastery = null;
+    // 防止 API 数据加载完成前用户操作覆盖服务器数据
+    var _apiLoaded = false;
     var API_BASE = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
     function apiUrl(path) { return API_BASE + path; }
     function apiPost(url, data) {
@@ -870,6 +872,8 @@
     };
 
     function saveMastery() {
+      // API 数据未加载完成时跳过保存，防止空状态覆盖服务器数据
+      if (!_apiLoaded) return;
       try {
         var masteryMap = {};
         Object.keys(allData).forEach(function(subject) {
@@ -880,7 +884,7 @@
           });
         });
         localStorage.setItem(MASTERY_KEY, JSON.stringify(masteryMap));
-        apiPost('/api/mastery', masteryMap);
+        apiPost('/api/recite-mastery', masteryMap);
       } catch(e) {}
     }
     function restoreMastery() {
@@ -1288,10 +1292,10 @@
       ['13003', dataBase + '/recite-cards-13003.json?v=' + DATA_VERSION]
     ];
     var apiCalls = [
-      fetch(apiUrl('/api/mastery'), { cache: 'no-cache' })
+      fetch(apiUrl('/api/recite-mastery'), { cache: 'no-cache' })
         .then(function(r) { return r.json(); })
-        .then(function(d) { window.__apiMastery = d; })
-        .catch(function(e) {})
+        .then(function(d) { window.__apiMastery = d; _apiLoaded = true; })
+        .catch(function(e) { _apiLoaded = true; })
     ];
     Promise.all(cardSources.map(function(src) {
       return fetch(src[1], { cache: 'no-cache' })

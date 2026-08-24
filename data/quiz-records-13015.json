@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "questionId": "q-ch1",
+    "timestamp": "2026-08-24T05:22:44.330Z",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "free-practice"
+  },
+  {
+    "questionId": "q-ch2",
+    "timestamp": "2026-08-24T05:22:59.059Z",
+    "type": "choice",
+    "chapter": "第3章 存储系统",
+    "userAnswer": "B",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "session": "free-practice"
+  }
+]
