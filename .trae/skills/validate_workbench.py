@@ -132,6 +132,95 @@ def check_js_syntax_global() -> list[str]:
     return errors
 
 
+def check_js_quote_escaping_global() -> list[str]:
+    """检查 JS 内嵌数据中单引号/双引号转义是否正确。
+
+    隐患：当大量结构化数据（如背诵卡片、题库等）以 JS 对象字面量
+    内嵌在 <script> 标签中时，文本字段内的单引号（如 a'、it's）
+    若未转义为 \\’，会导致字符串提前终止，触发 SyntaxError，
+    使整个 <script> 块执行失败，页面所有交互功能静默失效。
+
+    检查方法：对每个 <script> 块，逐行统计未转义的单引号数量是否为偶数。
+    仅报告可能存在问题的情况，不阻止提交（advisory）。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    warnings = []
+    if not workbench.exists():
+        return warnings
+
+    for item in sorted(workbench.rglob('*.html')):
+        rel = str(item.relative_to(root)).replace('\\', '/')
+        if rel == 'Workbench/此刻便是春天.html':
+            continue
+        if rel.startswith('Workbench/read/'):
+            continue
+        if rel in GENERIC_CLASS_GLOBAL_WHITELIST:
+            continue
+        if '_备份_' in rel:
+            continue
+
+        try:
+            content = item.read_text(encoding='utf-8')
+        except OSError:
+            continue
+
+        if '<script' not in content:
+            continue
+
+        scripts = re.findall(r'<script[^>]*>(.*?)</script>', content, re.DOTALL)
+        for script_idx, script in enumerate(scripts):
+            if not script.strip():
+                continue
+
+            # 逐行检查单引号平衡
+            lines = script.split('\n')
+            for line_num, line in enumerate(lines, 1):
+                # 跳过注释行
+                stripped = line.strip()
+                if stripped.startswith('//') or stripped.startswith('/*'):
+                    continue
+
+                # 跳过明显的代码行（非数据行）
+                # 这些关键字说明是逻辑代码而非数据内嵌
+                code_keywords = ['function ', 'return ', 'var ', 'const ', 'let ',
+                                 'if ', 'for ', 'while ', 'switch ', 'case ',
+                                 'import ', 'export ', 'class ', 'new ']
+                if any(stripped.startswith(kw) for kw in code_keywords):
+                    continue
+
+                # 跳过包含正则表达式标志的行（/pattern/flags）
+                # 简单检测：行中有 /. 开头或 /[ 结头的模式
+                if re.search(r'/\[[\w\]]', stripped) or re.search(r'/["\']', stripped):
+                    continue
+
+                # 跳过包含 .replace(/, .match(/, .test(/ 的行（正则操作）
+                if re.search(r'\.(replace|match|test|search|split)\s*\(/\^?', stripped):
+                    continue
+
+                # 统计未转义的单引号（排除 \'）
+                cleaned = line.replace("\\'", "")
+                single_count = cleaned.count("'")
+
+                # 如果单引号数量为奇数，可能存在转义遗漏
+                if single_count % 2 != 0:
+                    # 排除模板字符串中的情况（反引号包裹的字符串内单引号不需要转义）
+                    backtick_count = cleaned.count('`')
+                    if backtick_count % 2 == 0:
+                        # 排除字符串拼接（含 + 号连接的行通常单引号分布复杂）
+                        # 仅当行看起来像数据（含 key: 'value' 模式）时才报告
+                        looks_like_data = bool(re.search(r"['\"]\w+['\"]\s*:", stripped) or
+                                              re.search(r":\s*'", stripped))
+                        if looks_like_data:
+                            snippet = line.strip()[:80]
+                            warnings.append(
+                                f'{rel} script#{script_idx+1} 行{line_num}: '
+                                f'单引号数量为奇数({single_count})，可能存在转义遗漏: {snippet}'
+                            )
+
+    return warnings
+
+
 def check_no_old_classes(html: str) -> list[str]:
     """Ensure old standalone class names do not appear in the workbench."""
     errors = []
@@ -1110,6 +1199,173 @@ def check_summary_version_sync() -> list[str]:
     return warnings
 
 
+def check_self_study_version_sync() -> list[str]:
+    """检查 data/modules/self-study.json 中知识框架页面的 ?v= 参数是否与 CHANGELOG 版本一致。
+
+    知识框架页面的 contentUrl 包含 ?v=X.X.X 版本参数，用于强制浏览器刷新缓存。
+    该版本号应与 CHANGELOG.md 的最新版本保持同步，否则用户看到的可能是旧缓存页面。
+    """
+    import json
+
+    root = SKILLS_DIR.parent.parent
+    changelog_path = root / 'CHANGELOG.md'
+    self_study_path = root / 'data' / 'modules' / 'self-study.json'
+    warnings = []
+
+    if not changelog_path.exists() or not self_study_path.exists():
+        return warnings
+
+    changelog_content = changelog_path.read_text(encoding='utf-8')
+    changelog_match = re.search(r'\n## (v[\d.]+)\b', changelog_content)
+    if not changelog_match:
+        return warnings
+    changelog_version = changelog_match.group(1)
+
+    try:
+        self_study = json.loads(self_study_path.read_text(encoding='utf-8'))
+    except (json.JSONDecodeError, OSError):
+        return warnings
+
+    # 递归搜索所有 contentUrl 中包含「目录与知识框架」的条目
+    def find_knowledge_framework_urls(obj, path=""):
+        results = []
+        if isinstance(obj, dict):
+            url = obj.get('contentUrl', '')
+            if '目录与知识框架' in url:
+                results.append((path, url))
+            for k, v in obj.items():
+                results.extend(find_knowledge_framework_urls(v, f"{path}/{k}"))
+        elif isinstance(obj, list):
+            for i, item in enumerate(obj):
+                results.extend(find_knowledge_framework_urls(item, f"{path}[{i}]"))
+        return results
+
+    for path, url in find_knowledge_framework_urls(self_study):
+        version_match = re.search(r'\?v=(v?[\d.]+)', url)
+        if version_match:
+            url_version = version_match.group(1)
+            if not url_version.startswith('v'):
+                url_version = 'v' + url_version
+            if url_version != changelog_version:
+                warnings.append(
+                    f'self-study.json 知识框架页面版本号 {url_version} '
+                    f'与 CHANGELOG.md 最新版本 {changelog_version} 不一致'
+                )
+
+    return warnings
+
+
+def check_localstorage_key_consistency() -> list[str]:
+    """检查知识框架页面中 localStorage 键名是否包含正确的科目代码。
+
+    隐患：从 13015 复制页面到 02324/13003 时，localStorage 键名
+    （如 ss_mastery_13015）可能残留旧科目代码，导致学习进度串科目。
+
+    检查方法：从文件路径提取科目代码，扫描 JS 中 localStorage.getItem/setItem
+    的键名，检查是否包含错误的科目代码。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    warnings = []
+
+    if not workbench.exists():
+        return warnings
+
+    # 科目代码与文件路径的映射
+    subject_codes = {
+        '02324': '02324离散数学',
+        '13003': '13003数据结构与算法',
+        '13015': '13015计算机系统原理',
+    }
+
+    for code, folder_name in subject_codes.items():
+        filepath = workbench / '自考学习' / '备考科目' / folder_name / f'{folder_name}-目录与知识框架.html'
+        if not filepath.exists():
+            continue
+
+        try:
+            content = filepath.read_text(encoding='utf-8')
+        except OSError:
+            continue
+
+        rel = str(filepath.relative_to(root)).replace('\\', '/')
+
+        # 提取所有 localStorage 操作中的键名
+        # 匹配 localStorage.getItem("xxx") / localStorage.setItem("xxx", ...) / localStorage["xxx"]
+        key_patterns = [
+            r'localStorage\.(?:getItem|setItem|removeItem)\s*\(\s*["\']([^"\']+)["\']',
+            r'localStorage\s*\[\s*["\']([^"\']+)["\']\s*\]',
+        ]
+
+        for pattern in key_patterns:
+            for match in re.finditer(pattern, content):
+                key = match.group(1)
+
+                # 检查键名中是否包含其他科目代码
+                for other_code in subject_codes:
+                    if other_code == code:
+                        continue
+                    if other_code in key:
+                        warnings.append(
+                            f'{rel}: localStorage 键名 "{key}" 包含错误的科目代码 '
+                            f'{other_code}（应为 {code}）'
+                        )
+
+    return warnings
+
+
+def check_knowledge_framework_js_consistency() -> list[str]:
+    """检查三科知识框架页面的 JS 初始化函数和事件绑定是否一致。
+
+    隐患：从 13015 复制页面到 02324/13003 时，可能遗漏 JS 函数
+    （如 switchTab/switchChapter/initChapter），导致交互失效。
+
+    检查方法：以 13015 为基准，提取关键 JS 函数名，
+    检查 02324 和 13003 是否都包含这些函数。
+    """
+    root = SKILLS_DIR.parent.parent
+    workbench = root / 'Workbench'
+    warnings = []
+
+    if not workbench.exists():
+        return warnings
+
+    # 三科页面路径
+    pages = {
+        '13015': workbench / '自考学习' / '备考科目' / '13015计算机系统原理' / '13015计算机系统原理-目录与知识框架.html',
+        '13003': workbench / '自考学习' / '备考科目' / '13003数据结构与算法' / '13003数据结构与算法-目录与知识框架.html',
+        '02324': workbench / '自考学习' / '备考科目' / '02324离散数学' / '02324离散数学-目录与知识框架.html',
+    }
+
+    # 关键 JS 函数名（必须存在于每个知识框架页面中）
+    required_functions = [
+        'function switchTab(',
+        'function switchChapter(',
+        'function initChapter(',
+    ]
+
+    for code, filepath in pages.items():
+        if not filepath.exists():
+            continue
+
+        try:
+            content = filepath.read_text(encoding='utf-8')
+        except OSError:
+            continue
+
+        rel = str(filepath.relative_to(root)).replace('\\', '/')
+
+        # 提取所有 <script> 块
+        scripts = re.findall(r'<script[^>]*>(.*?)</script>', content, re.DOTALL)
+        js = '\n'.join(scripts)
+
+        for func in required_functions:
+            if func not in js:
+                warnings.append(f'{rel}: 缺少关键 JS 函数 "{func.strip("(").strip()}"')
+
+    return warnings
+
+
 def check_no_tmp_directory() -> list[str]:
     """Warn if tmp/ directory exists (should be temp/ only)."""
     root = SKILLS_DIR.parent.parent
@@ -1228,6 +1484,9 @@ def main() -> int:
     # 全局 JS 语法检查：扫描所有内容页的内联 JS
     errors.extend(check_js_syntax_global())
 
+    # JS 引号转义专项检查：检测内嵌数据中未转义的单引号
+    js_quote_warnings = check_js_quote_escaping_global()
+
     # 文档、命名、全局 class、中文注释等检查作为警告而非致命错误
     doc_warnings = check_file_documentation()
     naming_warnings = check_naming_conventions()
@@ -1241,6 +1500,9 @@ def main() -> int:
     dir_sync_warnings = check_directory_structure_sync()
     changelog_coverage_warnings = check_changelog_coverage()
     summary_sync_warnings = check_summary_version_sync()
+    self_study_version_warnings = check_self_study_version_sync()
+    localstorage_key_warnings = check_localstorage_key_consistency()
+    js_consistency_warnings = check_knowledge_framework_js_consistency()
     tmp_dir_warnings = check_no_tmp_directory()
     workbench_temp_warnings = check_no_workbench_intermediate()
     acceptance_tag_warnings = check_commit_acceptance_tag()
@@ -1329,6 +1591,28 @@ def main() -> int:
     except Exception as e:
         priority_label_warnings.append(f'知识点优先级标注检查失败：{e}')
 
+    # HTML 结构完整性检查：知识框架页面 pane 深度一致性
+    html_structure_warnings = []
+    try:
+        hs_spec = importlib.util.spec_from_file_location(
+            "check_html_structure",
+            os.path.join(SKILLS_DIR, 'check_html_structure.py')
+        )
+        hs_module = importlib.util.module_from_spec(hs_spec)
+        hs_spec.loader.exec_module(hs_module)
+        hs_files = hs_module.find_knowledge_framework_files()
+        for filepath in hs_files:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            warnings_list, errors_list, info = hs_module.check_pane_depth(html_content, filepath)
+            stray_errors = hs_module.check_stray_elements(html_content, filepath)
+            if errors_list or stray_errors:
+                fname = os.path.relpath(filepath, root)
+                for e in errors_list + stray_errors:
+                    html_structure_warnings.append(f'{fname}: {e}')
+    except Exception as e:
+        html_structure_warnings.append(f'HTML 结构检查失败：{e}')
+
     # 结构性变更检查：如果检测到结构性变更但未走确认流程，发出警告
     sc_spec = importlib.util.spec_from_file_location(
         "check_structural_change",
@@ -1353,6 +1637,9 @@ def main() -> int:
     # Critical warnings: block commit in --strict mode
     critical_warnings = (
         doc_warnings + summary_sync_warnings +
+        self_study_version_warnings +
+        localstorage_key_warnings +
+        js_consistency_warnings +
         tmp_dir_warnings + workbench_temp_warnings +
         structural_change_warnings + acceptance_tag_warnings
     )
@@ -1361,7 +1648,7 @@ def main() -> int:
         naming_warnings + generic_global_warnings +
         comment_warnings + backup_warnings + json_naming_warnings +
         date_format_warnings + folder_naming_warnings + interactive_style_warnings +
-        dir_sync_warnings + changelog_coverage_warnings + file_doc_warnings + temp_clean_warnings + css_standard_warnings + priority_label_warnings
+        dir_sync_warnings + changelog_coverage_warnings + file_doc_warnings + temp_clean_warnings + css_standard_warnings + priority_label_warnings + js_quote_warnings + html_structure_warnings
     )
     all_warnings = critical_warnings + advisory_warnings
 

@@ -20,50 +20,64 @@ if echo "$commit_msg" | grep -qE '^Merge |^Revert '; then
     exit 0
 fi
 
-# 检查 [验收通过] 标记
-has_acceptance=false
-if echo "$commit_msg" | grep -q '\[验收通过\]'; then
-    has_acceptance=true
-fi
-
-# 检查是否结构性变更（调用 Python 检测）
-is_structural=false
+# 用 Python 做中文匹配，避免 shell grep 的编码问题
 if [ -n "$PYTHON" ]; then
     result=$($PYTHON -c "
-import sys, os
-sys.path.insert(0, '.trae/skills')
-from check_structural_change import get_changed_files, detect_structural_changes
-changed = get_changed_files(staged_only=True)
-is_s, _ = detect_structural_changes(changed)
-print('true' if is_s else 'false')
-" 2>/dev/null)
-    if [ "$result" = "true" ]; then
-        is_structural=true
+import sys, os, re
+
+# 读取提交信息（UTF-8）
+with open(sys.argv[1], 'r', encoding='utf-8', errors='replace') as f:
+    msg = f.read().replace('\\r', '').replace('\\ufeff', '')
+
+# 检查标记
+has_acceptance = '[验收通过]' in msg
+has_approval = '[方案已确认]' in msg
+has_checked = '[已检查]' in msg
+
+# 检查结构性变更
+is_structural = False
+try:
+    sys.path.insert(0, '.trae/skills')
+    from check_structural_change import get_changed_files, detect_structural_changes
+    changed = get_changed_files(staged_only=True)
+    is_s, _ = detect_structural_changes(changed)
+    is_structural = bool(is_s)
+except Exception:
+    pass
+
+# 输出结果
+errors = []
+if not has_acceptance:
+    errors.append('acceptance_missing')
+if is_structural and not has_approval:
+    errors.append('approval_missing')
+if not has_checked:
+    errors.append('check_missing')
+
+if errors:
+    print('|'.join(errors))
+else:
+    print('ok')
+" "$commit_msg_file" 2>/dev/null)
+
+    if [ "$result" != "ok" ] && [ -n "$result" ]; then
+        echo ""
+        echo "$result" | grep -q "acceptance_missing" && {
+            echo "❌ 提交信息中未检测到 [验收通过] 标记！"
+            echo "   提交信息格式：<type>: <描述> [已检查] [验收通过]"
+        }
+        echo "$result" | grep -q "approval_missing" && {
+            echo "❌ 检测到结构性变更，但提交信息中未检测到 [方案已确认] 标记！"
+            echo "   结构性变更提交格式：<type>: <描述> [方案已确认] [已检查] [验收通过]"
+        }
+        echo "$result" | grep -q "check_missing" && {
+            echo "❌ 提交信息中未检测到 [已检查] 标记！"
+            echo "   提交前请完成「交付检查清单」并确认所有检查项"
+            echo "   提交信息格式：<type>: <描述> [已检查] [验收通过]"
+        }
+        echo "   如需跳过（不推荐），使用 'git commit --no-verify'"
+        exit 1
     fi
-fi
-
-# 检查 [方案已确认] 标记
-has_approval=false
-if echo "$commit_msg" | grep -q '\[方案已确认\]'; then
-    has_approval=true
-fi
-
-# 判断是否通过
-errors=""
-
-if [ "$has_acceptance" = "false" ]; then
-    errors="${errors}❌ 提交信息中未检测到 [验收通过] 标记！\n   提交信息格式：<type>: <描述> [验收通过]\n"
-fi
-
-if [ "$is_structural" = "true" ] && [ "$has_approval" = "false" ]; then
-    errors="${errors}❌ 检测到结构性变更，但提交信息中未检测到 [方案已确认] 标记！\n   结构性变更提交格式：<type>: <描述> [方案已确认] [验收通过]\n"
-fi
-
-if [ -n "$errors" ]; then
-    echo ""
-    echo "$errors" | sed 's/\\n/\n/g'
-    echo "   如需跳过（不推荐），使用 'git commit --no-verify'"
-    exit 1
 fi
 
 exit 0
