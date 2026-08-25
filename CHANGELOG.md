@@ -4,6 +4,69 @@
 
 ---
 
+## v2.31.13
+
+**发布时间**：2026-08-25（北京时间）
+
+### 练习测验三层筛选+题库扩充+判分修复
+
+**核心变更**：练习测验页面改造为三层筛选（知识点+题型+掌握程度），三科题库大幅扩充，修复选择题判分逻辑和复盘总结选项字母重复问题。
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/自考学习/练习测验.html` | 三层筛选改造（知识点/题型/掌握程度下拉框配色）；移除自由选择和弱点优先模式按钮；题目渲染去除选项字母前缀；修复 scoreChoice 函数 subType 未定义时默认按单选处理；版本号 v2.31.21 |
+| `Workbench/自考学习/复盘总结-章节复盘.html` | 三处选项渲染添加正则去除数据中自带字母前缀；版本号 v2.3.5 |
+| `data/quiz-bank-02324.json` | 离散数学题库扩充至 135 道题，所有题目添加 id 字段（q-02324-XXX） |
+| `data/quiz-bank-13003.json` | 数据结构与算法题库扩充，添加 id 字段 |
+| `data/quiz-bank-13015.json` | 系统原理题库扩充，添加 id 字段 |
+| `data/quiz-records-02324.json` | 答题记录更新 |
+| `data/mastery-progress.json` | 掌握进度数据更新 |
+| `Workbench/此刻便是春天.html` | 练习测验/复盘总结 contentUrl 版本号更新 |
+| `AGENT_HANDOFF.md` | 版本号 v2.31.13 |
+| `工作台搭建总结.md` | 版本号 v2.31.13 |
+| `文件说明.md` | 删除 recite-cards 旧文件记录，新增 recite-mastery.json 记录 |
+
+---
+
+## v2.31.12
+
+**发布时间**：2026-08-25（北京时间）
+
+### 背诵卡数据源统一+三科全章节卡片补全+旧文件清理
+
+**核心变更**：背诵卡数据源从独立 JSON 文件迁移至知识框架 JSON，三科全章节卡片补全，统一数据源后删除 recite-cards 旧文件，today-flow 和练习测验页面数据源迁移。
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/自考学习/背诵与简答-核心概念背诵卡.html` | 数据源从 recite-cards JSON 改为知识框架 JSON |
+| `Workbench/today/today-flow.html` | 数据源从 recite-cards JSON 改为知识框架 JSON |
+| `Workbench/自考学习/练习测验.html` | 数据源从 recite-cards JSON 改为知识框架 JSON |
+| `data/knowledge-framework-02324.json` | 离散数学全章节卡片补全（记忆卡+计算卡） |
+| `data/knowledge-framework-13003.json` | 数据结构与算法全章节卡片补全 |
+| `data/knowledge-framework-13015.json` | 系统原理全章节卡片补全 |
+| `data/recite-cards-02324.json` | 【删除】旧背诵卡数据已迁移至知识框架 JSON |
+| `data/recite-cards-13003.json` | 【删除】旧背诵卡数据已迁移至知识框架 JSON |
+| `data/recite-cards-13015.json` | 【删除】旧背诵卡数据已迁移至知识框架 JSON |
+| `data/recite-mastery.json` | 新增：背诵卡掌握度独立存储 |
+| `data/modules/self-study.json` | 三科背诵卡/练习测验 contentUrl 版本号更新 |
+
+---
+
+## v2.31.11
+
+**发布时间**：2026-08-25（北京时间）
+
+### 离散数学第一章数据纠正
+
+**核心变更**：纠正离散数学第一章核心概念数据归属错误，补充推理定律和常用命题定律，页码改为教材页码+PDF页码双标注，收录考核内容与要求。
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/knowledge-framework-02324.json` | 第一章补充推理定律（教材P40）、常用命题定律（教材P36-37）、考核内容与要求（教材P13）；页码改为双标注格式 |
+| `data/learning-guide.json` | 学习指南同步更新 |
+
+---
+
 ## v2.31.10
 
 **发布时间**：2026-08-25（北京时间）
