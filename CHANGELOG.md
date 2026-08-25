@@ -4,6 +4,27 @@
 
 ---
 
+## v2.31.9
+
+**发布时间**：2026-08-25（北京时间）
+
+### 三科知识框架核心概念改为"概述+分条"卡片样式（方案B）
+
+**核心变更**：三科共190个核心概念从一整段长文本拆分为一句话概述 + 分条要点列表；页面渲染改为方案B淡色标题栏卡片样式；修复章节切换失效和页面加载闪烁问题。
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/knowledge-framework-13003.json` | 第1章新增"考核知识点与考核要求"板块（前置概览）；9个核心概念补充 points 字段；补充逻辑结构分类、存储结构定义（PDF P41-42） |
+| `data/knowledge-framework-13015.json` | 6章82个核心概念全部拆分为 summary + points 结构 |
+| `data/knowledge-framework-02324.json` | 9章57个核心概念全部拆分为 summary + points 结构 |
+| `Workbench/自考学习/知识框架.html` | 新增 kp-header/kp-body/kf-points 渲染和 CSS；修复 checkbox 注入破坏卡片布局（跳过 .lg-kp-item）；修复章节按钮重建后点击失效（改用 window.switchChapterTab）；了解色从灰改绿；加载闪烁优化（kf-loading 淡入） |
+| `data/modules/self-study.json` | 知识框架 contentUrl 版本号 v2.31.9 |
+| `AGENT_HANDOFF.md` | 版本号 v2.31.9 |
+| `工作台搭建总结.md` | 版本号 v2.31.9 |
+| `Workbench/此刻便是春天.html` | 构建产物（版本号更新） |
+
+---
+
 ## v2.31.1
 
 **发布时间**：2026-08-25（北京时间）

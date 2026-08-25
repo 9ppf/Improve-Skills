@@ -887,7 +887,8 @@
 
 
 
-    .chapter-tab-content { position: relative; }
+    .chapter-tab-content { position: relative; transition: opacity 0.3s ease; }
+.chapter-tab-content.kf-loading { opacity: 0; }
 
     .chapter-tab-pane {
 
@@ -1069,17 +1070,53 @@
 
 
 .lg-kp-item {
-    position: relative;
-    padding: 6px 10px;
-    border-radius: 6px;
-    margin-bottom: 4px;
-    transition: background 0.2s;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    margin-bottom: 8px;
+    overflow: hidden;
     list-style: none;
 }
+.lg-kp-item > ul { list-style: none; padding: 0; margin: 0; }
 
-.lg-kp-item.lg-priority-key { background: rgba(254, 226, 226, 0.4); color: #dc2626; }
-.lg-kp-item.lg-priority-normal { background: rgba(254, 243, 199, 0.3); color: #d97706; }
-.lg-kp-item.lg-priority-survey { background: rgba(241, 245, 249, 0.3); color: #64748b; opacity: 0.75; }
+.kp-header {
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
+}
+.kp-header.kp-priority-key { background: rgba(254, 226, 226, 0.5); }
+.kp-header.kp-priority-normal { background: rgba(254, 243, 199, 0.5); }
+.kp-header.kp-priority-survey { background: rgba(220, 252, 231, 0.5); }
+
+.kp-header .key-term { font-weight: 600; font-size: 14px; color: var(--ink); }
+
+.kp-body { padding: 8px 12px; }
+
+.kf-summary { display: block; font-size: 12px; color: #64748b; margin-bottom: 6px; line-height: 1.5; }
+
+.kf-points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.kf-points li {
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: #475569;
+    display: flex;
+    align-items: flex-start;
+}
+.kf-points li::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin: 8px 6px 0 0;
+    flex-shrink: 0;
+}
+.kf-points.kf-points-key li::before { background: #ef4444; }
+.kf-points.kf-points-normal li::before { background: #f59e0b; }
+.kf-points.kf-points-survey li::before { background: #22c55e; }
 
 
 
@@ -1397,6 +1434,70 @@
 
 
 
+    .req-group {
+
+        margin-bottom: 12px;
+
+        padding-left: 12px;
+
+        border-left: 2px solid #e5e7eb;
+
+    }
+
+    .req-topic-title {
+
+        font-weight: 600;
+
+        color: #1e40af;
+
+        margin-bottom: 6px;
+
+        font-size: 14px;
+
+    }
+
+    .req-line {
+
+        display: flex;
+
+        gap: 8px;
+
+        margin-bottom: 4px;
+
+        align-items: flex-start;
+
+    }
+
+    .req-badge {
+
+        flex-shrink: 0;
+
+        padding: 1px 8px;
+
+        border-radius: 4px;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+    }
+
+    .req-content {
+
+        flex: 1;
+
+        font-size: 13px;
+
+        line-height: 1.6;
+
+        color: #374151;
+
+    }
+
+
+
     .lg-quiz-btn {
 
         display: block;
@@ -1505,7 +1606,7 @@
 
 
 
-<div class="chapter-tab-content"><div class="chapter-tab-pane zk-active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
+<div class="chapter-tab-content kf-loading"><div class="chapter-tab-pane zk-active" data-tab="study-plan"><section aria-label="掌握进度" class="ss-dashboard" id="ss-dashboard">
 
 <div class="ss-dashboard-top">
 
@@ -3771,11 +3872,10 @@ D.连通但删去一条边则不连通的图</p></div>
         var kpIdx = 0;
 
         chapterEl.querySelectorAll("ul").forEach(function(ul) {
-
-          ul.querySelectorAll("li").forEach(function(li) {
-
+          if (ul.classList.contains('kf-points')) return;
+          ul.querySelectorAll(":scope > li").forEach(function(li) {
             if (li.querySelector(".ss-kp-check")) return;
-
+            if (li.classList.contains('lg-kp-item')) return;
             kpIdx++;
 
             var kpId = chapterNum + "-" + kpIdx;
@@ -4039,6 +4139,13 @@ D.连通但删去一条边则不连通的图</p></div>
       // 供 JSON 数据驱动模块在重新渲染章节后调用：重挂掌握度 checkbox + 同步 UI
       window.__reinitChapters = function() {
         document.querySelectorAll(".framework-chapter").forEach(initChapter);
+        // 重新绑定章节按钮点击事件（renderChapters 重建了 innerHTML，旧绑定失效）
+        var freshBtns = document.querySelectorAll("#secondaryTabs .chapter-tab-btn");
+        freshBtns.forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            if (window.switchChapterTab) window.switchChapterTab(btn.dataset.tab);
+          });
+        });
         syncUI();
       };
 
@@ -4188,21 +4295,13 @@ D.连通但删去一条边则不连通的图</p></div>
 
 
       function switchChapter(tabId) {
-
-        secondaryBtns.forEach(function(btn) {
-
+        document.querySelectorAll("#secondaryTabs .chapter-tab-btn").forEach(function(btn) {
           btn.classList.toggle('zk-active', btn.dataset.tab === tabId);
-
         });
-
-        tabPanes.forEach(function(pane) {
-
+        document.querySelectorAll(".chapter-tab-pane").forEach(function(pane) {
           pane.classList.toggle('zk-active', pane.dataset.tab === tabId);
-
         });
-
         try { localStorage.setItem(STORAGE_CH_KEY, tabId); } catch(e) {}
-
       }
 
 
@@ -4933,17 +5032,28 @@ function toggleCollapse(header) {
     var type = sec.type;
     var items = sec.items || [];
     var color = '#3b82f6';
-    var open = (type === '核心概念') ? ' open' : '';
+    var open = (type === '核心概念' || type === '考核知识点与考核要求') ? ' open' : '';
     if (type === '核心概念') color = '#ef4444';
     if (type === '常见题型') color = '#f59e0b';
+    if (type === '考核知识点与考核要求') color = '#8b5cf6';
 
     var body = '';
     if (type === '核心概念') {
       var lis = items.map(function(it) {
         var cls = PRI_CLS[it.priority] || 'normal';
-        var kt = '<li class="lg-kp-item lg-priority-' + cls + '">' +
-          '<span class="key-term kt-priority-' + cls + '">' + esc(it.term) + badgeHtml(it.priority, it.level) +
-          '</span>：' + esc(it.summary || '') + '</li>';
+        var pts = '';
+        if (it.points && it.points.length) {
+          pts = '<ul class="kf-points kf-points-' + cls + '">' + it.points.map(function(p) {
+            return '<li>' + esc(p) + '</li>';
+          }).join('') + '</ul>';
+        }
+        var kt = '<li class="lg-kp-item">' +
+          '<div class="kp-header kp-priority-' + cls + '">' +
+          '<span class="key-term">' + esc(it.term) + badgeHtml(it.priority, it.level) + '</span>' +
+          '</div>' +
+          '<div class="kp-body">' +
+          (it.summary ? '<span class="kf-summary">' + esc(it.summary) + '</span>' : '') + pts +
+          '</div></li>';
         return kt;
       }).join('\n');
       body = '<ul>\n' + lis + '\n</ul>';
@@ -4954,6 +5064,15 @@ function toggleCollapse(header) {
           '<div class="example-title"><strong>' + esc(it.title) + '</strong></div>\n' +
           '<div class="example-statement"><p>' + esc(it.statement) + '</p></div>' + sol + '\n</div>';
       }).join('\n');
+    } else if (type === '考核知识点与考核要求') {
+      var lvColors = {'识记': {'bg':'#dbeafe','fg':'#1e40af'}, '领会': {'bg':'#fef3c7','fg':'#92400e'}, '简单应用': {'bg':'#dcfce7','fg':'#166534'}};
+      body = items.map(function(it) {
+        var lvls = (it.levels || []).map(function(r) {
+          var c = lvColors[r.level] || {'bg':'#e5e7eb','fg':'#374151'};
+          return '<div class="req-line"><span class="req-badge" style="background:' + c.bg + ';color:' + c.fg + '">' + esc(r.level) + '</span><span class="req-content">' + esc(r.content) + '</span></div>';
+        }).join('');
+        return '<div class="req-group"><div class="req-topic-title">' + esc(it.topic) + '</div>' + lvls + '</div>';
+      }).join('');
     } else {
       // 必会公式 / 常见题型 / 易错点 / 必会操作与复杂度 / 必会对比表：普通 li
       body = '<ul>\n' + items.map(function(it) {
@@ -5130,15 +5249,17 @@ function toggleCollapse(header) {
 
   // ---- 初始化：并行加载两个 JSON，成功后渲染 ----
   Promise.all([
-    fetch(apiUrl(SUBJECT_FRAME)).then(function(r) { return r.json(); }),
-    fetch(apiUrl('/data/study-plan.json')).then(function(r) { return r.json(); })
+    fetch(apiUrl(SUBJECT_FRAME) + '?t=' + Date.now()).then(function(r) { return r.json(); }),
+    fetch(apiUrl('/data/study-plan.json') + '?t=' + Date.now()).then(function(r) { return r.json(); })
   ]).then(function(results) {
     var fw = results[0];
     renderStudyPlan(results[1]);
     renderOverview(fw);
     renderChapters(fw);
+    document.querySelector('.chapter-tab-content').classList.remove('kf-loading');
     console.log('[KF-JSON] 知识框架 JSON 数据渲染完成');
   }).catch(function(e) {
+    document.querySelector('.chapter-tab-content').classList.remove('kf-loading');
     console.warn('[KF-JSON] JSON 数据加载失败，使用静态内容兜底', e);
   });
 })();
