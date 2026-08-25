@@ -50,15 +50,37 @@
   .quiz-stats-mini .pill.unknown { background: var(--coral-light); color: #991b1b; }
   .quiz-stats-mini .pill.unknown .dot { background: var(--coral); }
 
-  /* 第二层：控制栏（模式 + 分隔 + 题型筛选 一体化） */
+  /* 第二层：筛选栏（三层下拉筛选 + 操作按钮） */
+  .qf-bar {
+    display: flex; align-items: center; gap: 0.4rem;
+    flex-wrap: wrap; margin-bottom: 0.3rem;
+    padding: 0.4rem 0.6rem;
+    background: var(--bg-soft); border-radius: 8px;
+  }
+  .qf-select {
+    padding: 0.3rem 0.6rem; border: 1.5px solid;
+    border-radius: 8px; font-size: 0.78rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap; outline: none;
+    transition: opacity 0.15s;
+  }
+  .qf-select:hover { opacity: 0.85; }
+  .qf-kp { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .qf-type { border-color: var(--accent2); background: #f5f3ff; color: var(--accent2); }
+  .qf-status { border-color: var(--green); background: #ecfdf5; color: var(--green); }
+  .qf-sep { color: var(--rule); font-size: 0.75rem; }
+  .qf-count {
+    font-size: 0.72rem; color: var(--muted);
+    margin-left: auto; background: #fff;
+    padding: 0.2rem 0.5rem; border-radius: 6px;
+    border: 1px solid var(--rule);
+  }
   .quiz-controlbar {
-    display: flex; align-items: center; gap: 0.5rem;
+    display: flex; align-items: center; gap: 0.4rem;
     flex-wrap: wrap; margin-bottom: 0.3rem;
     padding: 0.4rem 0.6rem;
     background: rgba(255,255,255,0.7);
     border-radius: 8px; backdrop-filter: blur(8px);
   }
-  .quiz-mode-group { display: flex; gap: 4px; flex-wrap: wrap; }
   .mode-btn {
     padding: 0.35rem 0.9rem; border: 1.5px solid var(--rule);
     border-radius: 999px; background: #fff; font-size: 0.78rem;
@@ -70,22 +92,10 @@
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     color: #fff; border-color: transparent; font-weight: 600;
   }
-  .mode-btn.weak { border-color: #fca5a5; color: #ef4444; }
   .mode-btn.ai { border-color: #c4b5fd; color: #8b5cf6; }
-  .controlbar-divider {
-    width: 1px; height: 20px; background: var(--rule); flex-shrink: 0;
+  .qf-hint {
+    font-size: 0.72rem; color: var(--muted); padding: 0 4px;
   }
-  .filter-inline { display: flex; gap: 4px; flex-wrap: wrap; }
-  .type-btn-mini {
-    padding: 0.3rem 0.7rem; border: 1.5px solid var(--rule);
-    border-radius: 999px; background: #fff; font-size: 0.74rem;
-    cursor: pointer; transition: all 0.2s; white-space: nowrap;
-  }
-  .type-btn-mini:hover { border-color: var(--accent); }
-  .type-btn-mini.zk-active {
-    background: var(--accent); color: #fff; border-color: transparent; font-weight: 600;
-  }
-
   .mode-hint {
     font-size: 0.74rem; color: var(--muted);
     padding: 4px 10px; margin-bottom: 0.5rem;
@@ -439,15 +449,19 @@
       <span class="pill unknown"><span class="dot"></span>不会 <span id="statUnknown">0</span></span>
     </div>
   </div>
-  <div class="quiz-controlbar">
-    <div class="quiz-mode-group" id="modeSwitcher">
-      <button class="mode-btn" data-mode="today" onclick="switchMode('today')">📅 今日任务</button>
-      <button class="mode-btn" data-mode="free" onclick="switchMode('free')">🔓 自由选择</button>
-      <button class="mode-btn weak" data-mode="weak" onclick="switchMode('weak')">🎯 弱点优先</button>
-      <button class="mode-btn ai" data-mode="ai" onclick="switchMode('ai')">🤖 AI出题</button>
-    </div>
-    <div class="controlbar-divider"></div>
-    <div class="filter-inline" id="typeFilter"></div>
+  <div class="qf-bar" id="filterBar">
+    <select class="qf-select qf-kp" id="kpFilter" onchange="switchKp(this.value)"><option value="all">📚 知识点：全部</option></select>
+    <span class="qf-sep">·</span>
+    <select class="qf-select qf-type" id="typeFilter" onchange="switchType(this.value)"><option value="all">📝 题型：全部</option></select>
+    <span class="qf-sep">·</span>
+    <select class="qf-select qf-status" id="statusFilter" onchange="switchStatus(this.value)"><option value="all">📊 状态：全部</option></select>
+    <span class="qf-count" id="filterCount">显示 0 题</span>
+  </div>
+  <div class="quiz-controlbar" id="actionBar">
+    <button class="mode-btn" id="todayBtn" onclick="activateToday()">📅 今日任务</button>
+    <span class="qf-sep">·</span>
+    <button class="mode-btn ai" id="aiBtn" onclick="switchMode('ai')">🤖 AI出题</button>
+    <span class="qf-hint" id="todayHint"></span>
   </div>
   <div class="mode-hint" id="modeHint"></div>
   <div class="session-bar" id="sessionBar" style="display:none;">
@@ -550,14 +564,15 @@ var fromRecite = urlParams.get('from') === 'recite';
 var chapterParam = urlParams.get('chapter') || '';
 var questionIdParam = urlParams.get('questionId') || '';
 var currentTypeFilter = 'all';
+var currentKpFilter = 'all';     /* 知识点筛选 */
+var currentStatusFilter = 'all'; /* 状态筛选：all/undone/wrong/right */
 var quizData = [];
 var results = {};
 
 /* Subject code -> study-plan 中文名映射 */
 var SUBJECT_NAME_MAP = { '13015': '系统原理', '02324': '离散数学', '13003': '数据结构' };
-var currentMode = 'today';        /* 'today' | 'free' | 'weak' | 'ai' */
+var currentMode = 'today';        /* 'today' | 'ai' */
 var todayChapters = [];           /* 本周计划中当前科目的章节列表 */
-var weakData = { wrongIds: {}, chapterStats: {}, loaded: false, loading: false, totalRecords: 0 };
 
 function normalize(str) {
   if (!str) return '';
@@ -654,12 +669,13 @@ function saveQuizRecord(q, userAnswer, userSelection, result) {
 function scoreChoice(q, userSelection) {
   var correct = q.answer;
   var isCorrect = false;
-  if (q.subType === 'single' || q.subType === 'judge') {
-    isCorrect = userSelection === correct;
-  } else if (q.subType === 'multi') {
+  if (q.subType === 'multi') {
     var userSet = (userSelection || '').split('').sort().join('');
     var correctSet = correct.split('').sort().join('');
     isCorrect = userSet === correctSet;
+  } else {
+    // 默认按单选题处理（subType 为 'single'、'judge' 或未定义）
+    isCorrect = userSelection === correct;
   }
   return {
     score: isCorrect ? 1 : 0, total: 1,
@@ -818,7 +834,7 @@ function renderChoiceCard(q) {
       else if (userSel.indexOf(letter) >= 0 && correctAns.indexOf(letter) < 0) cls += ' wrong';
     }
     return '<div class="choice-option'+cls+'" data-letter="'+letter+'" data-qid="'+q.id+'">' +
-      '<span class="choice-letter">'+letter+'</span><span>'+esc(opt)+'</span></div>';
+      '<span class="choice-letter">'+letter+'</span><span>'+esc(opt.replace(/^[A-H]\.\s*/, ''))+'</span></div>';
   }).join('');
 
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
@@ -1004,7 +1020,7 @@ window.choiceSelections = {};
 
 function toggleChoiceOption(qId, letter) {
   if (results[qId]) return;
-  var q = quizData.find(function(x){return x.id===qId;});
+  var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (!q) return;
   if (q.subType === 'multi') {
     var sel = window.choiceSelections[qId] || '';
@@ -1024,7 +1040,7 @@ function toggleChoiceOption(qId, letter) {
 
 function submitChoice(qId) {
   if (results[qId]) return;
-  var q = quizData.find(function(x){return x.id===qId;});
+  var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (!q) return;
   var sel = window.choiceSelections[qId] || '';
   if (!sel) { alert('请先选择答案'); return; }
@@ -1037,7 +1053,7 @@ function submitChoice(qId) {
 
 function submitFill(qId) {
   if (results[qId]) return;
-  var q = quizData.find(function(x){return x.id===qId;});
+  var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (!q) return;
   var answers = q.blanks.map(function(b, i) {
     var el = document.getElementById('fill-'+qId+'-'+i);
@@ -1053,7 +1069,7 @@ function submitFill(qId) {
 
 function submitText(qId) {
   if (results[qId]) return;
-  var q = quizData.find(function(x){return x.id===qId;});
+  var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (!q) return;
   var ta = document.getElementById('input-'+qId);
   if (!ta) return;
@@ -1069,7 +1085,7 @@ function submitText(qId) {
 function selfEval(qId, level) {
   if (!results[qId]) return;
   results[qId].selfOverride = level;
-  var q = quizData.find(function(x){return x.id===qId;});
+  var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (q) updateMastery(q.chapter, level);
   updateStats(); render();
 }
@@ -1094,28 +1110,125 @@ function renderTypeFilter() {
   var config = SUBJECT_CONFIG[currentSubject];
   if (!config) return;
   var availableTypes = {};
-  var source;
-  if (currentMode === 'ai') {
-    source = aiQuizData;
-  } else if (currentMode === 'weak' && weakData.loaded) {
-    var weakCh = {};
-    Object.keys(weakData.chapterStats).forEach(function(ch) {
-      if (weakData.chapterStats[ch].wrong > 0) weakCh[ch] = true;
-    });
-    source = quizData.filter(function(q) { return weakData.wrongIds[q.id] || weakCh[q.chapter]; });
-  } else {
-    source = quizData;
-  }
-  source.forEach(function(q) { if (q.type) availableTypes[q.type] = true; });
+  var source = currentMode === 'ai' ? aiQuizData : quizData;
+  source.forEach(function(q) { if (q.type) availableTypes[q.type] = (availableTypes[q.type]||0)+1; });
   var filter = document.getElementById('typeFilter');
   if (!filter) return;
-  var html = '<button class="type-btn-mini '+(currentTypeFilter==='all'?'active':'')+'" onclick="switchType(\'all\')">全部</button>';
+  var html = '<option value="all"'+(currentTypeFilter==='all'?' selected':'')+'>📝 题型：全部 ('+source.length+')</option>';
   config.types.forEach(function(t) {
     if (!availableTypes[t]) return;
     var meta = TYPE_META[t];
-    if (meta) html += '<button class="type-btn-mini '+(currentTypeFilter===t?'active':'')+'" onclick="switchType(\''+t+'\')">'+meta.icon+' '+meta.label+'</button>';
+    if (meta) html += '<option value="'+t+'"'+(currentTypeFilter===t?' selected':'')+'>'+meta.icon+' '+meta.label+' ('+availableTypes[t]+')</option>';
   });
   filter.innerHTML = html;
+}
+
+/* 知识点筛选：从 quizData 提取 cardId 去重 */
+function renderKpFilter() {
+  var kpMap = {};
+  var source = currentMode === 'ai' ? aiQuizData : quizData;
+  source.forEach(function(q) {
+    var kp = q.cardId || '';
+    if (kp) kpMap[kp] = (kpMap[kp]||0)+1;
+  });
+  var filter = document.getElementById('kpFilter');
+  if (!filter) return;
+  var total = source.length;
+  var html = '<option value="all"'+(currentKpFilter==='all'?' selected':'')+'>📚 知识点：全部 ('+total+')</option>';
+  Object.keys(kpMap).sort().forEach(function(kp) {
+    html += '<option value="'+kp+'"'+(currentKpFilter===kp?' selected':'')+'>'+kp+' ('+kpMap[kp]+')</option>';
+  });
+  filter.innerHTML = html;
+}
+
+/* 状态筛选：根据答题记录分类 */
+function renderStatusFilter() {
+  var filter = document.getElementById('statusFilter');
+  if (!filter) return;
+  var source = currentMode === 'ai' ? aiQuizData : quizData;
+  var undone = 0, wrong = 0, right = 0;
+  source.forEach(function(q) {
+    var r = results[q.id];
+    if (!r) { undone++; }
+    else {
+      var lv = getCurrentLevel(q.id);
+      if (lv === 'mastered') right++; else wrong++;
+    }
+  });
+  var html = '<option value="all"'+(currentStatusFilter==='all'?' selected':'')+'>📊 状态：全部 ('+source.length+')</option>';
+  html += '<option value="undone"'+(currentStatusFilter==='undone'?' selected':'')+'>未做 ('+undone+')</option>';
+  html += '<option value="wrong"'+(currentStatusFilter==='wrong'?' selected':'')+'>做错 ('+wrong+')</option>';
+  html += '<option value="right"'+(currentStatusFilter==='right'?' selected':''  )+'>做对 ('+right+')</option>';
+  filter.innerHTML = html;
+}
+
+function switchKp(val) { currentKpFilter = val; renderKpFilter(); updateFilterCount(); render(); }
+function switchStatus(val) { currentStatusFilter = val; renderStatusFilter(); updateFilterCount(); render(); }
+
+/* 更新筛选计数 */
+function updateFilterCount() {
+  var filtered = getFilteredQuiz();
+  var el = document.getElementById('filterCount');
+  if (el) el.textContent = '显示 ' + filtered.length + ' 题';
+}
+
+/* 三层筛选：知识点 + 题型 + 状态 */
+function getFilteredQuiz() {
+  var source = currentMode === 'ai' ? aiQuizData : quizData;
+  return source.filter(function(q) {
+    /* 知识点筛选 */
+    if (currentKpFilter !== 'all') {
+      if ((q.cardId || '') !== currentKpFilter) return false;
+    }
+    /* 题型筛选 */
+    if (currentTypeFilter !== 'all') {
+      if (q.type !== currentTypeFilter) return false;
+    }
+    /* 状态筛选 */
+    if (currentStatusFilter !== 'all') {
+      var r = results[q.id];
+      if (currentStatusFilter === 'undone' && r) return false;
+      if (currentStatusFilter === 'wrong' && (!r || getCurrentLevel(q.id) === 'mastered')) return false;
+      if (currentStatusFilter === 'right' && (!r || getCurrentLevel(q.id) !== 'mastered')) return false;
+    }
+    return true;
+  });
+}
+
+/* 判断题目章节是否属于本周计划 */
+function isTodayChapter(ch) {
+  if (!ch || todayChapters.length === 0) return false;
+  return todayChapters.some(function(tc) { return ch === tc || ch.indexOf(tc + ' ') === 0; });
+}
+
+/* 今日任务：自动筛选本周章节 */
+function activateToday() {
+  currentMode = 'today';
+  var kpFilter = document.getElementById('kpFilter');
+  if (!kpFilter) return;
+  /* 从 quizData 中找出属于今日章节的 cardId */
+  var todayKps = {};
+  quizData.forEach(function(q) {
+    if (isTodayChapter(q.chapter) && q.cardId) todayKps[q.cardId] = true;
+  });
+  var todayList = Object.keys(todayKps);
+  if (todayList.length === 1) {
+    currentKpFilter = todayList[0];
+  } else {
+    currentKpFilter = 'all';
+  }
+  /* 更新今日按钮状态 */
+  var todayBtn = document.getElementById('todayBtn');
+  var aiBtn = document.getElementById('aiBtn');
+  if (todayBtn) todayBtn.classList.add('zk-active');
+  if (aiBtn) aiBtn.classList.remove('zk-active');
+  /* 显示提示 */
+  var hint = document.getElementById('todayHint');
+  if (hint) {
+    var chLabel = todayChapters.length > 0 ? todayChapters.join('、') : '未加载';
+    hint.textContent = '本周计划：' + chLabel;
+  }
+  renderKpFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount(); render();
 }
 
 function updateSessionAndStats(filtered) {
@@ -1351,9 +1464,9 @@ function render() {
       if (sb1) sb1.style.display = 'none';
       return;
     }
-    filtered = getAIFiltered();
+    filtered = getFilteredQuiz();
     if (filtered.length === 0) {
-      list.innerHTML = '<div class="empty-state">该题型下暂无AI题目</div>';
+      list.innerHTML = '<div class="empty-state">该筛选条件下暂无AI题目</div>';
       var sb2 = document.getElementById('sessionBar');
       if (sb2) sb2.style.display = 'none';
       return;
@@ -1363,101 +1476,14 @@ function render() {
     return;
   }
 
-  /* 弱点优先模式 */
-  if (currentMode === 'weak') {
-    if (weakData.loading) {
-      list.innerHTML = '<div style="text-align:center;padding:40px 20px;">' +
-        '<div style="width:36px;height:36px;border:3px solid #fca5a5;border-top-color:#ef4444;border-radius:50%;margin:0 auto 12px;animation:spin 1s linear infinite;"></div>' +
-        '<div style="font-size:14px;color:#ef4444;font-weight:600;">正在分析练习记录...</div>' +
-        '<div style="font-size:12px;color:#fca5a5;margin-top:4px;">统计错题和薄弱章节 · 优先展示错误率最高的题目</div></div>';
-      var sbw = document.getElementById('sessionBar');
-      if (sbw) sbw.style.display = 'none';
-      return;
-    }
-    if (weakData.totalRecords === 0) {
-      list.innerHTML = '<div class="empty-state">🎯 暂无练习记录<br>请先完成今日任务或自由练习，系统将根据错题自动推荐薄弱知识点</div>';
-      var sbw2 = document.getElementById('sessionBar');
-      if (sbw2) sbw2.style.display = 'none';
-      return;
-    }
-    var weakChapters = {};
-    Object.keys(weakData.chapterStats).forEach(function(ch) {
-      if (weakData.chapterStats[ch].wrong > 0) weakChapters[ch] = true;
-    });
-    filtered = quizData.filter(function(q) {
-      return weakData.wrongIds[q.id] || weakChapters[q.chapter];
-    });
-    filtered.sort(function(a, b) {
-      var aWrong = weakData.wrongIds[a.id] ? 1 : 0;
-      var bWrong = weakData.wrongIds[b.id] ? 1 : 0;
-      if (aWrong !== bWrong) return bWrong - aWrong;
-      var aStats = weakData.chapterStats[a.chapter] || { wrong: 0, total: 0 };
-      var bStats = weakData.chapterStats[b.chapter] || { wrong: 0, total: 0 };
-      var aRate = aStats.total > 0 ? aStats.wrong / aStats.total : 0;
-      var bRate = bStats.total > 0 ? bStats.wrong / bStats.total : 0;
-      return bRate - aRate;
-    });
-    if (currentTypeFilter !== 'all') {
-      filtered = filtered.filter(function(q) { return q.type === currentTypeFilter; });
-    }
-    if (filtered.length === 0) {
-      list.innerHTML = '<div class="empty-state">🎯 当前筛选条件下无薄弱题目<br>换一个题型或切换到自由选择模式</div>';
-      var sbw3 = document.getElementById('sessionBar');
-      if (sbw3) sbw3.style.display = 'none';
-      return;
-    }
-    list.innerHTML = filtered.map(function(q) {
-      var html = renderCard(q);
-      var wrongCount = weakData.wrongIds[q.id] || 0;
-      if (wrongCount > 0) {
-        var badge = '<div class="card-badge-row"><span class="card-badge weak">❌ 错过' + wrongCount + '次</span></div>';
-        var pos = html.lastIndexOf('</div>');
-        if (pos !== -1) html = html.substring(0, pos) + badge + '</div>';
-      }
-      return html;
-    }).join('');
-    updateSessionAndStats(filtered);
-    return;
-  }
+  /* 三层筛选：知识点 + 题型 + 状态 */
+  filtered = getFilteredQuiz();
+  /* URL参数过滤（从背诵卡跳转） */
+  if (chapterParam) filtered = filtered.filter(function(q) { return q.chapter === chapterParam; });
+  if (questionIdParam) filtered = filtered.filter(function(q) { return q.id === questionIdParam; });
 
-  filtered = quizData;
-  /* 从背诵卡跳转时，按章节过滤 */
-  if (currentMode === 'free' && chapterParam) {
-    filtered = filtered.filter(function(q) { return q.chapter === chapterParam; });
-  }
-  /* 错题重做：只显示指定题目 */
-  if (currentMode === 'free' && questionIdParam) {
-    filtered = filtered.filter(function(q) { return q.id === questionIdParam; });
-  }
-  /* 今日任务模式：先按本周章节过滤 */
-  if (currentMode === 'today') {
-    if (todayChapters.length === 0) {
-      list.innerHTML = '<div class="empty-state">本周计划暂无该科目的练习题，请切换到自由选择模式</div>';
-      var sb3 = document.getElementById('sessionBar');
-      if (sb3) sb3.style.display = 'none';
-      return;
-    }
-    filtered = filtered.filter(function(q) {
-      if (!q.chapter) return false;
-      return todayChapters.some(function(tc) { return q.chapter === tc || q.chapter.indexOf(tc + ' ') === 0; });
-    });
-  }
-  /* 题型筛选器在章节过滤基础上叠加 */
-  if (currentTypeFilter !== 'all') {
-    filtered = filtered.filter(function(q) { return q.type === currentTypeFilter; });
-  }
   if (filtered.length === 0) {
-    var msg;
-    if (currentMode === 'today') {
-      msg = '今日任务（' + todayChapters.join('、') + '）' + (currentTypeFilter !== 'all' ? '在该题型下' : '') + '暂无题目';
-    } else if (currentMode === 'free' && questionIdParam) {
-      msg = '未找到题目（ID: ' + questionIdParam + '），该题可能已被删除';
-    } else if (currentMode === 'free' && chapterParam) {
-      msg = '章节「' + chapterParam + '」' + (currentTypeFilter !== 'all' ? '在该题型下' : '') + '暂无题目，可尝试AI出题';
-    } else {
-      msg = '该筛选条件下暂无题目';
-    }
-    list.innerHTML = '<div class="empty-state">' + msg + '</div>';
+    list.innerHTML = '<div class="empty-state">该筛选条件下暂无题目</div>';
     var sb = document.getElementById('sessionBar');
     if (sb) sb.style.display = 'none';
     return;
@@ -1478,8 +1504,10 @@ function render() {
 function switchType(type) {
   currentTypeFilter = type;
   renderTypeFilter();
+  updateFilterCount();
   render();
 }
+
 
 /* ====== MODE / STUDY PLAN ====== */
 
@@ -1510,35 +1538,6 @@ function loadStudyPlan(callback) {
     });
 }
 
-function loadWeakPoints(callback) {
-  weakData.loading = true;
-  fetch(apiUrl('/api/quiz-records?subject=' + currentSubject), { cache: 'no-cache' })
-    .then(function(r) { return r.json(); })
-    .then(function(records) {
-      records = Array.isArray(records) ? records : [];
-      weakData.wrongIds = {};
-      weakData.chapterStats = {};
-      weakData.totalRecords = records.length;
-      records.forEach(function(rec) {
-        var ch = rec.chapter || '';
-        if (!weakData.chapterStats[ch]) weakData.chapterStats[ch] = { wrong: 0, total: 0 };
-        weakData.chapterStats[ch].total++;
-        if (!rec.isCorrect) {
-          weakData.wrongIds[rec.questionId] = (weakData.wrongIds[rec.questionId] || 0) + 1;
-          weakData.chapterStats[ch].wrong++;
-        }
-      });
-      weakData.loaded = true;
-      weakData.loading = false;
-      if (callback) callback();
-    })
-    .catch(function() {
-      weakData.loaded = true;
-      weakData.loading = false;
-      if (callback) callback();
-    });
-}
-
 function getTodayFiltered() {
   if (todayChapters.length === 0) return [];
   return quizData.filter(function(q) {
@@ -1547,80 +1546,34 @@ function getTodayFiltered() {
   });
 }
 
-function renderModeSwitcher() {
-  var sw = document.getElementById('modeSwitcher');
-  if (!sw) return;
-  sw.querySelectorAll('.mode-btn').forEach(function(btn) {
-    btn.classList.toggle('zk-active', btn.dataset.mode === currentMode);
-  });
-}
-
 function updateModeHint() {
   var hint = document.getElementById('modeHint');
   if (!hint) return;
-  if (currentMode === 'today') {
-    if (todayChapters.length === 0) {
-      hint.className = 'mode-hint show warn';
-      hint.textContent = '本周计划暂无该科目的练习题，请切换到自由选择模式';
-    } else {
-      hint.className = 'mode-hint show';
-      hint.textContent = '📅 今日任务 · 本周章节：' + todayChapters.join('、');
-    }
-  } else if (currentMode === 'ai') {
-    hint.className = 'mode-hint show';
+  if (currentMode === 'ai') {
+    hint.className = 'mode-hint zk-show';
     hint.style.background = '#f5f3ff';
     hint.style.color = '#8b5cf6';
     hint.textContent = '🤖 AI出题 · 根据背诵卡内容生成5道结构化题目';
-  } else if (currentMode === 'weak') {
-    hint.className = 'mode-hint';
-    hint.style.background = '';
-    hint.style.color = '';
-    if (weakData.loading) {
-      hint.className = 'mode-hint show';
-      hint.textContent = '🎯 正在分析练习记录...';
-    } else if (weakData.totalRecords === 0) {
-      hint.className = 'mode-hint show warn';
-      hint.textContent = '🎯 暂无练习记录，请先完成今日任务或自由练习';
-    } else {
-      hint.className = 'mode-hint show';
-      hint.style.background = '#fef2f2';
-      hint.style.color = '#ef4444';
-      var wrongCount = Object.keys(weakData.wrongIds).length;
-      var weakChapters = Object.keys(weakData.chapterStats).filter(function(ch) {
-        return weakData.chapterStats[ch].wrong > 0;
-      });
-      hint.textContent = '🎯 弱点优先 · ' + wrongCount + '道错题 · ' + weakChapters.length + '个薄弱章节';
-    }
   } else {
     hint.className = 'mode-hint';
     hint.style.background = '';
     hint.style.color = '';
-    if (currentMode === 'free' && questionIdParam) {
-      hint.className = 'mode-hint show';
-      hint.textContent = '🔄 重做模式 · 题目ID: ' + questionIdParam;
-    } else if (currentMode === 'free' && chapterParam) {
-      hint.className = 'mode-hint show';
-      hint.textContent = '📝 章节练习 · ' + chapterParam;
-    }
   }
 }
 
 function switchMode(mode) {
-  currentMode = mode;
+  if (mode !== 'ai') return;
+  currentMode = 'ai';
+  currentKpFilter = 'all';
   currentTypeFilter = 'all';
-  renderModeSwitcher();
-  renderTypeFilter();
-  updateChrome(mode);
-  if (mode === 'weak' && !weakData.loaded) {
-    render();
-    loadWeakPoints(function() { updateModeHint(); renderTypeFilter(); render(); });
-    return;
-  }
-  if (mode === 'weak' && weakData.loaded) {
-    loadWeakPoints(function() { updateModeHint(); renderTypeFilter(); render(); });
-    return;
-  }
+  currentStatusFilter = 'all';
+  var todayBtn = document.getElementById('todayBtn');
+  var aiBtn = document.getElementById('aiBtn');
+  if (todayBtn) todayBtn.classList.remove('zk-active');
+  if (aiBtn) aiBtn.classList.add('zk-active');
+  renderKpFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount();
   updateModeHint();
+  updateChrome(mode);
   render();
 }
 
@@ -1652,10 +1605,6 @@ function updateChrome(mode) {
 var aiQuizData = [];
 var aiLoading = false;
 
-function getAIFiltered() {
-  if (currentTypeFilter === 'all') return aiQuizData;
-  return aiQuizData.filter(function(q) { return q.type === currentTypeFilter; });
-}
 
 function generateAIQuestions() {
   if (aiLoading) return;
@@ -1810,12 +1759,9 @@ function init() {
   if (fromRecite || questionIdParam) {
     currentMode = 'free';
   }
-  var modeParam = urlParams.get('mode') || '';
-  if (modeParam === 'weak') {
-    currentMode = 'weak';
-  }
-  renderModeSwitcher();
   renderTypeFilter();
+  renderKpFilter();
+  renderStatusFilter();
   /* 并行加载学习计划、题库、答题记录，三者就绪后再渲染 */
   var planDone = false, bankDone = false, recordsDone = false;
   var pendingRecords = [];
@@ -1867,17 +1813,16 @@ function init() {
       };
     });
     pendingRecords = [];
-    /* 默认今日任务模式，若本周无题则自动切换到自由选择 */
-    if (currentMode === 'today' && getTodayFiltered().length === 0) {
-      currentMode = 'free';
-      renderModeSwitcher();
-    }
-    updateChrome(currentMode);
-    if (currentMode === 'weak') {
-      loadWeakPoints(function() { updateModeHint(); renderTypeFilter(); render(); });
+    /* 初始化筛选器和今日任务 */
+    renderKpFilter(); renderTypeFilter(); renderStatusFilter();
+    if (currentMode !== 'free') {
+      activateToday();
+    } else {
+      updateFilterCount();
+      updateChrome(currentMode);
+      render();
     }
     updateModeHint();
-    render();
     if (questionIdParam) {
       setTimeout(function() {
         var card = document.getElementById('card-' + questionIdParam);

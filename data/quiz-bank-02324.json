@@ -1,21 +1,2522 @@
 [
-  {"id":"q-ch5","type":"choice","subType":"single","chapter":"第1章 命题逻辑","question":"命题公式 P→Q 的逆否命题是？","options":["Q→P","¬Q→¬P","¬P→¬Q","P↔Q"],"answer":"B","explanation":"P→Q 的逆否命题是 ¬Q→¬P，二者等价。"},
-  {"id":"q-ch6","type":"choice","subType":"single","chapter":"第2章 集合论","question":"设A={1,2,3}，B={2,3,4}，则A△B（对称差）等于？","options":["{2,3}","{1,4}","{1,2,3,4}","∅"],"answer":"B","explanation":"对称差 A△B = (A-B)∪(B-A) = {1}∪{4} = {1,4}。"},
-  {"id":"q-ch7","type":"choice","subType":"multi","chapter":"第4章 图论","question":"下列关于无向连通图的性质，哪些是正确的？（多选）","options":["连通图必有生成树","树是边数最少的连通图","n个顶点的树有n条边","树中任意两点有唯一路径","连通图中删去任意一条边仍连通"],"answer":"ABD","explanation":"③n个顶点的树有n-1条边（非n）；⑤删去树的一条边就不连通了。"},
-  {"id":"q-ch8","type":"choice","subType":"judge","chapter":"第3章 代数系统","question":"如果一个群的所有元素都满足交换律，则该群一定是阿贝尔群（交换群）。","options":["正确","错误"],"answer":"A","explanation":"阿贝尔群（交换群）的定义就是运算满足交换律的群。"},
-
-  {"id":"q-fb4","type":"fill","chapter":"第1章 命题逻辑","text":"命题公式 P→Q 的逆否命题是__1__。P→Q ⇔ __2__（等价式）。当且仅当P和Q的真值__3__时，P↔Q为真。","blanks":[{"answer":"¬Q→¬P","synonyms":["!Q→!P","非Q推非P","~Q→~P"],"hint":"公式"},{"answer":"¬P∨Q","synonyms":["!P∨Q","~P∨Q","¬P或Q"],"hint":"等值式"},{"answer":"相同","synonyms":["一样","相等","一致"],"hint":"2字"}],"explanation":"P→Q逆否命题¬Q→¬P，等值式¬P∨Q，P↔Q为真当P和Q真值相同。"},
-  {"id":"q-fb5","type":"fill","chapter":"第2章 集合论","text":"设A={1,2,3}，B={2,3,4}，则A∪B = __1__，A∩B = __2__，A-B = __3__，A的幂集P(A)的基数为__4__。","blanks":[{"answer":"{1,2,3,4}","synonyms":["{1,2,3,4}"],"hint":"集合"},{"answer":"{2,3}","synonyms":["{2,3}"],"hint":"集合"},{"answer":"{1}","synonyms":["{1}"],"hint":"集合"},{"answer":"8","synonyms":["2³","2^3","8个"],"hint":"数字"}],"explanation":"A∪B={1,2,3,4}，A∩B={2,3}，A-B={1}，|P(A)|=2³=8。"},
-  {"id":"q-fb6","type":"fill","chapter":"第4章 图论","text":"n个顶点的树恰有__1__条边。树是连通且__2__的无向图。二叉树第i层最多有__3__个节点。","blanks":[{"answer":"n-1","synonyms":["n减1","n - 1"],"hint":"公式"},{"answer":"无回路","synonyms":["无环","无圈","acyclic"],"hint":"3字"},{"answer":"2^(i-1)","synonyms":["2的i-1次方","2^{i-1}"],"hint":"公式"}],"explanation":"n个顶点的树n-1条边；连通且无回路；二叉树第i层最多2^(i-1)个节点。"},
-
-  {"id":"q-ca4","type":"calculate","chapter":"第2章 集合论","question":"设A={1,2,3}，求A的幂集P(A)的基数|P(A)|。","formula":"|P(A)| = 2^|A|","steps":["幂集P(A)是A的所有子集构成的集合","|A| = 3","|P(A)| = 2^|A| = 2³","= 8"],"answer":"8","answerAliases":["2³","2^3"],"hint":"幂集基数公式"},
-  {"id":"q-ca5","type":"calculate","chapter":"第4章 图论","question":"已知无向树T有7个顶点，求T有多少条边？","formula":"n个顶点的树恰有n-1条边","steps":["树的性质：n个顶点的树恰有n-1条边","n = 7","边数 = n - 1 = 7 - 1","= 6"],"answer":"6","answerAliases":["6条","6条边"],"hint":"树的边数公式"},
-  {"id":"q-ca6","type":"calculate","chapter":"第1章 命题逻辑","question":"命题公式 P∧(P→Q) 的真值为真时，P和Q的真值分别是什么？","formula":"P∧(P→Q) = P∧(¬P∨Q) = P∧Q","steps":["P→Q ⇔ ¬P∨Q（蕴含等值式）","P∧(P→Q) = P∧(¬P∨Q)","= P∧Q（分配律+吸收律）","P∧Q为真 ⟹ P=T, Q=T"],"answer":"P=T,Q=T","answerAliases":["T,T","真真","P真Q真","P和Q都为真"],"hint":"等值演算后判断"},
-
-  {"id":"q-pf1","type":"proof","chapter":"第1章 命题逻辑","question":"证明：P→Q ⇔ ¬P∨Q（蕴含等值式）","method":"等值演算法","methodHint":"从左式出发，利用等值演算法逐步变换为右式。注意每步标注使用的等值律。","steps":[{"desc":"起始：P→Q","keywords":["P→Q","P蕴含Q","左边","左式","起始"],"hint":"写出左式"},{"desc":"蕴含等值式：P→Q ⇔ ¬P∨Q","keywords":["¬P∨Q","蕴含等值","蕴含等值式","¬P或Q","非P∨Q"],"hint":"应用蕴含等值式"},{"desc":"结论：得到右式 ¬P∨Q","keywords":["QED","得证","证毕","结论","右边","右式"],"hint":"写出结论"}],"referenceProof":["等值演算法证明 P→Q ⇔ ¬P∨Q：","步骤1：从左式出发，P→Q","步骤2：应用蕴含等值式 A→B ⇔ ¬A∨B，得 P→Q ⇔ ¬P∨Q","步骤3：结论：P→Q ⇔ ¬P∨Q，证毕。"],"passThreshold":2},
-  {"id":"q-pf2","type":"proof","chapter":"第1章 命题逻辑","question":"证明：¬(P∧Q) ⇔ ¬P∨¬Q（德摩根律）","method":"真值表法","methodHint":"构造 P、Q、¬(P∧Q)、¬P∨¬Q 四列真值表，验证两列完全相同。","steps":[{"desc":"表头包含P、Q、¬(P∧Q)、¬P∨¬Q","keywords":["表头","P Q ¬(P∧Q) ¬P∨¬Q","四列","列标题"],"hint":"写出真值表表头"},{"desc":"P=T,Q=T行：¬(T∧T)=F，¬T∨¬T=F","keywords":["FF","F F","都是F","=F"],"hint":"第一行两列值相同(F)"},{"desc":"P=T,Q=F行：¬(T∧F)=T，¬T∨¬F=T","keywords":["TT","T T","都是T"],"hint":"第二行两列值相同(T)"},{"desc":"P=F,Q=T行：¬(F∧T)=T，¬F∨¬T=T","keywords":["TT","T T","都是T"],"hint":"第三行两列值相同(T)"},{"desc":"P=F,Q=F行：¬(F∧F)=T，¬F∨¬F=T","keywords":["TT","T T","都是T"],"hint":"第四行两列值相同(T)"},{"desc":"结论：两列完全相同，故等值","keywords":["完全相同","两列相同","等值","证毕","得证","QED"],"hint":"得出等值结论"}],"referenceProof":["真值表法证明 ¬(P∧Q) ⇔ ¬P∨¬Q：","P | Q | ¬(P∧Q) | ¬P∨¬Q","T | T |   F     |   F","T | F |   T     |   T","F | T |   T     |   T","F | F |   T     |   T","两列值完全相同，故 ¬(P∧Q) ⇔ ¬P∨¬Q，证毕。"],"passThreshold":4},
-  {"id":"q-pf3","type":"proof","chapter":"第1章 命题逻辑","question":"前提：P→Q, P。证明：Q（分离规则/假言推理）","method":"推理证明法","methodHint":"使用推理规则（P规则、T规则）逐步推导。注意标注每步使用的规则。","steps":[{"desc":"前提1：P→Q（前提）","keywords":["P→Q","前提1","假言前提"],"hint":"列出前提1"},{"desc":"前提2：P（前提）","keywords":["P","前提2","前提P"],"hint":"列出前提2"},{"desc":"由P→Q和P，应用分离规则得Q","keywords":["分离规则","假言推理","MP","modus ponens","得Q","推出Q"],"hint":"关键推理步骤"},{"desc":"结论：Q","keywords":["Q","证毕","得证","结论Q","QED"],"hint":"写出结论"}],"referenceProof":["推理证明法证明 Q：","步骤1：P→Q（前提）","步骤2：P（前提）","步骤3：Q（由步骤1、2，应用分离规则MP）","结论：Q 得证。"],"passThreshold":3},
-  {"id":"q-pf4","type":"proof","chapter":"第1章 命题逻辑","question":"证明：P→Q, Q→R ⊢ P→R（假言三段论/链式推理）","method":"推理证明法","methodHint":"利用两个蕴含式链式推导。可用T规则+蕴含等值式，或CP规则。","steps":[{"desc":"前提1：P→Q","keywords":["P→Q","前提1"],"hint":"列出前提1"},{"desc":"前提2：Q→R","keywords":["Q→R","前提2"],"hint":"列出前提2"},{"desc":"应用假言三段论/传递律：P→Q, Q→R 得 P→R","keywords":["假言三段论","链式推理","传递","HS","transitivity","三段论"],"hint":"关键推理规则"},{"desc":"结论：P→R","keywords":["P→R","证毕","得证","结论P→R","QED"],"hint":"写出结论"}],"referenceProof":["推理证明法证明 P→R：","步骤1：P→Q（前提）","步骤2：Q→R（前提）","步骤3：P→R（由步骤1、2，应用假言三段论HS）","结论：P→R 得证。"],"passThreshold":3},
-  {"id":"q-pf5","type":"proof","chapter":"第1章 命题逻辑","question":"证明：¬Q, P→Q ⊢ ¬P（拒取式/否定后件）","method":"推理证明法","methodHint":"利用否定后件推出前件的否定。可用T规则+等值演算，或直接使用拒取式规则。","steps":[{"desc":"前提1：¬Q","keywords":["¬Q","非Q","前提1","~Q"],"hint":"列出前提1"},{"desc":"前提2：P→Q","keywords":["P→Q","前提2"],"hint":"列出前提2"},{"desc":"由P→Q得等值式¬Q→¬P（逆否）","keywords":["逆否","¬Q→¬P","等值","逆否命题"],"hint":"等值变换"},{"desc":"由¬Q和¬Q→¬P，MP得¬P","keywords":["分离规则","MP","假言推理","得¬P","推出¬P","非P"],"hint":"关键推理步骤"},{"desc":"结论：¬P","keywords":["¬P","证毕","得证","结论¬P","QED","非P"],"hint":"写出结论"}],"referenceProof":["推理证明法证明 ¬P：","步骤1：¬Q（前提）","步骤2：P→Q（前提）","步骤3：P→Q ⇔ ¬Q→¬P（等值演算，逆否命题）","步骤4：¬Q→¬P（由步骤2，T规则）","步骤5：¬P（由步骤1、4，MP）","结论：¬P 得证。"],"passThreshold":3},
-  {"id":"q-pf6","type":"proof","chapter":"第1章 命题逻辑","question":"证明：(P→Q)∧(P→R) ⇔ P→(Q∧R)（条件的分配律）","method":"等值演算法","methodHint":"从左式出发，利用分配律、蕴含等值式等逐步变换。","steps":[{"desc":"起始：(P→Q)∧(P→R)","keywords":["(P→Q)∧(P→R)","左式","左边","起始"],"hint":"写出左式"},{"desc":"蕴含等值式变换：(¬P∨Q)∧(¬P∨R)","keywords":["¬P∨Q","¬P∨R","蕴含等值"],"hint":"应用蕴含等值式"},{"desc":"分配律：¬P∨(Q∧R)","keywords":["¬P∨(Q∧R)","分配律","¬P或(Q∧R)","提取公因子"],"hint":"应用分配律"},{"desc":"逆蕴含等值式：P→(Q∧R)","keywords":["P→(Q∧R)","逆蕴含","蕴含等值","右式"],"hint":"应用逆蕴含等值式"},{"desc":"结论：得证","keywords":["证毕","得证","QED","结论","等值"],"hint":"写出结论"}],"referenceProof":["等值演算法证明 (P→Q)∧(P→R) ⇔ P→(Q∧R)：","步骤1：左式 = (P→Q)∧(P→R)","步骤2：= (¬P∨Q)∧(¬P∨R)（蕴含等值式）","步骤3：= ¬P∨(Q∧R)（分配律）","步骤4：= P→(Q∧R)（逆蕴含等值式）","步骤5：结论：(P→Q)∧(P→R) ⇔ P→(Q∧R)，证毕。"],"passThreshold":3}
+  {
+    "question": "下列句子中，是命题的是（ ）",
+    "type": "choice",
+    "options": [
+      "A. 你好吗？",
+      "B. 请把门关上！",
+      "C. 2 是素数。",
+      "D. 我正在撒谎。"
+    ],
+    "answer": "C",
+    "explanation": "命题是能判断真假的陈述句。A是疑问句，B是祈使句，D是悖论（无法确定真值），C是陈述句且真值唯一（为真），因此选C。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题",
+    "src": "ai",
+    "id": "q-02324-001"
+  },
+  {
+    "question": "判断下列句子是否为命题，并说明理由。\n（1）x > 3\n（2）太阳从西边升起。\n（3）这个语句是假的。",
+    "type": "fill",
+    "text": "（1）___ ，（2）___ ，（3）___",
+    "blanks": [
+      "不是命题，因为真值不确定",
+      "是命题，真值为假",
+      "不是命题，因为悖论"
+    ],
+    "explanation": "（1）x>3的真值取决于x的值，不唯一，所以不是命题；（2）是陈述句且真值唯一为假，是命题；（3）自指悖论，无法确定真值。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题",
+    "src": "ai",
+    "id": "q-02324-002"
+  },
+  {
+    "question": "设p: 今天是星期一，q: 明天是星期二。将自然语言“只有今天是星期一，明天才是星期二”符号化为逻辑公式。",
+    "type": "calculate",
+    "formula": "只有p才q，符号化为q→p",
+    "steps": [
+      "识别“只有……才……”结构：只有今天星期一(q→p)才明天星期二",
+      "将p,q代入，得到q→p"
+    ],
+    "answer": "q→p",
+    "answerAliases": [
+      "q→p",
+      "q -> p"
+    ],
+    "explanation": "“只有p才q”表示q是p的必要条件，即q→p。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题",
+    "src": "ai",
+    "id": "q-02324-003"
+  },
+  {
+    "question": "下列语句中，哪个不是命题？（ ）",
+    "type": "choice",
+    "options": [
+      "A. 地球是圆的。",
+      "B. 3是偶数。",
+      "C. 请安静！",
+      "D. 北京是中国的首都。"
+    ],
+    "answer": "C",
+    "explanation": "C是祈使句，不能判断真假，因此不是命题。其他都是陈述句且真值唯一。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题",
+    "src": "ai",
+    "id": "q-02324-004"
+  },
+  {
+    "question": "判断“明天会下雨”是否为命题，并说明理由。",
+    "type": "fill",
+    "text": "“明天会下雨”___，因为___",
+    "blanks": [
+      "不是命题",
+      "其真值在当下无法确定（虽然未来有确定真值，但当前无法判断）"
+    ],
+    "explanation": "命题要求真值唯一，但“明天会下雨”的真值在当下未知（不确定），因此不满足命题条件。注：教材中通常要求能判断真假，若不能当前判断则不算命题。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题",
+    "src": "ai",
+    "id": "q-02324-005"
+  },
+  {
+    "question": "设p: 小明喜欢数学，q: 小明喜欢物理。用逻辑联结词表示“小明喜欢数学或物理（二者至少一个）”。",
+    "type": "calculate",
+    "formula": "p∨q",
+    "steps": [
+      "“或”对应析取联结词∨",
+      "将p,q代入，得到p∨q"
+    ],
+    "answer": "p∨q",
+    "answerAliases": [
+      "p∨q",
+      "p ∨ q",
+      "p or q"
+    ],
+    "explanation": "“或”在自然语言中有时是相容或，这里“至少一个”为相容或，直接用∨。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "逻辑联结词",
+    "src": "ai",
+    "id": "q-02324-006"
+  },
+  {
+    "question": "逻辑联结词运算优先级从高到低的正确顺序是（ ）",
+    "type": "choice",
+    "options": [
+      "A. ¬ > ∧ > ∨ > → > ↔",
+      "B. ∧ > ∨ > ¬ > → > ↔",
+      "C. ¬ > ∨ > ∧ > → > ↔",
+      "D. ¬ > ∧ > → > ∨ > ↔"
+    ],
+    "answer": "A",
+    "explanation": "规定优先级：¬ 最高，然后 ∧，∨，→，↔ 最低，因此选A。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "逻辑联结词",
+    "src": "ai",
+    "id": "q-02324-007"
+  },
+  {
+    "question": "写出“异或”的逻辑公式（用p、q表示）。",
+    "type": "fill",
+    "text": "异或公式为___",
+    "blanks": [
+      "(p∧¬q)∨(¬p∧q)"
+    ],
+    "explanation": "异或表示p、q恰好一个为真，即(p∧¬q)∨(¬p∧q)。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "逻辑联结词",
+    "src": "ai",
+    "id": "q-02324-008"
+  },
+  {
+    "question": "下列集合中，不是联结词完备集的是（ ）",
+    "type": "choice",
+    "options": [
+      "A. {¬,∧,∨}",
+      "B. {¬,∨}",
+      "C. {¬,∧}",
+      "D. {∧,∨}"
+    ],
+    "answer": "D",
+    "explanation": "{∧,∨}不含否定，不能表达否定联结词，故不是完备集。其它选项均可表示所有命题公式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "逻辑联结词",
+    "src": "ai",
+    "id": "q-02324-009"
+  },
+  {
+    "question": "用¬、∧、∨表示命题“p与q中恰有一个成立”，写出公式。",
+    "type": "calculate",
+    "formula": "恰有一个成立，即异或",
+    "steps": [
+      "恰有一个成立：p为真且q为假，或p为假且q为真",
+      "符号化为(p∧¬q)∨(¬p∧q)"
+    ],
+    "answer": "(p∧¬q)∨(¬p∧q)",
+    "answerAliases": [
+      "(p∧¬q)∨(¬p∧q)",
+      "(p ∧ ¬q) ∨ (¬p ∧ q)"
+    ],
+    "explanation": "这是标准的异或表达。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "逻辑联结词",
+    "src": "ai",
+    "id": "q-02324-010"
+  },
+  {
+    "question": "在蕴涵式 p→q 中，当前件p为假时，蕴涵式的真值为（ ）",
+    "type": "choice",
+    "options": [
+      "A. 真",
+      "B. 假",
+      "C. 不确定",
+      "D. 取决于q的真值"
+    ],
+    "answer": "A",
+    "explanation": "p→q仅在p真q假时为假，前件为假时无论q真假，蕴涵式为真，即空真。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含联结词",
+    "src": "ai",
+    "id": "q-02324-011"
+  },
+  {
+    "question": "将自然语言“只有努力，才能成功”符号化。设p: 努力，q: 成功。",
+    "type": "fill",
+    "text": "公式为___",
+    "blanks": [
+      "q→p"
+    ],
+    "explanation": "“只有p才q”表示q→p，即成功→努力。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含联结词",
+    "src": "ai",
+    "id": "q-02324-012"
+  },
+  {
+    "question": "判断蕴含式 p→q 在下列哪种情况下为假？",
+    "type": "choice",
+    "options": [
+      "A. p真q真",
+      "B. p真q假",
+      "C. p假q真",
+      "D. p假q假"
+    ],
+    "answer": "B",
+    "explanation": "蕴涵联结词仅在p真q假时为假。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含联结词",
+    "src": "ai",
+    "id": "q-02324-013"
+  },
+  {
+    "question": "设p: 天下雨，q: 地湿。将“只要天不下雨，地就不湿”符号化。",
+    "type": "calculate",
+    "formula": "只要…就…，用→",
+    "steps": [
+      "“只要A就B”符号化为A→B",
+      "这里A=¬p，B=¬q，得到¬p→¬q"
+    ],
+    "answer": "¬p→¬q",
+    "answerAliases": [
+      "¬p→¬q",
+      "¬p -> ¬q",
+      "(¬p)→(¬q)"
+    ],
+    "explanation": "注意方向：只要前件成立则后件成立。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含联结词",
+    "src": "ai",
+    "id": "q-02324-014"
+  },
+  {
+    "question": "命题公式 (p→q) ↔ (¬p∨q) 是（ ）",
+    "type": "choice",
+    "options": [
+      "A. 重言式",
+      "B. 矛盾式",
+      "C. 可满足式但非重言式",
+      "D. 不可满足式"
+    ],
+    "answer": "A",
+    "explanation": "p→q与¬p∨q等值，所以↔恒真，故为重言式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "重言式、矛盾式、可满足式",
+    "src": "ai",
+    "id": "q-02324-015"
+  },
+  {
+    "question": "写出命题公式 p∨¬p 的类型（重言式/矛盾式/可满足式）。",
+    "type": "fill",
+    "text": "p∨¬p 是___",
+    "blanks": [
+      "重言式"
+    ],
+    "explanation": "对任意p，p∨¬p恒真，因此是重言式（也是可满足式）。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "重言式、矛盾式、可满足式",
+    "src": "ai",
+    "id": "q-02324-016"
+  },
+  {
+    "question": "判断公式 (p∧¬p) 是哪种类型？",
+    "type": "choice",
+    "options": [
+      "A. 重言式",
+      "B. 矛盾式",
+      "C. 可满足式",
+      "D. 既非重言式也非矛盾式"
+    ],
+    "answer": "B",
+    "explanation": "p∧¬p恒假，是矛盾式（永假式）。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "重言式、矛盾式、可满足式",
+    "src": "ai",
+    "id": "q-02324-017"
+  },
+  {
+    "question": "设公式A在真值表中所有指派下取值如下表，判断A的类型。\n指派1:1，指派2:0，指派3:1，指派4:0",
+    "type": "calculate",
+    "formula": "有真值1也有真值0，非全1全0",
+    "steps": [
+      "观察真值有1有0",
+      "因此不是重言式也不是矛盾式，但至少有一组指派为真，所以是可满足式"
+    ],
+    "answer": "可满足式",
+    "answerAliases": [
+      "可满足式",
+      "satisfiable"
+    ],
+    "explanation": "只要存在赋值使公式为真，就是可满足式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "重言式、矛盾式、可满足式",
+    "src": "ai",
+    "id": "q-02324-018"
+  },
+  {
+    "question": "下列关于命题公式分类的说法，错误的是（ ）",
+    "type": "choice",
+    "options": [
+      "A. 重言式一定是可满足式",
+      "B. 矛盾式不是可满足式",
+      "C. 可满足式一定是重言式",
+      "D. 重言式在所有指派下为真"
+    ],
+    "answer": "C",
+    "explanation": "可满足式只是至少有一组指派为真，不一定是所有指派为真，因此不一定重言式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "重言式、矛盾式、可满足式",
+    "src": "ai",
+    "id": "q-02324-019"
+  },
+  {
+    "question": "证明等值式：¬(p∨q) ⇔ ¬p∧¬q",
+    "type": "proof",
+    "points": [
+      {
+        "point": "列出p,q所有指派下的¬(p∨q)与¬p∧¬q真值相同",
+        "synonyms": [
+          "真值表",
+          "对所有指派比较",
+          "真值相同"
+        ]
+      },
+      {
+        "point": "得出两公式等值",
+        "synonyms": [
+          "等值",
+          "等价",
+          "⇔"
+        ]
+      }
+    ],
+    "referenceAnswer": "利用真值表法：列出p,q的4种指派，分别计算¬(p∨q)和¬p∧¬q的真值，发现两者完全相同，因此¬(p∨q)⇔¬p∧¬q。",
+    "passThreshold": 2,
+    "explanation": "这是摩根律，用真值表可验证。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值式",
+    "src": "ai",
+    "id": "q-02324-020"
+  },
+  {
+    "question": "设A、B为命题公式，若A↔B为重言式，则称A与B__。",
+    "type": "fill",
+    "text": "___",
+    "blanks": [
+      "等值"
+    ],
+    "explanation": "A↔B恒真时，称A与B等值，记作A⇔B。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值式",
+    "src": "ai",
+    "id": "q-02324-021"
+  },
+  {
+    "question": "证明等值式：p→q ⇔ ¬q→¬p",
+    "type": "proof",
+    "points": [
+      {
+        "point": "用等值演算或真值表证明两者真值相同",
+        "synonyms": [
+          "真值表",
+          "等值演算",
+          "变换"
+        ]
+      },
+      {
+        "point": "得出结论",
+        "synonyms": [
+          "等值",
+          "等价",
+          "⇔"
+        ]
+      }
+    ],
+    "referenceAnswer": "可以用等值演算：¬q→¬p ⇔ q∨¬p ⇔ ¬p∨q ⇔ p→q，所以p→q⇔¬q→¬p。",
+    "passThreshold": 2,
+    "explanation": "这是逆否命题等价原理。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值式",
+    "src": "ai",
+    "id": "q-02324-022"
+  },
+  {
+    "question": "下列等值式中，正确的是（ ）",
+    "type": "choice",
+    "options": [
+      "A. p∧q ⇔ p∨q",
+      "B. ¬(p∧q) ⇔ ¬p∨¬q",
+      "C. p→q ⇔ ¬p→¬q",
+      "D. p↔q ⇔ p→q"
+    ],
+    "answer": "B",
+    "explanation": "B是摩根律；C是逆否命题错误；A、D显然不等值。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值式",
+    "src": "ai",
+    "id": "q-02324-023"
+  },
+  {
+    "question": "利用等值演算证明 p∨(q∧r) ⇔ (p∨q)∧(p∨r)。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "说明使用分配律",
+        "synonyms": [
+          "分配律",
+          "分配"
+        ]
+      },
+      {
+        "point": "从一侧推出另一侧",
+        "synonyms": [
+          "推导",
+          "演算",
+          "变换"
+        ]
+      }
+    ],
+    "referenceAnswer": "由分配律，p∨(q∧r) ⇔ (p∨q)∧(p∨r)，因此等值成立。",
+    "passThreshold": 2,
+    "explanation": "这是析取对合取的分配律。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值式",
+    "src": "ai",
+    "id": "q-02324-024"
+  },
+  {
+    "question": "下列等值式中，哪个是德摩根律的正确形式？",
+    "type": "choice",
+    "options": [
+      "¬(A∧B) ⇔ ¬A∨¬B",
+      "¬(A∨B) ⇔ ¬A∨¬B",
+      "¬(A∧B) ⇔ ¬A∧¬B",
+      "¬A∧¬B ⇔ ¬(A∨B)"
+    ],
+    "answer": "A",
+    "explanation": "德摩根律规定否定号向内分配时∧与∨互换：¬(A∧B)⇔¬A∨¬B，¬(A∨B)⇔¬A∧¬B。选项A符合第一条，选项B、C、D的联结词位置或符号均不符合。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "德摩根律",
+    "src": "ai",
+    "id": "q-02324-025"
+  },
+  {
+    "question": "等值式 ¬(A∨B) 通过德摩根律可化为（　）。",
+    "type": "fill",
+    "text": "¬(A∨B) ⇔ ___∧___",
+    "blanks": [
+      "¬A",
+      "¬B"
+    ],
+    "explanation": "根据德摩根律，否定号分配到括号内时∨变为∧，得到¬A∧¬B。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "德摩根律",
+    "src": "ai",
+    "id": "q-02324-026"
+  },
+  {
+    "question": "利用德摩根律化简公式 ¬(A∧¬B) 的结果是（　）。",
+    "type": "fill",
+    "text": "¬(A∧¬B) ⇔ ___∨___",
+    "blanks": [
+      "¬A",
+      "B"
+    ],
+    "explanation": "应用德摩根律：¬(A∧¬B) ⇔ ¬A∨¬(¬B)，再根据双重否定律¬(¬B)⇔B，得到¬A∨B。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "德摩根律",
+    "src": "ai",
+    "id": "q-02324-027"
+  },
+  {
+    "question": "请计算：利用等值演算判断公式 (A∧B)∨(A∧¬B) 的化简结果。",
+    "type": "calculate",
+    "formula": "(A∧B)∨(A∧¬B) 化简",
+    "steps": [
+      "应用分配律（逆用）：A∧(B∨¬B)",
+      "应用排中律：B∨¬B ⇔ 1",
+      "应用同一律：A∧1 ⇔ A"
+    ],
+    "answer": "A",
+    "answerAliases": [
+      "A",
+      "公式A",
+      "A本身"
+    ],
+    "explanation": "先逆用分配律提取公因子A，得到A∧(B∨¬B)，其中B∨¬B为永真，再根据同一律简化为A。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值演算",
+    "src": "ai",
+    "id": "q-02324-028"
+  },
+  {
+    "question": "使用等值演算化简公式 (A→B)∧A 的结果是（　）。",
+    "type": "calculate",
+    "formula": "(A→B)∧A 化简",
+    "steps": [
+      "应用蕴涵等值式：A→B ⇔ ¬A∨B",
+      "得到 (¬A∨B)∧A",
+      "应用分配律： (¬A∧A)∨(B∧A)",
+      "应用矛盾律：¬A∧A ⇔ 0",
+      "应用零律：0∨(B∧A) ⇔ B∧A"
+    ],
+    "answer": "A∧B",
+    "answerAliases": [
+      "A∧B",
+      "B∧A",
+      "A AND B"
+    ],
+    "explanation": "先将蕴涵转化为¬A∨B，再与A合取并分配，¬A∧A为矛盾式（0），0∨(B∧A)等于B∧A，即A∧B。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值演算",
+    "src": "ai",
+    "id": "q-02324-029"
+  },
+  {
+    "question": "证明等值式：A∨(¬A∧B) ⇔ A∨B。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "应用分配律",
+        "synonyms": [
+          "使用分配律",
+          "分配律展开"
+        ]
+      },
+      {
+        "point": "应用排中律",
+        "synonyms": [
+          "排中律",
+          "A∨¬A⇔1"
+        ]
+      },
+      {
+        "point": "应用同一律",
+        "synonyms": [
+          "同一律",
+          "1∧B⇔B"
+        ]
+      }
+    ],
+    "referenceAnswer": "A∨(¬A∧B) ⇔ (A∨¬A)∧(A∨B) （分配律） ⇔ 1∧(A∨B) （排中律） ⇔ A∨B （同一律）",
+    "passThreshold": 2,
+    "explanation": "核心是利用分配律将A∨(¬A∧B)展开为(A∨¬A)∧(A∨B)，然后利用排中律A∨¬A为真，最后用同一律化简得到A∨B。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值演算",
+    "src": "ai",
+    "id": "q-02324-030"
+  },
+  {
+    "question": "下列等值式中，哪个是吸收律的正确形式？",
+    "type": "choice",
+    "options": [
+      "A∨(A∧B) ⇔ A",
+      "A∧(A∨B) ⇔ B",
+      "A∨(B∧C) ⇔ (A∨B)∧(A∨C)",
+      "¬(A∧B) ⇔ ¬A∨¬B"
+    ],
+    "answer": "A",
+    "explanation": "吸收律包括A∨(A∧B)⇔A和A∧(A∨B)⇔A。选项B的结果应为A而非B；选项C是分配律；选项D是德摩根律。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "常用命题定律",
+    "src": "ai",
+    "id": "q-02324-031"
+  },
+  {
+    "question": "根据常用命题定律，等值式 A∨(A∧B) 可化简为（　）。",
+    "type": "fill",
+    "text": "A∨(A∧B) ⇔ ___",
+    "blanks": [
+      "A"
+    ],
+    "explanation": "这是吸收律的直接应用：A∨(A∧B)⇔A，因为A吸收A∧B。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "常用命题定律",
+    "src": "ai",
+    "id": "q-02324-032"
+  },
+  {
+    "question": "利用常用命题定律化简 (A∨B)∨C 的结果是（　）。",
+    "type": "fill",
+    "text": "(A∨B)∨C ⇔ ___∨(___∨___)",
+    "blanks": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation": "根据结合律，(A∨B)∨C ⇔ A∨(B∨C)，括号移动但公式形式不变。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "常用命题定律",
+    "src": "ai",
+    "id": "q-02324-033"
+  },
+  {
+    "question": "请计算：判断公式 (A∧B)∨(A∧C) 是否与 A∧(B∨C) 等值。",
+    "type": "calculate",
+    "formula": "验证 (A∧B)∨(A∧C) ⇔ A∧(B∨C)",
+    "steps": [
+      "从左边出发，逆用分配律提取公因子A",
+      "得到 A∧(B∨C)",
+      "两者等值，故公式成立"
+    ],
+    "answer": "等值",
+    "answerAliases": [
+      "等值",
+      "是等值的",
+      "两者等值"
+    ],
+    "explanation": "分配律（逆用）直接说明A∧(B∨C) ⇔ (A∧B)∨(A∧C)，所以等值式成立。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "常用命题定律",
+    "src": "ai",
+    "id": "q-02324-034"
+  },
+  {
+    "question": "证明分配律：A∨(B∧C) ⇔ (A∨B)∧(A∨C)。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "构造真值表或进行等值演算",
+        "synonyms": [
+          "列举所有真值指派",
+          "通过真值表验证"
+        ]
+      },
+      {
+        "point": "比较两边的真值列",
+        "synonyms": [
+          "验证真值相同",
+          "逐行对比"
+        ]
+      },
+      {
+        "point": "得出结论两式等值",
+        "synonyms": [
+          "所以等值成立",
+          "因此原式成立"
+        ]
+      }
+    ],
+    "referenceAnswer": "列出A、B、C所有8种取值，计算A∨(B∧C)与(A∨B)∧(A∨C)的真值，每一行相同，故两式等值。",
+    "passThreshold": 2,
+    "explanation": "分配律是基本等值式，可通过真值表或等值演算证明。这里要求验证所有可能的真值指派，并比较结果列。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "常用命题定律",
+    "src": "ai",
+    "id": "q-02324-035"
+  },
+  {
+    "question": "下列等值式中，哪个是双重否定律？",
+    "type": "choice",
+    "options": [
+      "¬¬A ⇔ A",
+      "A∨B ⇔ B∨A",
+      "A∧(B∨C) ⇔ (A∧B)∨(A∧C)",
+      "¬(A∨B) ⇔ ¬A∧¬B"
+    ],
+    "answer": "A",
+    "explanation": "双重否定律就是¬¬A⇔A；选项B是交换律；选项C是分配律；选项D是德摩根律。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "基本等值式",
+    "src": "ai",
+    "id": "q-02324-036"
+  },
+  {
+    "question": "根据基本等值式，公式 ¬¬A 可化简为（　）。",
+    "type": "fill",
+    "text": "¬¬A ⇔ ___",
+    "blanks": [
+      "A"
+    ],
+    "explanation": "双重否定律：否定两次等于原公式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "基本等值式",
+    "src": "ai",
+    "id": "q-02324-037"
+  },
+  {
+    "question": "利用基本等值式化简 A∨(A∧B) 的结果是（　）。",
+    "type": "fill",
+    "text": "A∨(A∧B) ⇔ ___",
+    "blanks": [
+      "A"
+    ],
+    "explanation": "吸收律：A∨(A∧B)⇔A，这是基本等值式中的吸收律。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "基本等值式",
+    "src": "ai",
+    "id": "q-02324-038"
+  },
+  {
+    "question": "请计算：利用等值演算化简公式 ¬(A∧B)∧(A∨B)。",
+    "type": "calculate",
+    "formula": "¬(A∧B)∧(A∨B) 化简",
+    "steps": [
+      "应用德摩根律：¬(A∧B) ⇔ ¬A∨¬B",
+      "得到 (¬A∨¬B)∧(A∨B)",
+      "应用分配律展开： ((¬A∨¬B)∧A)∨((¬A∨¬B)∧B)",
+      "继续分配并化简： (¬A∧A)∨(¬B∧A)∨(¬A∧B)∨(¬B∧B)",
+      "矛盾式归零：0∨(¬B∧A)∨(¬A∧B)∨0",
+      "得到 (¬B∧A)∨(¬A∧B)，即异或"
+    ],
+    "answer": "(¬A∧B)∨(A∧¬B)",
+    "answerAliases": [
+      "(¬A∧B)∨(A∧¬B)",
+      "A⊕B",
+      "A异或B"
+    ],
+    "explanation": "先用德摩根律处理¬(A∧B)，再通过分配律展开，整理后剩余两项(¬B∧A)∨(¬A∧B)，即异或逻辑。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "等值演算",
+    "src": "ai",
+    "id": "q-02324-039"
+  },
+  {
+    "question": "证明等值式：¬(A∨B) ⇔ ¬A∧¬B。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "写出德摩根律的标准形式",
+        "synonyms": [
+          "应用德摩根律",
+          "使用德摩根律"
+        ]
+      },
+      {
+        "point": "将否定号分配到括号内",
+        "synonyms": [
+          "分配否定号",
+          "内层变量取反"
+        ]
+      },
+      {
+        "point": "注意联结词从∨变为∧",
+        "synonyms": [
+          "∨变为∧",
+          "联结词交换"
+        ]
+      }
+    ],
+    "referenceAnswer": "根据德摩根律，¬(A∨B) ⇔ ¬A∧¬B。即否定号分配到括号内，∨变为∧，每个变元取反。",
+    "passThreshold": 1,
+    "explanation": "这是德摩根律的直接应用，需要能够识别并写出标准形式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "德摩根律",
+    "src": "ai",
+    "id": "q-02324-040"
+  },
+  {
+    "question": "下列哪个表达式是对命题变元P的正确理解？",
+    "type": "choice",
+    "options": [
+      "P是一个具体命题，有固定真值",
+      "P是一个占位符，指派后才取确定真值",
+      "P本身没有真假，不能参与逻辑运算",
+      "P只能取真值1，不能取0"
+    ],
+    "answer": "B",
+    "explanation": "命题变元P表示命题的位置，不是具体命题，需要通过指派（代入具体命题）后才确定真值。选项A描述的是命题常项；C和D都不正确。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题变元",
+    "src": "ai",
+    "id": "q-02324-041"
+  },
+  {
+    "question": "命题变元在未指派时，其真值为（　）。",
+    "type": "fill",
+    "text": "命题变元未指派时，不能确定其___。",
+    "blanks": [
+      "真值"
+    ],
+    "explanation": "命题变元是占位符，只有指派了具体命题或真值后才能确定真值。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题变元",
+    "src": "ai",
+    "id": "q-02324-042"
+  },
+  {
+    "question": "设P为命题变元，当P被指派为真时，公式P∧1的真值为（　）。",
+    "type": "fill",
+    "text": "P∧1的真值为___。",
+    "blanks": [
+      "真",
+      "1",
+      "T"
+    ],
+    "explanation": "1表示真，P为真时P∧1为真；若P为假则结果为假；在题目条件下指派为真，所以结果真。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题变元",
+    "src": "ai",
+    "id": "q-02324-043"
+  },
+  {
+    "question": "请计算：已知命题变元P、Q分别指派为真、假，求公式 (P∨Q)∧¬Q 的真值。",
+    "type": "calculate",
+    "formula": "P=1, Q=0 时，求 (P∨Q)∧¬Q 的真值",
+    "steps": [
+      "代入P=1, Q=0",
+      "P∨Q = 1∨0 = 1",
+      "¬Q = ¬0 = 1",
+      "1∧1 = 1"
+    ],
+    "answer": "真",
+    "answerAliases": [
+      "1",
+      "T",
+      "true",
+      "真"
+    ],
+    "explanation": "先算P∨Q为真，再算¬Q为真，两者合取仍为真。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题变元",
+    "src": "ai",
+    "id": "q-02324-044"
+  },
+  {
+    "question": "证明：命题变元P在指派为假时，公式¬P∨Q的真值等于1（任何Q）。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "代入P=0",
+        "synonyms": [
+          "P为假",
+          "P赋假"
+        ]
+      },
+      {
+        "point": "计算¬P=1",
+        "synonyms": [
+          "非P为真",
+          "否定P"
+        ]
+      },
+      {
+        "point": "1∨Q = 1",
+        "synonyms": [
+          "恒真",
+          "包含真"
+        ]
+      }
+    ],
+    "referenceAnswer": "若P指派为假（0），则¬P为真（1），因此¬P∨Q中一个析取项为真，整个析取式真值为真，与Q无关。",
+    "passThreshold": 2,
+    "explanation": "关键在于认识到P为假时¬P为真，而析取式中只要有一项为真整体就为真。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题变元",
+    "src": "ai",
+    "id": "q-02324-045"
+  },
+  {
+    "question": "下列符号串中，哪一个不是合式公式？",
+    "type": "choice",
+    "options": [
+      "A. ¬(P∧Q)",
+      "B. (P→Q)∨R",
+      "C. P∧Q→",
+      "D. (P↔Q)"
+    ],
+    "answer": "C",
+    "explanation": "合式公式必须按递归定义构成，P∧Q→ 中 → 后面缺少公式，不符合定义。选项A、B、D均符合合式公式的构造规则。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题公式（合式公式）",
+    "src": "ai",
+    "id": "q-02324-046"
+  },
+  {
+    "question": "根据合式公式的递归定义，判断下列哪个符号串是合式公式？",
+    "type": "choice",
+    "options": [
+      "A. P∨∧Q",
+      "B. (P→Q",
+      "C. ¬(P∧Q)→R",
+      "D. P→Q→"
+    ],
+    "answer": "C",
+    "explanation": "选项A中∨和∧连续出现，不符合定义；选项B括号不配对；选项D中→后面无公式。选项C符合：¬(P∧Q)是公式，R是公式，所以¬(P∧Q)→R是公式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题公式（合式公式）",
+    "src": "ai",
+    "id": "q-02324-047"
+  },
+  {
+    "question": "设P、Q为命题变元，下列符号串中是合式公式的是（ ）",
+    "type": "choice",
+    "options": [
+      "A. P∨Q∨",
+      "B. (P∧Q)",
+      "C. P→→Q",
+      "D. ¬P∨Q"
+    ],
+    "answer": "D",
+    "explanation": "选项A中∨后无公式；选项B缺少最外层括号，但最外层括号可省略，所以本身可看作合式公式，但此题选项中D更完整地符合定义；选项C中→→连续错误；选项D中¬P是公式，Q是公式，¬P∨Q是公式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题公式（合式公式）",
+    "src": "ai",
+    "id": "q-02324-048"
+  },
+  {
+    "question": "用语法树判断，下列符号串中哪个是合式公式？",
+    "type": "choice",
+    "options": [
+      "A. P→Q∧",
+      "B. (¬P)∨(Q∧R)",
+      "C. P∨∨Q",
+      "D. (P→Q)→(Q)"
+    ],
+    "answer": "B",
+    "explanation": "选项A中∧后无公式；选项C中∨∨连续；选项D中最后一个Q没有运算符，实际(Q)只是Q，但整体构造有误（Q后缺运算符）。选项B中每个部分都符合递归定义，语法树可正常构建。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题公式（合式公式）",
+    "src": "ai",
+    "id": "q-02324-049"
+  },
+  {
+    "question": "合式公式中，最外层括号可以省略，下列哪个书写是合式公式的正确省略形式？",
+    "type": "choice",
+    "options": [
+      "A. P→Q→R",
+      "B. ¬P∨Q",
+      "C. P∧∨Q",
+      "D. (P→Q)∧R"
+    ],
+    "answer": "B",
+    "explanation": "合式公式最外层括号可省略，¬P∨Q是(¬P∨Q)的省略形式，仍是合式公式。选项A中P→Q→R有歧义，需加括号；选项C运算符连续；选项D中括号非最外层，不可省略。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "命题公式（合式公式）",
+    "src": "ai",
+    "id": "q-02324-050"
+  },
+  {
+    "question": "利用蕴含等值式，将 P→Q 化为析取式为______。",
+    "type": "fill",
+    "text": "利用蕴含等值式，将 P→Q 化为析取式为 ___。",
+    "blanks": [
+      "¬P∨Q"
+    ],
+    "explanation": "蕴含等值式：A→B ⇔ ¬A∨B，所以P→Q ⇔ ¬P∨Q。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含等值式",
+    "src": "ai",
+    "id": "q-02324-051"
+  },
+  {
+    "question": "利用蕴含等值式，将 ¬Q→¬P 等价变换为______。",
+    "type": "fill",
+    "text": "利用蕴含等值式，将 ¬Q→¬P 等价变换为 ___。",
+    "blanks": [
+      "P→Q"
+    ],
+    "explanation": "逆否律：¬B→¬A ⇔ A→B，所以¬Q→¬P ⇔ P→Q。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含等值式",
+    "src": "ai",
+    "id": "q-02324-052"
+  },
+  {
+    "question": "蕴含等值式 A→B ⇔ ______，常用于把蕴涵式化为析取式。",
+    "type": "fill",
+    "text": "蕴含等值式 A→B ⇔ ___，常用于把蕴涵式化为析取式。",
+    "blanks": [
+      "¬A∨B"
+    ],
+    "explanation": "蕴含消去：A→B ⇔ ¬A∨B，这是基本蕴含等值式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含等值式",
+    "src": "ai",
+    "id": "q-02324-053"
+  },
+  {
+    "question": "化简律的推理定律是：P∧Q ⇒ ______。",
+    "type": "fill",
+    "text": "化简律的推理定律是：P∧Q ⇒ ___。",
+    "blanks": [
+      "P 或 Q"
+    ],
+    "explanation": "化简律：P∧Q ⇒ P，且P∧Q ⇒ Q，所以填P或Q。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-054"
+  },
+  {
+    "question": "假言推理的推理定律形式为：P∧(P→Q) ⇒ ______。",
+    "type": "fill",
+    "text": "假言推理的推理定律形式为：P∧(P→Q) ⇒ ___。",
+    "blanks": [
+      "Q"
+    ],
+    "explanation": "假言推理：若P为真且P→Q为真，则Q为真。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-055"
+  },
+  {
+    "question": "附加律的推理定律是：P ⇒ ______。",
+    "type": "fill",
+    "text": "附加律的推理定律是：P ⇒ ___。",
+    "blanks": [
+      "P∨Q"
+    ],
+    "explanation": "附加律：P ⇒ P∨Q，即如果P为真，则P∨Q为真。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-056"
+  },
+  {
+    "question": "化简下列命题公式：计算 (P∧Q)∨(P∧¬Q) 的化简结果。",
+    "type": "calculate",
+    "formula": "(P∧Q)∨(P∧¬Q)",
+    "steps": [
+      "应用分配律：P∧(Q∨¬Q)",
+      "Q∨¬Q ⇔ T（排中律）",
+      "P∧T ⇔ P"
+    ],
+    "answer": "P",
+    "answerAliases": [
+      "P"
+    ],
+    "explanation": "利用分配律将P提取出来，得到P∧(Q∨¬Q)，由于Q∨¬Q恒为真，所以结果为P。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "范式与主范式",
+    "src": "ai",
+    "id": "q-02324-057"
+  },
+  {
+    "question": "求公式 (P→Q) 的主析取范式（用变元P、Q表示）。",
+    "type": "calculate",
+    "formula": "(P→Q)",
+    "steps": [
+      "P→Q ⇔ ¬P∨Q",
+      "对¬P∨Q补充缺失变元：¬P∧(Q∨¬Q) ∨ Q∧(P∨¬P)",
+      "化简：(¬P∧Q)∨(¬P∧¬Q)∨(P∧Q)∨(¬P∧Q)",
+      "合并相同小项：(¬P∧¬Q)∨(¬P∧Q)∨(P∧Q)"
+    ],
+    "answer": "(¬P∧¬Q)∨(¬P∧Q)∨(P∧Q)",
+    "answerAliases": [
+      "(¬P∧¬Q)∨(¬P∧Q)∨(P∧Q)",
+      "m0∨m1∨m3"
+    ],
+    "explanation": "首先化为¬P∨Q，然后补齐变元。¬P∨Q ⇔ ¬P∧(Q∨¬Q) ∨ Q∧(P∨¬P)，化简后合并相同小项得到主析取范式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "范式与主范式",
+    "src": "ai",
+    "id": "q-02324-058"
+  },
+  {
+    "question": "求公式 (P∧Q)∨(¬P∧Q) 的主合取范式。",
+    "type": "calculate",
+    "formula": "(P∧Q)∨(¬P∧Q)",
+    "steps": [
+      "应用分配律：Q∧(P∨¬P)",
+      "P∨¬P ⇔ T",
+      "Q∧T ⇔ Q",
+      "Q的主合取范式为 Q∨(P∧¬P)，即 (Q∨P)∧(Q∨¬P)"
+    ],
+    "answer": "(Q∨P)∧(Q∨¬P)",
+    "answerAliases": [
+      "(Q∨P)∧(Q∨¬P)",
+      "M0∧M2"
+    ],
+    "explanation": "先化简得Q，然后Q ⇔ (Q∨P)∧(Q∨¬P)，即主合取范式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "范式与主范式",
+    "src": "ai",
+    "id": "q-02324-059"
+  },
+  {
+    "question": "将公式 (¬A)∨(B∧C) 化为析取范式，并判断是否为析取范式。",
+    "type": "calculate",
+    "formula": "(¬A)∨(B∧C)",
+    "steps": [
+      "识别简单合取式：¬A是简单合取式，B∧C是简单合取式",
+      "析取范式定义：有限个简单合取式之析取",
+      "所以原式已经是析取范式"
+    ],
+    "answer": "已是析取范式",
+    "answerAliases": [
+      "已是析取范式",
+      "¬A∨(B∧C)"
+    ],
+    "explanation": "因为¬A和(B∧C)都是简单合取式，所以(¬A)∨(B∧C)是析取范式。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "范式与主范式",
+    "src": "ai",
+    "id": "q-02324-060"
+  },
+  {
+    "question": "求公式 (P→Q)∧(Q→P) 的化简结果。",
+    "type": "calculate",
+    "formula": "(P→Q)∧(Q→P)",
+    "steps": [
+      "P→Q ⇔ ¬P∨Q",
+      "Q→P ⇔ ¬Q∨P",
+      "原式 = (¬P∨Q)∧(¬Q∨P)",
+      "展开：¬P∧¬Q ∨ ¬P∧P ∨ Q∧¬Q ∨ Q∧P",
+      "化简：¬P∧¬Q ∨ Q∧P",
+      "即 P↔Q"
+    ],
+    "answer": "P↔Q",
+    "answerAliases": [
+      "P↔Q",
+      "(P∧Q)∨(¬P∧¬Q)"
+    ],
+    "explanation": "利用蕴含等值式及分配律展开，化简后得到P↔Q。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含等值式",
+    "src": "ai",
+    "id": "q-02324-061"
+  },
+  {
+    "question": "证明：P∨(Q∧R) ⇔ (P∨Q)∧(P∨R)。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "使用分配律展开",
+        "synonyms": [
+          "分配律",
+          "展开"
+        ]
+      },
+      {
+        "point": "证明两边等值",
+        "synonyms": [
+          "等值",
+          "⇔"
+        ]
+      }
+    ],
+    "referenceAnswer": "证明：由分配律，P∨(Q∧R) ⇔ (P∨Q)∧(P∨R)，所以等式成立。",
+    "passThreshold": 2,
+    "explanation": "本题直接由分配律得到，是最基本的等值证明。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含等值式",
+    "src": "ai",
+    "id": "q-02324-062"
+  },
+  {
+    "question": "证明：P→Q 与 ¬P∨Q 等值（蕴含等值式）。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "使用蕴含消去",
+        "synonyms": [
+          "蕴含等值式",
+          "A→B⇔¬A∨B"
+        ]
+      },
+      {
+        "point": "得到结论",
+        "synonyms": [
+          "结论",
+          "等值"
+        ]
+      }
+    ],
+    "referenceAnswer": "证明：由蕴含等值式A→B ⇔ ¬A∨B，令A=P，B=Q，得P→Q ⇔ ¬P∨Q。",
+    "passThreshold": 2,
+    "explanation": "直接应用蕴含消去即可。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "蕴含等值式",
+    "src": "ai",
+    "id": "q-02324-063"
+  },
+  {
+    "question": "证明：若P→Q和P为真，则Q为真（假言推理）。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "引用前提P→Q和P",
+        "synonyms": [
+          "前提",
+          "P→Q",
+          "P"
+        ]
+      },
+      {
+        "point": "应用假言推理规则",
+        "synonyms": [
+          "假言推理",
+          "推理规则"
+        ]
+      },
+      {
+        "point": "得出Q为真",
+        "synonyms": [
+          "Q",
+          "结论"
+        ]
+      }
+    ],
+    "referenceAnswer": "证明：由前提P→Q和P，根据假言推理规则（P∧(P→Q)⇒Q），可得Q为真。",
+    "passThreshold": 3,
+    "explanation": "假言推理是基本推理规则，直接应用即可。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-064"
+  },
+  {
+    "question": "证明：¬P∨Q是P→Q的对偶式。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "写出P→Q的等值式¬P∨Q",
+        "synonyms": [
+          "蕴含等值式",
+          "等值"
+        ]
+      },
+      {
+        "point": "求对偶式：把∨换成∧得到¬P∧Q",
+        "synonyms": [
+          "对偶式",
+          "互换"
+        ]
+      }
+    ],
+    "referenceAnswer": "证明：P→Q ⇔ ¬P∨Q，对偶式为¬P∧Q，所以¬P∨Q的对偶式是¬P∧Q。",
+    "passThreshold": 2,
+    "explanation": "对偶式定义：∨与∧互换，T与F互换，¬P∨Q的对偶式是¬P∧Q。这里题目可能表述有误，通常说对偶式是¬P∧Q。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "对偶式与对偶定理",
+    "src": "ai",
+    "id": "q-02324-065"
+  },
+  {
+    "question": "在推理理论中，若推理形式 H₁∧H₂∧…∧Hₙ ⇒ C 是有效的，则下列哪个命题公式必为重言式？",
+    "explanation": "有效推理的定义就是前提的合取蕴含结论的公式为重言式，即 (H₁∧H₂∧…∧Hₙ)→C 是重言式。",
+    "type": "choice",
+    "options": [
+      "H₁∧H₂∧…∧Hₙ → C",
+      "H₁∧H₂∧…∧Hₙ ↔ C",
+      "C → H₁∧H₂∧…∧Hₙ",
+      "H₁∨H₂∨…∨Hₙ → C"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "有效推理",
+    "src": "ai",
+    "id": "q-02324-066"
+  },
+  {
+    "question": "判断下列推理是否有效：前提：如果明天不下雨，那么我们去公园；明天不下雨。结论：我们去公园。",
+    "explanation": "设 P：明天不下雨，Q：我们去公园。前提为 P→Q 和 P，根据假言推理（分离规则），从 P 和 P→Q 可推出 Q，因此推理有效。",
+    "type": "choice",
+    "options": [
+      "有效",
+      "无效",
+      "无法判断",
+      "以上都不对"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "有效推理",
+    "src": "ai",
+    "id": "q-02324-067"
+  },
+  {
+    "question": "已知前提 A→B 和 ¬B 为真，则根据拒取式规则可以推出的结论是___。",
+    "explanation": "拒取式规则：A→B，¬B ⇒ ¬A。因此由 A→B 和 ¬B 可推出 ¬A。",
+    "type": "fill",
+    "text": "已知前提 A→B 和 ¬B 为真，则根据拒取式规则可以推出的结论是___。",
+    "blanks": [
+      "¬A"
+    ],
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "有效推理",
+    "src": "ai",
+    "id": "q-02324-068"
+  },
+  {
+    "question": "设 H₁、H₂、H₃ 为前提，C 为结论。若推理有效，则下列说法正确的是：",
+    "explanation": "有效推理的含义是：当所有前提为真时，结论必为真。注意不是所有情况，而是前提为真时结论为真。",
+    "type": "choice",
+    "options": [
+      "当所有前提为真时，结论必为真",
+      "当结论为真时，所有前提必为真",
+      "只要结论为真，前提不需要考虑",
+      "当某个前提为真时，结论必为真"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "有效推理",
+    "src": "ai",
+    "id": "q-02324-069"
+  },
+  {
+    "question": "证明：前提 P→Q，Q→R，P 可推出 R。",
+    "explanation": "利用假言三段论：P→Q 和 Q→R 推出 P→R，再用分离规则（P 与 P→R）推出 R。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "由 P→Q 和 Q→R 使用假言三段论得 P→R",
+        "synonyms": [
+          "P→Q, Q→R ⇒ P→R",
+          "用假言三段论推出 P→R，由 P→Q 和 Q→R"
+        ]
+      },
+      {
+        "point": "由 P 和 P→R 使用假言推理得 R",
+        "synonyms": [
+          "P 且 P→R ⇒ R，由分离规则得 R",
+          "P 和 P→R 推出 R"
+        ]
+      }
+    ],
+    "referenceAnswer": "1. P→Q （前提）\n2. Q→R （前提）\n3. P→R （由1,2假言三段论）\n4. P （前提）\n5. R （由3,4假言推理）",
+    "passThreshold": 2,
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "有效推理",
+    "src": "ai",
+    "id": "q-02324-070"
+  },
+  {
+    "question": "在推理中，若已知公式 A∧B 为真，则根据化简规则可以推出___。",
+    "explanation": "化简规则：A∧B ⇒ A。从合取式可以推出任一合取项。",
+    "type": "fill",
+    "text": "在推理中，若已知公式 A∧B 为真，则根据化简规则可以推出___。",
+    "blanks": [
+      "A"
+    ],
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理规则",
+    "src": "ai",
+    "id": "q-02324-071"
+  },
+  {
+    "question": "下列推理规则中，附加规则的正确形式是：",
+    "explanation": "附加规则：A ⇒ A∨B。即从 A 可以推出 A∨B。",
+    "type": "choice",
+    "options": [
+      "A ⇒ A∨B",
+      "A∨B ⇒ A",
+      "A∧B ⇒ A",
+      "A→B ⇒ ¬A"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理规则",
+    "src": "ai",
+    "id": "q-02324-072"
+  },
+  {
+    "question": "在推理证明中，P 规则允许___，T 规则允许___。",
+    "explanation": "P 规则（前提规则）允许随时引入前提；T 规则（结论规则）允许把已经推出的结论作为后续推理的前提。",
+    "type": "fill",
+    "text": "在推理证明中，P 规则允许___，T 规则允许___。",
+    "blanks": [
+      "随时引入前提",
+      "把已推出的结论作为前提"
+    ],
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理规则",
+    "src": "ai",
+    "id": "q-02324-073"
+  },
+  {
+    "question": "已知前提 A→B 和 ¬B，根据拒取式规则可推出的结论是：",
+    "explanation": "拒取式：A→B，¬B ⇒ ¬A。所以结论是 ¬A。",
+    "type": "choice",
+    "options": [
+      "¬A",
+      "A",
+      "B",
+      "¬B"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理规则",
+    "src": "ai",
+    "id": "q-02324-074"
+  },
+  {
+    "question": "证明：前提 A→B，B→C，¬C 可推出 ¬A。",
+    "explanation": "先由假言三段论得 A→C，再用拒取式由 ¬C 得 ¬A。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "由 A→B 和 B→C 使用假言三段论得 A→C",
+        "synonyms": [
+          "A→B, B→C ⇒ A→C",
+          "假言三段论推出 A→C"
+        ]
+      },
+      {
+        "point": "由 A→C 和 ¬C 使用拒取式得 ¬A",
+        "synonyms": [
+          "¬C 和 A→C 推出 ¬A",
+          "拒取式得 ¬A"
+        ]
+      }
+    ],
+    "referenceAnswer": "1. A→B （前提）\n2. B→C （前提）\n3. A→C （由1,2假言三段论）\n4. ¬C （前提）\n5. ¬A （由3,4拒取式）",
+    "passThreshold": 2,
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理规则",
+    "src": "ai",
+    "id": "q-02324-075"
+  },
+  {
+    "question": "下列哪个式子是重言蕴含式（推理定律）？",
+    "explanation": "A→B 与 B→C 的前提蕴含 A→C 是假言三段论，是重言蕴含式。其余选项不是常见推理定律。",
+    "type": "choice",
+    "options": [
+      "(A→B)∧(B→C) ⇒ A→C",
+      "A→B ⇒ B→A",
+      "A∧B ⇒ A∨B",
+      "A∨B ⇒ A∧B"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-076"
+  },
+  {
+    "question": "推理定律中，前提 A∨B 和 ¬A 可以推出___。",
+    "explanation": "析取三段论：A∨B，¬A ⇒ B。这是常用的推理定律。",
+    "type": "fill",
+    "text": "推理定律中，前提 A∨B 和 ¬A 可以推出___。",
+    "blanks": [
+      "B"
+    ],
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-077"
+  },
+  {
+    "question": "重言蕴含式 A ⇒ B 表示的含义是：",
+    "explanation": "A⇒B 表示 A→B 是重言式，即当 A 为真时 B 必为真。这是蕴含的方向性。",
+    "type": "choice",
+    "options": [
+      "当 A 为真时 B 必为真",
+      "当 B 为真时 A 必为真",
+      "A 和 B 等值",
+      "A 为假时 B 必为假"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-078"
+  },
+  {
+    "question": "用真值表验证 (A→B)∧(B→C) ⇒ (A→C) 是否是重言蕴含式。",
+    "explanation": "此式是假言三段论，是永真蕴含式。真值表所有赋值下，当前件为真时后件必为真。",
+    "type": "calculate",
+    "formula": "(A→B)∧(B→C) → (A→C)",
+    "steps": [
+      "列出 A、B、C 的所有真值组合（8种）",
+      "计算 A→B 和 B→C 的值",
+      "计算 (A→B)∧(B→C) 的值",
+      "计算 A→C 的值",
+      "验证合取蕴含条件式恒为真"
+    ],
+    "answer": "该公式恒为真，是重言蕴含式，验证成立。",
+    "answerAliases": [
+      "重言式",
+      "是重言蕴含式",
+      "恒真"
+    ],
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-079"
+  },
+  {
+    "question": "判断下列公式是否为重言蕴含式：A∧B ⇒ A。",
+    "explanation": "化简规则，A∧B 为真时 A 必为真，因此 A∧B→A 是重言式。",
+    "type": "choice",
+    "options": [
+      "是",
+      "不是",
+      "无法确定",
+      "仅在 A 为真时成立"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "推理定律",
+    "src": "ai",
+    "id": "q-02324-080"
+  },
+  {
+    "question": "用归谬法证明：前提 P→Q，Q→R，¬R 可推出 ¬P。",
+    "explanation": "假设结论 ¬P 为假，即假设 P 为真。由 P 和 P→Q 得 Q，由 Q 和 Q→R 得 R，这与前提 ¬R 矛盾。因此原推理有效。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "假设 ¬P 为假，即引入假设 P",
+        "synonyms": [
+          "假设 P 为真",
+          "否定结论，假设 P"
+        ]
+      },
+      {
+        "point": "由 P 和 P→Q 推出 Q",
+        "synonyms": [
+          "P→Q 和 P 得 Q",
+          "假言推理得 Q"
+        ]
+      },
+      {
+        "point": "由 Q 和 Q→R 推出 R，与 ¬R 矛盾",
+        "synonyms": [
+          "Q→R 和 Q 得 R，矛盾",
+          "推出 R 与 ¬R 矛盾"
+        ]
+      }
+    ],
+    "referenceAnswer": "假设 ¬P 为假，即 P 为真。由 P 和 P→Q 得 Q；由 Q 和 Q→R 得 R；但前提有 ¬R，矛盾。故原推理有效，即 ¬P 成立。",
+    "passThreshold": 2,
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "归谬法",
+    "src": "ai",
+    "id": "q-02324-081"
+  },
+  {
+    "question": "归谬法的基本思想是：把结论的___作为临时附加前提，推出矛盾式，从而证明原推理有效。",
+    "explanation": "归谬法（反证法）是将结论的否定作为附加前提，若能推出矛盾（如 A∧¬A），则原推理成立。",
+    "type": "fill",
+    "text": "归谬法的基本思想是：把结论的___作为临时附加前提，推出矛盾式，从而证明原推理有效。",
+    "blanks": [
+      "否定"
+    ],
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "归谬法",
+    "src": "ai",
+    "id": "q-02324-082"
+  },
+  {
+    "question": "使用归谬法时，若推出了矛盾式 A∧¬A，则说明：",
+    "explanation": "归谬法原理：附加结论的否定后推出矛盾，说明原结论的否定不可能为真，因此原推理有效。",
+    "type": "choice",
+    "options": [
+      "原推理有效",
+      "原推理无效",
+      "无法判断",
+      "前提不一致"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "归谬法",
+    "src": "ai",
+    "id": "q-02324-083"
+  },
+  {
+    "question": "用归谬法证明：前提 A→B，B→C 可推出 A→C。",
+    "explanation": "假设结论 A→C 为假，即 ¬(A→C) 为真，等价于 A 且 ¬C。由 A→B 和 A 得 B，由 B→C 和 B 得 C，与 ¬C矛盾。故原推理有效。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "假设结论的否定 ¬(A→C) 为真",
+        "synonyms": [
+          "假设 A→C 为假",
+          "引入 ¬(A→C)"
+        ]
+      },
+      {
+        "point": "由 ¬(A→C) 推出 A 且 ¬C",
+        "synonyms": [
+          "A→C 为假时 A 为真且 C 为假",
+          "推出 A 和 ¬C"
+        ]
+      },
+      {
+        "point": "由 A→B 和 A 推出 B，由 B→C 和 B 推出 C，与 ¬C 矛盾",
+        "synonyms": [
+          "假言推理推出 C，与 ¬C 矛盾",
+          "推出 C 与前提 ¬C 冲突"
+        ]
+      }
+    ],
+    "referenceAnswer": "假设 A→C 为假，则 A 为真且 C 为假（即 ¬C 真）。由 A→B 和 A 得 B；由 B→C 和 B 得 C；与 ¬C 矛盾。故 A→C 必真。",
+    "passThreshold": 2,
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "归谬法",
+    "src": "ai",
+    "id": "q-02324-084"
+  },
+  {
+    "question": "若用归谬法证明结论 Q，则附加的前提是：",
+    "explanation": "归谬法要求把结论的否定（即 ¬Q）作为附加前提。",
+    "type": "choice",
+    "options": [
+      "¬Q",
+      "Q",
+      "P",
+      "Q∧¬Q"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "归谬法",
+    "src": "ai",
+    "id": "q-02324-085"
+  },
+  {
+    "question": "使用 CP 规则证明结论 A→B 时，应附加的前提是：",
+    "explanation": "CP 规则：当结论为条件式 A→B 时，把前件 A 作为临时附加前提，推出 B 即可。",
+    "type": "choice",
+    "options": [
+      "A",
+      "B",
+      "¬A",
+      "¬B"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "CP规则",
+    "src": "ai",
+    "id": "q-02324-086"
+  },
+  {
+    "question": "当结论为条件式形式 C→D 时，可优先考虑使用___规则，即以 C 为附加前提推出 D。",
+    "explanation": "CP规则专门用于证明条件式结论，附加前件推出后件。",
+    "type": "fill",
+    "text": "当结论为条件式形式 C→D 时，可优先考虑使用___规则，即以 C 为附加前提推出 D。",
+    "blanks": [
+      "CP"
+    ],
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "CP规则",
+    "src": "ai",
+    "id": "q-02324-087"
+  },
+  {
+    "question": "使用 CP 规则后，推出的公式 D 是从哪些前提得到的？",
+    "explanation": "附加前提 C 在推出 D 后，通过条件化证明得到 C→D，但 D 本身是结合原前提和临时前提 C 推出的。",
+    "type": "choice",
+    "options": [
+      "原前提和附加前提 C",
+      "仅原前提",
+      "仅附加前提 C",
+      "不需要任何前提"
+    ],
+    "answer": "A",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "CP规则",
+    "src": "ai",
+    "id": "q-02324-088"
+  },
+  {
+    "question": "用 CP 规则证明：前提 P→Q 可推出 (P∧R)→Q。",
+    "explanation": "结论为 (P∧R)→Q。使用 CP 规则，附加前提 P∧R，由化简得 P，再由 P→Q 和 P 推出 Q。因此 (P∧R)→Q 得证。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "附加前提 P∧R",
+        "synonyms": [
+          "引入临时前提 P∧R",
+          "假设 P∧R"
+        ]
+      },
+      {
+        "point": "由 P∧R 化简得 P",
+        "synonyms": [
+          "P∧R ⇒ P",
+          "化简规则得 P"
+        ]
+      },
+      {
+        "point": "由 P→Q 和 P 推出 Q",
+        "synonyms": [
+          "P→Q 和 P 得 Q",
+          "假言推理得 Q"
+        ]
+      }
+    ],
+    "referenceAnswer": "1. P∧R （附加前提）\n2. P （由1化简）\n3. P→Q （前提）\n4. Q （由2,3假言推理）\n5. (P∧R)→Q （由1-4 CP规则）",
+    "passThreshold": 2,
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "CP规则",
+    "src": "ai",
+    "id": "q-02324-089"
+  },
+  {
+    "question": "CP 规则适用于结论为___形式的推理证明。",
+    "explanation": "CP规则用于结论是条件式（蕴含式）的情况。",
+    "type": "fill",
+    "text": "CP 规则适用于结论为___形式的推理证明。",
+    "blanks": [
+      "条件式（蕴含式）"
+    ],
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "CP规则",
+    "src": "ai",
+    "id": "q-02324-090"
+  },
+  {
+    "question": "用真值表法判断推理 \"如果今天下雨，则地面湿；今天下雨，所以地面湿\" 是否有效，下列哪个描述正确？",
+    "options": [
+      "推理有效，因为没有所有前提为真且结论为假的行",
+      "推理无效，因为存在所有前提为真且结论为假的行",
+      "推理有效，因为存在前提为假且结论为真的行",
+      "推理无效，因为前提不能同时为真"
+    ],
+    "answer": "A",
+    "explanation": "设P：今天下雨，Q：地面湿。推理形式为 (P→Q), P ⇒ Q。真值表中第1行P=Q=T时前提真结论真，其他行至少一个前提为假。不存在前提T结论F的行，故有效。",
+    "type": "choice",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "真值表法判推理",
+    "src": "ai",
+    "id": "q-02324-091"
+  },
+  {
+    "question": "给定公式组 {P→Q, Q→R, ¬R}，用真值表法判断该公式组是否相容，下列结论正确的是？",
+    "options": [
+      "相容，因为存在指派 P=F, Q=F, R=F 使所有公式为真",
+      "不相容，因为没有任何指派使所有公式同时为真",
+      "相容，因为存在指派 P=T, Q=T, R=T 使所有公式为真",
+      "不相容，因为公式 P→Q 和 Q→R 不能同时为真"
+    ],
+    "answer": "A",
+    "explanation": "构造真值表，当 P=F, Q=F, R=F 时，P→Q=T, Q→R=T, ¬R=T，三公式同时为真，故相容。其他行均至少一个公式为假。",
+    "type": "choice",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "相容（一致）公式组",
+    "src": "ai",
+    "id": "q-02324-092"
+  },
+  {
+    "question": "设个体域为实数集，谓词 P(x) 表示 \"x 是有理数\"，Q(x) 表示 \"x 是无理数\"。公式 ∀x(P(x)∨Q(x)) 的含义是？",
+    "options": [
+      "所有实数都是有理数或无理数",
+      "存在实数既是有理数又是无理数",
+      "所有实数都不是有理数或无理数",
+      "存在实数是有理数或无理数"
+    ],
+    "answer": "A",
+    "explanation": "∀x 表示对个体域中所有个体，P(x)∨Q(x) 表示 x 是有理数或无理数，合起来即所有实数都有理数或无理数。",
+    "type": "choice",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "个体词、谓词与量词",
+    "src": "ai",
+    "id": "q-02324-093"
+  },
+  {
+    "question": "关于量词否定规则，下列等值式正确的是？",
+    "options": [
+      "¬∀xP(x) ⇔ ∃x¬P(x)",
+      "¬∀xP(x) ⇔ ∀x¬P(x)",
+      "¬∃xP(x) ⇔ ∃x¬P(x)",
+      "¬∀xP(x) ⇔ ¬∃xP(x)"
+    ],
+    "answer": "A",
+    "explanation": "量词否定规则：¬∀xP(x) ⇔ ∃x¬P(x)，¬∃xP(x) ⇔ ∀x¬P(x)。故A正确。",
+    "type": "choice",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "量词否定规则",
+    "src": "ai",
+    "id": "q-02324-094"
+  },
+  {
+    "question": "下列公式中，哪个是前束范式？",
+    "options": [
+      "∃x∀y(P(x,y)∧Q(x))",
+      "∀xP(x)∧∃yQ(y)",
+      "¬∀xP(x)∨∃yQ(y)",
+      "∃x(P(x)→∀yQ(y))"
+    ],
+    "answer": "A",
+    "explanation": "前束范式要求所有量词在公式最前面且辖域延伸至末尾。A中量词∃x∀y在最前且辖域覆盖整个公式，是前束范式。其他选项量词不在最前或辖域受限。",
+    "type": "choice",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "前束范式",
+    "src": "ai",
+    "id": "q-02324-095"
+  },
+  {
+    "question": "用真值表法验证推理形式：((P→Q)∧P) ⇒ Q 是否有效。",
+    "text": "设P、Q为命题变元，构造真值表，检查所有前提为真且结论为假的行。该推理是___（有效/无效），因为当P=T, Q=T时前提为真结论为真，且当P=T, Q=F时前提为___（真/假），故不存在前提真结论假的行。",
+    "blanks": [
+      "有效",
+      "假"
+    ],
+    "explanation": "真值表显示：行1(P=T,Q=T)：前提(T→T)∧T=T，结论Q=T；行2(P=T,Q=F)：前提(T→F)∧T=F∧T=F；行3(P=F)：前提(F→Q)∧F=F。因此无前提真结论假的行，推理有效。",
+    "type": "fill",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "真值表法判推理",
+    "src": "ai",
+    "id": "q-02324-096"
+  },
+  {
+    "question": "判断公式组 {P∨Q, ¬P, Q} 是否相容。",
+    "text": "存在指派P=___，Q=___（用T/F表示）使得P∨Q、¬P、Q同时为真，因此该公式组是___（相容/不相容）的。",
+    "blanks": [
+      "F",
+      "T",
+      "相容"
+    ],
+    "explanation": "当P=F, Q=T时，P∨Q=T，¬P=T，Q=T，三公式同时为真，故相容。",
+    "type": "fill",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "相容（一致）公式组",
+    "src": "ai",
+    "id": "q-02324-097"
+  },
+  {
+    "question": "将命题 \"所有自然数都是整数\" 符号化，设个体域为自然数集，谓词I(x)表示x是整数，应使用量词___（∀/∃）和谓词___。",
+    "text": "符号化为：___x I(x) （填量词符号）。",
+    "blanks": [
+      "∀"
+    ],
+    "explanation": "\"所有\"对应全称量词∀，故∀x I(x)。",
+    "type": "fill",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "个体词、谓词与量词",
+    "src": "ai",
+    "id": "q-02324-098"
+  },
+  {
+    "question": "利用量词否定规则，将 ¬∃x(P(x)∨Q(x)) 等价转化为全称量词形式。",
+    "text": "¬∃x(P(x)∨Q(x)) ⇔ ∀x___(P(x)∨Q(x)) （填量词和否定符号）。",
+    "blanks": [
+      "¬"
+    ],
+    "explanation": "根据规则 ¬∃xA(x) ⇔ ∀x¬A(x)，所以¬∃x(P(x)∨Q(x)) ⇔ ∀x¬(P(x)∨Q(x))。",
+    "type": "fill",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "量词否定规则",
+    "src": "ai",
+    "id": "q-02324-099"
+  },
+  {
+    "question": "求公式 ∃xP(x)∧∀yQ(y) 的前束范式，需将量词∃x和∀y前移，结果为___。",
+    "text": "前束范式为：___x___y(P(x)∧Q(y)) （按量词出现顺序填）。",
+    "blanks": [
+      "∃",
+      "∀"
+    ],
+    "explanation": "由于x和y的辖域互不包含，可直接将量词前移，得∃x∀y(P(x)∧Q(y))。",
+    "type": "fill",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "前束范式",
+    "src": "ai",
+    "id": "q-02324-100"
+  },
+  {
+    "question": "用真值表法判断推理 \"如果今天是星期二，则明天是星期三；明天不是星期三，所以今天不是星期二\" 是否有效。",
+    "formula": "设P：今天是星期二，Q：明天是星期三。推理形式：((P→Q)∧¬Q) ⇒ ¬P",
+    "steps": [
+      "构造真值表，列出P、Q的所有组合",
+      "计算前提(P→Q)∧¬Q的值",
+      "计算结论¬P的值",
+      "检查是否存在前提为真且结论为假的行"
+    ],
+    "answer": "有效",
+    "answerAliases": [
+      "有效",
+      "推理有效"
+    ],
+    "explanation": "真值表：当P=T,Q=T时前提(F→T)∧F=F；P=T,Q=F时前提(F?T?→F)∧T等；唯一前提为真的行是P=F,Q=F，该行结论¬P=T。无前提真结论假的行，故推理有效。",
+    "type": "calculate",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "真值表法判推理",
+    "src": "ai",
+    "id": "q-02324-101"
+  },
+  {
+    "question": "判断公式组 {¬(P→Q), Q} 是否相容。",
+    "formula": "需判断是否存在指派使¬(P→Q)和Q同时为真",
+    "steps": [
+      "化简¬(P→Q) ⇔ P∧¬Q",
+      "寻找使P∧¬Q为真的指派：P=T,Q=F",
+      "检查Q=F时，Q为假，不满足Q为真",
+      "故无指派使两公式同时为真"
+    ],
+    "answer": "不相容",
+    "answerAliases": [
+      "不相容",
+      "不一致"
+    ],
+    "explanation": "¬(P→Q)等价于P∧¬Q，要求Q=F，而第二个公式要求Q=T，矛盾，故不相容。",
+    "type": "calculate",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "相容（一致）公式组",
+    "src": "ai",
+    "id": "q-02324-102"
+  },
+  {
+    "question": "将命题 \"有些学生喜欢数学\" 符号化，设个体域为所有学生，谓词L(x)：x喜欢数学。",
+    "formula": "使用存在量词",
+    "steps": [
+      "识别量词：\"有些\"对应存在量词∃",
+      "确定谓词：L(x)表示x喜欢数学",
+      "组合符号化：∃xL(x)"
+    ],
+    "answer": "∃xL(x)",
+    "answerAliases": [
+      "∃x L(x)",
+      "存在x L(x)"
+    ],
+    "explanation": "\"有些\"是存在量词，直接∃xL(x)。",
+    "type": "calculate",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "个体词、谓词与量词",
+    "src": "ai",
+    "id": "q-02324-103"
+  },
+  {
+    "question": "利用量词否定规则化简 ¬∀x(P(x)→Q(x))。",
+    "formula": "¬∀x(P(x)→Q(x))",
+    "steps": [
+      "应用规则¬∀xA(x) ⇔ ∃x¬A(x)",
+      "得到∃x¬(P(x)→Q(x))",
+      "化简¬(P(x)→Q(x)) ⇔ P(x)∧¬Q(x)",
+      "最终结果∃x(P(x)∧¬Q(x))"
+    ],
+    "answer": "∃x(P(x)∧¬Q(x))",
+    "answerAliases": [
+      "∃x(P(x)∧¬Q(x))",
+      "存在x(P(x)且非Q(x))"
+    ],
+    "explanation": "先否定量词，再否定辖域，利用蕴含否定等价于前件真且后件假。",
+    "type": "calculate",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "量词否定规则",
+    "src": "ai",
+    "id": "q-02324-104"
+  },
+  {
+    "question": "求公式 ∀xP(x)→∃yQ(y) 的前束范式。",
+    "formula": "∀xP(x)→∃yQ(y)",
+    "steps": [
+      "消去蕴含：¬∀xP(x)∨∃yQ(y)",
+      "应用量词否定：∃x¬P(x)∨∃yQ(y)",
+      "量词前移：∃x∃y(¬P(x)∨Q(y))"
+    ],
+    "answer": "∃x∃y(¬P(x)∨Q(y))",
+    "answerAliases": [
+      "∃x∃y(¬P(x)∨Q(y))",
+      "存在x存在y(非P(x)或Q(y))"
+    ],
+    "explanation": "先消去→，再处理量词否定，最后将量词移至最前。",
+    "type": "calculate",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "前束范式",
+    "src": "ai",
+    "id": "q-02324-105"
+  },
+  {
+    "question": "证明推理形式：¬P∨Q, ¬Q ⇒ ¬P 是有效推理。",
+    "points": [
+      {
+        "point": "假设前提¬P∨Q和¬Q同时为真，假设结论¬P为假（即P为真）",
+        "synonyms": [
+          "反证法假设",
+          "假设P真"
+        ]
+      },
+      {
+        "point": "由¬Q为真推出Q为假",
+        "synonyms": [
+          "Q为假",
+          "¬Q真"
+        ]
+      },
+      {
+        "point": "由¬P∨Q为真且Q为假，推出¬P为真，即P为假，与假设P为真矛盾",
+        "synonyms": [
+          "析取三段论",
+          "矛盾"
+        ]
+      }
+    ],
+    "referenceAnswer": "假设前提为真且结论¬P为假，则P=T。由¬Q=T得Q=F。由¬P∨Q=T且Q=F，得¬P=T，即P=F，与P=T矛盾。故推理有效。",
+    "passThreshold": 2,
+    "explanation": "采用反证法，假设结论为假推出矛盾，证明前提真时结论必真。",
+    "type": "proof",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "真值表法判推理",
+    "src": "ai",
+    "id": "q-02324-106"
+  },
+  {
+    "question": "证明公式组 {P→Q, Q→R, ¬R, P} 不相容。",
+    "points": [
+      {
+        "point": "假设所有公式同时为真",
+        "synonyms": [
+          "假设相容",
+          "设P、Q、R使四个公式为真"
+        ]
+      },
+      {
+        "point": "由P和P→Q为真推出Q为真",
+        "synonyms": [
+          "假言推理",
+          "Q真"
+        ]
+      },
+      {
+        "point": "由Q和Q→R为真推出R为真",
+        "synonyms": [
+          "假言推理",
+          "R真"
+        ]
+      },
+      {
+        "point": "由¬R为真推出R为假，与R为真矛盾",
+        "synonyms": [
+          "矛盾",
+          "R真且R假"
+        ]
+      }
+    ],
+    "referenceAnswer": "设四个公式同时为真。由P和P→Q得Q=T；由Q和Q→R得R=T；又¬R=T得R=F，矛盾。故公式组不相容。",
+    "passThreshold": 3,
+    "explanation": "从前提推导出矛盾，证明不存在满足所有公式的指派。",
+    "type": "proof",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "相容（一致）公式组",
+    "src": "ai",
+    "id": "q-02324-107"
+  },
+  {
+    "question": "证明：∀x(P(x)→Q(x)) ∧ ∃xP(x) ⇒ ∃xQ(x) 是有效推理（个体域非空）。",
+    "points": [
+      {
+        "point": "由∃xP(x)存在个体a使P(a)为真",
+        "synonyms": [
+          "取a使P(a)真",
+          "存在a"
+        ]
+      },
+      {
+        "point": "由∀x(P(x)→Q(x))得P(a)→Q(a)为真",
+        "synonyms": [
+          "全称实例化",
+          "代入a"
+        ]
+      },
+      {
+        "point": "由P(a)和P(a)→Q(a)推出Q(a)为真",
+        "synonyms": [
+          "假言推理",
+          "Q(a)真"
+        ]
+      },
+      {
+        "point": "由Q(a)为真推出∃xQ(x)为真",
+        "synonyms": [
+          "存在引入",
+          "存在xQ(x)"
+        ]
+      }
+    ],
+    "referenceAnswer": "由∃xP(x)，存在a使P(a)。由∀x(P(x)→Q(x))，取x=a得P(a)→Q(a)。由假言推理得Q(a)，故∃xQ(x)。推理有效。",
+    "passThreshold": 3,
+    "explanation": "利用全称实例化和存在引入完成证明。",
+    "type": "proof",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "个体词、谓词与量词",
+    "src": "ai",
+    "id": "q-02324-108"
+  },
+  {
+    "question": "证明：¬∃x(P(x)∧Q(x)) ⇔ ∀x(P(x)→¬Q(x))。",
+    "points": [
+      {
+        "point": "由¬∃x(P(x)∧Q(x))应用量词否定得∀x¬(P(x)∧Q(x))",
+        "synonyms": [
+          "量词否定",
+          "∀x¬(P∧Q)"
+        ]
+      },
+      {
+        "point": "¬(P(x)∧Q(x))等价于P(x)→¬Q(x)",
+        "synonyms": [
+          "蕴含等值",
+          "P→¬Q"
+        ]
+      },
+      {
+        "point": "因此¬∃x(P(x)∧Q(x)) ⇔ ∀x(P(x)→¬Q(x))",
+        "synonyms": [
+          "结论",
+          "等值"
+        ]
+      }
+    ],
+    "referenceAnswer": "¬∃x(P(x)∧Q(x)) ⇔ ∀x¬(P(x)∧Q(x)) ⇔ ∀x(P(x)→¬Q(x))。故等值成立。",
+    "passThreshold": 2,
+    "explanation": "先用量词否定，再用德摩根律或蕴含等值。",
+    "type": "proof",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "量词否定规则",
+    "src": "ai",
+    "id": "q-02324-109"
+  },
+  {
+    "question": "证明：公式 ∃x∀y(P(x,y)→Q(x,y)) 可化为前束范式，并写出过程。",
+    "points": [
+      {
+        "point": "该公式已满足量词在最前的条件，无需换名或前移",
+        "synonyms": [
+          "已是前束范式",
+          "量词在最前"
+        ]
+      },
+      {
+        "point": "辖域为∀y(P(x,y)→Q(x,y))即原子谓词公式加蕴含，未包含量词，满足辖域延伸至末尾",
+        "synonyms": [
+          "辖域完整",
+          "不需改变"
+        ]
+      }
+    ],
+    "referenceAnswer": "公式∃x∀y(P(x,y)→Q(x,y))中量词∃x和∀y均在最前，且辖域覆盖整个公式，无自由变元，故其本身即为前束范式。",
+    "passThreshold": 1,
+    "explanation": "前束范式要求量词全部前置且辖域完整，该公式已经满足。",
+    "type": "proof",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "前束范式",
+    "src": "ai",
+    "id": "q-02324-110"
+  },
+  {
+    "question": "在谓词公式 ∀x(P(x) → ∃yR(x,y)) 中，变元 x 的所有出现都是（ ）出现，变元 y 的出现是（ ）出现。",
+    "type": "fill",
+    "text": "在谓词公式 ∀x(P(x) → ∃yR(x,y)) 中，变元 x 的所有出现都是___出现，变元 y 的出现是___出现。",
+    "blanks": [
+      "约束",
+      "约束"
+    ],
+    "explanation": "x 受全称量词 ∀x 的约束，y 受存在量词 ∃y 的约束，因此二者的所有出现均为约束出现。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "约束变量与自由变量",
+    "src": "ai",
+    "id": "q-02324-111"
+  },
+  {
+    "question": "设公式 A = ∀xF(x) ∧ G(x)，其中变元 x 在 G(x) 中的出现是（ ）出现。",
+    "type": "choice",
+    "options": [
+      "A. 约束出现",
+      "B. 自由出现",
+      "C. 既约束又自由",
+      "D. 无法确定"
+    ],
+    "answer": "B",
+    "explanation": "G(x) 不在量词 ∀x 的辖域内，因此其中的 x 不受约束，是自由出现。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "约束变量与自由变量",
+    "src": "ai",
+    "id": "q-02324-112"
+  },
+  {
+    "question": "判断正误：一个谓词公式中，同一个变元可以既有约束出现又有自由出现。",
+    "type": "choice",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explanation": "例如公式 ∀xF(x) ∧ G(x) 中，x 在 F(x) 中约束出现，在 G(x) 中自由出现，所以同一个变元可以同时具有两种出现。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "约束变量与自由变量",
+    "src": "ai",
+    "id": "q-02324-113"
+  },
+  {
+    "question": "不含自由变元的谓词公式称为（ ）。",
+    "type": "fill",
+    "text": "不含自由变元的谓词公式称为___。",
+    "blanks": [
+      "闭公式"
+    ],
+    "explanation": "根据闭公式的定义，不含自由变元的公式称为闭公式（或封闭公式）。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "约束变量与自由变量",
+    "src": "ai",
+    "id": "q-02324-114"
+  },
+  {
+    "question": "在公式 ∀x∃y(P(x) → Q(y)) 中，所有变元是否都是约束出现？该公式是否为闭公式？",
+    "type": "choice",
+    "options": [
+      "A. 都是约束出现，是闭公式",
+      "B. 都是约束出现，不是闭公式",
+      "C. 有自由出现，是闭公式",
+      "D. 有自由出现，不是闭公式"
+    ],
+    "answer": "A",
+    "explanation": "x 受 ∀x 约束，y 受 ∃y 约束，无自由变元，因此是闭公式。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "约束变量与自由变量",
+    "src": "ai",
+    "id": "q-02324-115"
+  },
+  {
+    "question": "由 ∀xP(x) 推出 P(a)，使用的推理规则是（ ）。",
+    "type": "choice",
+    "options": [
+      "A. US（全称特指）",
+      "B. UG（全称推广）",
+      "C. ES（存在特指）",
+      "D. EG（存在推广）"
+    ],
+    "answer": "A",
+    "explanation": "US规则（Universal Specification）允许从全称命题推出个体实例。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词推理规则",
+    "src": "ai",
+    "id": "q-02324-116"
+  },
+  {
+    "question": "由 ∃xP(x) 推出 P(a)，要求 a 必须满足的条件是（ ）。",
+    "type": "fill",
+    "text": "由 ∃xP(x) 推出 P(a) 时，a 必须是未出现过的___。",
+    "blanks": [
+      "新常量"
+    ],
+    "explanation": "ES规则要求特指常量 a 不得在前提或之前推导中出现过，以保证推理的有效性。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词推理规则",
+    "src": "ai",
+    "id": "q-02324-117"
+  },
+  {
+    "question": "证明：∀x(P(x) → Q(x))，∃xP(x) ⇒ ∃xQ(x)（要求写出推理步骤）。",
+    "type": "proof",
+    "points": [
+      {
+        "point": "由 ∃xP(x) 用ES引入新常量a，得 P(a)",
+        "synonyms": [
+          "存在特指得到P(a)",
+          "ES推出P(a)",
+          "由存在量词特指为a"
+        ]
+      },
+      {
+        "point": "由 ∀x(P(x)→Q(x)) 用US特指到 a，得 P(a)→Q(a)",
+        "synonyms": [
+          "全称特指得到P(a)→Q(a)",
+          "US推出蕴含式",
+          "特指到a"
+        ]
+      },
+      {
+        "point": "由 P(a) 和 P(a)→Q(a) 用假言推理得 Q(a)",
+        "synonyms": [
+          "P(a)→Q(a)与P(a)推出Q(a)",
+          "假言推理",
+          "分离规则"
+        ]
+      },
+      {
+        "point": "由 Q(a) 用EG得 ∃xQ(x)",
+        "synonyms": [
+          "存在推广",
+          "EG推出存在量词",
+          "推广到存在"
+        ]
+      }
+    ],
+    "referenceAnswer": "（1）∃xP(x) 前提引入；（2）P(a) ES；（3）∀x(P(x)→Q(x)) 前提引入；（4）P(a)→Q(a) US；（5）Q(a) 假言推理（2）（4）；（6）∃xQ(x) EG。",
+    "passThreshold": 3,
+    "explanation": "使用ES时注意新常量，然后使用US和假言推理得出特例，最后EG推广。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词推理规则",
+    "src": "ai",
+    "id": "q-02324-118"
+  },
+  {
+    "question": "在谓词逻辑推理中，不能由 ∀xP(x) 直接推出某个特殊个体 P(a) 的规则是（ ）。",
+    "type": "choice",
+    "options": [
+      "A. US",
+      "B. UG",
+      "C. ES",
+      "D. EG"
+    ],
+    "answer": "B",
+    "explanation": "UG是全称推广规则，是从个体实例推广到全称，不是特指。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词推理规则",
+    "src": "ai",
+    "id": "q-02324-119"
+  },
+  {
+    "question": "在谓词逻辑中，由 ∃xP(x) 推出 P(c)，其中 c 是（ ）。",
+    "type": "fill",
+    "text": "由 ∃xP(x) 推出 P(c) 时，c 必须是未出现过的___。",
+    "blanks": [
+      "个体常项（新常量）"
+    ],
+    "explanation": "ES引入的个体常项必须是新的，不能与前提或推导中出现过的符号重复。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词推理规则",
+    "src": "ai",
+    "id": "q-02324-120"
+  },
+  {
+    "question": "设个体域 D={1,2}，谓词 P(x) 表示“x是偶数”，则 ∀xP(x) 的真值为（ ）。",
+    "type": "choice",
+    "options": [
+      "A. 真",
+      "B. 假",
+      "C. 无法确定",
+      "D. 既真又假"
+    ],
+    "answer": "B",
+    "explanation": "个体域中1和2，P(1)为假（1不是偶数），所以∀xP(x)为假。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "论域（个体域）",
+    "src": "ai",
+    "id": "q-02324-121"
+  },
+  {
+    "question": "未指明个体域时，默认的个体域是（ ）。",
+    "type": "fill",
+    "text": "未指明个体域时，默认的个体域是___。",
+    "blanks": [
+      "全总个体域"
+    ],
+    "explanation": "在谓词逻辑中，未特别指明个体域时，默认使用全总个体域。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "论域（个体域）",
+    "src": "ai",
+    "id": "q-02324-122"
+  },
+  {
+    "question": "在全总个体域中，用特性谓词表示“所有自然数都是整数”，应符号化为（ ）。",
+    "type": "choice",
+    "options": [
+      "A. ∀x(N(x) → I(x))",
+      "B. ∀x(N(x) ∧ I(x))",
+      "C. ∃x(N(x) → I(x))",
+      "D. ∃x(N(x) ∧ I(x))"
+    ],
+    "answer": "A",
+    "explanation": "全称量词后特性谓词用蕴含→连接，表示“所有自然数都是整数”。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "论域（个体域）",
+    "src": "ai",
+    "id": "q-02324-123"
+  },
+  {
+    "question": "在全总个体域中，用特性谓词表示“有些自然数是偶数”，应符号化为（ ）。",
+    "type": "choice",
+    "options": [
+      "A. ∀x(N(x) → E(x))",
+      "B. ∀x(N(x) ∧ E(x))",
+      "C. ∃x(N(x) → E(x))",
+      "D. ∃x(N(x) ∧ E(x))"
+    ],
+    "answer": "D",
+    "explanation": "存在量词后用合取∧连接特性谓词，表示“存在一个自然数且它是偶数”。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "论域（个体域）",
+    "src": "ai",
+    "id": "q-02324-124"
+  },
+  {
+    "question": "在个体域 D={1,2} 中，设 P(1)=真，P(2)=假，则公式 ∃xP(x) 的真值为（ ）。",
+    "type": "fill",
+    "text": "在个体域 D={1,2} 中，P(1)=真，P(2)=假，则 ∃xP(x) 的真值为___。",
+    "blanks": [
+      "真"
+    ],
+    "explanation": "存在量词只需个体域中至少有一个个体使命题为真，P(1)为真，故∃xP(x)为真。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "论域（个体域）",
+    "src": "ai",
+    "id": "q-02324-125"
+  },
+  {
+    "question": "设个体域 D={1,2}，P(1)=真，P(2)=假，则公式 ∀xP(x) 的真值为（ ）。",
+    "type": "choice",
+    "options": [
+      "A. 真",
+      "B. 假",
+      "C. 无法确定",
+      "D. 有时真有时假"
+    ],
+    "answer": "B",
+    "explanation": "∀xP(x) 为真当且仅当所有个体使命题为真，但P(2)为假，所以为假。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "论域（个体域）",
+    "src": "ai",
+    "id": "q-02324-126"
+  },
+  {
+    "question": "设解释 I：论域 D={1,2}，谓词 P(1)=T，P(2)=F，则公式 ∀xP(x) 的真值为（ ）。",
+    "type": "fill",
+    "text": "设解释 I：论域 D={1,2}，P(1)=T，P(2)=F，则 ∀xP(x) 的真值为___。",
+    "blanks": [
+      "假"
+    ],
+    "explanation": "∀xP(x) 为真当且仅当 P(1) 和 P(2) 均为真，但 P(2) 为假，所以为假。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词公式的解释",
+    "src": "ai",
+    "id": "q-02324-127"
+  },
+  {
+    "question": "一个解释 I 由哪些部分组成？",
+    "type": "choice",
+    "options": [
+      "A. 论域、个体常量指派、函数指派、谓词指派",
+      "B. 论域和谓词指派",
+      "C. 个体常量和谓词常量",
+      "D. 量词和联结词"
+    ],
+    "answer": "A",
+    "explanation": "解释由论域D、个体常量指派、函数指派与谓词指派组成。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词公式的解释",
+    "src": "ai",
+    "id": "q-02324-128"
+  },
+  {
+    "question": "设解释 I：论域 D={1,2}，谓词 P(1)=T，P(2)=T，则公式 ∃xP(x) 的真值为（ ）。",
+    "type": "choice",
+    "options": [
+      "A. 真",
+      "B. 假",
+      "C. 无法确定",
+      "D. 既真又假"
+    ],
+    "answer": "A",
+    "explanation": "存在量词只需一个个体使命题为真，P(1)为真，所以∃xP(x)为真。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词公式的解释",
+    "src": "ai",
+    "id": "q-02324-129"
+  },
+  {
+    "question": "设解释 I：论域 D={1,2}，P(1)=T，P(2)=F，Q(1)=T，Q(2)=T，则公式 ∀x(P(x) → Q(x)) 的真值为（ ）。",
+    "type": "choice",
+    "options": [
+      "A. 真",
+      "B. 假",
+      "C. 无法确定",
+      "D. 既真又假"
+    ],
+    "answer": "A",
+    "explanation": "对x=1，P(1)=T，Q(1)=T，蕴含为真；对x=2，P(2)=F，蕴含为真（前件假则蕴含真），所以∀x(P(x)→Q(x))为真。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词公式的解释",
+    "src": "ai",
+    "id": "q-02324-130"
+  },
+  {
+    "question": "设解释 I：论域 D={1,2}，P(1)=T，P(2)=T，则公式 ∃x¬P(x) 的真值为（ ）。",
+    "type": "fill",
+    "text": "设解释 I：论域 D={1,2}，P(1)=T，P(2)=T，则 ∃x¬P(x) 的真值为___。",
+    "blanks": [
+      "假"
+    ],
+    "explanation": "对所有个体，P均为真，则¬P均为假，故∃x¬P(x)为假。",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词公式的解释",
+    "src": "ai",
+    "id": "q-02324-131"
+  },
+  {
+    "type": "choice",
+    "question": "设公式 A = ¬(P∨Q)，则 A 的对偶式 A* 是（　）。\nA. ¬(P∧Q)\nB. ¬(P∨Q)\nC. ¬P∧¬Q\nD. ¬(P∨Q) 的对偶式不存在",
+    "options": [
+      "¬(P∧Q)",
+      "¬(P∨Q)",
+      "¬P∧¬Q",
+      "¬(P∨Q) 的对偶式不存在"
+    ],
+    "answer": "A",
+    "explanation": "对偶式只将∨与∧互换、T与F互换，不变更否定、量词。因此 ¬(P∨Q) 的对偶式为 ¬(P∧Q)。注意 ¬ 保留不变。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "对偶式与对偶定理",
+    "src": "ai",
+    "id": "q-02324-132"
+  },
+  {
+    "type": "fill",
+    "question": "设公式 A = (P∧Q)∨T，则 A 的对偶式 A* = ________。",
+    "text": "设公式 A = (P∧Q)∨T，则 A 的对偶式 A* = ____。",
+    "blanks": [
+      "(P∨Q)∧F"
+    ],
+    "explanation": "对偶式将 ∧ 换成 ∨，∨ 换成 ∧，T 换成 F。所以 (P∧Q)∨T 变成 (P∨Q)∧F。注意 T 要换成 F。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "对偶式与对偶定理",
+    "src": "ai",
+    "id": "q-02324-133"
+  },
+  {
+    "type": "calc",
+    "question": "求公式 A = (P∨Q)∧(¬R∨T) 的对偶式 A*，并化简。",
+    "formula": "A = (P∨Q)∧(¬R∨T)",
+    "steps": [
+      "第1步：对偶式将每个 ∨ 换成 ∧，∧ 换成 ∨。",
+      "第2步：所以 A* = (P∧Q)∨(¬R∧T)。",
+      "第3步：此公式已最简。"
+    ],
+    "answer": "(P∧Q)∨(¬R∧T)",
+    "answerAliases": [
+      "(Q∧P)∨(T∧¬R)"
+    ],
+    "explanation": "对偶式不改变 ¬ 和原子命题，只交换 ∨ 与 ∧。因此 (P∨Q)∧(¬R∨T) 的对偶式为 (P∧Q)∨(¬R∧T)。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "对偶式与对偶定理",
+    "src": "ai",
+    "id": "q-02324-134"
+  },
+  {
+    "type": "proof",
+    "question": "证明对偶定理的正确性：若 A ⇔ B，则 A* ⇔ B*。请以公式 A = P∨Q 和 B = ¬P→Q 为例（已知 P∨Q ⇔ ¬P→Q），证明它们的对偶式也等值。",
+    "points": [
+      "明确对偶式的定义：将∨与∧互换、T与F互换。",
+      "计算 A* 和 B*。",
+      "通过真值表或逻辑等价演算证明 A* ⇔ B*。"
+    ],
+    "referenceAnswer": "已知 P∨Q ⇔ ¬P→Q。\nA* = (P∨Q)* = P∧Q。\nB = ¬P→Q = ¬(¬P)∨Q = P∨Q，所以 B 已经化简为 P∨Q。但处理对偶式时，B 应先写成标准形式：¬P→Q 等价于 P∨Q，故 B*(原式) = (¬P→Q)*。将 → 转化为 ∨：¬P→Q = ¬(¬P)∨Q = P∨Q，因此 (¬P→Q)* = (P∨Q)* = P∧Q。\n显然 A* = P∧Q 等于 B* = P∧Q。所以 A* ⇔ B*。",
+    "passThreshold": 70,
+    "explanation": "对偶定理要求先讲清对偶式的定义，然后正确求出两个对偶式，最后用等价演算或真值表确认等值。只要对偶式一致即可得满分。",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "对偶式与对偶定理",
+    "src": "ai",
+    "id": "q-02324-135"
+  }
 ]

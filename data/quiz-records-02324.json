@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "questionId": "q-02324-001",
+    "timestamp": "2026-08-25T12:27:49.545Z",
+    "type": "choice",
+    "chapter": "第1章 命题与命题公式",
+    "userAnswer": "C",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-02324-004",
+    "timestamp": "2026-08-25T13:27:26.907Z",
+    "type": "choice",
+    "chapter": "第1章 命题与命题公式",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  }
+]

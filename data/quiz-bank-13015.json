@@ -1,22 +1,607 @@
 [
-  {"id":"q-ch1","type":"choice","subType":"single","chapter":"第1章 计算机系统概述","question":"冯·诺依曼计算机的核心工作方式是？","options":["存储程序方式","流水线方式","微程序方式","并行处理方式"],"answer":"A","explanation":"冯·诺依曼计算机的核心特点是\"存储程序\"，即程序和数据预先存入存储器，机器按指令顺序自动执行。"},
-  {"id":"q-ch2","type":"choice","subType":"single","chapter":"第3章 存储系统","question":"某Cache的命中率为95%，Cache存取时间为10ns，主存存取时间为100ns，则平均访问时间为？","options":["14.5ns","15ns","19ns","95ns"],"answer":"A","explanation":"平均访问时间 = h×tc + (1-h)×tm = 0.95×10 + 0.05×100 = 9.5 + 5 = 14.5ns。"},
-  {"id":"q-ch3","type":"choice","subType":"multi","chapter":"第4章 指令系统","question":"下列哪些是RISC的特点？（多选）","options":["指令长度固定","丰富的寻址方式","寄存器数量多","流水线执行","复杂的指令格式"],"answer":"ACD","explanation":"RISC特点：①指令长度固定、格式简单；②寄存器数量多；③以流水线方式执行。CISC才有丰富的寻址方式和复杂的指令格式。"},
-  {"id":"q-ch4","type":"choice","subType":"judge","chapter":"第1章 计算机系统概述","question":"CPU的CPI（Cycles Per Instruction）越低，计算机性能一定越好。","options":["正确","错误"],"answer":"B","explanation":"CPI低只说明执行每条指令所需的时钟周期少，但整体性能还取决于主频和指令数量。"},
-
-  {"id":"q-fb1","type":"fill","chapter":"第1章 计算机系统概述","text":"冯·诺依曼计算机的核心思想是__1__，计算机由__2__大部件组成，指令和数据均用__3__表示。","blanks":[{"answer":"存储程序","synonyms":["程序存储","stored program"],"hint":"4字"},{"answer":"五","synonyms":["5","五个"],"hint":"数字"},{"answer":"二进制","synonyms":["binary","0和1"],"hint":"3字"}],"explanation":"冯·诺依曼结构核心：存储程序、五大部件、二进制表示。"},
-  {"id":"q-fb2","type":"fill","chapter":"第3章 存储系统","text":"Cache的工作基于__1__原理，包含时间局部性和__2__局部性。平均访问时间公式为：T = __3__ × tc + (1 - __3__) × tm。","blanks":[{"answer":"局部性","synonyms":["程序局部性","locality"],"hint":"3字"},{"answer":"空间","synonyms":["spatial"],"hint":"2字"},{"answer":"h","synonyms":["命中率","hit rate","H"],"hint":"字母或中文"}],"explanation":"Cache基于局部性原理（时间+空间）。T = h×tc + (1-h)×tm。"},
-  {"id":"q-fb3","type":"fill","chapter":"第4章 指令系统","text":"CPI的含义是每条指令所需的__1__数。若主频为f，指令数为IC，CPI为c，则CPU时间 = __2__。","blanks":[{"answer":"时钟周期","synonyms":["周期数","cycle"],"hint":"4字"},{"answer":"IC×c/f","synonyms":["(IC×c)/f","IC*c/f","c×IC/f"],"hint":"公式"}],"explanation":"CPU时间 = IC × CPI / f = 指令数 × 每条指令时钟周期数 / 主频。"},
-
-  {"id":"q-ca1","type":"calculate","chapter":"第3章 存储系统","question":"已知Cache命中率h=0.95，Cache存取时间tc=10ns，主存存取时间tm=100ns，求平均访问时间。","formula":"平均访问时间 = h×tc + (1-h)×tm","steps":["平均访问时间 = h×tc + (1-h)×tm","= 0.95×10 + 0.05×100","= 9.5 + 5","= 14.5ns"],"answer":"14.5ns","answerAliases":["14.5","14.5纳秒"],"hint":"代入公式计算"},
-  {"id":"q-ca2","type":"calculate","chapter":"第1章 计算机系统概述","question":"已知某程序指令数IC=10^6，CPI=2，主频f=1GHz，求CPU执行时间。","formula":"CPU时间 = IC × CPI / f","steps":["CPU时间 = IC × CPI / f","= 10^6 × 2 / 10^9","= 2×10^6 / 10^9","= 0.002秒 = 2ms"],"answer":"2ms","answerAliases":["0.002秒","0.002s","2毫秒"],"hint":"注意单位换算"},
-  {"id":"q-ca3","type":"calculate","chapter":"第4章 指令系统","question":"某计算机主频600MHz，程序A的指令数为10^6，CPI=3。求程序A的MIPS。","formula":"MIPS = 主频 / (CPI × 10^6)","steps":["MIPS = f / (CPI × 10^6)","= 600×10^6 / (3 × 10^6)","= 600 / 3","= 200"],"answer":"200","answerAliases":["200MIPS","200 MIPS"],"hint":"MIPS = f/(CPI×10^6)"},
-
-  {"id":"q-sa1","type":"shortAnswer","chapter":"第1章 计算机系统概述","question":"简述冯·诺依曼计算机结构的核心特点。","points":[{"point":"存储程序","synonyms":["程序存储","stored program","程序和数据一起存储"],"weight":1},{"point":"五大部件","synonyms":["运算器控制器存储器输入输出","五大部件","5个部件"],"weight":1},{"point":"二进制表示","synonyms":["二进制","指令用二进制","0和1表示"],"weight":1},{"point":"顺序执行","synonyms":["顺序执行","按地址顺序执行","逐条执行指令"],"weight":1}],"referenceAnswer":"冯·诺依曼结构核心：①存储程序；②五大部件（运算器、控制器、存储器、输入、输出）；③指令和数据用二进制表示；④按地址顺序执行。","passThreshold":3},
-  {"id":"q-sa2","type":"shortAnswer","chapter":"第3章 存储系统","question":"简述Cache的工作原理。","points":[{"point":"局部性原理","synonyms":["局部性","时间局部性","空间局部性"],"weight":1},{"point":"命中与缺失","synonyms":["命中","缺失","hit","miss"],"weight":1},{"point":"平均访问时间公式","synonyms":["h×tc+(1-h)×tm","AMAT","平均访问时间"],"weight":1},{"point":"加速比","synonyms":["加速比","speedup","tm/平均访问时间"],"weight":1}],"referenceAnswer":"Cache基于局部性原理，将常用数据缓存。CPU访问时先查Cache，命中直接读取，未命中从主存取。平均访问时间=h×tc+(1-h)×tm。","passThreshold":2},
-  {"id":"q-sa3","type":"shortAnswer","chapter":"第4章 指令系统","question":"简述指令流水线的基本原理及影响效率的主要因素。","points":[{"point":"并行执行","synonyms":["并行","重叠执行","同时执行多条指令"],"weight":1},{"point":"分级取指译码执行","synonyms":["取指译码执行","IF ID EX MEM WB","流水段"],"weight":1},{"point":"数据冲突","synonyms":["数据冲突","数据相关","数据冒险"],"weight":1},{"point":"控制冲突","synonyms":["控制冲突","分支冲突","控制冒险"],"weight":1},{"point":"结构冲突","synonyms":["结构冲突","资源冲突","结构冒险"],"weight":1}],"referenceAnswer":"指令流水线将执行过程分为多个阶段并行执行。影响因素：数据冲突、控制冲突、结构冲突。","passThreshold":3},
-
-  {"id":"q-es1","type":"essay","chapter":"第1章 计算机系统概述","question":"论述冯·诺依曼体系结构与哈佛体系结构的区别，并分析各自的优缺点。","hint":"答题方向：①存储方式 ②总线结构 ③执行效率 ④成本 ⑤应用场景","points":[{"point":"冯结构指令数据共享存储器","synonyms":["共用存储器","共享存储","统一编址"],"weight":1},{"point":"哈佛结构指令数据分开存储","synonyms":["分开存储","独立存储","分离存储","两套存储器"],"weight":1},{"point":"哈佛结构有独立总线","synonyms":["独立总线","两套总线","双总线"],"weight":1},{"point":"哈佛结构执行效率更高","synonyms":["效率高","性能高","并行取","同时取指令和数据"],"weight":1},{"point":"冯结构成本低/设计简单","synonyms":["成本低","设计简单","硬件简单"],"weight":1},{"point":"哈佛结构功耗/成本高","synonyms":["功耗高","成本高","硬件复杂","面积大"],"weight":1},{"point":"冯结构适用通用计算机","synonyms":["通用","PC","个人电脑","x86"],"weight":1},{"point":"哈佛结构适用嵌入式/DSP","synonyms":["嵌入式","DSP","单片机","ARM"],"weight":1}],"referenceAnswer":"冯·诺依曼结构指令和数据共享存储空间和总线。哈佛结构指令和数据分别存储，各有独立总线，取指和取数据可并行。冯结构设计简单成本低适合通用计算机；哈佛结构效率高适合嵌入式和DSP。","passThreshold":5},
-  {"id":"q-es2","type":"essay","chapter":"第3章 存储系统","question":"论述多级存储体系的层次结构设计原理，并说明Cache和虚存各自解决什么问题。","hint":"答题方向：①层次结构 ②速度容量成本权衡 ③Cache解决问题 ④虚存解决问题 ⑤局部性原理","points":[{"point":"多级层次：寄存器→Cache→主存→辅存","synonyms":["寄存器Cache主存辅存","多级存储","存储层次"],"weight":1},{"point":"速度递减容量递增成本递减","synonyms":["速度递减","容量递增","成本递减"],"weight":1},{"point":"Cache解决CPU主存速度差距","synonyms":["CPU和主存速度差距","速度不匹配","存储器墙"],"weight":1},{"point":"虚存解决主存容量不足","synonyms":["容量不足","内存不够","扩大地址空间"],"weight":1},{"point":"局部性原理是基础","synonyms":["局部性","时间局部性","空间局部性"],"weight":1},{"point":"Cache对程序员透明","synonyms":["透明","不可见","硬件管理"],"weight":1},{"point":"虚存由OS和硬件共同管理","synonyms":["操作系统管理","OS管理","MMU","页表"],"weight":1}],"referenceAnswer":"多级存储体系从快到慢：寄存器→Cache→主存→辅存。Cache解决CPU与主存速度差距，虚存解决主存容量不足。基于局部性原理。Cache硬件管理对程序员透明，虚存由OS和MMU管理。","passThreshold":4},
-  {"id":"q-es3","type":"essay","chapter":"第4章 指令系统","question":"对比分析RISC与CISC架构的主要区别，并论述RISC成为主流的原因。","hint":"答题方向：①指令复杂度 ②指令长度 ③寄存器数量 ④寻址方式 ⑤流水线 ⑥编译器角色 ⑦功耗 ⑧应用趋势","points":[{"point":"CISC指令复杂/长度不固定","synonyms":["复杂指令","指令长度不固定","变长指令"],"weight":1},{"point":"RISC指令简单/长度固定","synonyms":["简单指令","指令长度固定","定长指令","精简"],"weight":1},{"point":"RISC寄存器多减少访存","synonyms":["寄存器多","大量寄存器","减少访存"],"weight":1},{"point":"CISC寻址方式丰富","synonyms":["寻址方式多","寻址丰富","多种寻址"],"weight":1},{"point":"RISC适合流水线","synonyms":["流水线","单周期执行","便于流水"],"weight":1},{"point":"RISC编译器承担更多工作","synonyms":["编译器优化","编译器负责","软件层面"],"weight":1},{"point":"RISC功耗低适合移动端","synonyms":["功耗低","低功耗","移动端","ARM低功耗"],"weight":1},{"point":"CISC复杂度限制主频提升","synonyms":["限制主频","频率上不去","功耗墙"],"weight":1}],"referenceAnswer":"CISC指令复杂、变长、寻址丰富。RISC指令简单、定长、寄存器多、便于流水线。RISC成为主流因低功耗适合移动端，编译器技术进步使RISC可行。","passThreshold":5}
+  {
+    "id": "q-ch1",
+    "type": "choice",
+    "subType": "single",
+    "chapter": "第1章 计算机系统概述",
+    "question": "冯·诺依曼计算机的核心工作方式是？",
+    "options": [
+      "存储程序方式",
+      "流水线方式",
+      "微程序方式",
+      "并行处理方式"
+    ],
+    "answer": "A",
+    "explanation": "冯·诺依曼计算机的核心特点是\"存储程序\"，即程序和数据预先存入存储器，机器按指令顺序自动执行。"
+  },
+  {
+    "id": "q-ch2",
+    "type": "choice",
+    "subType": "single",
+    "chapter": "第3章 存储系统",
+    "question": "某Cache的命中率为95%，Cache存取时间为10ns，主存存取时间为100ns，则平均访问时间为？",
+    "options": [
+      "14.5ns",
+      "15ns",
+      "19ns",
+      "95ns"
+    ],
+    "answer": "A",
+    "explanation": "平均访问时间 = h×tc + (1-h)×tm = 0.95×10 + 0.05×100 = 9.5 + 5 = 14.5ns。"
+  },
+  {
+    "id": "q-ch3",
+    "type": "choice",
+    "subType": "multi",
+    "chapter": "第4章 指令系统",
+    "question": "下列哪些是RISC的特点？（多选）",
+    "options": [
+      "指令长度固定",
+      "丰富的寻址方式",
+      "寄存器数量多",
+      "流水线执行",
+      "复杂的指令格式"
+    ],
+    "answer": "ACD",
+    "explanation": "RISC特点：①指令长度固定、格式简单；②寄存器数量多；③以流水线方式执行。CISC才有丰富的寻址方式和复杂的指令格式。"
+  },
+  {
+    "id": "q-ch4",
+    "type": "choice",
+    "subType": "judge",
+    "chapter": "第1章 计算机系统概述",
+    "question": "CPU的CPI（Cycles Per Instruction）越低，计算机性能一定越好。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": "B",
+    "explanation": "CPI低只说明执行每条指令所需的时钟周期少，但整体性能还取决于主频和指令数量。"
+  },
+  {
+    "id": "q-fb1",
+    "type": "fill",
+    "chapter": "第1章 计算机系统概述",
+    "text": "冯·诺依曼计算机的核心思想是__1__，计算机由__2__大部件组成，指令和数据均用__3__表示。",
+    "blanks": [
+      {
+        "answer": "存储程序",
+        "synonyms": [
+          "程序存储",
+          "stored program"
+        ],
+        "hint": "4字"
+      },
+      {
+        "answer": "五",
+        "synonyms": [
+          "5",
+          "五个"
+        ],
+        "hint": "数字"
+      },
+      {
+        "answer": "二进制",
+        "synonyms": [
+          "binary",
+          "0和1"
+        ],
+        "hint": "3字"
+      }
+    ],
+    "explanation": "冯·诺依曼结构核心：存储程序、五大部件、二进制表示。"
+  },
+  {
+    "id": "q-fb2",
+    "type": "fill",
+    "chapter": "第3章 存储系统",
+    "text": "Cache的工作基于__1__原理，包含时间局部性和__2__局部性。平均访问时间公式为：T = __3__ × tc + (1 - __3__) × tm。",
+    "blanks": [
+      {
+        "answer": "局部性",
+        "synonyms": [
+          "程序局部性",
+          "locality"
+        ],
+        "hint": "3字"
+      },
+      {
+        "answer": "空间",
+        "synonyms": [
+          "spatial"
+        ],
+        "hint": "2字"
+      },
+      {
+        "answer": "h",
+        "synonyms": [
+          "命中率",
+          "hit rate",
+          "H"
+        ],
+        "hint": "字母或中文"
+      }
+    ],
+    "explanation": "Cache基于局部性原理（时间+空间）。T = h×tc + (1-h)×tm。"
+  },
+  {
+    "id": "q-fb3",
+    "type": "fill",
+    "chapter": "第4章 指令系统",
+    "text": "CPI的含义是每条指令所需的__1__数。若主频为f，指令数为IC，CPI为c，则CPU时间 = __2__。",
+    "blanks": [
+      {
+        "answer": "时钟周期",
+        "synonyms": [
+          "周期数",
+          "cycle"
+        ],
+        "hint": "4字"
+      },
+      {
+        "answer": "IC×c/f",
+        "synonyms": [
+          "(IC×c)/f",
+          "IC*c/f",
+          "c×IC/f"
+        ],
+        "hint": "公式"
+      }
+    ],
+    "explanation": "CPU时间 = IC × CPI / f = 指令数 × 每条指令时钟周期数 / 主频。"
+  },
+  {
+    "id": "q-ca1",
+    "type": "calculate",
+    "chapter": "第3章 存储系统",
+    "question": "已知Cache命中率h=0.95，Cache存取时间tc=10ns，主存存取时间tm=100ns，求平均访问时间。",
+    "formula": "平均访问时间 = h×tc + (1-h)×tm",
+    "steps": [
+      "平均访问时间 = h×tc + (1-h)×tm",
+      "= 0.95×10 + 0.05×100",
+      "= 9.5 + 5",
+      "= 14.5ns"
+    ],
+    "answer": "14.5ns",
+    "answerAliases": [
+      "14.5",
+      "14.5纳秒"
+    ],
+    "hint": "代入公式计算"
+  },
+  {
+    "id": "q-ca2",
+    "type": "calculate",
+    "chapter": "第1章 计算机系统概述",
+    "question": "已知某程序指令数IC=10^6，CPI=2，主频f=1GHz，求CPU执行时间。",
+    "formula": "CPU时间 = IC × CPI / f",
+    "steps": [
+      "CPU时间 = IC × CPI / f",
+      "= 10^6 × 2 / 10^9",
+      "= 2×10^6 / 10^9",
+      "= 0.002秒 = 2ms"
+    ],
+    "answer": "2ms",
+    "answerAliases": [
+      "0.002秒",
+      "0.002s",
+      "2毫秒"
+    ],
+    "hint": "注意单位换算"
+  },
+  {
+    "id": "q-ca3",
+    "type": "calculate",
+    "chapter": "第4章 指令系统",
+    "question": "某计算机主频600MHz，程序A的指令数为10^6，CPI=3。求程序A的MIPS。",
+    "formula": "MIPS = 主频 / (CPI × 10^6)",
+    "steps": [
+      "MIPS = f / (CPI × 10^6)",
+      "= 600×10^6 / (3 × 10^6)",
+      "= 600 / 3",
+      "= 200"
+    ],
+    "answer": "200",
+    "answerAliases": [
+      "200MIPS",
+      "200 MIPS"
+    ],
+    "hint": "MIPS = f/(CPI×10^6)"
+  },
+  {
+    "id": "q-sa1",
+    "type": "shortAnswer",
+    "chapter": "第1章 计算机系统概述",
+    "question": "简述冯·诺依曼计算机结构的核心特点。",
+    "points": [
+      {
+        "point": "存储程序",
+        "synonyms": [
+          "程序存储",
+          "stored program",
+          "程序和数据一起存储"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "五大部件",
+        "synonyms": [
+          "运算器控制器存储器输入输出",
+          "五大部件",
+          "5个部件"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "二进制表示",
+        "synonyms": [
+          "二进制",
+          "指令用二进制",
+          "0和1表示"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "顺序执行",
+        "synonyms": [
+          "顺序执行",
+          "按地址顺序执行",
+          "逐条执行指令"
+        ],
+        "weight": 1
+      }
+    ],
+    "referenceAnswer": "冯·诺依曼结构核心：①存储程序；②五大部件（运算器、控制器、存储器、输入、输出）；③指令和数据用二进制表示；④按地址顺序执行。",
+    "passThreshold": 3
+  },
+  {
+    "id": "q-sa2",
+    "type": "shortAnswer",
+    "chapter": "第3章 存储系统",
+    "question": "简述Cache的工作原理。",
+    "points": [
+      {
+        "point": "局部性原理",
+        "synonyms": [
+          "局部性",
+          "时间局部性",
+          "空间局部性"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "命中与缺失",
+        "synonyms": [
+          "命中",
+          "缺失",
+          "hit",
+          "miss"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "平均访问时间公式",
+        "synonyms": [
+          "h×tc+(1-h)×tm",
+          "AMAT",
+          "平均访问时间"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "加速比",
+        "synonyms": [
+          "加速比",
+          "speedup",
+          "tm/平均访问时间"
+        ],
+        "weight": 1
+      }
+    ],
+    "referenceAnswer": "Cache基于局部性原理，将常用数据缓存。CPU访问时先查Cache，命中直接读取，未命中从主存取。平均访问时间=h×tc+(1-h)×tm。",
+    "passThreshold": 2
+  },
+  {
+    "id": "q-sa3",
+    "type": "shortAnswer",
+    "chapter": "第4章 指令系统",
+    "question": "简述指令流水线的基本原理及影响效率的主要因素。",
+    "points": [
+      {
+        "point": "并行执行",
+        "synonyms": [
+          "并行",
+          "重叠执行",
+          "同时执行多条指令"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "分级取指译码执行",
+        "synonyms": [
+          "取指译码执行",
+          "IF ID EX MEM WB",
+          "流水段"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "数据冲突",
+        "synonyms": [
+          "数据冲突",
+          "数据相关",
+          "数据冒险"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "控制冲突",
+        "synonyms": [
+          "控制冲突",
+          "分支冲突",
+          "控制冒险"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "结构冲突",
+        "synonyms": [
+          "结构冲突",
+          "资源冲突",
+          "结构冒险"
+        ],
+        "weight": 1
+      }
+    ],
+    "referenceAnswer": "指令流水线将执行过程分为多个阶段并行执行。影响因素：数据冲突、控制冲突、结构冲突。",
+    "passThreshold": 3
+  },
+  {
+    "id": "q-es1",
+    "type": "essay",
+    "chapter": "第1章 计算机系统概述",
+    "question": "论述冯·诺依曼体系结构与哈佛体系结构的区别，并分析各自的优缺点。",
+    "hint": "答题方向：①存储方式 ②总线结构 ③执行效率 ④成本 ⑤应用场景",
+    "points": [
+      {
+        "point": "冯结构指令数据共享存储器",
+        "synonyms": [
+          "共用存储器",
+          "共享存储",
+          "统一编址"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "哈佛结构指令数据分开存储",
+        "synonyms": [
+          "分开存储",
+          "独立存储",
+          "分离存储",
+          "两套存储器"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "哈佛结构有独立总线",
+        "synonyms": [
+          "独立总线",
+          "两套总线",
+          "双总线"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "哈佛结构执行效率更高",
+        "synonyms": [
+          "效率高",
+          "性能高",
+          "并行取",
+          "同时取指令和数据"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "冯结构成本低/设计简单",
+        "synonyms": [
+          "成本低",
+          "设计简单",
+          "硬件简单"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "哈佛结构功耗/成本高",
+        "synonyms": [
+          "功耗高",
+          "成本高",
+          "硬件复杂",
+          "面积大"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "冯结构适用通用计算机",
+        "synonyms": [
+          "通用",
+          "PC",
+          "个人电脑",
+          "x86"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "哈佛结构适用嵌入式/DSP",
+        "synonyms": [
+          "嵌入式",
+          "DSP",
+          "单片机",
+          "ARM"
+        ],
+        "weight": 1
+      }
+    ],
+    "referenceAnswer": "冯·诺依曼结构指令和数据共享存储空间和总线。哈佛结构指令和数据分别存储，各有独立总线，取指和取数据可并行。冯结构设计简单成本低适合通用计算机；哈佛结构效率高适合嵌入式和DSP。",
+    "passThreshold": 5
+  },
+  {
+    "id": "q-es2",
+    "type": "essay",
+    "chapter": "第3章 存储系统",
+    "question": "论述多级存储体系的层次结构设计原理，并说明Cache和虚存各自解决什么问题。",
+    "hint": "答题方向：①层次结构 ②速度容量成本权衡 ③Cache解决问题 ④虚存解决问题 ⑤局部性原理",
+    "points": [
+      {
+        "point": "多级层次：寄存器→Cache→主存→辅存",
+        "synonyms": [
+          "寄存器Cache主存辅存",
+          "多级存储",
+          "存储层次"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "速度递减容量递增成本递减",
+        "synonyms": [
+          "速度递减",
+          "容量递增",
+          "成本递减"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "Cache解决CPU主存速度差距",
+        "synonyms": [
+          "CPU和主存速度差距",
+          "速度不匹配",
+          "存储器墙"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "虚存解决主存容量不足",
+        "synonyms": [
+          "容量不足",
+          "内存不够",
+          "扩大地址空间"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "局部性原理是基础",
+        "synonyms": [
+          "局部性",
+          "时间局部性",
+          "空间局部性"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "Cache对程序员透明",
+        "synonyms": [
+          "透明",
+          "不可见",
+          "硬件管理"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "虚存由OS和硬件共同管理",
+        "synonyms": [
+          "操作系统管理",
+          "OS管理",
+          "MMU",
+          "页表"
+        ],
+        "weight": 1
+      }
+    ],
+    "referenceAnswer": "多级存储体系从快到慢：寄存器→Cache→主存→辅存。Cache解决CPU与主存速度差距，虚存解决主存容量不足。基于局部性原理。Cache硬件管理对程序员透明，虚存由OS和MMU管理。",
+    "passThreshold": 4
+  },
+  {
+    "id": "q-es3",
+    "type": "essay",
+    "chapter": "第4章 指令系统",
+    "question": "对比分析RISC与CISC架构的主要区别，并论述RISC成为主流的原因。",
+    "hint": "答题方向：①指令复杂度 ②指令长度 ③寄存器数量 ④寻址方式 ⑤流水线 ⑥编译器角色 ⑦功耗 ⑧应用趋势",
+    "points": [
+      {
+        "point": "CISC指令复杂/长度不固定",
+        "synonyms": [
+          "复杂指令",
+          "指令长度不固定",
+          "变长指令"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "RISC指令简单/长度固定",
+        "synonyms": [
+          "简单指令",
+          "指令长度固定",
+          "定长指令",
+          "精简"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "RISC寄存器多减少访存",
+        "synonyms": [
+          "寄存器多",
+          "大量寄存器",
+          "减少访存"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "CISC寻址方式丰富",
+        "synonyms": [
+          "寻址方式多",
+          "寻址丰富",
+          "多种寻址"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "RISC适合流水线",
+        "synonyms": [
+          "流水线",
+          "单周期执行",
+          "便于流水"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "RISC编译器承担更多工作",
+        "synonyms": [
+          "编译器优化",
+          "编译器负责",
+          "软件层面"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "RISC功耗低适合移动端",
+        "synonyms": [
+          "功耗低",
+          "低功耗",
+          "移动端",
+          "ARM低功耗"
+        ],
+        "weight": 1
+      },
+      {
+        "point": "CISC复杂度限制主频提升",
+        "synonyms": [
+          "限制主频",
+          "频率上不去",
+          "功耗墙"
+        ],
+        "weight": 1
+      }
+    ],
+    "referenceAnswer": "CISC指令复杂、变长、寻址丰富。RISC指令简单、定长、寄存器多、便于流水线。RISC成为主流因低功耗适合移动端，编译器技术进步使RISC可行。",
+    "passThreshold": 5
+  }
 ]

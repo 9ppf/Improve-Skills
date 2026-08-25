@@ -1093,7 +1093,7 @@
           var letters = 'ABCDEFGH';
           var parts = s.split('').map(function(ch) {
             var idx = letters.indexOf(ch);
-            return idx >= 0 && q.options[idx] ? (ch + '. ' + q.options[idx]) : ch;
+            return idx >= 0 && q.options[idx] ? (ch + '. ' + q.options[idx].replace(/^[A-H]\.\s*/, '')) : ch;
           });
           if (parts.length) return parts.join('；');
         }
@@ -1107,7 +1107,7 @@
           var letters = 'ABCDEFGH';
           var parts = String(q.answer).split('').map(function(ch) {
             var idx = letters.indexOf(ch);
-            return idx >= 0 && q.options && q.options[idx] ? (ch + '. ' + q.options[idx]) : ch;
+            return idx >= 0 && q.options && q.options[idx] ? (ch + '. ' + q.options[idx].replace(/^[A-H]\.\s*/, '')) : ch;
           });
           return parts.join('；');
         }
@@ -1247,7 +1247,7 @@
           if (Array.isArray(q.options)) {
             var letters = 'ABCDEFGH';
             parts.push('<div class="ss-bank-options">' + q.options.map(function(o, i) {
-              return '<div class="ss-bank-opt">' + (letters[i] || '?') + '. ' + esc(o) + '</div>';
+              return '<div class="ss-bank-opt">' + (letters[i] || '?') + '. ' + esc(o.replace(/^[A-H]\.\s*/, '')) + '</div>';
             }).join('') + '</div>');
           }
           if (q.answer) parts.push('<div class="ss-bank-answer">答案：<b>' + esc(q.answer) + '</b></div>');

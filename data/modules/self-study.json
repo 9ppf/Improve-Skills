@@ -37,7 +37,7 @@
               "review": "计算机系统原理真题练习与错题管理。",
               "renderMode": "content",
               "hidden": true,
-              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13015&v=2.3.4"
+              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13015&v=2.3.5"
             },
             {
               "name": "背诵与简答",
@@ -57,7 +57,7 @@
               "current": "5种题型 · 自动评分",
               "tasks": [],
               "review": "计算机系统原理练习测验，含选择/填空/计算/简答/论述题。",
-              "contentUrl": "自考学习/练习测验.html?subject=13015&v=2.18.10"
+              "contentUrl": "自考学习/练习测验.html?subject=13015&v=2.31.21"
             },
             {
               "name": "复盘总结",
@@ -67,7 +67,7 @@
               "tasks": [],
               "review": "计算机系统原理章节复盘总结。",
               "renderMode": "content",
-              "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=13015&v=2.3.4"
+              "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=13015&v=2.3.5"
             }
           ]
         },
@@ -97,7 +97,7 @@
               "review": "离散数学真题练习与错题管理。",
               "renderMode": "content",
               "hidden": true,
-              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=02324&v=2.3.4"
+              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=02324&v=2.3.5"
             },
             {
               "name": "背诵与简答",
@@ -117,7 +117,7 @@
               "current": "4种题型 · 自动评分",
               "tasks": [],
               "review": "离散数学练习测验，含选择/填空/计算/证明题。",
-              "contentUrl": "自考学习/练习测验.html?subject=02324&v=2.18.10"
+              "contentUrl": "自考学习/练习测验.html?subject=02324&v=2.31.21"
             },
             {
               "name": "复盘总结",
@@ -127,7 +127,7 @@
               "tasks": [],
               "review": "离散数学章节复盘总结。",
               "renderMode": "content",
-              "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=02324&v=2.3.4"
+              "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=02324&v=2.3.5"
             }
           ]
         },
@@ -157,7 +157,7 @@
               "review": "数据结构与算法真题练习与错题管理。",
               "renderMode": "content",
               "hidden": true,
-              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13003&v=2.3.4"
+              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13003&v=2.3.5"
             },
             {
               "name": "背诵与简答",
@@ -177,7 +177,7 @@
               "current": "5种题型 · 自动评分",
               "tasks": [],
               "review": "数据结构与算法练习测验，含选择/填空/计算/简答/论述题。",
-              "contentUrl": "自考学习/练习测验.html?subject=13003&v=2.18.10"
+              "contentUrl": "自考学习/练习测验.html?subject=13003&v=2.31.21"
             },
             {
               "name": "复盘总结",
@@ -187,7 +187,7 @@
               "tasks": [],
               "review": "数据结构与算法章节复盘总结。",
               "renderMode": "content",
-              "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=13003&v=2.3.4"
+              "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=13003&v=2.3.5"
             }
           ]
         }
@@ -274,7 +274,7 @@
               "current": "已整理知识框架与学习计划",
               "tasks": [],
               "review": "长期科目，先建立微积分、线性代数、概率论三大板块框架，配合教材例题逐步推进。",
-              "contentUrl": "自考学习/未考科目/00023高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.html?v=2.3.4"
+              "contentUrl": "自考学习/未考科目/00023高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.html?v=2.3.5"
             }
           ]
         }
