@@ -262,6 +262,17 @@
       white-space: pre-line;
       padding-left: 0.1rem;
     }
+    .recite-ex-image {
+      margin-top: 0.6rem;
+      text-align: center;
+    }
+    .recite-ex-image img {
+      max-width: 100%;
+      max-height: 280px;
+      border-radius: 8px;
+      border: 1px solid var(--rule);
+      object-fit: contain;
+    }
     .recite-card-chapter {
       font-size: 0.72rem;
       color: var(--accent);
@@ -638,9 +649,10 @@
   <script>
     var STORAGE_KEY = 'recite-cards-data';
     var MASTERY_KEY = 'recite-cards-mastery';
-    var DATA_VERSION = 21;
     var VERSION_KEY = 'recite-cards-version';
     var urlParams = new URLSearchParams(window.location.search);
+    // 数据缓存版本号：优先从URL的v参数读取，与self-study.json版本号同步
+    var DATA_VERSION = urlParams.get('v') || '23';
     var currentSubject = window.RECITE_SUBJECT || urlParams.get('subject') || '13015';
     var currentView = 'today';
     var currentCardType = 'all';
@@ -748,6 +760,7 @@
                 question: '什么是' + term + '？',
                 def: defParts.join('\n'),
                 ex: c.ex || '',
+                exImage: c.exImage || '',
                 exam: c.exam || '',
                 hint: c.hint || '',
                 cardType: c.cardType || 'memory',
@@ -865,6 +878,7 @@
             if (p.cardType) card.cardType = p.cardType;
             if (p.def) card.def = p.def;
             if (p.ex) card.ex = p.ex;
+            if (p.exImage) card.exImage = p.exImage;
             if (p.exam) card.exam = p.exam;
             if (p.answer) card.answer = p.answer;
             if (p.formula) card.formula = p.formula;
@@ -876,6 +890,7 @@
             var existing = existingMap[pKey];
             existing.def = p.def;
             existing.ex = p.ex;
+            existing.exImage = p.exImage || existing.exImage;
             existing.exam = p.exam;
             existing.chapter = p.chapter;
             existing.hint = p.hint || existing.hint;
@@ -989,8 +1004,11 @@
           if (c.def) {
             backContent += '<div class="recite-card-section"><span class="recite-section-label def-label">📋 定义</span><div class="recite-section-content">' + esc(c.def) + '</div></div>';
           }
-          if (c.ex) {
-            backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">💡 举例</span><div class="recite-section-content">' + esc(c.ex) + '</div></div>';
+          if (c.ex || c.exImage) {
+            var exHtmlCalc = '';
+            if (c.ex) exHtmlCalc += esc(c.ex);
+            if (c.exImage) exHtmlCalc += '<div class="recite-ex-image"><img src="' + esc(c.exImage) + '" alt="示意图" /></div>';
+            backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">💡 举例</span><div class="recite-section-content">' + exHtmlCalc + '</div></div>';
           }
           if (c.exam) {
             backContent += '<div class="recite-card-section"><span class="recite-section-label exam-label">🎯 考点</span><div class="recite-section-content">' + esc(c.exam) + '</div></div>';
@@ -1012,7 +1030,12 @@
           // 记忆卡（保持原有逻辑）
           if (c.def || c.ex || c.exam) {
             if (c.def) backContent += '<div class="recite-card-section"><span class="recite-section-label def-label">📋 定义</span><div class="recite-section-content">' + esc(c.def) + '</div></div>';
-            if (c.ex) backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">💡 举例</span><div class="recite-section-content">' + esc(c.ex) + '</div></div>';
+            if (c.ex || c.exImage) {
+              var exHtml = '';
+              if (c.ex) exHtml += esc(c.ex);
+              if (c.exImage) exHtml += '<div class="recite-ex-image"><img src="' + esc(c.exImage) + '" alt="示意图" /></div>';
+              backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">💡 举例</span><div class="recite-section-content">' + exHtml + '</div></div>';
+            }
             if (c.exam) backContent += '<div class="recite-card-section"><span class="recite-section-label exam-label">🎯 考点</span><div class="recite-section-content">' + esc(c.exam) + '</div></div>';
           } else if (c.answer) {
             backContent = '<div class="recite-card-answer">' + esc(c.answer) + '</div>';

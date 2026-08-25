@@ -1390,6 +1390,21 @@
 
     }
 
+    .section-card-pri-stats {
+      display: flex;
+      gap: 6px;
+      margin-left: 8px;
+    }
+    .section-card-pri-stats .pri-stat {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .section-card-pri-stats .pri-stat-key { background: #fee2e2; color: #991b1b; }
+    .section-card-pri-stats .pri-stat-normal { background: #fef3c7; color: #92400e; }
+    .section-card-pri-stats .pri-stat-survey { background: #f1f5f9; color: #475569; }
+
     .section-card-count {
 
         font-size: 0.66rem;
@@ -4316,15 +4331,14 @@ D.连通但删去一条边则不连通的图</p></div>
 
       });
 
-      secondaryBtns.forEach(function(btn) {
-
-        btn.addEventListener("click", function() {
-
-          switchChapter(btn.dataset.tab);
-
+      // 二级导航用事件委托（按钮会被 renderChapters 重建）
+      var secondaryBar = document.getElementById("secondaryTabs");
+      if (secondaryBar) {
+        secondaryBar.addEventListener("click", function(e) {
+          var btn = e.target.closest('.chapter-tab-btn');
+          if (btn) switchChapter(btn.dataset.tab);
         });
-
-      });
+      }
 
 
 
@@ -4654,7 +4668,7 @@ var LG_SUBJECT_CODE = SS_SUBJECT;
 
 
     function annotateChapter(chapterEl, chapterName, guideData) {
-
+        return; // 章节内容已纯动态从JSON渲染，不再需要旧的注解层
         if (!guideData || !guideData[chapterName]) return;
 
         if (chapterEl.dataset.lgAnnotated) return;
@@ -5080,46 +5094,65 @@ function toggleCollapse(header) {
       }).join('\n') + '\n</ul>';
     }
 
+    // 核心概念区块：标题旁显示重点/一般/了解统计
+    var countHtml = '';
+    if (type === '核心概念') {
+      var priCount = { '重点': 0, '一般': 0, '了解': 0 };
+      items.forEach(function(it) {
+        var p = it.priority || '一般';
+        priCount[p] = (priCount[p] || 0) + 1;
+      });
+      countHtml = '<span class="section-card-pri-stats">' +
+        '<span class="pri-stat pri-stat-key">🔴 ' + priCount['重点'] + '</span>' +
+        '<span class="pri-stat pri-stat-normal">🟡 ' + priCount['一般'] + '</span>' +
+        '<span class="pri-stat pri-stat-survey">⚪ ' + priCount['了解'] + '</span>' +
+        '</span>';
+    } else {
+      countHtml = '<span class="section-card-count">(' + items.length + ')</span>';
+    }
     return '<div class="section-card collapse-card' + open + '" style="border-left:4px solid ' + color + ';">\n' +
       '  <div class="section-card-header" onclick="toggleCollapse(this)">\n' +
       '    <span class="section-card-title">' + esc(type) + '</span>\n' +
-      '    <span class="section-card-count">(' + items.length + ')</span>\n' +
+      countHtml +
       '    <span class="chevron">▶</span>\n  </div>\n' +
       '  <div class="section-card-body collapse-body">\n' + body + '\n  </div>\n</div>';
   }
 
   // ---- 渲染章节精讲 tab ----
   function renderChapters(fw) {
-    // 重建章节精讲 tab 顶部的章节导航按钮（静态 HTML 为 02324 的 9 章）
+    // 重建章节精讲 tab 顶部的章节导航按钮
     var secTabs = document.getElementById('secondaryTabs');
     if (secTabs && fw.chapters && fw.chapters.length) {
       secTabs.innerHTML = fw.chapters.map(function(ch) {
         return '<button class="chapter-tab-btn" data-chapter="' + ch.id + '" data-tab="chapter-' + ch.id + '">第 ' + ch.id + ' 章</button>';
       }).join('\n');
     }
-    // 非 02324 科目时移除多余的静态章节 pane（避免残留 02324 内容）
-    if (SUBJECT_CODE !== '02324') {
-      var validIds = {};
-      (fw.chapters || []).forEach(function(ch) { validIds[ch.id] = 1; });
-      document.querySelectorAll('.chapter-tab-pane[data-tab^="chapter-"]').forEach(function(p) {
-        var pid = p.getAttribute('data-tab').replace('chapter-', '');
-        if (!validIds[pid]) p.remove();
-      });
-    }
-    (fw.chapters || []).forEach(function(ch) {
-      var pane = document.querySelector('.chapter-tab-pane[data-tab="chapter-' + ch.id + '"]');
-      if (!pane) return;
+    // 清空并重建所有章节 pane（不再依赖静态HTML兜底）
+    var tabContent = document.querySelector('.chapter-tab-content');
+    if (!tabContent) return;
+    // 移除旧的章节 pane
+    tabContent.querySelectorAll('.chapter-tab-pane[data-tab^="chapter-"]').forEach(function(p) { p.remove(); });
+    // 创建新的章节 pane
+    (fw.chapters || []).forEach(function(ch, idx) {
+      var pane = document.createElement('div');
+      pane.className = 'chapter-tab-pane';
+      pane.dataset.chapter = ch.id;
+      pane.dataset.tab = 'chapter-' + ch.id;
       var html = '<div class="framework-chapter" data-chapter="' + ch.id + '" data-meta="' +
         esc(ch.difficulty) + '" data-pages="' + esc(ch.pages) + '">\n' +
         '<h3 style="display:none;">' + esc(ch.name) + '</h3>\n' +
         (ch.sections || []).map(renderSectionCard).join('\n') +
         '\n</div>';
-      var old = pane.querySelector('.framework-chapter');
-      if (old) old.outerHTML = html;
-      else pane.innerHTML = html;
+      pane.innerHTML = html;
+      tabContent.appendChild(pane);
     });
-    if (window.__reinitChapters) window.__reinitChapters();
-    if (window.lgAnnotate) setTimeout(window.lgAnnotate, 100);
+    // 默认激活第1章（如果当前就在章节精讲tab）
+    var detailBtn = document.querySelector('#primaryTabs .chapter-tab-btn[data-tab="chapter-detail"]');
+    if (detailBtn && detailBtn.classList.contains('zk-active')) {
+      if (window.switchChapterTab && fw.chapters && fw.chapters.length) {
+        window.switchChapterTab('chapter-' + fw.chapters[0].id);
+      }
+    }
   }
 
   // ---- 渲染知识总览 tab ----
