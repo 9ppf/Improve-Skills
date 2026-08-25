@@ -1226,12 +1226,12 @@ def check_self_study_version_sync() -> list[str]:
     except (json.JSONDecodeError, OSError):
         return warnings
 
-    # 递归搜索所有 contentUrl 中包含「目录与知识框架」的条目
+    # 递归搜索所有 contentUrl 中包含「知识框架.html」的条目
     def find_knowledge_framework_urls(obj, path=""):
         results = []
         if isinstance(obj, dict):
             url = obj.get('contentUrl', '')
-            if '目录与知识框架' in url:
+            if '知识框架.html' in url:
                 results.append((path, url))
             for k, v in obj.items():
                 results.extend(find_knowledge_framework_urls(v, f"{path}/{k}"))
@@ -1256,13 +1256,14 @@ def check_self_study_version_sync() -> list[str]:
 
 
 def check_localstorage_key_consistency() -> list[str]:
-    """检查知识框架页面中 localStorage 键名是否包含正确的科目代码。
+    """检查统一知识框架页面（方案A-1）中 localStorage 键名是否写死科目代码。
 
-    隐患：从 13015 复制页面到 02324/13003 时，localStorage 键名
-    （如 ss_mastery_13015）可能残留旧科目代码，导致学习进度串科目。
+    隐患：三科共用 `自考学习/知识框架.html` 单页（?subject= 区分科目），
+    localStorage 键名必须用 SS_SUBJECT 动态拼接（如 ss_mastery_{科目代码}），
+    若写死科目代码（如 ss_mastery_13015），会导致学习进度串科目。
 
-    检查方法：从文件路径提取科目代码，扫描 JS 中 localStorage.getItem/setItem
-    的键名，检查是否包含错误的科目代码。
+    检查方法：扫描 JS 中 localStorage.getItem/setItem 的键名，
+    键名中出现任意科目代码即为写死（应动态拼接）。
     """
     root = SKILLS_DIR.parent.parent
     workbench = root / 'Workbench'
@@ -1271,45 +1272,39 @@ def check_localstorage_key_consistency() -> list[str]:
     if not workbench.exists():
         return warnings
 
-    # 科目代码与文件路径的映射
-    subject_codes = {
-        '02324': '02324离散数学',
-        '13003': '13003数据结构与算法',
-        '13015': '13015计算机系统原理',
-    }
+    # 统一知识框架页面（方案A-1：三科共用，?subject= 区分）
+    filepath = workbench / '自考学习' / '知识框架.html'
+    if not filepath.exists():
+        return warnings
 
-    for code, folder_name in subject_codes.items():
-        filepath = workbench / '自考学习' / '备考科目' / folder_name / f'{folder_name}-目录与知识框架.html'
-        if not filepath.exists():
-            continue
+    try:
+        content = filepath.read_text(encoding='utf-8')
+    except OSError:
+        return warnings
 
-        try:
-            content = filepath.read_text(encoding='utf-8')
-        except OSError:
-            continue
+    rel = str(filepath.relative_to(root)).replace('\\', '/')
 
-        rel = str(filepath.relative_to(root)).replace('\\', '/')
+    # 三科科目代码（键名中出现即为写死）
+    subject_codes = ['13015', '02324', '13003']
 
-        # 提取所有 localStorage 操作中的键名
-        # 匹配 localStorage.getItem("xxx") / localStorage.setItem("xxx", ...) / localStorage["xxx"]
-        key_patterns = [
-            r'localStorage\.(?:getItem|setItem|removeItem)\s*\(\s*["\']([^"\']+)["\']',
-            r'localStorage\s*\[\s*["\']([^"\']+)["\']\s*\]',
-        ]
+    # 提取所有 localStorage 操作中的键名
+    # 匹配 localStorage.getItem("xxx") / localStorage.setItem("xxx", ...) / localStorage["xxx"]
+    key_patterns = [
+        r'localStorage\.(?:getItem|setItem|removeItem)\s*\(\s*["\']([^"\']+)["\']',
+        r'localStorage\s*\[\s*["\']([^"\']+)["\']\s*\]',
+    ]
 
-        for pattern in key_patterns:
-            for match in re.finditer(pattern, content):
-                key = match.group(1)
+    for pattern in key_patterns:
+        for match in re.finditer(pattern, content):
+            key = match.group(1)
 
-                # 检查键名中是否包含其他科目代码
-                for other_code in subject_codes:
-                    if other_code == code:
-                        continue
-                    if other_code in key:
-                        warnings.append(
-                            f'{rel}: localStorage 键名 "{key}" 包含错误的科目代码 '
-                            f'{other_code}（应为 {code}）'
-                        )
+            # 检查键名中是否写死了科目代码（应使用 SS_SUBJECT 动态拼接）
+            for code in subject_codes:
+                if code in key:
+                    warnings.append(
+                        f'{rel}: localStorage 键名 "{key}" 写死了科目代码 '
+                        f'{code}（应使用 SS_SUBJECT 动态拼接）'
+                    )
 
     return warnings
 
@@ -1317,7 +1312,7 @@ def check_localstorage_key_consistency() -> list[str]:
 def check_knowledge_framework_js_consistency() -> list[str]:
     """检查统一知识框架页面（方案A-1）的 JS 初始化与参数化支持是否完整。
 
-    方案A-1 后三科共用一个页面（02324离散数学-目录与知识框架.html），
+    方案A-1 后三科共用一个页面（自考学习/知识框架.html），
     通过 ?subject= 参数区分科目。本检查确认该页面：
     1. 包含关键交互函数（switchTab/switchChapter/initChapter）
     2. 包含三科参数化支持（SUBJECT_META 映射、URL 参数读取、window 暴露）
@@ -1331,7 +1326,7 @@ def check_knowledge_framework_js_consistency() -> list[str]:
 
     # 统一页面路径（方案A-1 唯一导航入口）
     pages = {
-        '02324': workbench / '自考学习' / '备考科目' / '02324离散数学' / '02324离散数学-目录与知识框架.html',
+        '02324': workbench / '自考学习' / '知识框架.html',
     }
 
     # 关键 JS 函数名（必须存在于统一知识框架页面中）

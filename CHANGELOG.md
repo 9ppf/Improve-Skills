@@ -4,6 +4,38 @@
 
 ---
 
+## v2.31.0
+
+**发布时间**：2026-08-25（北京时间）
+
+### 2026-08-25 — 自考公用页面迁移至 自考学习/ 根目录 + 知识框架 CSS 路径修复
+
+**核心变更**：知识框架与 4 个公用页面（背诵与简答、练习测验、复盘总结、真题与错题本）全部平铺到 `Workbench/自考学习/` 根目录，删除原子目录（背诵与简答/、复盘总结/、真题练习/）；修复知识框架迁移后 base-vars.css 相对路径错误导致的标题白字问题；页面间链接统一为同目录引用。
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/自考学习/知识框架.html` | 新增（迁移自 `备考科目/02324离散数学/02324离散数学-目录与知识框架.html`）；base-vars.css 引用修正为 `../shared/`（修复白字 bug）；9 处练习测验链接改为同目录 `练习测验.html` |
+| `Workbench/自考学习/背诵与简答-核心概念背诵卡.html` | 新增（迁移自 `背诵与简答/`）：base-vars `../shared/`；练习测验链接改同目录；file: 协议 data 路径 `../../data` |
+| `Workbench/自考学习/练习测验.html` | 新增（迁移自 `背诵与简答/`）：base-vars `../shared/`；复盘总结链接改同目录 |
+| `Workbench/自考学习/复盘总结-章节复盘.html` | 新增（迁移自 `复盘总结/`）：base-vars `../shared/`；练习测验/背诵卡链接 6 处改同目录 |
+| `Workbench/自考学习/真题练习-真题与错题本.html` | 新增（迁移自 `真题练习/`，无内部相对引用） |
+| `Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html` | 删除（已迁移至根目录知识框架.html） |
+| `Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html`、`练习测验.html`、`复盘总结/复盘总结-章节复盘.html`、`真题练习/真题练习-真题与错题本.html` | 删除（已迁移至根目录） |
+| `data/modules/self-study.json` | 三科知识框架/背诵卡/练习测验/复盘总结/真题与错题本 contentUrl 更新为根目录路径（12 处）；知识框架版本号 v2.31.0 |
+| `data/knowledge-framework-13015.json` | meta.sourceFile 更新为 `自考学习/知识框架.html?subject=13015` |
+| `data/knowledge-framework-13003.json` | meta.sourceFile 更新为 `自考学习/知识框架.html?subject=13003` |
+| `data/knowledge-framework-02324.json` | meta.sourceFile 更新为 `自考学习/知识框架.html?subject=02324` |
+| `.trae/skills/validate_workbench.py` | localStorage 键名检查重写为扫描统一页面（键名出现任意科目代码即告警）；JS 一致性检查/版本号检查路径更新为根目录知识框架.html |
+| `.trae/skills/check_priority_labels.py` | 检查页面路径更新为根目录知识框架.html |
+| `.trae/skills/check_css_standards.py` | CSS 基线列表更新为根目录 4 个公用页面路径 |
+| `AGENT_HANDOFF.md` | 版本号 v2.31.0；目录结构更新（公用页面平铺根目录）；contentUrl/按钮示例更新为根目录引用 |
+| `工作台搭建总结.md` | 版本号 v2.31.0；版本记录追加 v2.31.0 |
+| `文件说明.md` | 版本号 v2.31.0；公用页面集中记录（知识框架/背诵卡/练习测验/复盘总结/真题与错题本） |
+| `Workbench/ai-learning/ai-learning-plan.html` | 三科知识框架路径引用更新为根目录 |
+| `Workbench/此刻便是春天.html` | 构建产物：5 个公用页面导航指向根目录新路径 |
+
+---
+
 ## v2.30.0
 
 **发布时间**：2026-08-24（北京时间）

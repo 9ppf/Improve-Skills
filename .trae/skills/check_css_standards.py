@@ -178,12 +178,12 @@ def check_css_standards():
 
 
 # 全量基线扫描的核心页面（只扫关键页面，避免全量扫描太多历史问题）
-# 知识框架页面已统一为 02324 单页（方案A-1，?subject= 参数区分三科）
+# 知识框架页面已统一为自考学习/知识框架.html 单页（方案A-1，?subject= 参数区分三科）
 BASELINE_FILES = [
-    'Workbench/自考学习/备考科目/02324离散数学/02324离散数学-目录与知识框架.html',
-    'Workbench/自考学习/背诵与简答/背诵与简答-核心概念背诵卡.html',
-    'Workbench/自考学习/背诵与简答/练习测验.html',
-    'Workbench/自考学习/复盘总结/复盘总结-章节复盘.html',
+    'Workbench/自考学习/知识框架.html',
+    'Workbench/自考学习/背诵与简答-核心概念背诵卡.html',
+    'Workbench/自考学习/练习测验.html',
+    'Workbench/自考学习/复盘总结-章节复盘.html',
     'Workbench/今日学习/today-flow.html',
     'Workbench/能力提升/能力提升-学习驾驶舱.html',
     'Workbench/Python基础/python-knowledge-tree.html',

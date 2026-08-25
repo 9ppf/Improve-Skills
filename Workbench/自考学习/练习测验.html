@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>练习测验</title>
-<link rel="stylesheet" href="../../shared/base-vars.css">
+<link rel="stylesheet" href="../shared/base-vars.css">
 <style>
   body {
   --green-light: #d1fae5;
@@ -553,7 +553,7 @@ function updateGuideFlow(m, u, n) {
     if (sub) sub.textContent = '点击返回复盘总结查看学习记录';
   }
   var basePath = (location.protocol === 'file:') ? '' : '';
-  btn.href = basePath + '../复盘总结/复盘总结-章节复盘.html?subject=' + currentSubject + '&tab=wrong#wrong';
+  btn.href = basePath + '复盘总结-章节复盘.html?subject=' + currentSubject + '&tab=wrong#wrong';
 }
 
 function updateMastery(chapter, level) {

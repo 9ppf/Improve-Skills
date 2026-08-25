@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>章节复盘总结 · 自考学习</title>
-  <link rel="stylesheet" href="../../shared/base-vars.css">
+  <link rel="stylesheet" href="../shared/base-vars.css">
 <style>
     
 
@@ -884,7 +884,7 @@
                   '<span class="ss-insight-suggestion-title">💡</span>' +
                   '<span class="ss-insight-suggestion-text">还没有练习记录，先去完成今日任务</span>' +
                 '</div>' +
-                '<a class="ss-insight-action" href="../背诵与简答/练习测验.html?subject=' + currentSubject + '&from=review">去练习 →</a>' +
+                '<a class="ss-insight-action" href="练习测验.html?subject=' + currentSubject + '&from=review">去练习 →</a>' +
               '</div>';
               return;
             }
@@ -984,10 +984,10 @@
             '<span class="ss-insight-suggestion-text">' + esc(suggestionText) + '</span>' +
           '</div>' +
           (totalAnswered > 0 && wrong.length > 0
-            ? '<a class="ss-insight-action" href="../背诵与简答/练习测验.html?subject=' + subject + '&mode=weak">🎯 弱点练习 →</a>'
+            ? '<a class="ss-insight-action" href="练习测验.html?subject=' + subject + '&mode=weak">🎯 弱点练习 →</a>'
             : (totalAnswered === 0
-              ? '<a class="ss-insight-action" href="../背诵与简答/练习测验.html?subject=' + subject + '&from=review">去练习 →</a>'
-              : '<a class="ss-insight-action" href="../背诵与简答/练习测验.html?subject=' + subject + '&from=review">继续练习 →</a>')) +
+              ? '<a class="ss-insight-action" href="练习测验.html?subject=' + subject + '&from=review">去练习 →</a>'
+              : '<a class="ss-insight-action" href="练习测验.html?subject=' + subject + '&from=review">继续练习 →</a>')) +
         '</div>';
 
         if (!wrong.length) {
@@ -1123,7 +1123,7 @@
       }
 
       function buildRedoUrl(qid) {
-        return '../背诵与简答/练习测验.html?subject=' + encodeURIComponent(currentSubject) + '&questionId=' + encodeURIComponent(qid);
+        return '练习测验.html?subject=' + encodeURIComponent(currentSubject) + '&questionId=' + encodeURIComponent(qid);
       }
 
       // ============ 题库管理：加载 ============
@@ -1508,7 +1508,7 @@
       // 引导流：设置返回背诵卡按钮
       var guideBtn = document.getElementById('guideBtn');
       if (guideBtn) {
-        guideBtn.href = '../背诵与简答/背诵与简答-核心概念背诵卡.html?subject=' + currentSubject;
+        guideBtn.href = '背诵与简答-核心概念背诵卡.html?subject=' + currentSubject;
       }
     })();
   </script>
