@@ -4,6 +4,25 @@
 
 ---
 
+## v2.31.10
+
+**发布时间**：2026-08-25（北京时间）
+
+### 今日学习流快速练习修复
+
+**核心变更**：修复离散数学快速练习"看答案"点击无效和切换任务后答案丢失两个问题。
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/today/today-flow.html` | 修复 checkPractice/showPractice 的 onclick 字符串中 `\n`/`\r` 未转义导致点击无效；新增 savePracticeState() 用 sessionStorage 按任务索引保存用户输入、反馈和掌握状态，renderPractice 渲染后自动恢复 |
+| `Workbench/此刻便是春天.html` | today-flow contentUrl 版本号 v1.3.2 |
+| `AGENT_HANDOFF.md` | 版本号 v2.31.10 |
+| `工作台搭建总结.md` | 版本号 v2.31.10 |
+| `data/mastery-progress.json` | 掌握进度数据更新 |
+| `data/study-plan.json` | 学习计划数据更新 |
+
+---
+
 ## v2.31.9
 
 **发布时间**：2026-08-25（北京时间）

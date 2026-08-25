@@ -83,7 +83,7 @@
           "subject": "数据结构",
           "chapter": "第1章",
           "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-          "done": false
+          "done": true
         },
         {
           "tag": "core",
@@ -582,7 +582,7 @@
               "chapter": "第1章",
               "topic": "课后练习 30min",
               "hours": 0.5,
-              "done": false
+              "done": true
             },
             {
               "tag": "core2",
@@ -606,7 +606,7 @@
               "chapter": "第1章",
               "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
               "hours": 0.93,
-              "done": false
+              "done": true
             },
             {
               "tag": "core2",
@@ -756,7 +756,7 @@
               "chapter": "第1章",
               "topic": "课后练习 30min",
               "hours": 0.5,
-              "done": false
+              "done": true
             },
             {
               "tag": "core2",
@@ -780,7 +780,7 @@
               "chapter": "第1章",
               "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
               "hours": 0.93,
-              "done": false
+              "done": true
             },
             {
               "tag": "core2",
@@ -930,7 +930,7 @@
               "chapter": "第1章",
               "topic": "课后练习 30min",
               "hours": 0.5,
-              "done": false
+              "done": true
             },
             {
               "tag": "core2",
@@ -954,7 +954,7 @@
               "chapter": "第1章",
               "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
               "hours": 0.93,
-              "done": false
+              "done": true
             },
             {
               "tag": "core2",

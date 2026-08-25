@@ -1151,14 +1151,20 @@ function renderPractice(cards, subject, chapter) {
   var el = document.getElementById('practiceArea');
   if (!el) return;
   if (!cards || !cards.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;">本章暂无练习题</div>'; return; }
+  // 以任务索引为key保存练习答案，切换任务后恢复
+  var practiceKey = 'tpa_' + currentTaskIdx;
+  var saved = {};
+  try { saved = JSON.parse(sessionStorage.getItem(practiceKey) || '{}'); } catch(e) {}
   var html = '';
   cards.forEach(function(c, i) {
+    var key = String(i);
+    var savedAns = saved[key] || {};
     html += '<div class="tf-practice-q">';
     html += '<div class="tf-practice-q-title">Q' + (i+1) + ': ' + escapeHtml(c.question) + '</div>';
-    html += '<textarea class="tf-practice-input" id="pa_' + i + '" placeholder="输入你的答案..." rows="2"></textarea>';
+    html += '<textarea class="tf-practice-input" id="pa_' + i + '" placeholder="输入你的答案..." rows="2" oninput="savePracticeState(' + i + ')">' + escapeHtml(savedAns.input || '') + '</textarea>';
     html += '<div class="tf-practice-actions">';
-    html += '<button class="tf-practice-btn check" onclick="checkPractice(' + i + ',\'' + escapeHtml(c.def || '').replace(/'/g, "\\'") + '\')">提交</button>';
-    html += '<button class="tf-practice-btn show" onclick="showPractice(' + i + ',\'' + escapeHtml((c.def || '') + ' | ' + (c.ex || '')).replace(/'/g, "\\'") + '\')">看答案</button>';
+    html += '<button class="tf-practice-btn check" onclick="checkPractice(' + i + ',\'' + escapeHtml(c.def || '').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r') + '\')">提交</button>';
+    html += '<button class="tf-practice-btn show" onclick="showPractice(' + i + ',\'' + escapeHtml((c.def || '') + ' | ' + (c.ex || '')).replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r') + '\')">看答案</button>';
     html += '</div>';
     html += '<div class="tf-practice-feedback" id="pf_' + i + '"></div>';
     // ④ 反馈：掌握状态标记按钮
@@ -1171,6 +1177,36 @@ function renderPractice(cards, subject, chapter) {
     html += '</div>';
   });
   el.innerHTML = html;
+  // 恢复已保存的反馈和掌握状态
+  Object.keys(saved).forEach(function(key) {
+    var s = saved[key];
+    if (s.feedback) {
+      var fb = document.getElementById('pf_' + key);
+      if (fb) { fb.className = s.feedbackClass || 'tf-practice-feedback show correct'; fb.textContent = s.feedback; }
+    }
+    if (s.masteryShown) {
+      var mf = document.getElementById('mf_' + key);
+      if (mf) mf.style.display = 'block';
+    }
+  });
+}
+
+// 保存练习答案到 sessionStorage（切换任务不丢失）
+function savePracticeState(idx) {
+  var practiceKey = 'tpa_' + currentTaskIdx;
+  var saved = {};
+  try { saved = JSON.parse(sessionStorage.getItem(practiceKey) || '{}'); } catch(e) {}
+  var input = document.getElementById('pa_' + idx);
+  var fb = document.getElementById('pf_' + idx);
+  var mf = document.getElementById('mf_' + idx);
+  var key = String(idx);
+  saved[key] = {
+    input: input ? input.value : '',
+    feedback: fb ? fb.textContent : '',
+    feedbackClass: fb ? fb.className : '',
+    masteryShown: mf ? mf.style.display === 'block' : false
+  };
+  sessionStorage.setItem(practiceKey, JSON.stringify(saved));
 }
 
 function markMastery(subject, chapter, level, practiceIdx) {
@@ -1203,6 +1239,7 @@ function checkPractice(idx, answer) {
   // ④ 反馈：显示掌握状态按钮
   var mf = document.getElementById('mf_' + idx);
   if (mf) mf.style.display = 'block';
+  savePracticeState(idx);
 }
 
 function showPractice(idx, answer) {
@@ -1213,6 +1250,7 @@ function showPractice(idx, answer) {
   }
   var mf = document.getElementById('mf_' + idx);
   if (mf) mf.style.display = 'block';
+  savePracticeState(idx);
 }
 
 function renderOverview() {
