@@ -638,7 +638,7 @@
   <script>
     var STORAGE_KEY = 'recite-cards-data';
     var MASTERY_KEY = 'recite-cards-mastery';
-    var DATA_VERSION = 13;
+    var DATA_VERSION = 16;
     var VERSION_KEY = 'recite-cards-version';
     var urlParams = new URLSearchParams(window.location.search);
     var currentSubject = window.RECITE_SUBJECT || urlParams.get('subject') || '13015';
@@ -882,37 +882,61 @@
         var sections = ch.sections || [];
         for (var si = 0; si < sections.length; si++) {
           var s = sections[si];
-          if (s.type !== '核心概念') continue;
-          var concepts = s.coreConcepts || s.items || [];
-          concepts.forEach(function(c) {
-            var term = c.term || '';
-            if (!term) return;
-            // 合并 summary + points 作为定义
-            var defParts = [];
-            if (c.summary) defParts.push(c.summary);
-            if (c.points && c.points.length) {
-              c.points.forEach(function(p) { defParts.push('• ' + p); });
-            }
-            var card = {
-              id: Date.now() + Math.random(),
-              term: term,
-              chapter: chName,
-              question: '什么是' + term + '？',
-              def: defParts.join('\n'),
-              ex: c.ex || '',
-              exam: c.exam || '',
-              hint: c.hint || '',
-              cardType: c.cardType || 'memory',
-              mastery: 'unknown'
-            };
-            // 计算卡字段
-            if (c.formula) card.formula = c.formula;
-            if (c.steps) card.steps = c.steps;
-            if (c.answer) card.answer = c.answer;
-            if (c.answerAliases) card.answerAliases = c.answerAliases;
-            cards.push(card);
-          });
-          break; // 只取核心概念 section
+          if (s.type === '核心概念') {
+            // 核心概念 → 记忆卡/计算卡
+            var concepts = s.coreConcepts || s.items || [];
+            concepts.forEach(function(c) {
+              var term = c.term || '';
+              if (!term) return;
+              // 合并 summary + points 作为定义
+              var defParts = [];
+              if (c.summary) defParts.push(c.summary);
+              if (c.points && c.points.length) {
+                c.points.forEach(function(p) { defParts.push('• ' + p); });
+              }
+              var card = {
+                id: Date.now() + Math.random(),
+                term: term,
+                chapter: chName,
+                question: '什么是' + term + '？',
+                def: defParts.join('\n'),
+                ex: c.ex || '',
+                exam: c.exam || '',
+                hint: c.hint || '',
+                cardType: c.cardType || 'memory',
+                mastery: 'unknown'
+              };
+              // 计算卡字段
+              if (c.formula) card.formula = c.formula;
+              if (c.steps) card.steps = c.steps;
+              if (c.answer) card.answer = c.answer;
+              if (c.answerAliases) card.answerAliases = c.answerAliases;
+              cards.push(card);
+            });
+          } else if (s.type === '必会公式') {
+            // 必会公式 → 计算卡
+            var formulas = s.items || s.points || [];
+            formulas.forEach(function(f) {
+              var formulaText = typeof f === 'string' ? f : (f.term || f.point || '');
+              if (!formulaText) return;
+              // 拆分标题和内容（以中文冒号分隔）
+              var colonIdx = formulaText.indexOf('：');
+              var title = colonIdx > 0 ? formulaText.substring(0, colonIdx) : formulaText.substring(0, 10);
+              var content = colonIdx > 0 ? formulaText.substring(colonIdx + 1) : formulaText;
+              cards.push({
+                id: Date.now() + Math.random(),
+                term: title,
+                chapter: chName,
+                question: title + '的公式是什么？',
+                def: content,
+                ex: '',
+                exam: '',
+                hint: '',
+                cardType: 'calculation',
+                mastery: 'unknown'
+              });
+            });
+          }
         }
       });
       return cards;
@@ -1346,11 +1370,11 @@
 
     loadData();
     var dataBase = API_BASE ? API_BASE + '/data' : '../../data';
-    // 02324 离散数学改用知识框架 JSON 作为数据源；其他科目暂保持 recite-cards
+    // 三科均改用知识框架 JSON 作为数据源
     var cardSources = [
       ['02324', dataBase + '/knowledge-framework-02324.json?v=' + DATA_VERSION],
-      ['13015', dataBase + '/recite-cards-13015.json?v=' + DATA_VERSION],
-      ['13003', dataBase + '/recite-cards-13003.json?v=' + DATA_VERSION]
+      ['13015', dataBase + '/knowledge-framework-13015.json?v=' + DATA_VERSION],
+      ['13003', dataBase + '/knowledge-framework-13003.json?v=' + DATA_VERSION]
     ];
     var apiCalls = [
       fetch(apiUrl('/api/recite-mastery'), { cache: 'no-cache' })
@@ -1362,7 +1386,7 @@
       return fetch(src[1], { cache: 'no-cache' })
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          if (src[0] === '02324' && data && data.chapters) {
+          if ((src[0] === '02324' || src[0] === '13003' || src[0] === '13015') && data && data.chapters) {
             // 知识框架格式：转换为卡片
             var transformed = transformKfToCards(data);
             if (transformed.length > 0) PRESET_CARDS[src[0]] = transformed;
