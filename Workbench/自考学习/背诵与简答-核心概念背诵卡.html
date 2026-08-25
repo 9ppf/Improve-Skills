@@ -638,7 +638,7 @@
   <script>
     var STORAGE_KEY = 'recite-cards-data';
     var MASTERY_KEY = 'recite-cards-mastery';
-    var DATA_VERSION = 16;
+    var DATA_VERSION = 18;
     var VERSION_KEY = 'recite-cards-version';
     var urlParams = new URLSearchParams(window.location.search);
     var currentSubject = window.RECITE_SUBJECT || urlParams.get('subject') || '13015';
@@ -659,6 +659,8 @@
       } catch(e) {}
     }
     var allData = {};
+    // 当前周次各科目对应的章节列表（从 study-plan.json 动态加载）
+    var todayChapters = {};
 
     function getTodayChapterPrefix() {
       var startDate = new Date('2026-08-25');
@@ -669,10 +671,40 @@
       return '第' + weekNum + '章';
     }
 
+    // 科目代码与学习计划中科目名称的映射
+    var SUBJECT_NAME_MAP = {
+      '02324': '离散数学',
+      '13003': '数据结构',
+      '13015': '系统原理'
+    };
+
     function isTodayCard(card) {
       if (currentSubject === 'en') return true;
+      // 优先使用从学习计划加载的章节列表
+      var chapters = todayChapters[currentSubject];
+      if (chapters && chapters.length > 0) {
+        var ch = card.chapter || '';
+        return chapters.some(function(prefix) { return ch.indexOf(prefix) === 0; });
+      }
+      // 降级：按周次计算单章节
       var prefix = getTodayChapterPrefix();
       return (card.chapter || '').indexOf(prefix) === 0;
+    }
+
+    // 生成今日卡片标题的章节标签（如"第1-3章"或"第1章"）
+    function getTodayChapterLabel() {
+      var chapters = todayChapters[currentSubject];
+      if (chapters && chapters.length > 0) {
+        // 提取章号并排序
+        var nums = chapters.map(function(ch) {
+          var m = ch.match(/第(\d+)章/);
+          return m ? parseInt(m[1]) : 0;
+        }).filter(function(n) { return n > 0; }).sort(function(a, b) { return a - b; });
+        if (nums.length === 0) return chapters.join('、');
+        if (nums.length === 1) return '第' + nums[0] + '章';
+        return '第' + nums[0] + '-' + nums[nums.length - 1] + '章';
+      }
+      return getTodayChapterPrefix();
     }
 
     var PRESET_CARDS = {
@@ -1067,7 +1099,7 @@
       document.getElementById('statUnsure').textContent = unsure;
       document.getElementById('statUnknown').textContent = unknown;
       document.getElementById('statsTitle').textContent = currentView === 'today' ? '📊 今日统计' : '📊 总计统计';
-      document.getElementById('cardsTitle').textContent = currentView === 'today' ? '🎴 今日卡片（' + getTodayChapterPrefix() + '）' : '🎴 全部卡片';
+      document.getElementById('cardsTitle').textContent = currentView === 'today' ? '🎴 今日卡片（' + getTodayChapterLabel() + '）' : '🎴 全部卡片';
     }
 
     function updateChapterFilter() {
@@ -1095,8 +1127,9 @@
 
     function renderCards() {
       var cards = getCards(currentSubject);
-      if (currentView === 'today') cards = cards.filter(isTodayCard);
       var fc = document.getElementById('filterChapter').value;
+      // 今日视图：未手动选章节时按当前周次过滤，手动选了章节则显示该章节
+      if (currentView === 'today' && !fc) cards = cards.filter(isTodayCard);
       var fm = document.getElementById('filterMastery').value;
 
       var filtered = cards.filter(function(c) {
@@ -1380,7 +1413,28 @@
       fetch(apiUrl('/api/recite-mastery'), { cache: 'no-cache' })
         .then(function(r) { return r.json(); })
         .then(function(d) { window.__apiMastery = d; _apiLoaded = true; })
-        .catch(function(e) { _apiLoaded = true; })
+        .catch(function(e) { _apiLoaded = true; }),
+      // 加载学习计划，提取当前周次的章节列表
+      fetch(dataBase + '/study-plan.json?v=' + DATA_VERSION, { cache: 'no-cache' })
+        .then(function(r) { return r.json(); })
+        .then(function(plan) {
+          if (!plan || !plan.weeks) return;
+          // 找到当前周
+          var currentWeek = plan.weeks.find(function(w) { return w.isCurrent; });
+          if (!currentWeek) return;
+          // 按科目代码提取章节
+          Object.keys(SUBJECT_NAME_MAP).forEach(function(code) {
+            var subjectName = SUBJECT_NAME_MAP[code];
+            var chs = [];
+            (currentWeek.goals || []).forEach(function(g) {
+              if (g.subject === subjectName && g.chapter) {
+                chs.push(g.chapter);
+              }
+            });
+            if (chs.length > 0) todayChapters[code] = chs;
+          });
+        })
+        .catch(function(e) {})
     ];
     Promise.all(cardSources.map(function(src) {
       return fetch(src[1], { cache: 'no-cache' })
