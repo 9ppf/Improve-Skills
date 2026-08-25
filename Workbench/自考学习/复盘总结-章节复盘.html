@@ -388,8 +388,23 @@
     .ss-bank-toolbar-spacer { flex: 1; }
     .ss-bank-select { font-family: inherit; font-size: 0.85rem; padding: 0.45rem 0.7rem; border-radius: 8px; border: 1px solid var(--rule); background: #fff; color: var(--ink); cursor: pointer; }
     .ss-bank-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+    /* 章节筛选：蓝紫色系 */
+    .ss-bank-select-chapter { border-color: #c7d2fe; background: #f5f3ff; color: #4338ca; }
+    .ss-bank-select-chapter:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12); }
+    /* 题型筛选：紫色系 */
+    .ss-bank-select-type { border-color: #e9d5ff; background: #faf5ff; color: #6b21a8; }
+    .ss-bank-select-type:focus { border-color: #9333ea; box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12); }
+    /* 状态筛选：青绿色系 */
+    .ss-bank-select-status { border-color: #99f6e4; background: #ecfdf5; color: #047857; }
+    .ss-bank-select-status:focus { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12); }
     .ss-bank-add { font-family: inherit; font-size: 0.85rem; font-weight: 600; padding: 0.45rem 1rem; border-radius: 8px; border: none; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 3px 12px rgba(37, 99, 235, 0.25); transition: transform 0.15s; }
     .ss-bank-add:hover { transform: translateY(-1px); }
+
+    /* 题库卡片答题状态标签 */
+    .ss-bank-status { font-size: 0.74rem; font-weight: 600; padding: 0.12rem 0.5rem; border-radius: 999px; white-space: nowrap; }
+    .ss-bank-status-unanswered { background: rgba(107, 114, 128, 0.1); color: #4b5563; }
+    .ss-bank-status-correct { background: rgba(16, 185, 129, 0.12); color: #059669; }
+    .ss-bank-status-wrong { background: rgba(225, 29, 72, 0.1); color: #be123c; }
 
     .ss-bank-group { margin-bottom: 1.4rem; }
     .ss-bank-group-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; padding-left: 0.2rem; font-weight: 700; }
@@ -1130,31 +1145,50 @@
       function loadQuizBank() {
         var container = document.getElementById('bankContainer');
         var subject = currentSubject;
-        if (bankCache.subject !== subject) { bankCache.filterChapter = ''; bankCache.filterType = ''; }
+        if (bankCache.subject !== subject) { bankCache.filterChapter = ''; bankCache.filterType = ''; bankCache.filterStatus = ''; }
         container.innerHTML = '<div class="ss-loading">加载中…</div>';
-        fetch(apiUrl('/api/quiz-bank?subject=' + subject), { cache: 'no-cache' })
-          .then(function(r) { return r.json(); })
-          .then(function(data) {
-            bankCache.subject = subject;
-            bankCache.data = Array.isArray(data) ? data : [];
-            renderBank();
-          })
-          .catch(function(err) {
-            container.innerHTML = '<div class="ss-error-box">⚠️ 无法加载题库：' +
-              esc(err.message || '网络请求失败') + '。请确认本地服务（http://localhost:8000）已启动。</div>';
+        // 同时加载题库和答题记录，用于判断每题的完成状态
+        Promise.all([
+          fetch(apiUrl('/api/quiz-bank?subject=' + subject), { cache: 'no-cache' }).then(function(r) { return r.json(); }),
+          fetch(apiUrl('/api/quiz-records?subject=' + subject), { cache: 'no-cache' }).then(function(r) { return r.json(); })
+        ]).then(function(res) {
+          var bankData = Array.isArray(res[0]) ? res[0] : [];
+          var records = Array.isArray(res[1]) ? res[1] : [];
+          // 构建题目状态映射：questionId → {isCorrect, level}
+          var statusMap = {};
+          records.forEach(function(r) {
+            if (r && r.questionId) {
+              // 保留最新记录（覆盖旧记录）
+              statusMap[r.questionId] = { isCorrect: r.isCorrect, level: r.level };
+            }
           });
+          bankCache.subject = subject;
+          bankCache.data = bankData;
+          bankCache.statusMap = statusMap;
+          renderBank();
+        }).catch(function(err) {
+          container.innerHTML = '<div class="ss-error-box">⚠️ 无法加载题库：' +
+            esc(err.message || '网络请求失败') + '。请确认本地服务（http://localhost:8000）已启动。</div>';
+        });
       }
 
       // ============ 题库管理：渲染 ============
       function renderBank() {
         var container = document.getElementById('bankContainer');
         var data = bankCache.data;
+        var statusMap = bankCache.statusMap || {};
         var typeCounts = {}, chapterCounts = {};
+        var statusCounts = { unanswered: 0, correct: 0, wrong: 0 };
         data.forEach(function(q) {
           var t = q.type || 'other';
           typeCounts[t] = (typeCounts[t] || 0) + 1;
           var c = q.chapter || '未分类';
           chapterCounts[c] = (chapterCounts[c] || 0) + 1;
+          // 统计答题状态
+          var st = statusMap[q.id];
+          if (!st) statusCounts.unanswered++;
+          else if (st.isCorrect) statusCounts.correct++;
+          else statusCounts.wrong++;
         });
         var chapters = Object.keys(chapterCounts);
         var types = Object.keys(typeCounts);
@@ -1164,22 +1198,35 @@
           return '<span class="ss-bank-stat-chip">' + m.icon + ' ' + esc(m.label) + ' ' + typeCounts[t] + '</span>';
         }).join('');
 
+        // 状态统计 chips
+        var statusChips =
+          '<span class="ss-bank-stat-chip" style="background:rgba(107,114,128,0.1);color:#4b5563;">⚪ 未答 ' + statusCounts.unanswered + '</span>' +
+          '<span class="ss-bank-stat-chip" style="background:rgba(16,185,129,0.12);color:#059669;">✓ 答对 ' + statusCounts.correct + '</span>' +
+          '<span class="ss-bank-stat-chip" style="background:rgba(225,29,72,0.1);color:#be123c;">✗ 答错 ' + statusCounts.wrong + '</span>';
+
         var statsHtml =
           '<div class="ss-bank-stats">' +
-            '<div class="ss-bank-stat"><span class="ss-bank-stat-num">' + data.length + '</span><span class="ss-bank-stat-label">总题数</span></div>' +
-            '<div class="ss-bank-stat-chips">' + (typeChips || '<span class="ss-bank-stat-chip">暂无</span>') + '</div>' +
+            '<div class="ss-bank-stat-chips">' +
+              '<span class="ss-bank-stat-chip" style="background:rgba(37,99,235,0.1);color:#2563eb;font-weight:700;">📊 总题数 ' + data.length + '</span>' +
+              (typeChips || '<span class="ss-bank-stat-chip">暂无</span>') +
+            '</div>' +
           '</div>';
 
-        var fc = bankCache.filterChapter, ft = bankCache.filterType;
-        var chapterOpts = '<option value="">全部章节</option>' +
+        var fc = bankCache.filterChapter, ft = bankCache.filterType, fs = bankCache.filterStatus;
+        var chapterOpts = '<option value="">📚 全部章节</option>' +
           chapters.map(function(c) { return '<option value="' + esc(c) + '"' + (c === fc ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('');
-        var typeOpts = '<option value="">全部题型</option>' +
+        var typeOpts = '<option value="">📝 全部题型</option>' +
           types.map(function(t) { var m = TYPE_META[t] || { label: t }; return '<option value="' + esc(t) + '"' + (t === ft ? ' selected' : '') + '>' + esc(m.label) + '</option>'; }).join('');
+        var statusOpts = '<option value="">📊 全部状态</option>' +
+          '<option value="unanswered"' + (fs === 'unanswered' ? ' selected' : '') + '>⚪ 未答（' + statusCounts.unanswered + '）</option>' +
+          '<option value="correct"' + (fs === 'correct' ? ' selected' : '') + '>✓ 答对（' + statusCounts.correct + '）</option>' +
+          '<option value="wrong"' + (fs === 'wrong' ? ' selected' : '') + '>✗ 答错（' + statusCounts.wrong + '）</option>';
 
         var toolbarHtml =
           '<div class="ss-bank-toolbar">' +
-            '<select id="bankFilterChapter" class="ss-bank-select">' + chapterOpts + '</select>' +
-            '<select id="bankFilterType" class="ss-bank-select">' + typeOpts + '</select>' +
+            '<select id="bankFilterChapter" class="ss-bank-select ss-bank-select-chapter">' + chapterOpts + '</select>' +
+            '<select id="bankFilterType" class="ss-bank-select ss-bank-select-type">' + typeOpts + '</select>' +
+            '<select id="bankFilterStatus" class="ss-bank-select ss-bank-select-status">' + statusOpts + '</select>' +
             '<span class="ss-bank-toolbar-spacer"></span>' +
             '<button class="ss-bank-add" id="bankAddBtn">+ 新增题目</button>' +
           '</div>';
@@ -1189,6 +1236,13 @@
         var filtered = data.filter(function(q) {
           if (fc && (q.chapter || '') !== fc) return false;
           if (ft && (q.type || '') !== ft) return false;
+          // 答题状态筛选
+          if (fs) {
+            var st = statusMap[q.id];
+            if (fs === 'unanswered' && st) return false;
+            if (fs === 'correct' && (!st || !st.isCorrect)) return false;
+            if (fs === 'wrong' && (!st || st.isCorrect)) return false;
+          }
           return true;
         });
 
@@ -1208,8 +1262,10 @@
 
         var fcEl = document.getElementById('bankFilterChapter');
         var ftEl = document.getElementById('bankFilterType');
+        var fsEl = document.getElementById('bankFilterStatus');
         if (fcEl) fcEl.addEventListener('change', function() { bankCache.filterChapter = fcEl.value; renderBank(); });
         if (ftEl) ftEl.addEventListener('change', function() { bankCache.filterType = ftEl.value; renderBank(); });
+        if (fsEl) fsEl.addEventListener('change', function() { bankCache.filterStatus = fsEl.value; renderBank(); });
         var addBtn = document.getElementById('bankAddBtn');
         if (addBtn) addBtn.addEventListener('click', function() { openBankForm(null); });
       }
@@ -1223,11 +1279,17 @@
         var qText = q.question || q.text || '(无题目)';
         var ansHtml = renderBankAnswer(q);
         var subLabel = q.subType && SUBTYPE_LABEL[q.subType] ? '（' + SUBTYPE_LABEL[q.subType] + '）' : '';
+        // 答题状态标签
+        var st = (bankCache.statusMap || {})[q.id];
+        var statusBadge = !st ? '<span class="ss-bank-status ss-bank-status-unanswered">⚪ 未答</span>' :
+          st.isCorrect ? '<span class="ss-bank-status ss-bank-status-correct">✓ 答对</span>' :
+          '<span class="ss-bank-status ss-bank-status-wrong">✗ 答错</span>';
 
         return '<div class="ss-bank-card" data-idx="' + idx + '">' +
           '<div class="ss-bank-card-head">' +
             '<span class="ss-bank-qid">' + esc(q.id || '') + '</span>' +
             '<span class="ss-bank-type">' + typeMeta.icon + ' ' + esc(typeMeta.label) + subLabel + '</span>' +
+            statusBadge +
             '<span class="ss-bank-diff">' + diffStars + ' ' + esc(diffLabel) + '</span>' +
             '<div class="ss-bank-card-actions">' +
               '<button class="ss-bank-edit" data-idx="' + idx + '">编辑</button>' +

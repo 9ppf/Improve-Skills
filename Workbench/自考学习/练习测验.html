@@ -1097,7 +1097,7 @@ function toggleSymbols(qId) {
 
 function insertSymbol(qId, sym) {
   var ta = document.getElementById('input-'+qId);
-  if (!ta || ta.quiz-disabled) return;
+  if (!ta || ta.disabled) return;
   var s = ta.selectionStart || 0, e = ta.selectionEnd || 0;
   ta.value = ta.value.substring(0, s) + sym + ta.value.substring(e);
   ta.selectionStart = ta.selectionEnd = s + sym.length;
