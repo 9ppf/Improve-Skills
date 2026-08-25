@@ -638,7 +638,7 @@
   <script>
     var STORAGE_KEY = 'recite-cards-data';
     var MASTERY_KEY = 'recite-cards-mastery';
-    var DATA_VERSION = 11;
+    var DATA_VERSION = 13;
     var VERSION_KEY = 'recite-cards-version';
     var urlParams = new URLSearchParams(window.location.search);
     var currentSubject = window.RECITE_SUBJECT || urlParams.get('subject') || '13015';
@@ -661,7 +661,7 @@
     var allData = {};
 
     function getTodayChapterPrefix() {
-      var startDate = new Date('2026-08-14');
+      var startDate = new Date('2026-08-25');
       var today = new Date();
       var daysDiff = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
       var weekNum = Math.floor(daysDiff / 7) + 1;
@@ -871,6 +871,52 @@
       ]
     };
 
+    // 卡片唯一标识：优先用 term，兼容旧 question
+    function cardKey(c) { return c.term || c.question || ''; }
+    // 知识框架 JSON 转换为卡片数组
+    function transformKfToCards(data) {
+      var cards = [];
+      if (!data || !data.chapters) return cards;
+      data.chapters.forEach(function(ch) {
+        var chName = ch.name || ch.title || ('第' + (ch.id || '?') + '章');
+        var sections = ch.sections || [];
+        for (var si = 0; si < sections.length; si++) {
+          var s = sections[si];
+          if (s.type !== '核心概念') continue;
+          var concepts = s.coreConcepts || s.items || [];
+          concepts.forEach(function(c) {
+            var term = c.term || '';
+            if (!term) return;
+            // 合并 summary + points 作为定义
+            var defParts = [];
+            if (c.summary) defParts.push(c.summary);
+            if (c.points && c.points.length) {
+              c.points.forEach(function(p) { defParts.push('• ' + p); });
+            }
+            var card = {
+              id: Date.now() + Math.random(),
+              term: term,
+              chapter: chName,
+              question: '什么是' + term + '？',
+              def: defParts.join('\n'),
+              ex: c.ex || '',
+              exam: c.exam || '',
+              hint: c.hint || '',
+              cardType: c.cardType || 'memory',
+              mastery: 'unknown'
+            };
+            // 计算卡字段
+            if (c.formula) card.formula = c.formula;
+            if (c.steps) card.steps = c.steps;
+            if (c.answer) card.answer = c.answer;
+            if (c.answerAliases) card.answerAliases = c.answerAliases;
+            cards.push(card);
+          });
+          break; // 只取核心概念 section
+        }
+      });
+      return cards;
+    }
     function saveMastery() {
       // API 数据未加载完成时跳过保存，防止空状态覆盖服务器数据
       if (!_apiLoaded) return;
@@ -878,8 +924,9 @@
         var masteryMap = {};
         Object.keys(allData).forEach(function(subject) {
           allData[subject].forEach(function(c) {
-            if (c.question && c.mastery) {
-              masteryMap[c.question] = c.mastery;
+            var key = cardKey(c);
+            if (key && c.mastery) {
+              masteryMap[key] = c.mastery;
             }
           });
         });
@@ -898,8 +945,9 @@
         if (!masteryMap || typeof masteryMap !== 'object') return;
         Object.keys(allData).forEach(function(subject) {
           allData[subject].forEach(function(c) {
-            if (c.question && masteryMap[c.question]) {
-              c.mastery = masteryMap[c.question];
+            var key = cardKey(c);
+            if (key && masteryMap[key]) {
+              c.mastery = masteryMap[key];
             }
           });
         });
@@ -931,9 +979,10 @@
       Object.keys(PRESET_CARDS).forEach(function(subject) {
         var cards = getCards(subject);
         var existingMap = {};
-        cards.forEach(function(c) { existingMap[c.question] = c; });
+        cards.forEach(function(c) { existingMap[cardKey(c)] = c; });
         PRESET_CARDS[subject].forEach(function(p, i) {
-          if (!existingMap[p.question]) {
+          var pKey = cardKey(p);
+          if (!existingMap[pKey]) {
             var card = {
               id: Date.now() + i + Math.random(),
               chapter: p.chapter,
@@ -941,6 +990,7 @@
               hint: p.hint || '',
               mastery: p.mastery || 'unknown'
             };
+            if (p.term) card.term = p.term;
             if (p.cardType) card.cardType = p.cardType;
             if (p.def) card.def = p.def;
             if (p.ex) card.ex = p.ex;
@@ -951,13 +1001,14 @@
             if (p.answerAliases) card.answerAliases = p.answerAliases;
             cards.push(card);
             changed = true;
-          } else if (p.def && !existingMap[p.question].def) {
-            var existing = existingMap[p.question];
+          } else if (p.def && !existingMap[pKey].def) {
+            var existing = existingMap[pKey];
             existing.def = p.def;
             existing.ex = p.ex;
             existing.exam = p.exam;
             existing.chapter = p.chapter;
             existing.hint = p.hint || existing.hint;
+            if (p.term) existing.term = p.term;
             if (p.cardType) existing.cardType = p.cardType;
             if (p.formula) existing.formula = p.formula;
             if (p.steps) existing.steps = p.steps;
@@ -1061,8 +1112,17 @@
               return '<button type="button" class="calc-card-symbol-btn" onclick="insertCalcCardSymbol(' + c.id + ',\'' + s + '\')">' + s + '</button>';
             }).join('') +
             '</div>';
-          // 计算卡背面：公式 + 步骤 + 最终答案
+          // 计算卡背面：定义/公式说明 + 举例 + 考点 + 解题步骤 + 最终答案
           backContent = '<div class="calc-card-type-badge">🧮 计算题</div>';
+          if (c.def) {
+            backContent += '<div class="recite-card-section"><span class="recite-section-label def-label">📋 定义</span><div class="recite-section-content">' + esc(c.def) + '</div></div>';
+          }
+          if (c.ex) {
+            backContent += '<div class="recite-card-section"><span class="recite-section-label ex-label">💡 举例</span><div class="recite-section-content">' + esc(c.ex) + '</div></div>';
+          }
+          if (c.exam) {
+            backContent += '<div class="recite-card-section"><span class="recite-section-label exam-label">🎯 考点</span><div class="recite-section-content">' + esc(c.exam) + '</div></div>';
+          }
           if (c.formula) {
             backContent += '<div class="calc-formula"><b>公式：</b>' + esc(c.formula) + '</div>';
           }
@@ -1286,8 +1346,9 @@
 
     loadData();
     var dataBase = API_BASE ? API_BASE + '/data' : '../../data';
+    // 02324 离散数学改用知识框架 JSON 作为数据源；其他科目暂保持 recite-cards
     var cardSources = [
-      ['02324', dataBase + '/recite-cards-02324.json?v=' + DATA_VERSION],
+      ['02324', dataBase + '/knowledge-framework-02324.json?v=' + DATA_VERSION],
       ['13015', dataBase + '/recite-cards-13015.json?v=' + DATA_VERSION],
       ['13003', dataBase + '/recite-cards-13003.json?v=' + DATA_VERSION]
     ];
@@ -1301,7 +1362,11 @@
       return fetch(src[1], { cache: 'no-cache' })
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          if (data && Array.isArray(data) && data.length > 0) {
+          if (src[0] === '02324' && data && data.chapters) {
+            // 知识框架格式：转换为卡片
+            var transformed = transformKfToCards(data);
+            if (transformed.length > 0) PRESET_CARDS[src[0]] = transformed;
+          } else if (data && Array.isArray(data) && data.length > 0) {
             PRESET_CARDS[src[0]] = data;
           }
         })
