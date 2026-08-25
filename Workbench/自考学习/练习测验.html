@@ -466,6 +466,66 @@
   </div>
 </div>
 <script>
+// 知识框架 JSON 转换为卡片数组（统一数据源，不再依赖 recite-cards）
+function transformKfToCards(data) {
+  var cards = [];
+  if (!data || !data.chapters) return cards;
+  data.chapters.forEach(function(ch) {
+    var chName = ch.name || ch.title || ('第' + (ch.id || '?') + '章');
+    var sections = ch.sections || [];
+    for (var si = 0; si < sections.length; si++) {
+      var s = sections[si];
+      if (s.type === '核心概念') {
+        var concepts = s.coreConcepts || s.items || [];
+        concepts.forEach(function(c) {
+          var term = c.term || '';
+          if (!term) return;
+          var defParts = [];
+          if (c.summary) defParts.push(c.summary);
+          if (c.points && c.points.length) {
+            c.points.forEach(function(p) { defParts.push('• ' + p); });
+          }
+          var card = {
+            term: term,
+            chapter: chName,
+            question: '什么是' + term + '？',
+            def: defParts.join('\n'),
+            ex: c.ex || '',
+            exam: c.exam || '',
+            hint: c.hint || '',
+            cardType: c.cardType || 'memory'
+          };
+          if (c.formula) card.formula = c.formula;
+          if (c.steps) card.steps = c.steps;
+          if (c.answer) card.answer = c.answer;
+          if (c.answerAliases) card.answerAliases = c.answerAliases;
+          cards.push(card);
+        });
+      } else if (s.type === '必会公式') {
+        var formulas = s.items || s.points || [];
+        formulas.forEach(function(f) {
+          var formulaText = typeof f === 'string' ? f : (f.term || f.point || '');
+          if (!formulaText) return;
+          var colonIdx = formulaText.indexOf('：');
+          var title = colonIdx > 0 ? formulaText.substring(0, colonIdx) : formulaText.substring(0, 10);
+          var content = colonIdx > 0 ? formulaText.substring(colonIdx + 1) : formulaText;
+          cards.push({
+            term: title,
+            chapter: chName,
+            question: title + '的公式是什么？',
+            def: content,
+            ex: '',
+            exam: '',
+            hint: '',
+            cardType: 'calculation'
+          });
+        });
+      }
+    }
+  });
+  return cards;
+}
+
 var SUBJECT_CONFIG = {
   '13015': { name: '计算机系统原理', types: ['choice','fill','calculate','shortAnswer','essay'] },
   '02324': { name: '离散数学', types: ['choice','fill','calculate','proof'] },
@@ -1605,18 +1665,20 @@ function generateAIQuestions() {
   var subjectName = SUBJECT_CONFIG[currentSubject].name;
   var chapterList = todayChapters.length > 0 ? todayChapters.join('、') : '全部章节';
 
-  /* 1. 获取背诵卡内容 */
-  var cardsUrl = apiUrl('/data/recite-cards-' + currentSubject + '.json');
-  fetch(cardsUrl, { cache: 'no-cache' })
+  /* 1. 从知识框架 JSON 获取知识点内容并转换为卡片 */
+  var kfUrl = apiUrl('/data/knowledge-framework-' + currentSubject + '.json');
+  fetch(kfUrl, { cache: 'no-cache' })
     .then(function(r) { return r.json(); })
-    .then(function(cards) {
-      cards = Array.isArray(cards) ? cards : [];
+    .then(function(data) {
+      var cards = transformKfToCards(data);
       if (cards.length === 0) {
-        throw new Error('该科目暂无背诵卡内容，无法生成题目');
+        throw new Error('该科目暂无知识点内容，无法生成题目');
       }
-      /* 筛选今日章节卡片，或全量 */
+      /* 筛选今日章节卡片（前缀匹配，兼容"第1章"和"第1章 标题"），或全量 */
       var targetCards = todayChapters.length > 0
-        ? cards.filter(function(c) { return todayChapters.indexOf(c.chapter) >= 0; })
+        ? cards.filter(function(c) {
+            return c.chapter && todayChapters.some(function(tc) { return c.chapter.indexOf(tc) >= 0; });
+          })
         : cards;
       if (targetCards.length === 0) targetCards = cards.slice(0, 5);
 

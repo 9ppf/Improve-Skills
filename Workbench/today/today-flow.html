@@ -456,9 +456,9 @@ function escapeHtml(s) {
 }
 
 var CARD_MAP = {
-  '系统原理': '/data/recite-cards-13015.json',
-  '离散数学': '/data/recite-cards-02324.json',
-  '数据结构': '/data/recite-cards-13003.json'
+  '系统原理': '/data/knowledge-framework-13015.json',
+  '离散数学': '/data/knowledge-framework-02324.json',
+  '数据结构': '/data/knowledge-framework-13003.json'
 };
 var SUBJECT_CODE = { '系统原理': '13015', '离散数学': '02324', '数据结构': '13003' };
 var CODE_SUBJECT = { '13015': '系统原理', '02324': '离散数学', '13003': '数据结构' };
@@ -648,13 +648,69 @@ function getTopicPriority(subjectName, chapter, question) {
   return null;
 }
 
+// 知识框架 JSON 转换为卡片数组（从知识框架统一加载，不再依赖 recite-cards）
+function transformKfToCards(data) {
+  var cards = [];
+  if (!data || !data.chapters) return cards;
+  data.chapters.forEach(function(ch) {
+    var chName = ch.name || ch.title || ('第' + (ch.id || '?') + '章');
+    var sections = ch.sections || [];
+    for (var si = 0; si < sections.length; si++) {
+      var s = sections[si];
+      if (s.type === '核心概念') {
+        var concepts = s.coreConcepts || s.items || [];
+        concepts.forEach(function(c) {
+          var term = c.term || '';
+          if (!term) return;
+          var defParts = [];
+          if (c.summary) defParts.push(c.summary);
+          if (c.points && c.points.length) {
+            c.points.forEach(function(p) { defParts.push('• ' + p); });
+          }
+          cards.push({
+            term: term,
+            chapter: chName,
+            question: '什么是' + term + '？',
+            def: defParts.join('\n'),
+            ex: c.ex || '',
+            exam: c.exam || '',
+            hint: c.hint || '',
+            cardType: c.cardType || 'memory'
+          });
+        });
+      } else if (s.type === '必会公式') {
+        var formulas = s.items || s.points || [];
+        formulas.forEach(function(f) {
+          var formulaText = typeof f === 'string' ? f : (f.term || f.point || '');
+          if (!formulaText) return;
+          var colonIdx = formulaText.indexOf('：');
+          var title = colonIdx > 0 ? formulaText.substring(0, colonIdx) : formulaText.substring(0, 10);
+          var content = colonIdx > 0 ? formulaText.substring(colonIdx + 1) : formulaText;
+          cards.push({
+            term: title,
+            chapter: chName,
+            question: title + '的公式是什么？',
+            def: content,
+            ex: '',
+            exam: '',
+            hint: '',
+            cardType: 'calculation'
+          });
+        });
+      }
+    }
+  });
+  return cards;
+}
+
 function loadCards(subject) {
   var path = CARD_MAP[subject];
   if (!path) return Promise.resolve([]);
   if (cardCache[path]) return Promise.resolve(cardCache[path]);
-  return fetchJson(path).then(function(r) { return r.json(); }).then(function(d) {
-    cardCache[path] = d;
-    return d;
+  return fetchJson(path).then(function(r) { return r.json(); }).then(function(data) {
+    var cards = transformKfToCards(data);
+    cardCache[path] = cards;
+    return cards;
   }).catch(function() { return []; });
 }
 
