@@ -4,6 +4,56 @@
 
 ---
 
+## v2.31.45
+
+**发布时间**：2026-08-26（北京时间）
+
+### CSS抽离方案文档+githooks+用户偏好更新
+
+**核心变更**：新增CSS抽离专项方案和公共JS/CSS抽离总方案文档；新增githooks（post-checkout/post-commit/post-merge/pre-push）；新增重构计划可视化页面；更新用户偏好（拆卡原则、题型分配、验收驱动等系统升级总结）；更新文件说明.md补充6个缺失文件记录。
+
+| 文件 | 更新内容 |
+|---|---|
+| `CSS抽离专项方案.md` | 新增：CSS抽离落地执行细则（基于现有代码分析，含抽离目标/执行步骤/验收标准） |
+| `公共JS与CSS抽离方案B.md` | 新增：公共JS与CSS抽离总方案（CSS+JS两阶段规划） |
+| `public-js-css-refactor-plan/public-js-css-refactor-plan.html` | 新增：重构计划可视化页面 |
+| `public-js-css-refactor-plan/_shared/js/mermaid.min.js` | 新增：Mermaid图表库 |
+| `githooks/post-checkout` | 新增：Git post-checkout hook |
+| `githooks/post-commit` | 新增：Git post-commit hook |
+| `githooks/post-merge` | 新增：Git post-merge hook |
+| `githooks/pre-push` | 新增：Git pre-push hook |
+| `用户偏好与AI协作建议.md` | 更新：拆卡原则、题型分配规范、题目数量标准、验收驱动、设计规范对标等系统升级偏好 |
+| `工作台搭建总结.md` | 更新：版本号同步至 v2.31.45 |
+| `文件说明.md` | 更新：补充6个缺失文件记录（CSS抽离方案/公共JS与CSS方案B/三科设计规范/public-js-css-refactor-plan/assets）；版本号更新至 v2.31.45 |
+| `CHANGELOG.md` | 新增 v2.31.41~v2.31.45 版本记录 |
+
+---
+
+## v2.31.41 ~ v2.31.44
+
+**发布时间**：2026-08-26（北京时间）
+
+### 三科1-3章闭环标准化验收
+
+**核心变更**：三科1-3章闭环标准化修复，按拆卡原则和题型分配规范完成所有卡片拆分和题目补充。离散数学从25卡154题变为37卡232题；计算机系统原理从56卡259题变为70卡405题；数据结构与算法从12卡76题变为23卡171题。合计130卡615知识点808题，9项检查全部通过。新增三科卡片与题目设计规范文档。练习测验筛选从知识点改为章节下拉框。
+
+| 文件 | 更新内容 |
+|---|---|
+| `data/knowledge-framework-02324.json` | 离散数学第1章16→19卡74→120题，第2章8卡38→51题，第3章9→10卡42→61题 |
+| `data/quiz-bank-02324.json` | 离散数学题库扩充至232题 |
+| `data/knowledge-framework-13015.json` | 系统原理第1章16→23卡82→145题，第2章21→27卡91→153题，第3章19→20卡86→107题 |
+| `data/quiz-bank-13015.json` | 系统原理题库扩充至405题 |
+| `data/knowledge-framework-13003.json` | 数据结构第1章拆卡补题，第2章5→9卡，第3章4→5卡 |
+| `data/quiz-bank-13003.json` | 数据结构题库扩充至171题 |
+| `Workbench/自考学习/练习测验.html` | 筛选下拉框从知识点改为章节，卡片标题改为章节·知识点紫色加粗 |
+| `离散数学-卡片与题目设计规范.md` | 新增：离散数学卡片与题目设计规范文档 |
+| `数据结构与算法-卡片与题目设计规范.md` | 新增：数据结构与算法卡片与题目设计规范文档 |
+| `计算机系统原理-卡片与题目设计规范.md` | 新增：计算机系统原理卡片与题目设计规范文档 |
+| `data/modules/self-study.json` | 三科知识框架 contentUrl 版本号更新 |
+| `BACKLOG_TODO.md` | 新增公共JS抽离、pre-commit退出码、公共样式抽离等项 |
+
+---
+
 ## v2.31.40
 
 **发布时间**：2026-08-26（北京时间）
