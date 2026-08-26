@@ -26,7 +26,7 @@
               "current": "已整理目录与知识框架",
               "tasks": [],
               "review": "掌握约 20%，优先建立系统主线，重点攻克数据表示、指令系统、存储系统。",
-              "contentUrl": "自考学习/知识框架.html?subject=13015&v=2.31.27"
+              "contentUrl": "自考学习/知识框架.html?subject=13015&v=2.31.29"
             },
             {
               "name": "真题与错题",
@@ -47,7 +47,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "计算机系统原理核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.31.25"
+              "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.31.29"
             },
             {
               "name": "练习测验",
@@ -57,7 +57,7 @@
               "current": "5种题型 · 自动评分",
               "tasks": [],
               "review": "计算机系统原理练习测验，含选择/填空/计算/简答/论述题。",
-              "contentUrl": "自考学习/练习测验.html?subject=13015&v=2.31.23"
+              "contentUrl": "自考学习/练习测验.html?subject=13015&v=2.31.31"
             },
             {
               "name": "复盘总结",
@@ -86,7 +86,7 @@
               "current": "已整理目录与知识框架",
               "tasks": [],
               "review": "掌握约 40%，优先串讲逻辑推理、集合关系、代数图论三大板块。",
-              "contentUrl": "自考学习/知识框架.html?subject=02324&v=2.31.10"
+              "contentUrl": "自考学习/知识框架.html?subject=02324&v=2.31.32"
             },
             {
               "name": "真题与错题",
@@ -107,7 +107,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "离散数学核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.31.19"
+              "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.31.32"
             },
             {
               "name": "练习测验",
@@ -117,7 +117,7 @@
               "current": "4种题型 · 自动评分",
               "tasks": [],
               "review": "离散数学练习测验，含选择/填空/计算/证明题。",
-              "contentUrl": "自考学习/练习测验.html?subject=02324&v=2.31.22"
+              "contentUrl": "自考学习/练习测验.html?subject=02324&v=2.31.32"
             },
             {
               "name": "复盘总结",
@@ -146,7 +146,7 @@
               "current": "已整理目录与知识框架",
               "tasks": [],
               "review": "10 月考试科目之一，学位课，分数需 ≥70。先用网课建立整体框架，再刷真题。",
-              "contentUrl": "自考学习/知识框架.html?subject=13003&v=2.31.10"
+              "contentUrl": "自考学习/知识框架.html?subject=13003&v=2.31.40"
             },
             {
               "name": "真题与错题",
@@ -167,7 +167,7 @@
               "current": "正面问题 · 背面答案",
               "tasks": [],
               "review": "数据结构与算法核心概念与简答题背诵。",
-              "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.31.19"
+              "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.31.33"
             },
             {
               "name": "练习测验",
@@ -177,7 +177,7 @@
               "current": "5种题型 · 自动评分",
               "tasks": [],
               "review": "数据结构与算法练习测验，含选择/填空/计算/简答/论述题。",
-              "contentUrl": "自考学习/练习测验.html?subject=13003&v=2.31.23"
+              "contentUrl": "自考学习/练习测验.html?subject=13003&v=2.31.33"
             },
             {
               "name": "复盘总结",

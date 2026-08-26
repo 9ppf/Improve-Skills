@@ -2640,5 +2640,1896 @@
       }
     ],
     "passThreshold": 60
+  },
+  {
+    "id": "q-13015-137",
+    "type": "choice",
+    "question": "十进制数25转换为二进制是（  ）",
+    "answer": "B",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "进制转换",
+    "src": "ai",
+    "explanation": "25=16+8+1=2^4+2^3+2^0=11001",
+    "options": [
+      "A. 10011",
+      "B. 11001",
+      "C. 10110",
+      "D. 11010"
+    ]
+  },
+  {
+    "id": "q-13015-138",
+    "type": "choice",
+    "question": "二进制数1011.101转换为十六进制是（  ）",
+    "answer": "A",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "进制转换",
+    "src": "ai",
+    "explanation": "整数部分1011=B，小数部分1010=A，合得B.A",
+    "options": [
+      "A. B.A",
+      "B. B.5",
+      "C. 11.5",
+      "D. 11.A"
+    ]
+  },
+  {
+    "id": "q-13015-139",
+    "type": "fill",
+    "question": "八进制数17.4转换为十进制是___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "进制转换",
+    "src": "ai",
+    "explanation": "1*8+7=15，4*8^(-1)=0.5，合得15.5",
+    "blanks": [
+      {
+        "answer": "15.5",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-140",
+    "type": "calc",
+    "question": "将十进制数25.25转换为二进制和八进制",
+    "answer": "二进制11001.01，八进制31.2",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "进制转换",
+    "src": "ai",
+    "explanation": "整数25除2取余逆序=11001，小数0.25乘2取整=01，合得11001.01。八进制：011 001 . 010 = 31.2"
+  },
+  {
+    "id": "q-13015-141",
+    "type": "calc",
+    "question": "将十六进制数3F.8转换为二进制和十进制",
+    "answer": "二进制111111.1，十进制63.5",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "进制转换",
+    "src": "ai",
+    "explanation": "3=0011,F=1111,8=1000，合得00111111.1000=111111.1。十进制：3*16+15=63，8/16=0.5"
+  },
+  {
+    "id": "q-13015-142",
+    "type": "choice",
+    "question": "以下哪个不是计算机使用补码表示带符号整数的原因？（  ）",
+    "answer": "C",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "模运算与补码原理",
+    "src": "ai",
+    "explanation": "补码的编码并不简单直观（原码更直观），选择补码是因为0唯一、加减统一、符号位参与运算、多表示一个最小负数",
+    "options": [
+      "A. 0的表示唯一",
+      "B. 加减运算统一",
+      "C. 编码简单直观",
+      "D. 多表示一个最小负数"
+    ]
+  },
+  {
+    "id": "q-13015-143",
+    "type": "fill",
+    "question": "n位补码中，[X]补 = ___ (mod 2^n)",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "模运算与补码原理",
+    "src": "ai",
+    "explanation": "补码定义：[X]补 = 2^n + X (mod 2^n)，即真值对模取余",
+    "blanks": [
+      {
+        "answer": "2^n + X",
+        "synonyms": [
+          "2的n次方加X"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-144",
+    "type": "choice",
+    "question": "4位运算中，5 + 13的结果是（  ）",
+    "answer": "B",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "模运算与补码原理",
+    "src": "ai",
+    "explanation": "5+13=18，但4位运算对16取模，18 mod 16 = 2，结果为0010",
+    "options": [
+      "A. 18",
+      "B. 2",
+      "C. -6",
+      "D. 溢出错误"
+    ]
+  },
+  {
+    "id": "q-13015-145",
+    "type": "short",
+    "question": "说明计算机为什么选择补码表示带符号整数",
+    "answer": "4个原因：1.0的表示唯一，简化判零逻辑；2.加减运算统一，简化硬件设计；3.符号位与数值位一起参与运算，无需特殊处理；4.比原码/反码多表示一个最小负数，编码空间利用率最高",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "模运算与补码原理",
+    "src": "ai",
+    "explanation": "补码的数学基础是模运算，减法变加法，且编码空间无冗余"
+  },
+  {
+    "id": "q-13015-146",
+    "type": "choice",
+    "question": "int i = -1赋值给unsigned int u，u的值为（  ）",
+    "answer": "C",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "C语言数据表示与转换",
+    "src": "ai",
+    "explanation": "int i=-1的位模式为0xFFFFFFFF，赋值给unsigned后位模式不变，解释为4294967295",
+    "options": [
+      "A. -1",
+      "B. 1",
+      "C. 4294967295",
+      "D. 0"
+    ]
+  },
+  {
+    "id": "q-13015-147",
+    "type": "choice",
+    "question": "0x12345678赋值给short变量后值为（  ）",
+    "answer": "B",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "C语言数据表示与转换",
+    "src": "ai",
+    "explanation": "int赋给short截断高位，保留低16位0x5678",
+    "options": [
+      "A. 0x1234",
+      "B. 0x5678",
+      "C. 0x12345678",
+      "D. 0x7856"
+    ]
+  },
+  {
+    "id": "q-13015-148",
+    "type": "fill",
+    "question": "char c = -1赋值给int i后，i的十六进制值为0x___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "C语言数据表示与转换",
+    "src": "ai",
+    "explanation": "char是有符号类型，-1的位模式为0xFF，符号扩展到32位复制符号位1，得0xFFFFFFFF",
+    "blanks": [
+      {
+        "answer": "FFFFFFFF",
+        "synonyms": [
+          "ffffffff"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-149",
+    "type": "short",
+    "question": "说明符号扩展和零扩展的区别",
+    "answer": "符号扩展：小有符号类型赋给大类型时，复制符号位填充高位（如char -1 -> int 0xFFFFFFFF）。零扩展：小无符号类型赋给大类型时，高位补0（如unsigned char 255 -> int 0x000000FF）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "C语言数据表示与转换",
+    "src": "ai",
+    "explanation": "关键区别在于源类型是否有符号：有符号复制符号位，无符号补0"
+  },
+  {
+    "id": "q-13015-150",
+    "type": "choice",
+    "question": "0x0F & 0x55的结果是（  ）",
+    "answer": "A",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "逻辑数据",
+    "src": "ai",
+    "explanation": "00001111 & 01010101 = 00000101 = 0x05",
+    "options": [
+      "A. 0x05",
+      "B. 0x5F",
+      "C. 0x50",
+      "D. 0xFF"
+    ]
+  },
+  {
+    "id": "q-13015-151",
+    "type": "fill",
+    "question": "逻辑数据只有两个值：___和___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "逻辑数据",
+    "src": "ai",
+    "explanation": "逻辑数据是非数值数据，用0表示假，1表示真",
+    "blanks": [
+      {
+        "answer": "0",
+        "synonyms": []
+      },
+      {
+        "answer": "1",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-152",
+    "type": "choice",
+    "question": "C语言中 5 && 3 的结果是（  ）",
+    "answer": "B",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "逻辑数据",
+    "src": "ai",
+    "explanation": "逻辑与&&对整体判断，5和3都非0（真），结果为1。注意5 & 3 = 1（按位与：101 & 011 = 001）",
+    "options": [
+      "A. 0",
+      "B. 1",
+      "C. 5",
+      "D. 3"
+    ]
+  },
+  {
+    "id": "q-13015-153",
+    "type": "short",
+    "question": "说明按位运算与逻辑运算的区别",
+    "answer": "按位运算（&、|、~、^）对每一位独立操作，结果可能是任意值。逻辑运算（&&、||、!）对整体判断真假，结果只能是0或1。例如5 & 3 = 1（按位），5 && 3 = 1（逻辑）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "逻辑数据",
+    "src": "ai",
+    "explanation": "按位运算处理的是数据的每一位，逻辑运算处理的是数据的真假值"
+  },
+  {
+    "id": "q-13015-154",
+    "type": "fill",
+    "question": "1KB = ___ Byte = ___ bit",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "数据长度单位与对齐",
+    "src": "ai",
+    "explanation": "1KB=1024Byte，1Byte=8bit，所以1KB=1024*8=8192bit",
+    "blanks": [
+      {
+        "answer": "1024",
+        "synonyms": []
+      },
+      {
+        "answer": "8192",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-155",
+    "type": "calc",
+    "question": "计算struct {char a; int b; char c;} 的大小（默认对齐）",
+    "answer": "12字节",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "数据长度单位与对齐",
+    "src": "ai",
+    "explanation": "a占1字节(偏移0)，填充3字节；b占4字节(偏移4-7)；c占1字节(偏移8)，填充3字节。总大小对齐到4的倍数=12"
+  },
+  {
+    "id": "q-13015-156",
+    "type": "choice",
+    "question": "数据对齐的主要目的是（  ）",
+    "answer": "B",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "数据长度单位与对齐",
+    "src": "ai",
+    "explanation": "对齐使得一次访存可以取到完整数据，提高读取效率，但可能浪费空间",
+    "options": [
+      "A. 节省内存空间",
+      "B. 提高内存访问效率",
+      "C. 简化编程",
+      "D. 保证数据安全"
+    ]
+  },
+  {
+    "id": "q-13015-157",
+    "type": "short",
+    "question": "说明数据对齐的作用和结构体对齐规则",
+    "answer": "作用：对齐访问可提高内存读取效率（一次访存取完整数据）。规则：每个成员对齐到自身大小的整数倍，总大小对齐到最大成员大小的整数倍",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "数据长度单位与对齐",
+    "src": "ai",
+    "explanation": "对齐虽然可能浪费少量空间，但显著提升访存效率"
+  },
+  {
+    "id": "q-13015-158",
+    "type": "choice",
+    "question": "x << 2等价于（  ）",
+    "answer": "B",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "移位优化运算",
+    "src": "ai",
+    "explanation": "左移n位等价于乘以2^n，x<<2 = x * 2^2 = x * 4",
+    "options": [
+      "A. x * 2",
+      "B. x * 4",
+      "C. x / 2",
+      "D. x / 4"
+    ]
+  },
+  {
+    "id": "q-13015-159",
+    "type": "fill",
+    "question": "x >> 3等价于x除以___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "移位优化运算",
+    "src": "ai",
+    "explanation": "右移n位等价于除以2^n，x>>3 = x / 2^3 = x / 8",
+    "blanks": [
+      {
+        "answer": "8",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-160",
+    "type": "calc",
+    "question": "用移位和加减运算表示 x * 7",
+    "answer": "(x << 3) - x",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "移位优化运算",
+    "src": "ai",
+    "explanation": "x*7 = x*8 - x = (x<<3) - x。也可以(x<<2)+(x<<1)+x = x*4+x*2+x = x*7但不如前者简洁"
+  },
+  {
+    "id": "q-13015-161",
+    "type": "calc",
+    "question": "用移位和加减运算表示 x * 10",
+    "answer": "(x << 3) + (x << 1)",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "移位优化运算",
+    "src": "ai",
+    "explanation": "x*10 = x*8 + x*2 = (x<<3) + (x<<1)"
+  },
+  {
+    "id": "q-13015-162",
+    "type": "choice",
+    "question": "IEEE 754默认的舍入模式是（  ）",
+    "answer": "C",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点数精度与舍入",
+    "src": "ai",
+    "explanation": "IEEE 754默认就近舍入（round to nearest even），中间值向偶数舍入避免统计偏差",
+    "options": [
+      "A. 朝0舍入",
+      "B. 朝+无穷舍入",
+      "C. 就近舍入",
+      "D. 朝-无穷舍入"
+    ]
+  },
+  {
+    "id": "q-13015-163",
+    "type": "choice",
+    "question": "单精度浮点数的有效十进制位数约为（  ）位",
+    "answer": "B",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点数精度与舍入",
+    "src": "ai",
+    "explanation": "单精度23位尾数，log10(2^23)约等于6.9，约7位十进制有效数字",
+    "options": [
+      "A. 5",
+      "B. 7",
+      "C. 16",
+      "D. 38"
+    ]
+  },
+  {
+    "id": "q-13015-164",
+    "type": "fill",
+    "question": "浮点数的表示精度取决于___位数，表示范围取决于___位数",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点数精度与舍入",
+    "src": "ai",
+    "explanation": "尾数位数越多精度越高，阶码位数越多范围越大，两者存在矛盾",
+    "blanks": [
+      {
+        "answer": "尾数",
+        "synonyms": []
+      },
+      {
+        "answer": "阶码",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-165",
+    "type": "short",
+    "question": "说明IEEE 754的附加位（Guard、Round、Sticky）的作用",
+    "answer": "Guard位（保护位）：保留运算结果的第24位，用于判断舍入方向。Round位（舍入位）：保留第25位，辅助判断。Sticky位（粘滞位）：记录第25位之后是否有非零位被丢弃，用于就近舍入时判断是否为精确中间值",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点数精度与舍入",
+    "src": "ai",
+    "explanation": "三个附加位确保舍入结果的精度，使浮点运算尽可能接近真值"
+  },
+  {
+    "id": "q-13015-166",
+    "type": "choice",
+    "question": "C程序到可执行文件经过的四个阶段依次是（  ）",
+    "answer": "B",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "程序转换流程",
+    "src": "ai",
+    "explanation": "预处理(cpp)→编译(cc1)→汇编(as)→链接(ld)",
+    "options": [
+      "A. 编译→预处理→汇编→链接",
+      "B. 预处理→编译→汇编→链接",
+      "C. 预处理→汇编→编译→链接",
+      "D. 编译→汇编→预处理→链接"
+    ]
+  },
+  {
+    "id": "q-13015-167",
+    "type": "choice",
+    "question": "将机器码反向转换为汇编代码的工具是（  ）",
+    "answer": "C",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "程序转换流程",
+    "src": "ai",
+    "explanation": "objdump -d 可以反汇编可执行文件",
+    "options": [
+      "A. gcc",
+      "B. gdb",
+      "C. objdump",
+      "D. as"
+    ]
+  },
+  {
+    "id": "q-13015-168",
+    "type": "fill",
+    "question": "RTL的中文全称是___",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "程序转换流程",
+    "src": "ai",
+    "explanation": "RTL = Register Transfer Level，描述指令在寄存器间传送的中间表示",
+    "blanks": [
+      {
+        "answer": "寄存器传送级语言",
+        "synonyms": [
+          "RTL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-169",
+    "type": "short",
+    "question": "说明GCC和GDB的区别",
+    "answer": "GCC是编译器套件，负责预处理、编译、汇编、链接，将源代码转换为可执行文件。GDB是调试工具，用于运行时断点调试、单步执行、查看变量和寄存器状态、分析程序运行过程",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "程序转换流程",
+    "src": "ai",
+    "explanation": "GCC管编译链接，GDB管运行时调试"
+  },
+  {
+    "id": "q-13015-170",
+    "type": "fill",
+    "question": "GCC编译流程中，.c文件经预处理生成___文件，经编译生成___文件，经汇编生成___文件",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "程序转换流程",
+    "src": "ai",
+    "explanation": "hello.c→(cpp)→hello.i→(cc1)→hello.s→(as)→hello.o→(ld)→hello",
+    "blanks": [
+      {
+        "answer": "单指令多数据流",
+        "synonyms": [
+          "单指令多数据"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-171",
+    "type": "fill",
+    "question": "SIMD的中文全称是___",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "SIMD技术",
+    "src": "ai",
+    "explanation": "SIMD = Single Instruction Multiple Data",
+    "blanks": [
+      {
+        "answer": "int/float",
+        "synonyms": [
+          "int或float"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-172",
+    "type": "choice",
+    "question": "SIMD技术的主要优势是（  ）",
+    "answer": "B",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "SIMD技术",
+    "src": "ai",
+    "explanation": "一条指令同时处理多个数据，提高数据并行处理效率",
+    "options": [
+      "A. 简化指令",
+      "B. 提高数据并行处理效率",
+      "C. 减少寄存器使用",
+      "D. 降低功耗"
+    ]
+  },
+  {
+    "id": "q-13015-173",
+    "type": "choice",
+    "question": "以下哪个指令集属于SIMD技术？（  ）",
+    "answer": "A",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "SIMD技术",
+    "src": "ai",
+    "explanation": "MMX/SSE/AVX都是SIMD指令集",
+    "options": [
+      "A. SSE",
+      "B. MOV",
+      "C. CALL",
+      "D. RET"
+    ]
+  },
+  {
+    "id": "q-13015-174",
+    "type": "short",
+    "question": "说明SIMD技术的基本原理和适用场景",
+    "answer": "基本原理：一条指令同时对多个数据执行相同操作，用宽寄存器（64/128/256位）同时存放多个小数据。适用场景：图像处理、科学计算等数据并行场景",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "SIMD技术",
+    "src": "ai",
+    "explanation": "核心是数据并行，用宽寄存器存放多个小数据"
+  },
+  {
+    "id": "q-13015-175",
+    "type": "fill",
+    "question": "IA-32中dword对应C语言的___类型",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "操作数与C变量类型",
+    "src": "ai",
+    "explanation": "dword=32位，对应C语言的int(32位)和float(32位)",
+    "blanks": [
+      {
+        "answer": "变量的内存地址",
+        "synonyms": [
+          "内存地址",
+          "地址"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-176",
+    "type": "choice",
+    "question": "mov WORD PTR [ebp-4], 100中的WORD对应C语言哪种类型？（  ）",
+    "answer": "B",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "操作数与C变量类型",
+    "src": "ai",
+    "explanation": "WORD=16位，对应C语言的short(16位)",
+    "options": [
+      "A. char",
+      "B. short",
+      "C. int",
+      "D. double"
+    ]
+  },
+  {
+    "id": "q-13015-177",
+    "type": "choice",
+    "question": "以下哪个操作数对应C语言中的常量？（  ）",
+    "answer": "A",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "操作数与C变量类型",
+    "src": "ai",
+    "explanation": "立即数对应常量，如mov eax, 100中的100",
+    "options": [
+      "A. 立即数",
+      "B. 寄存器操作数",
+      "C. 存储器操作数",
+      "D. 间接寻址操作数"
+    ]
+  },
+  {
+    "id": "q-13015-178",
+    "type": "short",
+    "question": "说明IA-32操作数大小与C语言变量类型的对应关系",
+    "answer": "byte(8位)=char，word(16位)=short，dword(32位)=int/float，qword(64位)=double。有符号和无符号用不同指令区分",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "操作数与C变量类型",
+    "src": "ai",
+    "explanation": "大小对应：byte→char, word→short, dword→int/float, qword→double"
+  },
+  {
+    "id": "q-13015-179",
+    "type": "fill",
+    "question": "指针变量中存储的是___",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "指针的机器级表示",
+    "src": "ai",
+    "explanation": "指针的本质就是地址，存储的是所指向变量的内存地址",
+    "blanks": [
+      {
+        "answer": "16",
+        "synonyms": []
+      },
+      {
+        "answer": "寄存器",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-180",
+    "type": "choice",
+    "question": "int *p; p+1实际增加的字节数是（  ）",
+    "answer": "C",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "指针的机器级表示",
+    "src": "ai",
+    "explanation": "p+1实际加sizeof(int)=4字节",
+    "options": [
+      "A. 1",
+      "B. 2",
+      "C. 4",
+      "D. 8"
+    ]
+  },
+  {
+    "id": "q-13015-181",
+    "type": "choice",
+    "question": "取地址运算&在机器级通常用哪条指令实现？（  ）",
+    "answer": "B",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "指针的机器级表示",
+    "src": "ai",
+    "explanation": "lea eax, [ebp-4]将变量地址装入eax",
+    "options": [
+      "A. mov",
+      "B. lea",
+      "C. push",
+      "D. pop"
+    ]
+  },
+  {
+    "id": "q-13015-182",
+    "type": "short",
+    "question": "说明取地址运算和间接访问运算在机器级的实现",
+    "answer": "取地址运算&：用lea指令将变量地址装入寄存器，如lea eax, [ebp-4]。间接访问运算*：通过寄存器中的地址访问内存，如mov eax, [ebx]取出ebx指向地址处的值",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "指针的机器级表示",
+    "src": "ai",
+    "explanation": "取地址用lea，间接访问用[reg]"
+  },
+  {
+    "id": "q-13015-183",
+    "type": "calc",
+    "question": "计算 struct {char a; int b; short c;} 的大小（默认对齐）",
+    "answer": "12字节",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "结构体与联合体的机器级表示",
+    "src": "ai",
+    "explanation": "a(偏移0)+填充3+b(偏移4-7)+c(偏移8-9)+填充2，总大小对齐到4的倍数=12"
+  },
+  {
+    "id": "q-13015-184",
+    "type": "calc",
+    "question": "计算 union {char a; int b; double c;} 的大小",
+    "answer": "8字节",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "结构体与联合体的机器级表示",
+    "src": "ai",
+    "explanation": "联合体取最大成员double的8字节，所有成员共享起始地址"
+  },
+  {
+    "id": "q-13015-185",
+    "type": "choice",
+    "question": "以下关于结构体和联合体的说法正确的是（  ）",
+    "answer": "A",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "结构体与联合体的机器级表示",
+    "src": "ai",
+    "explanation": "结构体各成员有自己的存储空间，联合体所有成员共享存储空间",
+    "options": [
+      "A. 结构体各成员分别存储，联合体成员共享存储",
+      "B. 结构体和联合体都共享存储",
+      "C. 结构体和联合体都分别存储",
+      "D. 联合体各成员分别存储"
+    ]
+  },
+  {
+    "id": "q-13015-186",
+    "type": "short",
+    "question": "说明结构体和联合体在内存分配上的区别",
+    "answer": "结构体：成员按声明顺序依次存放，每个成员有自己的存储空间，需按对齐规则填充。联合体：所有成员共享起始地址，同一时刻只能存储一个成员的值，大小取最大成员并考虑对齐",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "结构体与联合体的机器级表示",
+    "src": "ai",
+    "explanation": "结构体=分别存储+对齐填充，联合体=共享存储取最大"
+  },
+  {
+    "id": "q-13015-187",
+    "type": "fill",
+    "question": "x86-64有___个通用寄存器，前6个整型参数通过___传递",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "x86-64架构",
+    "src": "ai",
+    "explanation": "从8个扩展到16个，前6个参数用rdi/rsi/rdx/rcx/r8/r9传递",
+    "blanks": [
+      {
+        "answer": "if/选择",
+        "synonyms": [
+          "if",
+          "选择"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-188",
+    "type": "choice",
+    "question": "x86-64用寄存器传参的主要原因是（  ）",
+    "answer": "B",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "x86-64架构",
+    "src": "ai",
+    "explanation": "寄存器比内存快得多，用寄存器传参减少访存开销",
+    "options": [
+      "A. 节省内存",
+      "B. 提高速度",
+      "C. 简化编程",
+      "D. 兼容旧代码"
+    ]
+  },
+  {
+    "id": "q-13015-189",
+    "type": "choice",
+    "question": "以下关于x86-64与IA-32的差别，错误的是（  ）",
+    "answer": "D",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "x86-64架构",
+    "src": "ai",
+    "explanation": "栈帧对齐从4字节变为16字节，不是8字节",
+    "options": [
+      "A. 通用寄存器从8个增至16个",
+      "B. 寻址空间扩展到256TB",
+      "C. 前6个参数通过寄存器传递",
+      "D. 栈帧8字节对齐"
+    ]
+  },
+  {
+    "id": "q-13015-190",
+    "type": "short",
+    "question": "说明IA-32和x86-64的主要差别",
+    "answer": "1.寄存器：8个32位→16个64位；2.寻址空间：4GB→256TB；3.传参：栈传参→前6个用寄存器；4.栈帧对齐：4字节→16字节；5.新增r8-r15寄存器",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "x86-64架构",
+    "src": "ai",
+    "explanation": "更多寄存器、更大地址空间、寄存器传参、16字节对齐"
+  },
+  {
+    "id": "q-13015-191",
+    "type": "fill",
+    "question": "cmp+jcc指令组合通常对应C语言的___语句",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "逆向工程",
+    "src": "ai",
+    "explanation": "cmp比较后jcc条件跳转，对应if-else的选择结构",
+    "blanks": [
+      {
+        "answer": ".i",
+        "synonyms": [
+          "i"
+        ]
+      },
+      {
+        "answer": ".s",
+        "synonyms": [
+          "s"
+        ]
+      },
+      {
+        "answer": ".o",
+        "synonyms": [
+          "o"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-192",
+    "type": "choice",
+    "question": "汇编代码中连续cmp+je的结构通常对应C语言的（  ）",
+    "answer": "C",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "逆向工程",
+    "src": "ai",
+    "explanation": "连续cmp+je对应switch-case的稀疏case分支",
+    "options": [
+      "A. if-else",
+      "B. for循环",
+      "C. switch-case",
+      "D. while循环"
+    ]
+  },
+  {
+    "id": "q-13015-193",
+    "type": "choice",
+    "question": "汇编代码中mov eax, [ebx+esi*4]通常对应C语言的（  ）",
+    "answer": "B",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "逆向工程",
+    "src": "ai",
+    "explanation": "比例变址寻址对应数组访问a[i]",
+    "options": [
+      "A. 指针赋值",
+      "B. 数组访问",
+      "C. 结构体访问",
+      "D. 函数调用"
+    ]
+  },
+  {
+    "id": "q-13015-194",
+    "type": "short",
+    "question": "如何从汇编代码识别if-else和switch结构",
+    "answer": "if-else：单个cmp+jcc（条件跳转）+ jmp（跳过else分支）。switch-case值稀疏：连续cmp+je逐个比较；switch-case值连续：跳转表（间接跳转jmp *.Ltable(,%eax,4)）",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "逆向工程",
+    "src": "ai",
+    "explanation": "if=cmp+jcc+jmp，switch连续=跳转表，switch稀疏=连续cmp+je"
+  },
+  {
+    "id": "q-13015-195",
+    "type": "choice",
+    "question": "以下关于真值和机器数的说法正确的是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "真值与机器数",
+    "src": "ai",
+    "explanation": "真值是数据的实际数值（人读的），机器数是其在计算机中的二进制编码表示",
+    "options": [
+      "A. 真值和机器数是同一个概念",
+      "B. 同一个真值可以用多种机器数编码表示",
+      "C. 机器数只能用补码表示",
+      "D. 真值不含符号位，机器数也不含符号位"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-196",
+    "type": "choice",
+    "question": "一个真值可以用多少种机器数编码方式表示？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "真值与机器数",
+    "src": "ai",
+    "explanation": "原码、反码、补码、移码共4种",
+    "options": [
+      "A. 1种",
+      "B. 2种",
+      "C. 4种",
+      "D. 8种"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13015-197",
+    "type": "fill",
+    "question": "真值和机器数的相互关系：真值是___，机器数是___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "真值与机器数",
+    "src": "ai",
+    "explanation": "真值是人读的实际数值，机器数是计算机中的编码表示",
+    "blanks": [
+      {
+        "answer": "数据的实际数值",
+        "synonyms": [
+          "人读的数值",
+          "实际数值"
+        ]
+      },
+      {
+        "answer": "计算机中的编码表示",
+        "synonyms": [
+          "二进制编码",
+          "编码表示"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-198",
+    "type": "fill",
+    "question": "+5的8位原码是___，补码是___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "真值与机器数",
+    "src": "ai",
+    "explanation": "正数原码=补码=符号位0+数值位",
+    "blanks": [
+      {
+        "answer": "00000101",
+        "synonyms": []
+      },
+      {
+        "answer": "00000101",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-199",
+    "type": "short",
+    "question": "说明真值和机器数的相互关系",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "真值与机器数",
+    "src": "ai",
+    "explanation": "真值→多种编码，编码→反求真值",
+    "answer": "真值是数据的实际数值（人读的），机器数是数据在计算机中的二进制编码表示。同一个真值可以用多种机器数编码（原码、反码、补码、移码）来表示，从真值可以求出各编码，从各编码也可以反求真值"
+  },
+  {
+    "id": "q-13015-200",
+    "type": "choice",
+    "question": "现代计算机中使用补码表示带符号整数的主要原因是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码",
+    "src": "ai",
+    "explanation": "补码0表示唯一、加减运算统一、符号位参与运算",
+    "options": [
+      "A. 补码运算速度快",
+      "B. 0的表示唯一且加减运算统一",
+      "C. 补码表示范围最大",
+      "D. 补码最简单"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-201",
+    "type": "fill",
+    "question": "8位补码能表示的整数范围是___~___（十进制）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码",
+    "src": "ai",
+    "explanation": "补码范围：-2^(n-1) ~ 2^(n-1)-1 = -128~127",
+    "blanks": [
+      {
+        "answer": "-128",
+        "synonyms": []
+      },
+      {
+        "answer": "127",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-202",
+    "type": "choice",
+    "question": "以下关于补码特性的描述错误的是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码",
+    "src": "ai",
+    "explanation": "补码的0表示唯一，不是有两种表示",
+    "options": [
+      "A. 0的表示唯一",
+      "B. 可用加法实现减法",
+      "C. 符号位与数值位一起参与运算",
+      "D. 0有两种表示"
+    ],
+    "answer": "D"
+  },
+  {
+    "id": "q-13015-203",
+    "type": "fill",
+    "question": "已知[X]补=00000110，则X的真值是___；已知[Y]补=11111010，则Y的真值是___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码",
+    "src": "ai",
+    "explanation": "正数直接读，负数取反加1",
+    "blanks": [
+      {
+        "answer": "+6",
+        "synonyms": [
+          "6",
+          "正6"
+        ]
+      },
+      {
+        "answer": "-6",
+        "synonyms": [
+          "负6"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-204",
+    "type": "short",
+    "question": "简述现代计算机使用补码表示带符号整数的四个原因",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码",
+    "src": "ai",
+    "explanation": "0唯一、加减统一、符号位参与、多表示一个最小负数",
+    "answer": "1.0的表示唯一，简化判零操作；2.加减运算统一，减法转化为加法，简化硬件设计；3.符号位与数值位一起参与运算，无需特殊处理；4.多表示一个最小负数，充分利用编码空间"
+  },
+  {
+    "id": "q-13015-205",
+    "type": "choice",
+    "question": "IEEE 754单精度浮点数的总长度是（  ）位",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "IEEE 754 浮点数",
+    "src": "ai",
+    "explanation": "1位符号+8位阶码+23位尾数=32位",
+    "options": [
+      "A. 16位",
+      "B. 24位",
+      "C. 32位",
+      "D. 64位"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13015-206",
+    "type": "fill",
+    "question": "IEEE 754单精度浮点数中，1位符号位表示___，8位阶码用___表示，23位尾数采用___技术",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "IEEE 754 浮点数",
+    "src": "ai",
+    "explanation": "符号0正1负，阶码用移码（偏移127），尾数隐含最高位1",
+    "blanks": [
+      {
+        "answer": "数的正负",
+        "synonyms": [
+          "符号"
+        ]
+      },
+      {
+        "answer": "移码",
+        "synonyms": [
+          "偏移码"
+        ]
+      },
+      {
+        "answer": "隐含1",
+        "synonyms": [
+          "隐藏1",
+          "规格化"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-207",
+    "type": "choice",
+    "question": "IEEE 754浮点数规格化时，尾数的隐含位（隐藏位）是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "IEEE 754 浮点数",
+    "src": "ai",
+    "explanation": "规格化尾数隐含最高位1，实际尾数为1.M",
+    "options": [
+      "A. 1",
+      "B. 0",
+      "C. 不确定",
+      "D. 由阶码决定"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-208",
+    "type": "short",
+    "question": "说明规格化浮点数的概念和规格化方法",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "IEEE 754 浮点数",
+    "src": "ai",
+    "explanation": "左规：尾左移阶减1；右规：尾右移阶加1",
+    "answer": "规格化概念：使尾数最高有效位为1（即1.M形式），保证表示唯一性和最大精度。规格化方法：左规——尾数左移、阶码减1，用于运算结果未规格化时；右规——尾数右移、阶码加1，用于尾数溢出时"
+  },
+  {
+    "id": "q-13015-209",
+    "type": "short",
+    "question": "将十进制数-12.5转换为IEEE 754单精度浮点数格式（写出二进制分步结果）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "IEEE 754 浮点数",
+    "src": "ai",
+    "explanation": "S=1, E=130=10000010, M=1001...0, 12.5=1.1001×2^3",
+    "answer": "1.符号位S=1（负数）；2.12.5=1100.1=1.1001×2^3；3.阶码E=3+127=130=10000010；4.尾数M=10010000000000000000000；5.结果：1 10000010 10010000000000000000000"
+  },
+  {
+    "id": "q-13015-210",
+    "type": "choice",
+    "question": "以下哪个标志位用于判断有符号数运算是否溢出？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "标志位与溢出",
+    "src": "ai",
+    "explanation": "OF（Overflow Flag）检测有符号数溢出",
+    "options": [
+      "A. CF",
+      "B. OF",
+      "C. ZF",
+      "D. SF"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-211",
+    "type": "choice",
+    "question": "CF（进位/借位标志）用于判断什么运算的溢出？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "标志位与溢出",
+    "src": "ai",
+    "explanation": "CF检测无符号数运算的进位/借位",
+    "options": [
+      "A. 无符号数运算",
+      "B. 有符号数运算",
+      "C. 浮点数运算",
+      "D. 乘法运算"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-212",
+    "type": "fill",
+    "question": "ZF标志位的含义是___，SF标志位的含义是___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "标志位与溢出",
+    "src": "ai",
+    "explanation": "ZF=零标志，SF=符号标志",
+    "blanks": [
+      {
+        "answer": "零标志",
+        "synonyms": [
+          "结果为零"
+        ]
+      },
+      {
+        "answer": "符号标志",
+        "synonyms": [
+          "结果为负"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-213",
+    "type": "short",
+    "question": "说明OF和CF的区别及各自的判断方法",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "标志位与溢出",
+    "src": "ai",
+    "explanation": "OF=有符号溢出，CF=无符号进位/借位",
+    "answer": "OF（溢出标志）：判断有符号数运算是否溢出，当最高位进位与次高位进位不同时OF=1。CF（进位借位标志）：判断无符号数运算是否有进位或借位，最高位产生的进位/借位时CF=1。区别：OF针对有符号数，CF针对无符号数"
+  },
+  {
+    "id": "q-13015-214",
+    "type": "choice",
+    "question": "两个正数相加结果为负数，说明发生了什么？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "标志位与溢出",
+    "src": "ai",
+    "explanation": "正+正=负，说明有符号数溢出，OF=1",
+    "options": [
+      "A. CF=1",
+      "B. ZF=1",
+      "C. OF=1（有符号溢出）",
+      "D. SF=0"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13015-215",
+    "type": "choice",
+    "question": "浮点数加减运算的第一步是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点加减运算",
+    "src": "ai",
+    "explanation": "浮点加减五步：对阶→尾数加减→规格化→舍入→溢出判断",
+    "options": [
+      "A. 对阶（小阶向大阶看齐）",
+      "B. 尾数加减",
+      "C. 规格化",
+      "D. 舍入"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-216",
+    "type": "fill",
+    "question": "浮点数加减运算的五个步骤依次是：对阶、___、___、___、溢出判断",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点加减运算",
+    "src": "ai",
+    "explanation": "对阶→尾数加减→规格化→舍入→溢出判断",
+    "blanks": [
+      {
+        "answer": "尾数加减",
+        "synonyms": [
+          "尾数运算"
+        ]
+      },
+      {
+        "answer": "规格化",
+        "synonyms": []
+      },
+      {
+        "answer": "舍入",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-217",
+    "type": "choice",
+    "question": "浮点数对阶时采用小阶向大阶看齐的原因是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点加减运算",
+    "src": "ai",
+    "explanation": "小阶向大阶看齐，尾数右移丢失的是低位，损失小；大阶向小阶看齐尾数左移丢失高位，损失大",
+    "options": [
+      "A. 计算更简单",
+      "B. 尾数右移丢失低位损失小",
+      "C. 节省存储空间",
+      "D. 提高运算速度"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-218",
+    "type": "short",
+    "question": "简述浮点数加减运算的完整步骤",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点加减运算",
+    "src": "ai",
+    "explanation": "对阶→尾数加减→规格化→舍入→溢出判断",
+    "answer": "1.对阶：小阶向大阶看齐，小阶尾数右移，阶码差几位移几位；2.尾数加减：对阶后的尾数进行加减运算；3.规格化：结果非规格化时左规或右规；4.舍入：按舍入模式处理多余位；5.溢出判断：检查阶码是否溢出"
+  },
+  {
+    "id": "q-13015-219",
+    "type": "choice",
+    "question": "补码加减运算中，[X-Y]补等于（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码加减运算",
+    "src": "ai",
+    "explanation": "[X-Y]补=[X]补+[-Y]补，[-Y]补由[Y]补连同符号位取反加1",
+    "options": [
+      "A. [X]补+[Y]补",
+      "B. [X]补-[Y]补",
+      "C. [X]补+[-Y]补",
+      "D. [X]补+~[Y]补"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13015-220",
+    "type": "fill",
+    "question": "已知[Y]补=00110100，则[-Y]补=___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码加减运算",
+    "src": "ai",
+    "explanation": "连同符号位取反加1：11001011+1=11001100",
+    "blanks": [
+      {
+        "answer": "11001100",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-221",
+    "type": "choice",
+    "question": "补码加减运算中，CF标志位的含义是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码加减运算",
+    "src": "ai",
+    "explanation": "CF=最高位进位输出，用于无符号数溢出判断",
+    "options": [
+      "A. 最高位向外的进位",
+      "B. 运算结果为零",
+      "C. 结果为负数",
+      "D. 有符号数溢出"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-222",
+    "type": "short",
+    "question": "说明补码加减运算中CF、OF、ZF、SF四个标志位的含义",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码加减运算",
+    "src": "ai",
+    "explanation": "CF=进位/借位，OF=有符号溢出，ZF=零，SF=符号",
+    "answer": "CF（进位借位标志）：最高位产生的进位或借位，用于无符号数溢出判断；OF（溢出标志）：有符号数运算是否溢出；ZF（零标志）：结果是否为零；SF（符号标志）：结果的符号位，1表示负数"
+  },
+  {
+    "id": "q-13015-223",
+    "type": "fill",
+    "question": "补码加减运算公式：[X+Y]补=___，[X-Y]补=___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "补码加减运算",
+    "src": "ai",
+    "explanation": "[X+Y]补=[X]补+[Y]补，[X-Y]补=[X]补+[-Y]补",
+    "blanks": [
+      {
+        "answer": "[X]补+[Y]补",
+        "synonyms": []
+      },
+      {
+        "answer": "[X]补+[-Y]补",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-224",
+    "type": "choice",
+    "question": "大端序（Big Endian）的存储规则是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "大端与小端",
+    "src": "ai",
+    "explanation": "大端序：最高有效字节存放在最低地址",
+    "options": [
+      "A. 最高有效字节存最低地址",
+      "B. 最低有效字节存最低地址",
+      "C. 所有字节随意存放",
+      "D. 按位存放"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-225",
+    "type": "choice",
+    "question": "以下哪种场景通常使用小端序（Little Endian）？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "大端与小端",
+    "src": "ai",
+    "explanation": "x86架构使用小端序，网络传输使用大端序",
+    "options": [
+      "A. 网络传输",
+      "B. x86/x86-64处理器",
+      "C. 图像存储",
+      "D. 音频编码"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-226",
+    "type": "fill",
+    "question": "将32位数0x12345678存入地址0x1000，大端序下0x1000存___，小端序下0x1000存___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "大端与小端",
+    "src": "ai",
+    "explanation": "大端序高位先存：0x12存最低地址；小端序低位先存：0x78存最低地址",
+    "blanks": [
+      {
+        "answer": "0x12",
+        "synonyms": [
+          "12",
+          "12H"
+        ]
+      },
+      {
+        "answer": "0x78",
+        "synonyms": [
+          "78",
+          "78H"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-227",
+    "type": "short",
+    "question": "说明大端序和小端序的区别及各自适用场景",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "大端与小端",
+    "src": "ai",
+    "explanation": "大端=高位先存，小端=低位先存",
+    "answer": "大端序：最高有效字节存最低地址，适合网络传输（网络字节序）；小端序：最低有效字节存最低地址，适合x86/x86-64处理器。区别在于字节存放顺序相反"
+  },
+  {
+    "id": "q-13015-228",
+    "type": "choice",
+    "question": "以下关于无符号整数的说法正确的是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点数表示",
+    "src": "ai",
+    "explanation": "无符号整数全部是数值位，无符号位，常用于地址、计数等",
+    "options": [
+      "A. 最高位是符号位",
+      "B. 所有位都是数值位，常用于内存地址和计数",
+      "C. 只能表示正数和零",
+      "D. 范围比有符号整数大"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-229",
+    "type": "choice",
+    "question": "n位带符号整数的补码表示范围是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点数表示",
+    "src": "ai",
+    "explanation": "补码范围：-2^(n-1) ~ 2^(n-1)-1",
+    "options": [
+      "A. -2^(n-1) ~ 2^(n-1)",
+      "B. 0 ~ 2^n-1",
+      "C. -2^(n-1) ~ 2^(n-1)-1",
+      "D. -2^(n-1)+1 ~ 2^(n-1)"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13015-230",
+    "type": "fill",
+    "question": "8位无符号整数的表示范围是___~___，8位补码有符号整数的范围是___~___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点数表示",
+    "src": "ai",
+    "explanation": "无符号0~255，有符号补码-128~127",
+    "blanks": [
+      {
+        "answer": "0",
+        "synonyms": []
+      },
+      {
+        "answer": "255",
+        "synonyms": []
+      },
+      {
+        "answer": "-128",
+        "synonyms": []
+      },
+      {
+        "answer": "127",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-231",
+    "type": "short",
+    "question": "说明无符号整数和带符号整数的表示区别及各自用途",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点数表示",
+    "src": "ai",
+    "explanation": "无符号=全数值位用于地址/计数，有符号=补码+符号位用于运算",
+    "answer": "无符号整数：所有位都是数值位，无符号位，范围0~2^n-1，用于内存地址、循环计数、颜色值等；带符号整数：最高位是符号位，用补码表示，范围-2^(n-1)~2^(n-1)-1，用于数学运算"
+  },
+  {
+    "id": "q-13015-232",
+    "type": "choice",
+    "question": "原码一位乘法中，每次根据乘数末位决定操作，当末位为1时（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点乘法",
+    "src": "ai",
+    "explanation": "末位为1：部分积加被乘数后右移；末位为0：部分积加0后右移",
+    "options": [
+      "A. 部分积加被乘数后右移",
+      "B. 部分积减被乘数后左移",
+      "C. 部分积加0后左移",
+      "D. 部分积不变"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-233",
+    "type": "fill",
+    "question": "原码一位乘法中，n位乘数需要做___次加法和___次右移",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点乘法",
+    "src": "ai",
+    "explanation": "n位乘数n次操作，每次先加后右移",
+    "blanks": [
+      {
+        "answer": "n",
+        "synonyms": [
+          "N"
+        ]
+      },
+      {
+        "answer": "n",
+        "synonyms": [
+          "N"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-13015-234",
+    "type": "choice",
+    "question": "补码乘法（Booth算法）的优势是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点乘法",
+    "src": "ai",
+    "explanation": "Booth算法可以处理带符号数的直接乘法运算",
+    "options": [
+      "A. 运算速度更快",
+      "B. 不需要移位",
+      "C. 能直接处理带符号数乘法",
+      "D. 不需要加法"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13015-235",
+    "type": "short",
+    "question": "简述原码一位乘法的基本步骤",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点乘法",
+    "src": "ai",
+    "explanation": "判末位→加被乘数或0→右移，重复n次",
+    "answer": "1.部分积初值为0，乘数存于寄存器；2.判断乘数末位：为1则部分积加被乘数，为0则加0；3.部分积和乘数联合右移一位；4.重复步骤2-3共n次；5.结果为2n位乘积"
+  },
+  {
+    "id": "q-13015-236",
+    "type": "choice",
+    "question": "原码恢复余数除法中，当余数为负时需要（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点除法",
+    "src": "ai",
+    "explanation": "余数为负：恢复余数（加除数），商上0",
+    "options": [
+      "A. 恢复余数（加除数），商上0",
+      "B. 不恢复余数，商上1",
+      "C. 左移余数，商上1",
+      "D. 右移余数，商上0"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-237",
+    "type": "choice",
+    "question": "加减交替法（不恢复余数法）相比恢复余数法的优势是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点除法",
+    "src": "ai",
+    "explanation": "加减交替法不需要恢复余数，步骤固定，速度更快",
+    "options": [
+      "A. 精度更高",
+      "B. 不需要恢复余数，步骤固定",
+      "C. 可以处理浮点数",
+      "D. 不需要移位"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-238",
+    "type": "fill",
+    "question": "原码除法中，每次先试商（减除数），若余数为正则商上___，若余数为负则商上___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点除法",
+    "src": "ai",
+    "explanation": "余数正商1，余数负商0",
+    "blanks": [
+      {
+        "answer": "1",
+        "synonyms": []
+      },
+      {
+        "answer": "0",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-239",
+    "type": "short",
+    "question": "简述原码恢复余数除法的基本步骤",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "定点除法",
+    "src": "ai",
+    "explanation": "减除数→正商1左移→负商0恢复左移，重复n次",
+    "answer": "1.将被除数放入余数寄存器；2.余数减去除数；3.若余数为正，商上1，余数左移；4.若余数为负，商上0，恢复余数（加除数），余数左移；5.重复步骤2-4共n次"
+  },
+  {
+    "id": "q-13015-240",
+    "type": "choice",
+    "question": "半加器有几个输入端？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "加法器与 ALU",
+    "src": "ai",
+    "explanation": "半加器：2个输入（A,B），不考虑低位进位",
+    "options": [
+      "A. 2个",
+      "B. 3个",
+      "C. 4个",
+      "D. 1个"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-241",
+    "type": "choice",
+    "question": "全加器与半加器的区别是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "加法器与 ALU",
+    "src": "ai",
+    "explanation": "全加器考虑低位进位输入（3个输入），半加器不考虑（2个输入）",
+    "options": [
+      "A. 全加器有2个输入，半加器有3个",
+      "B. 全加器考虑低位进位输入，半加器不考虑",
+      "C. 全加器用于减法，半加器用于加法",
+      "D. 没有区别"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-242",
+    "type": "fill",
+    "question": "n位串行进位加法器延迟与n成___比，n位先行进位加法器延迟与n___关",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "加法器与 ALU",
+    "src": "ai",
+    "explanation": "串行进位延迟正比于n，先行进位延迟与n无关（常数级）",
+    "blanks": [
+      {
+        "answer": "正",
+        "synonyms": []
+      },
+      {
+        "answer": "无",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-243",
+    "type": "short",
+    "question": "说明ALU的功能和基本结构",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "加法器与 ALU",
+    "src": "ai",
+    "explanation": "ALU=算术+逻辑运算，由加法器/移位器/逻辑电路组成",
+    "answer": "ALU（算术逻辑部件）是CPU的核心运算部件，功能：执行算术运算（加减乘除）和逻辑运算（与或非异或）。基本结构：由加法器、移位器、逻辑运算电路和多路选择器组成，输入操作数和操作控制信号，输出运算结果和标志位"
+  },
+  {
+    "id": "q-13015-244",
+    "type": "choice",
+    "question": "以下哪个不是ALU的功能？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "加法器与 ALU",
+    "src": "ai",
+    "explanation": "ALU做算术和逻辑运算，不做指令译码",
+    "options": [
+      "A. 加法运算",
+      "B. 逻辑与运算",
+      "C. 移位运算",
+      "D. 指令译码"
+    ],
+    "answer": "D"
+  },
+  {
+    "id": "q-13015-245",
+    "type": "choice",
+    "question": "浮点数乘法运算的结果阶码等于（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点乘除运算",
+    "src": "ai",
+    "explanation": "乘法：阶码相加，尾数相乘",
+    "options": [
+      "A. 两数阶码之和",
+      "B. 两数阶码之差",
+      "C. 两数阶码之积",
+      "D. 较大阶码"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13015-246",
+    "type": "choice",
+    "question": "浮点数除法运算的结果尾数等于（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点乘除运算",
+    "src": "ai",
+    "explanation": "除法：阶码相减，尾数相除",
+    "options": [
+      "A. 两数尾数之和",
+      "B. 被除数尾数除以除数尾数",
+      "C. 两数尾数之积",
+      "D. 被除数尾数减除数尾数"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-247",
+    "type": "fill",
+    "question": "浮点乘法运算步骤：阶码___、尾数___、___、舍入、溢出判断",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点乘除运算",
+    "src": "ai",
+    "explanation": "乘法：阶码相加、尾数相乘、规格化、舍入、溢出判断",
+    "blanks": [
+      {
+        "answer": "相加",
+        "synonyms": [
+          "求和"
+        ]
+      },
+      {
+        "answer": "相乘",
+        "synonyms": [
+          "求积"
+        ]
+      },
+      {
+        "answer": "规格化",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-248",
+    "type": "short",
+    "question": "简述浮点数乘法和除法运算的基本步骤",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "浮点乘除运算",
+    "src": "ai",
+    "explanation": "乘法=阶加尾乘，除法=阶减尾除，之后规格化+舍入+判溢出",
+    "answer": "乘法：1.阶码相加；2.尾数相乘；3.规格化；4.舍入；5.溢出判断。除法：1.阶码相减；2.尾数相除；3.规格化；4.舍入；5.溢出判断"
+  },
+  {
+    "id": "q-13015-249",
+    "type": "choice",
+    "question": "BCD码用多少位二进制表示一位十进制数？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "BCD 编码",
+    "src": "ai",
+    "explanation": "8421 BCD码用4位表示1位十进制数",
+    "options": [
+      "A. 2位",
+      "B. 4位",
+      "C. 8位",
+      "D. 16位"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-250",
+    "type": "fill",
+    "question": "十进制数25的8421 BCD码是___",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "BCD 编码",
+    "src": "ai",
+    "explanation": "2=0010, 5=0101, 所以25的BCD码=00100101",
+    "blanks": [
+      {
+        "answer": "00100101",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-251",
+    "type": "choice",
+    "question": "8421 BCD码中1100~1111这6个码值不用，原因是（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "BCD 编码",
+    "src": "ai",
+    "explanation": "4位二进制可表示0-15，但十进制只需0-9，所以1010~1111这6个码值非法",
+    "options": [
+      "A. 硬件限制",
+      "B. 表示负数",
+      "C. 4位二进制有16种状态但十进制只需10个",
+      "D. 用于校验"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13015-252",
+    "type": "short",
+    "question": "说明BCD码的概念和8421码的编码规则",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "BCD 编码",
+    "src": "ai",
+    "explanation": "4位表示1位十进制，权重8421，0000~1001有效",
+    "answer": "BCD码（Binary Coded Decimal）用二进制编码表示十进制数，每4位二进制表示1位十进制。8421码的4位权重依次为8、4、2、1，编码0-9为0000~1001，1010~1111这6个码值不用"
+  },
+  {
+    "id": "q-13015-253",
+    "type": "choice",
+    "question": "标准ASCII码使用多少位二进制？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "ASCII 码与汉字编码",
+    "src": "ai",
+    "explanation": "标准ASCII码7位，扩展ASCII码8位",
+    "options": [
+      "A. 6位",
+      "B. 7位",
+      "C. 8位",
+      "D. 16位"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-254",
+    "type": "fill",
+    "question": "大写字母A的ASCII码是___（十进制），小写字母a的ASCII码是___（十进制）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "ASCII 码与汉字编码",
+    "src": "ai",
+    "explanation": "A=65, a=97",
+    "blanks": [
+      {
+        "answer": "65",
+        "synonyms": []
+      },
+      {
+        "answer": "97",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-13015-255",
+    "type": "choice",
+    "question": "GB2312编码中一个汉字占多少字节？（  ）",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "ASCII 码与汉字编码",
+    "src": "ai",
+    "explanation": "GB2312用2字节表示一个汉字",
+    "options": [
+      "A. 1字节",
+      "B. 2字节",
+      "C. 3字节",
+      "D. 4字节"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13015-256",
+    "type": "short",
+    "question": "说明ASCII码和汉字编码（GB2312）的区别",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "ASCII 码与汉字编码",
+    "src": "ai",
+    "explanation": "ASCII=7位1字节表示英文，GB2312=2字节表示汉字",
+    "answer": "ASCII码：7位二进制表示128个英文字符和符号，每字符1字节。GB2312：2字节表示一个汉字，第一字节为区号，第二字节为位号，收录6763个汉字。区别：ASCII用1字节表示英文，GB2312用2字节表示中文"
+  },
+  {
+    "id": "q-13015-257",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "系统软件与应用软件",
+    "src": "ai",
+    "question": "以下属于应用软件的是（  ）",
+    "answer": "C",
+    "options": [
+      "A. 操作系统",
+      "B. 编译器",
+      "C. 文字处理软件",
+      "D. 数据库管理系统"
+    ],
+    "explanation": "操作系统、编译器、DBMS都是系统软件，文字处理软件是应用软件"
+  },
+  {
+    "id": "q-13015-258",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "用户视角与课程定位",
+    "src": "ai",
+    "question": "从最终用户的角度看，计算机系统的核心特征是（  ）",
+    "answer": "A",
+    "options": [
+      "A. 通过应用程序使用计算机，不关心底层硬件细节",
+      "B. 需要了解指令集和寄存器",
+      "C. 主要关注芯片设计",
+      "D. 需要编写操作系统"
+    ],
+    "explanation": "最终用户通过应用程序使用计算机，无需关心底层硬件"
+  },
+  {
+    "id": "q-13015-259",
+    "type": "short",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "用户视角与课程定位",
+    "src": "ai",
+    "question": "简述计算机系统结构课程的学习定位和目标",
+    "answer": "本课程的定位是站在系统层面理解计算机的工作原理，建立从硬件到软件的完整体系结构认知。目标是理解数据表示、指令系统、存储层次和I/O机制，为后续学习操作系统、编译原理等课程打下基础",
+    "explanation": "课程定位：系统层面理解计算机工作原理，建立软硬件完整认知"
   }
 ]

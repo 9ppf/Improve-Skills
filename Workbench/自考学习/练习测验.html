@@ -136,7 +136,7 @@
     display: flex; justify-content: space-between;
     align-items: center; margin-bottom: 0.5rem;
   }
-  .quiz-chapter { font-size: 0.72rem; color: var(--muted); }
+  .quiz-chapter { font-size: 0.75rem; color: var(--accent2); font-weight: 700; }
   .quiz-badge {
     display: inline-block; font-size: 0.68rem;
     padding: 0.12rem 0.5rem; border-radius: 999px; font-weight: 600;
@@ -450,7 +450,7 @@
     </div>
   </div>
   <div class="qf-bar" id="filterBar">
-    <select class="qf-select qf-kp" id="kpFilter" onchange="switchKp(this.value)"><option value="all">📚 知识点：全部</option></select>
+    <select class="qf-select qf-kp" id="chapterFilter" onchange="switchChapter(this.value)"><option value="all">📖 章节：全部</option></select>
     <span class="qf-sep">·</span>
     <select class="qf-select qf-type" id="typeFilter" onchange="switchType(this.value)"><option value="all">📝 题型：全部</option></select>
     <span class="qf-sep">·</span>
@@ -564,7 +564,7 @@ var fromRecite = urlParams.get('from') === 'recite';
 var chapterParam = urlParams.get('chapter') || '';
 var questionIdParam = urlParams.get('questionId') || '';
 var currentTypeFilter = 'all';
-var currentKpFilter = 'all';     /* 知识点筛选 */
+var currentChapterFilter = 'all';     /* 章节筛选 */
 var currentStatusFilter = 'all'; /* 状态筛选：all/undone/wrong/right */
 var quizData = [];
 var results = {};
@@ -838,7 +838,7 @@ function renderChoiceCard(q) {
   }).join('');
 
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+'</span><span class="quiz-badge '+TYPE_META.choice.badge+'">'+TYPE_META.choice.icon+' 选择题'+subLabel+'</span></div>' +
+    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.choice.badge+'">'+TYPE_META.choice.icon+' 选择题'+subLabel+'</span></div>' +
     '<div class="quiz-question">'+esc(q.question)+'</div>' +
     '<div class="choice-options">'+optionsHTML+'</div>' +
     '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+'" onclick="submitChoice(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
@@ -880,7 +880,7 @@ function renderFillCard(q) {
   }
 
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+'</span><span class="quiz-badge '+TYPE_META.fill.badge+'">'+TYPE_META.fill.icon+' 填空题</span></div>' +
+    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.fill.badge+'">'+TYPE_META.fill.icon+' 填空题</span></div>' +
     '<div class="quiz-question">'+esc(q.text||q.question).replace(/__\d+__/g,'____')+'</div>' +
     blanksHTML +
     '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+'" onclick="submitFill(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
@@ -900,7 +900,7 @@ function renderCalculateCard(q) {
       '</div>';
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+'</span><span class="quiz-badge '+TYPE_META.calculate.badge+'">'+TYPE_META.calculate.icon+' 计算题</span></div>' +
+    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.calculate.badge+'">'+TYPE_META.calculate.icon+' 计算题</span></div>' +
     '<div class="quiz-question">'+esc(q.question)+'</div>' +
     (q.hint?'<div class="quiz-hint">💡 '+esc(q.hint)+'</div>':'') +
     '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入计算结果..."' +(r?' disabled':'')+'></textarea>' +
@@ -932,7 +932,7 @@ function renderShortAnswerCard(q) {
     }
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+'</span><span class="quiz-badge '+TYPE_META.shortAnswer.badge+'">'+TYPE_META.shortAnswer.icon+' 简答题</span></div>' +
+    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.shortAnswer.badge+'">'+TYPE_META.shortAnswer.icon+' 简答题</span></div>' +
     '<div class="quiz-question">'+esc(q.question)+'</div>' +
     '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入你的答案..."' +(r?' disabled':'')+'></textarea>' +
     renderSymbolPalette(q.id) +
@@ -963,7 +963,7 @@ function renderEssayCard(q) {
     }
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+'</span><span class="quiz-badge '+TYPE_META.essay.badge+'">'+TYPE_META.essay.icon+' 论述题</span></div>' +
+    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.essay.badge+'">'+TYPE_META.essay.icon+' 论述题</span></div>' +
     '<div class="quiz-question">'+esc(q.question)+'</div>' +
     (q.hint?'<div class="quiz-hint">💡 '+esc(q.hint)+'</div>':'') +
     '<textarea class="answer-textarea lg" id="input-'+q.id+'" placeholder="输入你的论述...（建议 200-400 字）"' +(r?' disabled':'')+'></textarea>' +
@@ -993,7 +993,7 @@ function renderProofCard(q) {
     }
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+'</span><span class="quiz-badge '+TYPE_META.proof.badge+'">'+TYPE_META.proof.icon+' 证明题</span></div>' +
+    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.proof.badge+'">'+TYPE_META.proof.icon+' 证明题</span></div>' +
     '<div class="quiz-question">'+esc(q.question)+'</div>' +
     '<div class="method-box"><div class="method-label">📐 规定证明方法：'+esc(q.method)+'</div><div class="method-hint">'+esc(q.methodHint||'')+'</div></div>' +
     '<textarea class="answer-textarea xl" id="input-'+q.id+'" placeholder="按上述方法写出证明过程..."' +(r?' disabled':'')+'></textarea>' +
@@ -1123,20 +1123,20 @@ function renderTypeFilter() {
   filter.innerHTML = html;
 }
 
-/* 知识点筛选：从 quizData 提取 cardId 去重 */
-function renderKpFilter() {
-  var kpMap = {};
+/* 章节筛选：从 quizData 提取 chapter 去重 */
+function renderChapterFilter() {
+  var chMap = {};
   var source = currentMode === 'ai' ? aiQuizData : quizData;
   source.forEach(function(q) {
-    var kp = q.cardId || '';
-    if (kp) kpMap[kp] = (kpMap[kp]||0)+1;
+    var ch = q.chapter || '';
+    if (ch) chMap[ch] = (chMap[ch]||0)+1;
   });
-  var filter = document.getElementById('kpFilter');
+  var filter = document.getElementById('chapterFilter');
   if (!filter) return;
   var total = source.length;
-  var html = '<option value="all"'+(currentKpFilter==='all'?' selected':'')+'>📚 知识点：全部 ('+total+')</option>';
-  Object.keys(kpMap).sort().forEach(function(kp) {
-    html += '<option value="'+kp+'"'+(currentKpFilter===kp?' selected':'')+'>'+kp+' ('+kpMap[kp]+')</option>';
+  var html = '<option value="all"'+(currentChapterFilter==='all'?' selected':'')+'>📖 章节：全部 ('+total+')</option>';
+  Object.keys(chMap).sort().forEach(function(ch) {
+    html += '<option value="'+ch+'"'+(currentChapterFilter===ch?' selected':'')+'>'+ch+' ('+chMap[ch]+')</option>';
   });
   filter.innerHTML = html;
 }
@@ -1162,7 +1162,7 @@ function renderStatusFilter() {
   filter.innerHTML = html;
 }
 
-function switchKp(val) { currentKpFilter = val; renderKpFilter(); updateFilterCount(); render(); }
+function switchChapter(val) { currentChapterFilter = val; renderChapterFilter(); updateFilterCount(); render(); }
 function switchStatus(val) { currentStatusFilter = val; renderStatusFilter(); updateFilterCount(); render(); }
 
 /* 更新筛选计数 */
@@ -1176,9 +1176,9 @@ function updateFilterCount() {
 function getFilteredQuiz() {
   var source = currentMode === 'ai' ? aiQuizData : quizData;
   return source.filter(function(q) {
-    /* 知识点筛选 */
-    if (currentKpFilter !== 'all') {
-      if ((q.cardId || '') !== currentKpFilter) return false;
+    /* 章节筛选 */
+    if (currentChapterFilter !== 'all') {
+      if ((q.chapter || '') !== currentChapterFilter) return false;
     }
     /* 题型筛选 */
     if (currentTypeFilter !== 'all') {
@@ -1204,18 +1204,18 @@ function isTodayChapter(ch) {
 /* 今日任务：自动筛选本周章节 */
 function activateToday() {
   currentMode = 'today';
-  var kpFilter = document.getElementById('kpFilter');
-  if (!kpFilter) return;
-  /* 从 quizData 中找出属于今日章节的 cardId */
-  var todayKps = {};
+  var chapterFilterEl = document.getElementById('chapterFilter');
+  if (!chapterFilterEl) return;
+  /* 找出今日章节列表 */
+  var todayChs = {};
   quizData.forEach(function(q) {
-    if (isTodayChapter(q.chapter) && q.cardId) todayKps[q.cardId] = true;
+    if (isTodayChapter(q.chapter)) todayChs[q.chapter] = true;
   });
-  var todayList = Object.keys(todayKps);
+  var todayList = Object.keys(todayChs);
   if (todayList.length === 1) {
-    currentKpFilter = todayList[0];
+    currentChapterFilter = todayList[0];
   } else {
-    currentKpFilter = 'all';
+    currentChapterFilter = 'all';
   }
   /* 更新今日按钮状态 */
   var todayBtn = document.getElementById('todayBtn');
@@ -1228,7 +1228,7 @@ function activateToday() {
     var chLabel = todayChapters.length > 0 ? todayChapters.join('、') : '未加载';
     hint.textContent = '本周计划：' + chLabel;
   }
-  renderKpFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount(); render();
+  renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount(); render();
 }
 
 function updateSessionAndStats(filtered) {
@@ -1564,14 +1564,14 @@ function updateModeHint() {
 function switchMode(mode) {
   if (mode !== 'ai') return;
   currentMode = 'ai';
-  currentKpFilter = 'all';
+  currentChapterFilter = 'all';
   currentTypeFilter = 'all';
   currentStatusFilter = 'all';
   var todayBtn = document.getElementById('todayBtn');
   var aiBtn = document.getElementById('aiBtn');
   if (todayBtn) todayBtn.classList.remove('zk-active');
   if (aiBtn) aiBtn.classList.add('zk-active');
-  renderKpFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount();
+  renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount();
   updateModeHint();
   updateChrome(mode);
   render();
@@ -1760,7 +1760,7 @@ function init() {
     currentMode = 'free';
   }
   renderTypeFilter();
-  renderKpFilter();
+  renderChapterFilter();
   renderStatusFilter();
   /* 并行加载学习计划、题库、答题记录，三者就绪后再渲染 */
   var planDone = false, bankDone = false, recordsDone = false;
@@ -1814,7 +1814,7 @@ function init() {
     });
     pendingRecords = [];
     /* 初始化筛选器和今日任务 */
-    renderKpFilter(); renderTypeFilter(); renderStatusFilter();
+    renderChapterFilter(); renderTypeFilter(); renderStatusFilter();
     if (currentMode !== 'free') {
       activateToday();
     } else {

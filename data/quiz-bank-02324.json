@@ -2518,5 +2518,316 @@
     "cardId": "对偶式与对偶定理",
     "src": "ai",
     "id": "q-02324-135"
+  },
+  {
+    "id": "q-02324-136",
+    "type": "choice",
+    "question": "以下哪个联结词集合不是完备集？（  ）",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "联结词完备集",
+    "src": "ai",
+    "explanation": "{∧,∨}无法表示否定，不是完备集",
+    "options": [
+      "A. {¬,∧}",
+      "B. {¬,∨}",
+      "C. {∧,∨}",
+      "D. {¬,→}"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-02324-137",
+    "type": "fill",
+    "question": "单个联结词___和___各自构成完备集",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "联结词完备集",
+    "src": "ai",
+    "explanation": "与非(↑)和或非(↓)单个就是完备集",
+    "blanks": [
+      {
+        "answer": "与非",
+        "synonyms": [
+          "↑",
+          "NAND"
+        ]
+      },
+      {
+        "answer": "或非",
+        "synonyms": [
+          "↓",
+          "NOR"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-02324-138",
+    "type": "choice",
+    "question": "判断联结词集合是否完备的方法是（  ）",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "联结词完备集",
+    "src": "ai",
+    "explanation": "能表示¬和→即可，因为{¬,→}是完备集",
+    "options": [
+      "A. 看是否包含∧",
+      "B. 能否表示¬和→",
+      "C. 看元素个数",
+      "D. 看是否有→"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-02324-139",
+    "type": "short",
+    "question": "证明{¬,∧}是完备集",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "联结词完备集",
+    "src": "ai",
+    "explanation": "用¬和∧表示→：A→B⇔¬(A∧¬B)",
+    "answer": "因为{¬,→}是完备集，只需用¬和∧表示→即可：A→B ⇔ ¬(A∧¬B) ⇔ ¬A∨B。而¬A∨B = ¬(A∧¬B)用¬和∧表示。所以{¬,∧}能表示→和¬，是完备集"
+  },
+  {
+    "id": "q-02324-140",
+    "type": "choice",
+    "question": "以下哪个等值式是正确的？（  ）",
+    "chapter": "第1章 命题与命题公式",
+    "cardId": "基本等值式",
+    "src": "ai",
+    "explanation": "双重否定律：¬¬A ⇔ A",
+    "options": [
+      "A. A∧A ⇔ A∨A",
+      "B. ¬¬A ⇔ A",
+      "C. A→B ⇔ B→A",
+      "D. A∧¬A ⇔ T"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-02324-141",
+    "type": "fill",
+    "question": "2个变元的小项共有___个，编号从___到___",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "小项与大项",
+    "src": "ai",
+    "explanation": "n个变元有2ⁿ个小项，2个变元4个小项，编号0~3",
+    "blanks": [
+      {
+        "answer": "4",
+        "synonyms": []
+      },
+      {
+        "answer": "0",
+        "synonyms": []
+      },
+      {
+        "answer": "3",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-02324-142",
+    "type": "choice",
+    "question": "小项m₃(p∧q)的成真赋值是（  ）",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "小项与大项",
+    "src": "ai",
+    "explanation": "m₃=p∧q，当p=1,q=1时为真，编码11=3",
+    "options": [
+      "A. 00",
+      "B. 01",
+      "C. 10",
+      "D. 11"
+    ],
+    "answer": "D"
+  },
+  {
+    "id": "q-02324-143",
+    "type": "choice",
+    "question": "以下关于小项的说法正确的是（  ）",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "小项与大项",
+    "src": "ai",
+    "explanation": "小项的成真赋值唯一对应其编码",
+    "options": [
+      "A. 每个小项有且仅有一个成真赋值",
+      "B. 每个小项有多个成真赋值",
+      "C. 小项不能编号",
+      "D. 小项是简单析取式"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-02324-144",
+    "type": "fill",
+    "question": "小项mᵢ和大项Mᵢ的关系是___",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "小项与大项",
+    "src": "ai",
+    "explanation": "mᵢ ⇔ ¬Mᵢ，小项和大项互补",
+    "blanks": [
+      {
+        "answer": "mᵢ ⇔ ¬Mᵢ",
+        "synonyms": [
+          "互补",
+          "mᵢ等值于¬Mᵢ",
+          "互为否定"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-02324-145",
+    "type": "short",
+    "question": "写出2个变元p,q的所有小项及其编码",
+    "chapter": "第2章 命题逻辑的推理理论",
+    "cardId": "小项与大项",
+    "src": "ai",
+    "explanation": "4个小项：m₀~m₃，编码=成真赋值",
+    "answer": "m₀=¬p∧¬q(编码00), m₁=¬p∧q(编码01), m₂=p∧¬q(编码10), m₃=p∧q(编码11)。编码规则：变元取1，否定取0"
+  },
+  {
+    "id": "q-02324-146",
+    "type": "fill",
+    "question": "∀xP(x)中x是___变元，辖域是___",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "合式公式与辖域",
+    "src": "ai",
+    "explanation": "x是指导变元，辖域是P(x)",
+    "blanks": [
+      {
+        "answer": "指导",
+        "synonyms": [
+          "约束"
+        ]
+      },
+      {
+        "answer": "P(x)",
+        "synonyms": [
+          "P(x)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-02324-147",
+    "type": "choice",
+    "question": "∀x(P(x)∧Q(x)→R(y))中y是（  ）",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "合式公式与辖域",
+    "src": "ai",
+    "explanation": "y不在量词∀x的辖域内，是自由出现",
+    "options": [
+      "A. 约束出现",
+      "B. 自由出现",
+      "C. 指导变元",
+      "D. 量词"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-02324-148",
+    "type": "short",
+    "question": "说明约束变元改名规则的步骤",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "合式公式与辖域",
+    "src": "ai",
+    "explanation": "改名只改约束变元，用未出现的新符号",
+    "answer": "1.找到约束变元；2.选择公式中未出现的新符号；3.将该约束变元在辖域内的所有出现替换为新符号。注意只能改约束变元，不能改自由变元"
+  },
+  {
+    "id": "q-02324-149",
+    "type": "choice",
+    "question": "以下关于量词辖域的说法正确的是（  ）",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "合式公式与辖域",
+    "src": "ai",
+    "explanation": "辖域是量词作用的范围",
+    "options": [
+      "A. 辖域是量词紧跟的公式范围",
+      "B. 辖域是整个公式",
+      "C. 辖域与指导变元无关",
+      "D. 辖域内的变元都是自由的"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-02324-150",
+    "type": "fill",
+    "question": "¬∀xP(x)等值于___，¬∃xP(x)等值于___",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词演算等值式与蕴涵式",
+    "src": "ai",
+    "explanation": "量词否定等值式",
+    "blanks": [
+      {
+        "answer": "∃x¬P(x)",
+        "synonyms": []
+      },
+      {
+        "answer": "∀x¬P(x)",
+        "synonyms": []
+      }
+    ]
+  },
+  {
+    "id": "q-02324-151",
+    "type": "choice",
+    "question": "以下哪个等值式正确？（  ）",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词演算等值式与蕴涵式",
+    "src": "ai",
+    "explanation": "∀x(P∧Q) ⇔ ∀xP∧∀xQ，全称量词对∧可分配",
+    "options": [
+      "A. ∀x(P∧Q) ⇔ ∀xP∧∀xQ",
+      "B. ∀x(P∨Q) ⇔ ∀xP∨∀xQ",
+      "C. ∃x(P∧Q) ⇔ ∃xP∧∃xQ",
+      "D. ∃x(P→Q) ⇔ ∃xP→∃xQ"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-02324-152",
+    "type": "choice",
+    "question": "论域D={1,2}时，∀xP(x)等值于（  ）",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词演算等值式与蕴涵式",
+    "src": "ai",
+    "explanation": "有限论域消去：∀xP(x) ⇔ P(1)∧P(2)",
+    "options": [
+      "A. P(1)∨P(2)",
+      "B. P(1)→P(2)",
+      "C. P(1)∧P(2)",
+      "D. P(1)"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-02324-153",
+    "type": "fill",
+    "question": "∀xP(x)∨∀xQ(x) ___ ∀x(P(x)∨Q(x))（填⇒或⇔）",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词演算等值式与蕴涵式",
+    "src": "ai",
+    "explanation": "∀xP∨∀xQ ⇒ ∀x(P∨Q) 成立，但反向不成立",
+    "blanks": [
+      {
+        "answer": "⇒",
+        "synonyms": [
+          "蕴涵",
+          "推出"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q-02324-154",
+    "type": "short",
+    "question": "说明量词对∧和∨的分配规律及注意事项",
+    "chapter": "第3章 谓词逻辑",
+    "cardId": "谓词演算等值式与蕴涵式",
+    "src": "ai",
+    "explanation": "∀对∧分配等值，∃对∨分配等值，交叉只蕴涵",
+    "answer": "全称量词对∧可分配：∀x(P∧Q) ⇔ ∀xP∧∀xQ。存在量词对∨可分配：∃x(P∨Q) ⇔ ∃xP∨∃xQ。注意：∀x对∨不可分配（只蕴涵不等值），∃x对∧不可分配（只蕴涵不等值）"
   }
 ]
