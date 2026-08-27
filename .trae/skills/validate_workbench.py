@@ -327,6 +327,7 @@ def check_tab_integrity_global() -> list[str]:
     corresponding CSS selectors and include the switching JavaScript. This
     catches regressions where the DOM is transformed but the styles or JS are
     accidentally dropped by an automation script.
+    CSS can be in inline <style> blocks or in external linked .css files.
     """
     root = SKILLS_DIR.parent.parent
     workbench = root / 'Workbench'
@@ -360,9 +361,19 @@ def check_tab_integrity_global() -> list[str]:
         if not (has_btns or has_panes):
             continue
 
+        # 收集所有CSS来源：内联style块 + 外部link引用的CSS文件
+        css_pool = content
+        import re
+        for m in re.finditer(r'<link\s+rel="stylesheet"\s+href="([^"]+\.css)"', content):
+            css_path = (item.parent / m.group(1)).resolve()
+            try:
+                css_pool += '\n' + css_path.read_text(encoding='utf-8')
+            except OSError:
+                pass
+
         missing = []
         for marker, name in required_css.items():
-            if marker not in content:
+            if marker not in css_pool:
                 missing.append(name)
         if has_btns and 'switchTab' not in content and 'tabBtns' not in content:
             missing.append('Tab switching JS')

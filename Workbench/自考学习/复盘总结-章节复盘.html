@@ -5,473 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>章节复盘总结 · 自考学习</title>
-  <link rel="stylesheet" href="../shared/base-vars.css">
-<style>
-    
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
-    body {
-      font-family: var(--font);
-      color: var(--ink);
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(139, 92, 246, 0.10), transparent 60%),
-        radial-gradient(1000px 500px at 100% 0%, rgba(37, 99, 235, 0.10), transparent 55%),
-        var(--bg);
-      line-height: 1.75;
-      padding: 1.5rem 1rem;
-    }
-    article.ss-review-page {
-      max-width: var(--max);
-      margin: 0 auto;
-    }
-
-    /* ============ 紧凑头部 ============ */
-    .ss-review-header {
-      display: flex; align-items: center; gap: 0.5rem;
-      margin-bottom: 0.6rem;
-    }
-    .ss-review-header h1 {
-      font-size: 1.1rem; font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .ss-review-header .ss-review-subject {
-      font-size: 0.72rem; color: var(--muted);
-      padding: 2px 8px; background: rgba(37, 99, 235, 0.08);
-      border-radius: 999px; font-weight: 600;
-    }
-    .ss-review-header .ss-review-subject b {
-      color: var(--accent); font-weight: 700;
-    }
-
-    /* ============ 紧凑进度条卡片 ============ */
-    .ss-review-dashboard {
-      background: var(--bg2);
-      border: 1px solid rgba(37, 99, 235, 0.12);
-      border-radius: 12px;
-      padding: 0.6rem 1rem;
-      margin-bottom: 0.8rem;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
-      backdrop-filter: blur(10px);
-      display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;
-    }
-    .ss-dashboard-top {
-      display: contents;
-    }
-    .ss-dashboard-label {
-      font-weight: 700; font-size: 0.85rem; white-space: nowrap;
-    }
-    .ss-dashboard-count { display: none; }
-    .ss-dashboard-track {
-      flex: 1; min-width: 80px;
-      height: 8px;
-      background: rgba(37, 99, 235, 0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-    .ss-dashboard-fill {
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--green));
-      border-radius: 999px;
-      transition: width 0.4s ease;
-    }
-    .ss-dashboard-pct {
-      position: absolute; right: 0.4rem; top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.68rem; font-weight: 700; color: #fff;
-      mix-blend-mode: difference;
-    }
-    .ss-dashboard-meta {
-      display: contents;
-    }
-    .ss-dashboard-stats {
-      display: flex; gap: 0.6rem; flex-wrap: wrap;
-      font-size: 0.75rem; color: var(--muted);
-    }
-    .ss-stat {
-      display: flex; align-items: center; gap: 0.25rem;
-    }
-    .ss-stat-dot {
-      width: 7px; height: 7px; border-radius: 50%; display: inline-block;
-    }
-    .ss-stat-reviewed .ss-stat-dot { background: var(--green); }
-    .ss-stat-pending .ss-stat-dot { background: #cbd5e1; }
-    .ss-stat b { color: var(--ink); font-weight: 700; }
-    .ss-dashboard-reset {
-      background: none; border: 1px solid var(--rule);
-      color: var(--muted); cursor: pointer;
-      font-size: 0.74rem; padding: 0.2rem 0.6rem;
-      border-radius: 6px; font-family: inherit;
-      transition: all 0.2s; white-space: nowrap; margin-left: auto;
-    }
-    .ss-dashboard-reset:hover {
-      border-color: var(--coral); color: var(--coral);
-      background: rgba(225, 29, 72, 0.05);
-    }
-
-    /* ============ 章节卡片列表 ============ */
-    .ss-review-list {
-      display: flex; flex-direction: column; gap: 0.6rem;
-    }
-    .ss-review-card {
-      background: var(--bg2);
-      border: 1px solid rgba(37, 99, 235, 0.10);
-      border-radius: 12px;
-      padding: 0.9rem 1rem;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
-      backdrop-filter: blur(10px);
-      transition: border-color 0.25s, box-shadow 0.25s;
-    }
-    .ss-review-card:hover {
-      border-color: rgba(37, 99, 235, 0.28);
-      box-shadow: 0 3px 14px rgba(15, 23, 42, 0.05);
-    }
-    .ss-review-card.ss-reviewed {
-      border-left: 3px solid var(--green);
-    }
-    .ss-card-head {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.6rem;
-      flex-wrap: wrap;
-    }
-    .ss-card-index {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      border-radius: 7px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.78rem;
-      flex-shrink: 0;
-    }
-    .ss-card-title {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--ink);
-    }
-    .ss-card-badge {
-      font-size: 0.72rem;
-      padding: 0.15rem 0.6rem;
-      border-radius: 999px;
-      font-weight: 600;
-      background: rgba(5, 150, 105, 0.12);
-      color: var(--green);
-      margin-left: 0.2rem;
-    }
-    .ss-card-badge.ss-badge-pending {
-      background: rgba(148, 163, 184, 0.15);
-      color: var(--muted);
-    }
-    .ss-card-saved {
-      margin-left: auto;
-      font-size: 0.76rem;
-      color: var(--muted);
-      opacity: 0.8;
-    }
-
-    /* ============ 三个文本域 ============ */
-    .ss-review-fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 0.9rem;
-    }
-    .ss-field {
-      display: flex;
-      flex-direction: column;
-    }
-    .ss-field-label {
-      font-size: 0.82rem;
-      font-weight: 650;
-      color: var(--ink);
-      margin-bottom: 0.35rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    .ss-field-label .ss-field-icon {
-      font-size: 0.9rem;
-    }
-    .ss-field-label .ss-field-hint {
-      font-size: 0.72rem;
-      color: var(--muted);
-      font-weight: 400;
-      margin-left: 0.15rem;
-    }
-    .ss-review-textarea {
-      width: 100%;
-      min-height: 80px;
-      padding: 0.5rem 0.7rem;
-      border-radius: 8px;
-      border: 1px solid var(--rule);
-      background: #fff;
-      color: var(--ink);
-      font-family: var(--font);
-      font-size: 0.84rem;
-      line-height: 1.6;
-      resize: vertical;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .ss-review-textarea::placeholder {
-      color: #cbd5e1;
-    }
-    .ss-review-textarea:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-    }
-    .ss-field-summary .ss-field-label .ss-field-icon { color: var(--accent); }
-    .ss-field-wrong .ss-field-label .ss-field-icon { color: var(--coral); }
-    .ss-field-plan .ss-field-label .ss-field-icon { color: var(--amber); }
-
-    /* ============ 功能切换 Tab ============ */
-    .ss-feature-tabs {
-      display: flex;
-      gap: 0.25rem;
-      margin-bottom: 0.8rem;
-      padding: 3px;
-      background: rgba(15, 23, 42, 0.04);
-      border-radius: 10px;
-    }
-    .ss-feature-tab {
-      flex: 1;
-      padding: 0.4rem 0.6rem;
-      border-radius: 7px;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--muted);
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-    .ss-feature-tab:hover { color: var(--accent); }
-    .ss-feature-tab.zk-active {
-      background: #fff;
-      color: var(--accent);
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
-    }
-    .ss-feature-panel { display: none; }
-    .ss-feature-panel.zk-active { display: block; }
-
-    /* ============ 通用状态：加载 / 错误 / 空 ============ */
-    .ss-loading { text-align: center; color: var(--muted); padding: 2.5rem 1rem; font-size: 0.92rem; }
-    .ss-error-box {
-      background: rgba(225, 29, 72, 0.07);
-      border: 1px solid rgba(225, 29, 72, 0.25);
-      color: var(--coral);
-      padding: 1rem 1.2rem;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      line-height: 1.7;
-    }
-    .ss-empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 3rem 1rem;
-      font-size: 1.02rem;
-      background: var(--bg2);
-      border: 1px dashed var(--rule);
-      border-radius: 14px;
-    }
-
-    /* ============ 错题反思 ============ */
-    .ss-wrong-stats { display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
-    .ss-wrong-stat {
-      flex: 1; min-width: 140px;
-      background: var(--bg2);
-      border: 1px solid rgba(225, 29, 72, 0.12);
-      border-radius: 14px;
-      padding: 0.9rem 1.1rem;
-      text-align: center;
-      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
-      backdrop-filter: blur(10px);
-    }
-    .ss-wrong-stat-num { display: block; font-size: 1.5rem; font-weight: 800; color: var(--coral); line-height: 1.2; }
-    .ss-wrong-stat-label { font-size: 0.8rem; color: var(--muted); }
-
-    /* ============ 紧凑洞察条 ============ */
-    .ss-insight-bar {
-      display: flex; align-items: center; gap: 0.8rem;
-      padding: 0.5rem 0.9rem; margin-bottom: 0.6rem;
-      background: rgba(37, 99, 235, 0.06); border-radius: 10px;
-      flex-wrap: wrap; font-size: 0.78rem;
-    }
-    .ss-insight-stats { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
-    .ss-insight-stat {
-      display: flex; align-items: center; gap: 0.2rem;
-      padding: 2px 0;
-    }
-    .ss-insight-num { font-size: 0.92rem; font-weight: 800; }
-    .ss-insight-num.green { color: var(--green); }
-    .ss-insight-num.coral { color: var(--coral); }
-    .ss-insight-num.accent { color: var(--accent); }
-    .ss-insight-label { font-size: 0.72rem; color: var(--muted); }
-    .ss-insight-divider { width: 1px; height: 14px; background: var(--rule); }
-    .ss-insight-suggestion {
-      display: flex; align-items: center; gap: 0.4rem;
-      font-size: 0.76rem; color: var(--ink);
-    }
-    .ss-insight-suggestion-title { font-weight: 700; color: var(--accent); }
-    .ss-insight-suggestion-text { color: var(--muted); }
-    .ss-insight-action {
-      display: inline-block; margin-left: auto;
-      padding: 3px 10px; border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; font-size: 0.74rem; font-weight: 600;
-      text-decoration: none; cursor: pointer; white-space: nowrap;
-    }
-    .ss-insight-action:hover { opacity: 0.9; }
-
-    .ss-wrong-group { margin-bottom: 1.6rem; }
-    .ss-wrong-group-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; padding-left: 0.2rem; }
-    .ss-wrong-group-title { font-weight: 700; font-size: 1rem; color: var(--ink); }
-    .ss-wrong-group-count { font-size: 0.78rem; color: var(--muted); background: rgba(15, 23, 42, 0.05); padding: 0.12rem 0.6rem; border-radius: 999px; }
-
-    .ss-wrong-card {
-      background: var(--bg2);
-      border: 1px solid rgba(225, 29, 72, 0.14);
-      border-left: 3px solid var(--coral);
-      border-radius: 14px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 0.8rem;
-      box-shadow: 0 3px 16px rgba(15, 23, 42, 0.04);
-      backdrop-filter: blur(10px);
-      transition: opacity 0.2s;
-    }
-    .ss-wrong-card.ss-solved { opacity: 0.55; border-left-color: var(--green); }
-    .ss-wrong-card-head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
-    .ss-wrong-qid { font-size: 0.74rem; font-family: ui-monospace, Consolas, monospace; color: var(--muted); background: rgba(15, 23, 42, 0.05); padding: 0.1rem 0.45rem; border-radius: 6px; }
-    .ss-wrong-type { font-size: 0.76rem; font-weight: 600; color: var(--accent); background: rgba(37, 99, 235, 0.08); padding: 0.12rem 0.55rem; border-radius: 999px; }
-    .ss-wrong-chapter { font-size: 0.76rem; color: var(--muted); }
-    .ss-wrong-time { font-size: 0.74rem; color: var(--muted); margin-left: auto; }
-    .ss-wrong-count { font-size: 0.74rem; color: var(--coral); font-weight: 600; }
-    .ss-wrong-solved-badge { font-size: 0.74rem; color: var(--green); font-weight: 600; }
-    .ss-wrong-question { font-size: 0.95rem; color: var(--ink); margin-bottom: 0.7rem; line-height: 1.7; }
-    .ss-wrong-answers { display: flex; gap: 0.8rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
-    .ss-wrong-ans-row { flex: 1; min-width: 180px; padding: 0.55rem 0.75rem; border-radius: 10px; border: 1px solid var(--rule); background: #fff; }
-    .ss-wrong-ans-label { display: block; font-size: 0.72rem; color: var(--muted); margin-bottom: 0.15rem; }
-    .ss-wrong-ans-val { font-size: 0.9rem; font-weight: 600; word-break: break-word; }
-    .ss-wrong-user { border-color: rgba(225, 29, 72, 0.3); }
-    .ss-wrong-user .ss-wrong-ans-val { color: var(--coral); }
-    .ss-wrong-correct { border-color: rgba(5, 150, 105, 0.3); }
-    .ss-wrong-correct .ss-wrong-ans-val { color: var(--green); }
-    .ss-wrong-explanation { font-size: 0.84rem; color: var(--muted); background: rgba(37, 99, 235, 0.05); padding: 0.6rem 0.8rem; border-radius: 10px; margin-bottom: 0.7rem; line-height: 1.7; }
-    .ss-wrong-actions { display: flex; gap: 0.6rem; }
-    .ss-wrong-redo, .ss-wrong-solve {
-      font-size: 0.82rem; font-weight: 600; font-family: inherit;
-      padding: 0.4rem 0.9rem; border-radius: 8px; cursor: pointer;
-      border: 1px solid var(--rule); background: #fff; color: var(--ink);
-      transition: all 0.2s; text-decoration: none; display: inline-block;
-    }
-    .ss-wrong-redo { border-color: var(--accent); color: var(--accent); }
-    .ss-wrong-redo:hover { background: var(--accent); color: #fff; }
-    .ss-wrong-solve:hover { border-color: var(--green); color: var(--green); background: rgba(5, 150, 105, 0.06); }
-
-    /* ============ 题库管理 ============ */
-    .ss-bank-stats { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
-    .ss-bank-stat { background: var(--bg2); border: 1px solid rgba(37, 99, 235, 0.12); border-radius: 14px; padding: 0.8rem 1.1rem; text-align: center; box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04); backdrop-filter: blur(10px); }
-    .ss-bank-stat-num { display: block; font-size: 1.5rem; font-weight: 800; color: var(--accent); line-height: 1.2; }
-    .ss-bank-stat-label { font-size: 0.8rem; color: var(--muted); }
-    .ss-bank-stat-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .ss-bank-stat-chip { font-size: 0.76rem; color: var(--ink); background: rgba(37, 99, 235, 0.08); padding: 0.25rem 0.65rem; border-radius: 999px; }
-
-    .ss-bank-toolbar { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
-    .ss-bank-toolbar-spacer { flex: 1; }
-    .ss-bank-select { font-family: inherit; font-size: 0.85rem; padding: 0.45rem 0.7rem; border-radius: 8px; border: 1px solid var(--rule); background: #fff; color: var(--ink); cursor: pointer; }
-    .ss-bank-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-    /* 章节筛选：蓝紫色系 */
-    .ss-bank-select-chapter { border-color: #c7d2fe; background: #f5f3ff; color: #4338ca; }
-    .ss-bank-select-chapter:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12); }
-    /* 题型筛选：紫色系 */
-    .ss-bank-select-type { border-color: #e9d5ff; background: #faf5ff; color: #6b21a8; }
-    .ss-bank-select-type:focus { border-color: #9333ea; box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12); }
-    /* 状态筛选：青绿色系 */
-    .ss-bank-select-status { border-color: #99f6e4; background: #ecfdf5; color: #047857; }
-    .ss-bank-select-status:focus { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12); }
-    .ss-bank-add { font-family: inherit; font-size: 0.85rem; font-weight: 600; padding: 0.45rem 1rem; border-radius: 8px; border: none; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 3px 12px rgba(37, 99, 235, 0.25); transition: transform 0.15s; }
-    .ss-bank-add:hover { transform: translateY(-1px); }
-
-    /* 题库卡片答题状态标签 */
-    .ss-bank-status { font-size: 0.74rem; font-weight: 600; padding: 0.12rem 0.5rem; border-radius: 999px; white-space: nowrap; }
-    .ss-bank-status-unanswered { background: rgba(107, 114, 128, 0.1); color: #4b5563; }
-    .ss-bank-status-correct { background: rgba(16, 185, 129, 0.12); color: #059669; }
-    .ss-bank-status-wrong { background: rgba(225, 29, 72, 0.1); color: #be123c; }
-
-    .ss-bank-group { margin-bottom: 1.4rem; }
-    .ss-bank-group-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; padding-left: 0.2rem; font-weight: 700; }
-    .ss-bank-group-count { font-size: 0.76rem; color: var(--muted); background: rgba(15, 23, 42, 0.05); padding: 0.12rem 0.6rem; border-radius: 999px; font-weight: 600; }
-
-    .ss-bank-card { background: var(--bg2); border: 1px solid rgba(37, 99, 235, 0.10); border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 0.7rem; box-shadow: 0 3px 16px rgba(15, 23, 42, 0.04); backdrop-filter: blur(10px); transition: border-color 0.2s, box-shadow 0.2s; }
-    .ss-bank-card:hover { border-color: rgba(37, 99, 235, 0.28); box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07); }
-    .ss-bank-card-head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
-    .ss-bank-qid { font-size: 0.72rem; font-family: ui-monospace, Consolas, monospace; color: var(--muted); background: rgba(15, 23, 42, 0.05); padding: 0.1rem 0.45rem; border-radius: 6px; }
-    .ss-bank-type { font-size: 0.74rem; font-weight: 600; color: var(--accent2); background: rgba(139, 92, 246, 0.10); padding: 0.12rem 0.55rem; border-radius: 999px; }
-    .ss-bank-diff { font-size: 0.74rem; color: var(--amber); }
-    .ss-bank-card-actions { margin-left: auto; display: flex; gap: 0.4rem; }
-    .ss-bank-edit, .ss-bank-del { font-family: inherit; font-size: 0.76rem; font-weight: 600; padding: 0.3rem 0.7rem; border-radius: 7px; cursor: pointer; border: 1px solid var(--rule); background: #fff; color: var(--muted); transition: all 0.2s; }
-    .ss-bank-edit:hover { border-color: var(--accent); color: var(--accent); }
-    .ss-bank-del:hover { border-color: var(--coral); color: var(--coral); background: rgba(225, 29, 72, 0.05); }
-    .ss-bank-question { font-size: 0.94rem; color: var(--ink); margin-bottom: 0.55rem; line-height: 1.7; }
-    .ss-bank-ans-block { font-size: 0.84rem; color: var(--muted); }
-    .ss-bank-options { margin-bottom: 0.35rem; }
-    .ss-bank-opt { padding: 0.15rem 0; }
-    .ss-bank-answer { margin-bottom: 0.3rem; }
-    .ss-bank-answer b { color: var(--green); }
-    .ss-bank-formula, .ss-bank-threshold, .ss-bank-steps { margin-bottom: 0.3rem; }
-    .ss-bank-explanation { font-size: 0.82rem; color: var(--muted); background: rgba(37, 99, 235, 0.05); padding: 0.55rem 0.75rem; border-radius: 9px; margin-bottom: 0.4rem; line-height: 1.7; }
-    .ss-bank-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
-    .ss-bank-tag { font-size: 0.7rem; color: var(--muted); background: rgba(15, 23, 42, 0.05); padding: 0.1rem 0.5rem; border-radius: 6px; }
-
-    /* ============ 题库表单 ============ */
-    .ss-bank-form { background: var(--bg2); border: 1px solid rgba(37, 99, 235, 0.18); border-radius: 16px; margin-bottom: 1.2rem; box-shadow: 0 6px 24px rgba(15, 23, 42, 0.07); backdrop-filter: blur(12px); overflow: hidden; }
-    .ss-bank-form-head { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem; background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(139, 92, 246, 0.08)); border-bottom: 1px solid var(--rule); font-weight: 700; }
-    .ss-bank-form-close { background: none; border: none; font-size: 1.4rem; line-height: 1; color: var(--muted); cursor: pointer; font-family: inherit; }
-    .ss-bank-form-body { padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: 0.7rem; }
-    .ss-bank-form-row { display: flex; gap: 0.7rem; flex-wrap: wrap; }
-    .ss-bank-field { display: flex; flex-direction: column; font-size: 0.8rem; font-weight: 600; color: var(--ink); gap: 0.3rem; }
-    .ss-bank-form-row .ss-bank-field { flex: 1; min-width: 120px; }
-    .ss-bank-input { font-family: inherit; font-size: 0.86rem; padding: 0.5rem 0.7rem; border-radius: 8px; border: 1px solid var(--rule); background: #fff; color: var(--ink); font-weight: 400; }
-    .ss-bank-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-    .ss-bank-textarea { min-height: 70px; resize: vertical; line-height: 1.6; }
-    #bfAnswerHint { font-size: 0.72rem; color: var(--muted); font-weight: 400; margin-left: 0.2rem; }
-    .ss-bank-form-actions { display: flex; gap: 0.6rem; margin-top: 0.3rem; }
-    .ss-bank-form-save { font-family: inherit; font-size: 0.86rem; font-weight: 600; padding: 0.55rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 3px 12px rgba(37, 99, 235, 0.25); }
-    .ss-bank-form-cancel { font-family: inherit; font-size: 0.86rem; font-weight: 600; padding: 0.55rem 1.2rem; border-radius: 8px; border: 1px solid var(--rule); background: #fff; color: var(--muted); cursor: pointer; }
-
-    /* ============ Toast 提示 ============ */
-    .ss-toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translate(-50%, 20px); background: var(--ink); color: #fff; padding: 0.7rem 1.2rem; border-radius: 10px; font-size: 0.86rem; box-shadow: 0 8px 28px rgba(15, 23, 42, 0.25); opacity: 0; transition: all 0.3s; z-index: 9999; }
-    .ss-toast.ss-toast-error { background: var(--coral); }
-    .ss-toast.ss-toast-show { opacity: 1; transform: translate(-50%, 0); }
-
-    /* ============ 响应式 ============ */
-    @media (max-width: 720px) {
-      .ss-review-fields {
-        grid-template-columns: 1fr;
-      }
-      .ss-review-textarea {
-        min-height: 90px;
-      }
-      .ss-wrong-answers { flex-direction: column; }
-      .ss-bank-form-row { flex-direction: column; }
-    }
-    @media (max-width: 640px) {
-      body { padding: 1rem 0.8rem; }
-      .ss-review-header h1 { font-size: 1rem; }
-      .ss-review-card { padding: 0.8rem 0.8rem; }
-      .ss-card-saved { display: none; }
-      .ss-dashboard-label { font-size: 0.78rem; }
-      .ss-insight-bar { gap: 0.4rem; font-size: 0.74rem; }
-    }
-  </style>
+  <script src="../../styles/shared/theme-sync.js"></script>
+<link rel="stylesheet" href="../../styles/shared/base-vars.css">
+<link rel="stylesheet" href="../../styles/shared/base.css">
+<link rel="stylesheet" href="../../styles/shared/components.css">
+<link rel="stylesheet" href="../../styles/自考学习/复盘总结.css">
 </head>
 <body>
   <article class="ss-review-page">
@@ -480,9 +18,9 @@
       <div class="ss-review-subject">当前科目：<b id="subjectName">—</b></div>
     </header>
     <div class="ss-feature-tabs" id="featureTabs">
-      <button class="ss-feature-tab zk-active" data-feature="review">📝 章节复盘</button>
-      <button class="ss-feature-tab" data-feature="wrong">❌ 错题反思</button>
-      <button class="ss-feature-tab" data-feature="bank">📚 题库管理</button>
+      <button class="ss-feature-tab zk-active zk-seg" data-feature="review">📝 章节复盘</button>
+      <button class="ss-feature-tab zk-seg" data-feature="wrong">❌ 错题反思</button>
+      <button class="ss-feature-tab zk-seg" data-feature="bank">📚 题库管理</button>
     </div>
 
     <!-- 功能 1：章节复盘 -->
@@ -504,7 +42,7 @@
           <span class="ss-stat ss-stat-reviewed"><span class="ss-stat-dot"></span>已复盘 <b id="statReviewed">0</b></span>
           <span class="ss-stat ss-stat-pending"><span class="ss-stat-dot"></span>待复盘 <b id="statPending">0</b></span>
         </div>
-        <button class="ss-dashboard-reset" id="resetBtn">重置</button>
+        <button class="ss-dashboard-reset zk-btn-outline" id="resetBtn">重置</button>
       </div>
     </section>
 
@@ -522,10 +60,10 @@
     </div>
 
     <!-- 引导流按钮 -->
-    <div class="ss-guide-flow" style="margin-top:1.5rem;text-align:center;">
-      <a class="ss-guide-btn" id="guideBtn" href="#" style="display:inline-block;padding:14px 28px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;text-decoration:none;font-weight:600;font-size:14px;box-shadow:0 4px 12px rgba(59,130,246,0.3);">
+    <div class="ss-guide-flow">
+      <a class="ss-guide-btn zk-btn-primary" id="guideBtn" href="#">
         ✅ 返回背诵卡 →
-        <div style="font-size:11px;font-weight:400;opacity:0.85;margin-top:2px;">继续学习或复习知识点</div>
+        <div class="ss-guide-subtext">继续学习或复习知识点</div>
       </a>
     </div>
   </article>
@@ -749,7 +287,7 @@
         document.getElementById("statPending").textContent = total - reviewed;
 
         var pct = total ? Math.round((reviewed / total) * 100) : 0;
-        document.getElementById("dashboardFill").style.width = pct + "%";
+        document.getElementById("dashboardFill").style.setProperty("--fill-pct", pct + "%");
         document.getElementById("dashboardPct").textContent = pct + "%";
       }
 
@@ -1088,7 +626,7 @@
           (q.explanation ? '<div class="ss-wrong-explanation">📖 ' + esc(q.explanation) + '</div>' : '') +
           '<div class="ss-wrong-actions">' +
             '<a class="ss-wrong-redo" href="' + redoUrl + '">重做</a>' +
-            '<button class="ss-wrong-solve" data-qid="' + esc(qid) + '">' + (isSolved ? '取消标记' : '标记已解决') + '</button>' +
+            '<button class="ss-wrong-solve zk-btn-outline" data-qid="' + esc(qid) + '">' + (isSolved ? '取消标记' : '标记已解决') + '</button>' +
           '</div>' +
         '</div>';
       }
@@ -1200,14 +738,14 @@
 
         // 状态统计 chips
         var statusChips =
-          '<span class="ss-bank-stat-chip" style="background:rgba(107,114,128,0.1);color:#4b5563;">⚪ 未答 ' + statusCounts.unanswered + '</span>' +
-          '<span class="ss-bank-stat-chip" style="background:rgba(16,185,129,0.12);color:#059669;">✓ 答对 ' + statusCounts.correct + '</span>' +
-          '<span class="ss-bank-stat-chip" style="background:rgba(225,29,72,0.1);color:#be123c;">✗ 答错 ' + statusCounts.wrong + '</span>';
+          '<span class="ss-bank-stat-chip unanswered">⚪ 未答 ' + statusCounts.unanswered + '</span>' +
+          '<span class="ss-bank-stat-chip correct">✓ 答对 ' + statusCounts.correct + '</span>' +
+          '<span class="ss-bank-stat-chip wrong">✗ 答错 ' + statusCounts.wrong + '</span>';
 
         var statsHtml =
           '<div class="ss-bank-stats">' +
             '<div class="ss-bank-stat-chips">' +
-              '<span class="ss-bank-stat-chip" style="background:rgba(37,99,235,0.1);color:#2563eb;font-weight:700;">📊 总题数 ' + data.length + '</span>' +
+              '<span class="ss-bank-stat-chip total">📊 总题数 ' + data.length + '</span>' +
               (typeChips || '<span class="ss-bank-stat-chip">暂无</span>') +
             '</div>' +
           '</div>';
@@ -1228,10 +766,10 @@
             '<select id="bankFilterType" class="ss-bank-select ss-bank-select-type">' + typeOpts + '</select>' +
             '<select id="bankFilterStatus" class="ss-bank-select ss-bank-select-status">' + statusOpts + '</select>' +
             '<span class="ss-bank-toolbar-spacer"></span>' +
-            '<button class="ss-bank-add" id="bankAddBtn">+ 新增题目</button>' +
+            '<button class="ss-bank-add zk-btn-primary" id="bankAddBtn">+ 新增题目</button>' +
           '</div>';
 
-        var formHtml = '<div class="ss-bank-form" id="bankForm" style="display:none;"></div>';
+        var formHtml = '<div class="ss-bank-form zk-hidden" id="bankForm"></div>';
 
         var filtered = data.filter(function(q) {
           if (fc && (q.chapter || '') !== fc) return false;
@@ -1292,8 +830,8 @@
             statusBadge +
             '<span class="ss-bank-diff">' + diffStars + ' ' + esc(diffLabel) + '</span>' +
             '<div class="ss-bank-card-actions">' +
-              '<button class="ss-bank-edit" data-idx="' + idx + '">编辑</button>' +
-              '<button class="ss-bank-del" data-idx="' + idx + '">删除</button>' +
+              '<button class="ss-bank-edit zk-btn-outline" data-idx="' + idx + '">编辑</button>' +
+              '<button class="ss-bank-del zk-btn-outline" data-idx="' + idx + '">删除</button>' +
             '</div>' +
           '</div>' +
           '<div class="ss-bank-question">' + esc(qText) + '</div>' +
@@ -1379,23 +917,23 @@
         var diffVal = (q && q.difficulty) || 1;
 
         form.innerHTML =
-          '<div class="ss-bank-form-head"><span>' + (isEdit ? '编辑题目' : '新增题目') + '</span><button class="ss-bank-form-close" type="button">×</button></div>' +
+          '<div class="ss-bank-form-head"><span>' + (isEdit ? '编辑题目' : '新增题目') + '</span><button class="ss-bank-form-close zk-btn-outline" type="button">×</button></div>' +
           '<div class="ss-bank-form-body">' +
             '<div class="ss-bank-form-row">' +
               '<label class="ss-bank-field">题型<select id="bfType" class="ss-bank-input">' + typeOpts + '</select></label>' +
-              '<label class="ss-bank-field ss-field-choice-only" style="display:none;">子类型<select id="bfSubType" class="ss-bank-input">' + subTypeOpts + '</select></label>' +
+              '<label class="ss-bank-field ss-field-choice-only zk-hidden">子类型<select id="bfSubType" class="ss-bank-input">' + subTypeOpts + '</select></label>' +
               '<label class="ss-bank-field">难度<select id="bfDifficulty" class="ss-bank-input"><option value="1">⭐ 简单</option><option value="2">⭐⭐ 中等</option><option value="3">⭐⭐⭐ 困难</option></select></label>' +
             '</div>' +
             '<label class="ss-bank-field">章节<input id="bfChapter" class="ss-bank-input" list="bfChapterList" placeholder="如：第1章 计算机系统概述" value="' + esc(q ? q.chapter : '') + '"/><datalist id="bfChapterList">' + chapterList.map(function(c) { return '<option value="' + esc(c) + '">'; }).join('') + '</datalist></label>' +
             '<label class="ss-bank-field">题目<textarea id="bfQuestion" class="ss-bank-input ss-bank-textarea" placeholder="题干文本">' + esc(q ? (q.question || q.text || '') : '') + '</textarea></label>' +
-            '<label class="ss-bank-field ss-field-choice-only" style="display:none;">选项（每行一个，仅选择题）<textarea id="bfOptions" class="ss-bank-input ss-bank-textarea" placeholder="A 选项&#10;B 选项">' + esc(optionsVal) + '</textarea></label>' +
+            '<label class="ss-bank-field ss-field-choice-only zk-hidden">选项（每行一个，仅选择题）<textarea id="bfOptions" class="ss-bank-input ss-bank-textarea" placeholder="A 选项&#10;B 选项">' + esc(optionsVal) + '</textarea></label>' +
             '<label class="ss-bank-field">答案<span id="bfAnswerHint">（字母，如 A）</span><input id="bfAnswer" class="ss-bank-input" value="' + esc(answerVal) + '"/></label>' +
-            '<label class="ss-bank-field ss-field-points-only" style="display:none;">通过阈值<input id="bfPass" class="ss-bank-input" type="number" min="1" value="' + passVal + '"/></label>' +
+            '<label class="ss-bank-field ss-field-points-only zk-hidden">通过阈值<input id="bfPass" class="ss-bank-input" type="number" min="1" value="' + passVal + '"/></label>' +
             '<label class="ss-bank-field">解析<textarea id="bfExplanation" class="ss-bank-input ss-bank-textarea" placeholder="解析（可选）">' + esc(q ? (q.explanation || '') : '') + '</textarea></label>' +
             '<label class="ss-bank-field">标签（逗号分隔）<input id="bfTags" class="ss-bank-input" value="' + esc(q && q.tags ? q.tags.join(', ') : '') + '"/></label>' +
-            '<div class="ss-bank-form-actions"><button class="ss-bank-form-save" type="button">' + (isEdit ? '保存修改' : '添加题目') + '</button><button class="ss-bank-form-cancel" type="button">取消</button></div>' +
+            '<div class="ss-bank-form-actions"><button class="ss-bank-form-save zk-btn-primary" type="button">' + (isEdit ? '保存修改' : '添加题目') + '</button><button class="ss-bank-form-cancel zk-btn-outline" type="button">取消</button></div>' +
           '</div>';
-        form.style.display = 'block';
+        form.classList.remove('zk-hidden');
         form.dataset.editIdx = isEdit ? String(idx) : '';
 
         document.getElementById('bfDifficulty').value = String(diffVal);
@@ -1415,8 +953,8 @@
         var type = typeEl.value;
         var showChoice = (type === 'choice');
         var showPoints = (type === 'shortAnswer' || type === 'essay' || type === 'proof');
-        document.querySelectorAll('.ss-field-choice-only').forEach(function(el) { el.style.display = showChoice ? '' : 'none'; });
-        document.querySelectorAll('.ss-field-points-only').forEach(function(el) { el.style.display = showPoints ? '' : 'none'; });
+        document.querySelectorAll('.ss-field-choice-only').forEach(function(el) { el.classList.toggle('zk-hidden', !showChoice); });
+        document.querySelectorAll('.ss-field-points-only').forEach(function(el) { el.classList.toggle('zk-hidden', !showPoints); });
         var hint = document.getElementById('bfAnswerHint');
         if (hint) {
           if (type === 'choice') hint.textContent = '（字母，如 A 或 ACD）';
@@ -1511,7 +1049,7 @@
 
       function closeBankForm() {
         var form = document.getElementById('bankForm');
-        if (form) { form.style.display = 'none'; form.innerHTML = ''; }
+        if (form) { form.classList.add('zk-hidden'); form.innerHTML = ''; }
       }
 
       // ============ 绑定事件 ============

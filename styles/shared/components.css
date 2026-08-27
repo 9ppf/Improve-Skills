@@ -1,5 +1,4 @@
-@import "variables";
-
+@charset "UTF-8";
 /* 按钮 */
 .btn {
   flex: 1;
@@ -19,7 +18,10 @@
   outline: none;
 }
 
-.btn:focus-visible { box-shadow: 0 0 0 3px var(--blue-soft); }
+.btn:focus-visible {
+  box-shadow: 0 0 0 3px var(--blue-soft);
+}
+
 .btn:active {
   transform: translateY(2px);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -28,19 +30,28 @@
 .btn-primary {
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
 }
-.btn-primary:hover { filter: brightness(1.05); }
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
 
 .btn-ghost {
   background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
 }
-.btn-ghost:hover { filter: brightness(1.05); }
+
+.btn-ghost:hover {
+  filter: brightness(1.05);
+}
 
 .btn-subtle {
   background: var(--surface);
   color: var(--blue-text);
   border: 1px solid var(--rule);
 }
-.btn-subtle:hover { background: var(--blue-soft); }
+
+.btn-subtle:hover {
+  background: var(--blue-soft);
+}
 
 /* 计划卡片 */
 .plan-card {
@@ -86,24 +97,40 @@
   color: #fff;
 }
 
-.badge-core { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); }
-.badge-public { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green)); }
-.badge-practice { background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow)); }
-.badge-task { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); }
+.badge-core {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+}
 
-.progress-block { margin-bottom: 20px; }
+.badge-public {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+}
+
+.badge-practice {
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+}
+
+.badge-task {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+}
+
+.progress-block {
+  margin-bottom: 20px;
+}
+
 .progress-label {
   display: flex;
   justify-content: space-between;
   font-size: 0.88rem;
   margin-bottom: 6px;
 }
+
 .progress-bar {
   height: 8px;
   background: var(--rule);
   border-radius: 999px;
   overflow: hidden;
 }
+
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
@@ -123,6 +150,7 @@
   padding: 0;
   margin: 0;
 }
+
 .plan-list li {
   padding: 10px 12px;
   background: var(--bg);
@@ -132,6 +160,7 @@
   align-items: center;
   gap: 8px;
 }
+
 .plan-list li::before {
   content: '';
   width: 5px;
@@ -140,7 +169,11 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
-.plan-list li.done::before { background: var(--accent-green); }
+
+.plan-list li.done::before {
+  background: var(--accent-green);
+}
+
 .plan-list li.done {
   color: var(--muted);
   text-decoration: line-through;
@@ -152,17 +185,20 @@
   gap: 10px;
   margin-top: 16px;
 }
+
 .info-cell {
   background: var(--bg);
   padding: 12px;
   border-radius: 8px;
 }
+
 .info-cell label {
   display: block;
   font-size: 0.72rem;
   color: var(--muted);
   margin-bottom: 3px;
 }
+
 .info-cell value {
   display: block;
   font-size: 1rem;
@@ -203,7 +239,9 @@
   box-shadow: 0 3px 10px var(--blue-soft);
 }
 
-.plan-tab:focus-visible { box-shadow: 0 0 0 2px var(--accent-blue); }
+.plan-tab:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent-blue);
+}
 
 /* 题型分析 */
 .qt-toolbar {
@@ -214,6 +252,7 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+
 .qt-toolbar h3 {
   margin: 0;
   font-size: 0.95rem;
@@ -247,8 +286,14 @@
   top: 0;
 }
 
-.qt-table tbody tr:hover { background: var(--blue-soft); }
-.qt-table tbody tr:last-child td { border-bottom: none; }
+.qt-table tbody tr:hover {
+  background: var(--blue-soft);
+}
+
+.qt-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
 .qt-table .col-strategy {
   white-space: normal;
   min-width: 220px;
@@ -262,11 +307,26 @@
   font-size: 0.72rem;
   font-weight: 700;
 }
-.qt-tag-low { background: var(--green-soft); color: var(--green-text); }
-.qt-tag-medium { background: var(--blue-soft); color: var(--blue-text); }
-.qt-tag-high { background: var(--coral-soft); color: var(--coral-text); }
 
-.qt-actions { display: flex; gap: 6px; }
+.qt-tag-low {
+  background: var(--green-soft);
+  color: var(--green-text);
+}
+
+.qt-tag-medium {
+  background: var(--blue-soft);
+  color: var(--blue-text);
+}
+
+.qt-tag-high {
+  background: var(--coral-soft);
+  color: var(--coral-text);
+}
+
+.qt-actions {
+  display: flex;
+  gap: 6px;
+}
 
 .qt-empty {
   padding: 28px;
@@ -296,7 +356,9 @@
 }
 
 /* 真题来源 */
-.papers-block { margin-top: 20px; }
+.papers-block {
+  margin-top: 20px;
+}
 
 .papers-block h4 {
   font-size: 0.9rem;
@@ -348,12 +410,6 @@
   font-size: 0.78rem;
 }
 
-// ============================================================
-// 内容页面公共组件（.zk-* 命名空间）
-// 值与原手写 components.css 保持一致，避免视觉回归
-// ============================================================
-
-// 卡片
 .zk-card {
   background: var(--surface);
   border: 1px solid var(--rule);
@@ -362,10 +418,10 @@
   box-shadow: 0 2px 10px var(--bg-soft);
 }
 
-// 卡片左边框变体
-.zk-card-bar { border-left: 4px solid var(--bar-color, var(--accent)); }
+.zk-card-bar {
+  border-left: 4px solid var(--bar-color, var(--accent));
+}
 
-// pill 标签
 .zk-pill {
   display: inline-block;
   padding: 2px 8px;
@@ -374,17 +430,36 @@
   font-size: 0.72rem;
 }
 
-@each $name, $color in (
-  "blue": #3B82F6, "red": #DC2626, "amber": #D97706,
-  "green": var(--green-text), "purple": var(--purple-text), "gray": #64748B
-) {
-  .zk-pill-#{$name} {
-    background: rgba($color, 0.10);
-    color: $color;
-  }
+.zk-pill-blue {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3B82F6;
 }
 
-// 渐变按钮
+.zk-pill-red {
+  background: rgba(220, 38, 38, 0.1);
+  color: #DC2626;
+}
+
+.zk-pill-amber {
+  background: rgba(217, 119, 6, 0.1);
+  color: #D97706;
+}
+
+.zk-pill-green {
+  background: rgba(var(--green-text), 0.1);
+  color: var(--green-text);
+}
+
+.zk-pill-purple {
+  background: rgba(var(--purple-text), 0.1);
+  color: var(--purple-text);
+}
+
+.zk-pill-gray {
+  background: rgba(100, 116, 139, 0.1);
+  color: #64748B;
+}
+
 .zk-grad-btn {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #fff;
@@ -397,19 +472,12 @@
   box-shadow: 0 2px 6px var(--blue-soft);
   transition: var(--transition-base);
 }
+
 .zk-grad-btn:hover {
   filter: brightness(1.05);
   transform: translateY(-1px);
   box-shadow: 0 3px 10px var(--blue-soft);
 }
-
-// ============================================================
-// 四级按钮体系（内容页面统一按钮风格）
-// T1 zk-btn-primary : 渐变主操作（提交/AI生成/保存）
-// T2 zk-btn-solid   : 纯色常规操作（切换/选择/查看）
-// T3 zk-btn-outline : 白底描边次要操作（取消/返回）
-// T4 zk-btn-ghost   : 透明文字按钮（更多/筛选/展开）
-// ============================================================
 
 .zk-btn-primary {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -422,8 +490,15 @@
   cursor: pointer;
   box-shadow: 0 2px 6px var(--blue-soft);
   transition: var(--transition-base);
-  &:hover { filter: brightness(1.05); transform: translateY(-1px); }
-  &:active { transform: translateY(0); }
+}
+
+.zk-btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.zk-btn-primary:active {
+  transform: translateY(0);
 }
 
 .zk-btn-solid {
@@ -436,8 +511,14 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-base);
-  &:hover { filter: brightness(1.05); }
-  &:active { transform: translateY(1px); }
+}
+
+.zk-btn-solid:hover {
+  filter: brightness(1.05);
+}
+
+.zk-btn-solid:active {
+  transform: translateY(1px);
 }
 
 .zk-btn-outline {
@@ -450,7 +531,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-base);
-  &:hover { background: var(--accent-soft); border-color: var(--accent); }
+}
+
+.zk-btn-outline:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
 }
 
 .zk-btn-ghost {
@@ -463,10 +548,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-base);
-  &:hover { background: var(--accent-soft); }
 }
 
-// 渐变圆形（数字/图标）
+.zk-btn-ghost:hover {
+  background: var(--accent-soft);
+}
+
 .zk-grad-circle {
   border-radius: 50%;
   display: flex;
@@ -477,7 +564,6 @@
   font-weight: 700;
 }
 
-// h2 左竖条标题
 .zk-h2-bar {
   font-size: 1.05rem;
   font-weight: 700;
@@ -486,6 +572,7 @@
   align-items: center;
   gap: 0.4rem;
 }
+
 .zk-h2-bar::before {
   content: '';
   width: 4px;
@@ -495,7 +582,6 @@
   flex-shrink: 0;
 }
 
-// 分段按钮
 .zk-seg {
   padding: 0.35rem 0.9rem;
   border: 1.5px solid var(--rule);
@@ -507,7 +593,11 @@
   transition: all 0.2s;
   white-space: nowrap;
 }
-.zk-seg:hover { border-color: var(--accent); }
+
+.zk-seg:hover {
+  border-color: var(--accent);
+}
+
 .zk-seg.zk-active {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #fff;
@@ -515,7 +605,6 @@
   font-weight: 600;
 }
 
-// 筛选下拉框
 .zk-select {
   padding: 0.3rem 0.6rem;
   border: 1.5px solid var(--rule);
@@ -526,9 +615,11 @@
   outline: none;
   transition: opacity 0.15s;
 }
-.zk-select:hover { opacity: 0.85; }
 
-// 进度条
+.zk-select:hover {
+  opacity: 0.85;
+}
+
 .zk-track {
   flex: 1;
   height: 6px;
@@ -536,6 +627,7 @@
   border-radius: 999px;
   overflow: hidden;
 }
+
 .zk-fill {
   height: 100%;
   width: 0%;
@@ -544,7 +636,6 @@
   transition: width 0.4s ease;
 }
 
-// 空状态
 .zk-empty {
   text-align: center;
   padding: 2.5rem 1rem;
@@ -552,23 +643,35 @@
   font-size: 0.85rem;
 }
 
-// 5 档掌握度数据属性
-@each $level, $color in (
-  0: $mastery-0, 1: $mastery-1, 2: $mastery-2,
-  3: $mastery-3, 4: $mastery-4
-) {
-  [data-mastery="#{$level}"] { --mastery-color: #{$color}; }
+[data-mastery="0"] {
+  --mastery-color: #94A3B8;
 }
 
-// 内容页面响应式
+[data-mastery="1"] {
+  --mastery-color: #3B82F6;
+}
+
+[data-mastery="2"] {
+  --mastery-color: #EF4444;
+}
+
+[data-mastery="3"] {
+  --mastery-color: #F59E0B;
+}
+
+[data-mastery="4"] {
+  --mastery-color: #10B981;
+}
+
 @media (max-width: 480px) {
-  body { padding: 1rem 0.75rem; }
-  .zk-seg { font-size: 0.72rem; padding: 0.3rem 0.7rem; }
+  body {
+    padding: 1rem 0.75rem;
+  }
+  .zk-seg {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.7rem;
+  }
 }
-
-// ============================================================
-// 主题切换器（由 theme.js 自动注入到页面）
-// ============================================================
 
 .zk-theme-toggle {
   position: fixed;
@@ -588,13 +691,15 @@
   box-shadow: var(--shadow-card);
   transition: var(--transition-base);
   line-height: 1;
+}
 
-  &:hover {
-    border-color: var(--accent);
-    transform: scale(1.08);
-  }
+.zk-theme-toggle:hover {
+  border-color: var(--accent);
+  transform: scale(1.08);
+}
 
-  &:active { transform: scale(0.95); }
+.zk-theme-toggle:active {
+  transform: scale(0.95);
 }
 
 .zk-theme-menu {
@@ -610,13 +715,21 @@
   min-width: 168px;
   display: none;
   animation: zkThemeMenuIn 0.15s ease;
+}
 
-  &.zk-show { display: block; }
+.zk-theme-menu.zk-show {
+  display: block;
 }
 
 @keyframes zkThemeMenuIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .zk-theme-option {
@@ -630,14 +743,16 @@
   color: var(--ink);
   transition: background 0.15s;
   font-family: var(--font-sans);
+}
 
-  &:hover { background: var(--accent-soft); }
+.zk-theme-option:hover {
+  background: var(--accent-soft);
+}
 
-  &.zk-active {
-    background: var(--accent-soft);
-    font-weight: 600;
-    color: var(--accent);
-  }
+.zk-theme-option.zk-active {
+  background: var(--accent-soft);
+  font-weight: 600;
+  color: var(--accent);
 }
 
 .zk-theme-dot {

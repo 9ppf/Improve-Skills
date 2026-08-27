@@ -7,6 +7,7 @@ Current scope:
   - Load enabled module JSON files from data/modules/.
   - Enrich the reading module via transformers/reading.py.
   - Replace theme tokens in module metadata.
+  - Compile shared SASS (_root/_base/_components) to styles/shared/*.css.
   - Compile styles/main.scss into CSS and inject it into the HTML template.
   - Render the workbench HTML from templates/workbench.html.
   - Backup the old workbench and validate the result.
@@ -46,6 +47,13 @@ TEMPLATE = TEMPLATES_DIR / 'workbench.html'
 STYLES_DIR = ROOT / 'styles'
 MAIN_SCSS = STYLES_DIR / 'main.scss'
 VARIABLES_SCSS = STYLES_DIR / '_variables.scss'
+SHARED_DIR = STYLES_DIR / 'shared'
+# 共享 SASS → CSS 编译映射：工作台外壳与内容页面共用的样式产物
+SHARED_SCSS_SOURCES = [
+    ('_root.scss', 'base-vars.css'),
+    ('_base.scss', 'base.css'),
+    ('_components.scss', 'components.css'),
+]
 SKILLS_DIR = ROOT / '.trae' / 'skills'
 
 try:
@@ -270,45 +278,38 @@ def backup_workbench() -> Path:
 def _build_theme_script(config: dict) -> str:
     """Build the inline JS that applies and toggles themes.
 
-    Base tokens are loaded from styles/_variables.scss and merged with each
-    theme's overrides so that workbench.json only needs to declare differences
-    for alternate themes.
+    主题颜色定义在 _root.scss 的 [data-theme="xxx"] CSS 规则中，
+    本脚本只负责设置 data-theme 属性并循环切换，无需内联 token。
     """
-    themes = config.get('themes', {})
     default_theme = config.get('activeTheme', 'light')
-    base_tokens = _load_base_tokens_from_scss()
-
-    # 为每个主题合并基础 token，保证运行时拿到完整颜色映射
-    merged_themes = {}
-    for name, theme in themes.items():
-        merged_themes[name] = {
-            **theme,
-            'tokens': {**base_tokens, **theme.get('tokens', {})},
-        }
-
-    themes_js = json.dumps(merged_themes, ensure_ascii=False)
     return f'''<script>
 (function() {{
-  const WORKBENCH_THEMES = {themes_js};
+  const THEME_ORDER = ['light', 'dark', 'warm', 'nature', 'rose'];
+  const THEME_ICONS = {{'light':'🌤️','dark':'🌙','warm':'☀️','nature':'🌿','rose':'🌹'}};
   const DEFAULT_THEME = '{default_theme}';
 
   function applyWorkbenchTheme(name) {{
-    const theme = WORKBENCH_THEMES[name] || WORKBENCH_THEMES[DEFAULT_THEME];
-    const root = document.documentElement;
-    Object.entries(theme.tokens).forEach(function(entry) {{
-      root.style.setProperty('--' + entry[0], entry[1]);
-    }});
+    var root = document.documentElement;
+    root.setAttribute('data-theme', name);
     try {{ localStorage.setItem('workbench-theme', name); }} catch (e) {{}}
-    const btn = document.getElementById('theme-toggle');
-    if (btn) btn.textContent = (name === 'dark') ? '☀️' : '🌙';
+    var btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = THEME_ICONS[name] || '🌙';
+    // 同步主题到所有 iframe 内的内容页面
+    document.querySelectorAll('iframe').forEach(function(iframe) {{
+      try {{
+        iframe.contentWindow.postMessage({{type:'workbench-theme-change',theme:name}}, '*');
+      }} catch (e) {{}}
+    }});
   }}
 
   function toggleWorkbenchTheme() {{
-    const current = localStorage.getItem('workbench-theme') || DEFAULT_THEME;
-    applyWorkbenchTheme(current === 'dark' ? 'light' : 'dark');
+    var current = localStorage.getItem('workbench-theme') || DEFAULT_THEME;
+    var idx = THEME_ORDER.indexOf(current);
+    if (idx === -1) idx = 0;
+    applyWorkbenchTheme(THEME_ORDER[(idx + 1) % THEME_ORDER.length]);
   }}
 
-  const saved = localStorage.getItem('workbench-theme') || DEFAULT_THEME;
+  var saved = localStorage.getItem('workbench-theme') || DEFAULT_THEME;
   applyWorkbenchTheme(saved);
 
   window.toggleWorkbenchTheme = toggleWorkbenchTheme;
@@ -322,7 +323,31 @@ def _compile_styles() -> str:
     if not MAIN_SCSS.exists():
         raise FileNotFoundError(f'SCSS entry not found: {MAIN_SCSS}')
     # 使用 libsass 压缩输出，便于内联到 HTML
-    return sass.compile(filename=str(MAIN_SCSS), output_style='compressed')
+    # strip BOM — 否则 :root 选择器前会多出 BOM 字符导致浏览器无法识别
+    css = sass.compile(filename=str(MAIN_SCSS), output_style='compressed')
+    if css and css[0] == '\ufeff':
+        css = css[1:]
+    return css
+
+
+def _compile_shared_styles() -> None:
+    """编译共享 SASS 文件到 styles/shared/ 目录。
+
+    _root.scss       → base-vars.css   (CSS 变量定义)
+    _base.scss       → base.css        (基础重置与布局)
+    _components.scss → components.css  (公共组件样式)
+    """
+    SHARED_DIR.mkdir(parents=True, exist_ok=True)
+    for src_name, dst_name in SHARED_SCSS_SOURCES:
+        src_path = STYLES_DIR / src_name
+        if not src_path.exists():
+            raise FileNotFoundError(f'Shared SCSS source not found: {src_path}')
+        css = sass.compile(filename=str(src_path), output_style='expanded')
+        if css and css[0] == '\ufeff':
+            css = css[1:]
+        dst_path = SHARED_DIR / dst_name
+        dst_path.write_text(css, encoding='utf-8')
+        print(f'  compiled: {src_name} → shared/{dst_name}')
 
 
 def _extract_year(name: str) -> Optional[int]:
@@ -641,6 +666,9 @@ def build() -> Path:
         reading_constants += constants
         workspace_objs.append(ws_js)
     workspaces_array = ',\n'.join(workspace_objs)
+
+    print('Compiling shared styles...')
+    _compile_shared_styles()
 
     print('Compiling styles...')
     styles_css = _compile_styles()

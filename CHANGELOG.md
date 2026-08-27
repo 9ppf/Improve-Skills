@@ -4,6 +4,63 @@
 
 ---
 
+## v2.31.53
+
+**发布时间**：2026-08-27（北京时间）
+
+### SASS统一迁移+按钮四级体系+5主题切换+侧边栏渐变融合
+
+**核心变更**：SASS迁移9步全部完成，7个页面CSS硬编码替换为CSS变量；统一四级按钮体系（T1渐变/T2纯色/T3描边/T4文字）；实现5套主题切换（light/dark/warm/nature/rose），工作台右上角统一控制；侧边栏渐变融合消除割裂感；练习测验页面主题适配修复。
+
+| 文件 | 更新内容 |
+|---|---|
+| `styles/_variables.scss` | 新增$accent/$accent2/$coral/$green等别名变量、$grad-135/$grad-90渐变、$mastery-0~4掌握度、$pri-key/normal/survey优先级 |
+| `styles/_root.scss` | 输出CSS变量到:root，新增5套主题[data-theme=light/dark/warm/nature/rose]定义 |
+| `styles/_base.scss` | 合并reset规则，body使用var(--bg) |
+| `styles/_components.scss` | 新增.zk-btn-primary/.zk-btn-outline/.zk-seg/.zk-theme-toggle等公共组件类 |
+| `styles/_layout.scss` | topbar/sidebar背景改为linear-gradient渐变，搜索框半透明，底部栏transparent |
+| `styles/_tree.scss` | 清理硬编码rgba色值 |
+| `styles/shared/base-vars.css` | 从手写变为SASS编译产物，包含5套主题CSS变量 |
+| `styles/shared/base.css` | 从手写变为SASS编译产物，reset+body |
+| `styles/shared/components.css` | 从手写变为SASS编译产物，公共组件类 |
+| `styles/shared/theme-sync.js` | 新增：iframe内容页面主题同步JS |
+| `styles/自考学习/练习测验.css` | body背景从硬编码渐变改var(--bg)，4处硬编码色值改CSS变量 |
+| `styles/自考学习/知识框架.css` | 替换硬编码渐变/阴影/掌握度/优先级色值为CSS变量 |
+| `styles/自考学习/背诵与简答.css` | 替换硬编码渐变为CSS变量 |
+| `styles/自考学习/复盘总结.css` | 替换硬编码渐变/阴影为CSS变量 |
+| `styles/今日学习/今日学习流.css` | 替换硬编码渐变为CSS变量 |
+| `styles/能力提升/能力提升驾驶舱.css` | 替换硬编码渐变/阴影/rgba为CSS变量 |
+| `styles/能力提升/学习路线图.css` | 删除body覆盖，替换硬编码为CSS变量 |
+| `build.py` | 新增SASS编译函数+_compile_shared_styles()，BOM strip逻辑 |
+| `templates/workbench.html` | 主题切换JS内联，postMessage通知iframe |
+| `Workbench/自考学习/知识框架.html` | 引用shared CSS/JS，添加共享按钮类 |
+| `Workbench/自考学习/练习测验.html` | 引用shared CSS/JS，添加共享按钮类 |
+| `Workbench/自考学习/背诵与简答-核心概念背诵卡.html` | 引用shared CSS/JS，添加共享按钮类 |
+| `Workbench/自考学习/复盘总结-章节复盘.html` | 引用shared CSS/JS，添加共享按钮类 |
+| `Workbench/能力提升/能力提升-学习驾驶舱.html` | 引用shared CSS/JS，添加共享按钮类 |
+| `Workbench/能力提升/full-learning-roadmap.html` | 引用shared CSS/JS，添加共享按钮类 |
+| `Workbench/today/today-flow.html` | 引用shared CSS/JS，添加共享按钮类 |
+| `Workbench/Python基础/python-knowledge-tree.html` | 引用shared CSS |
+| `Workbench/ai-learning/ai-knowledge-tree.html` | 引用shared CSS |
+| `Workbench/ai-learning/job-skill-tree.html` | 引用shared CSS |
+| `Workbench/此刻便是春天.html` | 工作台主页（编译产物，含主题切换JS） |
+| `Workbench/shared/base-vars.css` | 删除（迁移到styles/shared/） |
+| `data/modules/self-study.json` | 版本号更新至v2.31.53 |
+| `data/modules/ability.json` | 版本号同步 |
+| `data/modules/today.json` | 版本号同步 |
+| `data/mastery-progress.json` | 掌握度数据同步 |
+| `data/quiz-records-13015.json` | 答题记录同步 |
+| `styles/_reading.scss` | 清理硬编码色值 |
+| `tools/css-var-debug.js` | 新增：CSS变量调试脚本，检查computed style |
+| `SASS统一迁移完整方案.md` | 新增：SASS迁移完整方案文档（9步全部标记完成） |
+| `SASS统一迁移方案.md` | 新增：SASS迁移方案文档（早期版本） |
+| `CSS重复样式重构步骤清单.md` | 新增：CSS重构步骤清单文档 |
+| `.trae/skills/validate_workbench.py` | 更新：CSS增量/基线规范检查 |
+| `文件说明.md` | 更新：新增文件记录，版本号更新至v2.31.53 |
+| `工作台搭建总结.md` | 版本号更新至v2.31.53 |
+
+---
+
 ## v2.31.45
 
 **发布时间**：2026-08-26（北京时间）

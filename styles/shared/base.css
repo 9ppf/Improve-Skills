@@ -1,11 +1,14 @@
-// 基础样式与重置（工作台外壳 + 内容页面共用）
-@import "variables";
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
 
-html { font-size: 16px; scroll-behavior: smooth; }
-
-// 尊重用户「减少动画」的系统偏好
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -22,14 +25,12 @@ body {
   line-height: 1.6;
 }
 
-// 工作台外壳布局
 .app {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-// 渐变标题
 .gradient-title {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   -webkit-background-clip: text;
@@ -37,7 +38,6 @@ body {
   background-clip: text;
 }
 
-// 页面容器
 .zk-container {
   max-width: var(--max);
   margin: 0 auto;

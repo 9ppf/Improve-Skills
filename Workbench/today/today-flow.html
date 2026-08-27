@@ -4,418 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>今日学习流</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --primary: #2563eb;
-  --primary-light: #dbeafe;
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --border: #e2e8f0;
-  --ink: #1e293b;
-  --muted: #64748b;
-  --green: #16a34a;
-  --green-light: #dcfce7;
-  --orange: #ea580c;
-  --orange-light: #fed7aa;
-  --purple: #8b5cf6;
-  --purple-light: #ede9fe;
-}
-body {
-  font-family: -apple-system, 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.tf-topbar {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-shrink: 0;
-}
-.tf-topbar h1 { font-size: 15px; font-weight: 700; white-space: nowrap; }
-.tf-progress-bar {
-  flex: 1;
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-  max-width: 280px;
-}
-.tf-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--purple));
-  border-radius: 3px;
-  transition: width 0.4s;
-}
-.tf-progress-text { font-size: 12px; color: var(--muted); white-space: nowrap; }
-.tf-countdown { font-size: 12px; color: var(--orange); font-weight: 600; white-space: nowrap; }
-.tf-main { display: flex; flex: 1; overflow: hidden; }
-
-/* Left: task area */
-.tf-task-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-.tf-task-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px;
-  max-width: 620px;
-  width: 100%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-.tf-task-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-.tf-subject-tag {
-  padding: 3px 10px;
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.tf-subject-tag.core { background: var(--primary-light); color: var(--primary); }
-.tf-subject-tag.core2 { background: var(--purple-light); color: var(--purple); }
-.tf-subject-tag.key { background: var(--green-light); color: var(--green); }
-.tf-subject-tag.py, .tf-subject-tag.ai { background: #fef3c7; color: #b45309; }
-.tf-subject-tag.en { background: #fce7f3; color: #be185d; }
-.tf-subject-tag.review { background: #f1f5f9; color: var(--muted); }
-.tf-chapter { font-size: 12px; color: var(--muted); }
-.tf-task-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-.tf-task-meta {
-  display: flex;
-  gap: 10px;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 14px;
-}
-.tf-task-meta span { display: flex; align-items: center; gap: 3px; }
-
-/* Pomodoro timer */
-.tf-pomodoro {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-bottom: 14px;
-}
-.tf-pomodoro-time {
-  font-size: 18px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--primary);
-  min-width: 48px;
-}
-.tf-pomodoro-time.running { color: var(--orange); }
-.tf-pomodoro-time.done { color: var(--green); }
-.tf-pomodoro-btn {
-  padding: 5px 14px;
-  border-radius: 6px;
-  border: none;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  background: var(--primary);
-  color: #fff;
-  transition: all 0.2s;
-}
-.tf-pomodoro-btn:hover { opacity: 0.85; }
-.tf-pomodoro-btn.pause { background: var(--orange); }
-.tf-pomodoro-btn.done { background: var(--green); }
-.tf-pomodoro-label { font-size: 11px; color: var(--muted); flex: 1; }
-
-/* Knowledge cards */
-.tf-kp-section { margin-bottom: 14px; }
-.tf-kp-section-title {
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 6px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border-left: 3px solid var(--primary);
-  padding-left: 6px;
-}
-.tf-kp-card {
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 6px;
-}
-.tf-kp-q {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.tf-kp-q:after { content: '▼'; font-size: 9px; color: var(--muted); transition: transform 0.2s; }
-.tf-kp-q.open:after { transform: rotate(180deg); }
-.tf-kp-answer {
-  display: none;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.tf-kp-answer.show { display: block; }
-.tf-kp-block { margin-bottom: 6px; }
-.tf-kp-label {
-  display: inline-block;
-  padding: 1px 6px;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: 600;
-  margin-bottom: 2px;
-}
-.tf-kp-label.def { background: var(--primary-light); color: var(--primary); }
-.tf-kp-label.ex { background: var(--purple-light); color: var(--purple); }
-.tf-kp-label.exam { background: var(--orange-light); color: var(--orange); }
-
-/* Practice */
-.tf-practice-q {
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 6px;
-}
-.tf-practice-q-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-.tf-practice-input {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 8px;
-  font-size: 13px;
-  font-family: inherit;
-  margin-bottom: 6px;
-  resize: vertical;
-  min-height: 36px;
-}
-.tf-practice-input:focus { outline: none; border-color: var(--primary); }
-.tf-practice-actions { display: flex; gap: 6px; }
-.tf-practice-btn {
-  padding: 5px 12px;
-  border-radius: 6px;
-  border: none;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.tf-practice-btn.check { background: var(--primary); color: #fff; }
-.tf-practice-btn.show { background: var(--border); color: var(--muted); }
-.tf-practice-feedback {
-  font-size: 12px;
-  margin-top: 6px;
-  padding: 6px 8px;
-  border-radius: 4px;
-  display: none;
-}
-.tf-practice-feedback.show { display: block; }
-.tf-practice-feedback.correct { background: var(--green-light); color: var(--green); }
-.tf-practice-feedback.wrong { background: #fee2e2; color: #dc2626; }
-
-/* Action buttons */
-.tf-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 14px;
-}
-.tf-btn {
-  padding: 9px 18px;
-  border-radius: 8px;
-  border: none;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.tf-btn-primary { background: var(--primary); color: #fff; }
-.tf-btn-primary:hover { background: #1d4ed8; }
-.tf-btn-secondary { background: var(--border); color: var(--muted); }
-.tf-btn-secondary:hover { background: #cbd5e1; }
-
-/* Overview */
-.tf-overview {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  padding: 8px 16px;
-  flex-shrink: 0;
-  max-height: 120px;
-  overflow-y: auto;
-}
-.tf-overview-title { font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
-.tf-overview-list { display: flex; flex-wrap: wrap; gap: 4px; }
-.tf-overview-item {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 8px;
-  border-radius: 5px;
-  font-size: 11px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  transition: all 0.2s;
-}
-.tf-overview-item.done { background: var(--green-light); color: var(--green); }
-.tf-overview-item.current { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-.tf-overview-item.pending { color: var(--muted); }
-
-/* Right: AI panel */
-.tf-ai-panel {
-  width: 300px;
-  border-left: 1px solid var(--border);
-  background: var(--surface);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-.tf-ai-header {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.tf-ai-header h2 { font-size: 13px; font-weight: 600; }
-.tf-ai-status {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  flex-shrink: 0;
-}
-.tf-ai-status.offline { background: var(--border); }
-.tf-ai-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.tf-ai-msg {
-  font-size: 13px;
-  line-height: 1.55;
-  padding: 8px 12px;
-  border-radius: 8px;
-  max-width: 92%;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-.tf-ai-msg.ai {
-  background: var(--primary-light);
-  color: #1e40af;
-  align-self: flex-start;
-}
-.tf-ai-msg.user {
-  background: var(--border);
-  color: var(--ink);
-  align-self: flex-end;
-}
-.tf-ai-msg.system {
-  background: #f0fdf4;
-  color: var(--green);
-  font-size: 12px;
-  font-style: italic;
-  align-self: center;
-  text-align: center;
-}
-.tf-ai-msg.loading {
-  background: var(--bg);
-  color: var(--muted);
-  font-style: italic;
-  align-self: flex-start;
-}
-.tf-ai-input {
-  padding: 10px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.tf-ai-input textarea {
-  flex: 1;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 7px 10px;
-  font-size: 12px;
-  resize: none;
-  height: 36px;
-  font-family: inherit;
-}
-.tf-ai-input textarea:focus { outline: none; border-color: var(--primary); }
-.tf-ai-send {
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0 14px;
-  font-size: 12px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.tf-ai-send:hover { background: #1d4ed8; }
-.tf-ai-send:disabled { background: var(--border); cursor: not-allowed; }
-
-.tf-offline-notice {
-  background: var(--orange-light);
-  color: var(--orange);
-  padding: 6px 14px;
-  font-size: 11px;
-  text-align: center;
-  flex-shrink: 0;
-}
-.tf-empty {
-  text-align: center;
-  padding: 50px 20px;
-  color: var(--muted);
-}
-.tf-empty h2 { font-size: 16px; margin-bottom: 6px; }
-.tf-empty p { font-size: 13px; }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-</style>
+<script src="../../styles/shared/theme-sync.js"></script>
+<link rel="stylesheet" href="../../styles/shared/base-vars.css">
+<link rel="stylesheet" href="../../styles/shared/base.css">
+<link rel="stylesheet" href="../../styles/shared/components.css">
+<link rel="stylesheet" href="../../styles/今日学习/今日学习流.css">
 </head>
 <body>
 
 <div class="tf-topbar">
   <h1>🏠 今日学习流</h1>
-  <div class="tf-progress-bar"><div class="tf-progress-fill" id="progressFill" style="width: 0%"></div></div>
+  <div class="tf-progress-bar"><div class="tf-progress-fill" id="progressFill"></div></div>
   <span class="tf-progress-text" id="progressText">0/0</span>
   <span class="tf-countdown" id="countdown"></span>
 </div>
 
-<div id="offlineNotice" class="tf-offline-notice" style="display: none;">
+<div id="offlineNotice" class="tf-offline-notice zk-hidden">
   ⚠️ AI伴读未连接，启动 dev_server.py 获得完整体验（当前为静态学习清单模式）
 </div>
 
@@ -433,12 +37,12 @@ body {
     </div>
     <div class="tf-ai-input">
       <textarea id="aiInput" placeholder="有问题随时问我..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
-      <button class="tf-ai-send" id="aiSendBtn" disabled onclick="aiSend()">发送</button>
+      <button class="tf-ai-send zk-btn-primary" id="aiSendBtn" disabled onclick="aiSend()">发送</button>
     </div>
   </div>
 </div>
 
-<div class="tf-overview" id="overview" style="display: none;">
+<div class="tf-overview" id="overview" class="tf-overview zk-hidden">
   <div class="tf-overview-title">今日概览</div>
   <div class="tf-overview-list" id="overviewList"></div>
 </div>
@@ -493,14 +97,14 @@ function checkAI() {
         aiOnline = true;
         document.getElementById('aiStatus').classList.remove('offline');
         document.getElementById('aiSendBtn').disabled = false;
-        document.getElementById('offlineNotice').style.display = 'none';
+        document.getElementById('offlineNotice').classList.add('zk-hidden');
       }
     })
     .catch(function() {
       aiOnline = false;
       document.getElementById('aiStatus').classList.add('offline');
       document.getElementById('aiSendBtn').disabled = true;
-      document.getElementById('offlineNotice').style.display = '';
+      document.getElementById('offlineNotice').classList.remove('zk-hidden');
     });
 }
 
@@ -997,14 +601,14 @@ function renderSundayQuiz() {
   html += '<div class="tf-task-meta"><span>⏱ 1.5h</span><span>📋 自测模式</span></div>';
   html += '<div class="tf-kp-section">';
   html += '<div class="tf-kp-section-title">📝 测试说明</div>';
-  html += '<div style="font-size:13px;line-height:1.6;padding:8px 0;">';
+  html += '<div class="tf-task-desc">';
   html += '周日自测模式：从题库抽取每科5道题，限时30分钟/科。<br>';
   html += '点击下方按钮开始测试，完成后AI帮你批改分析薄弱点。';
   html += '</div>';
   html += '</div>';
   html += '<div class="tf-kp-section" id="quizContainer"></div>';
   html += '<div class="tf-actions">';
-  html += '<button class="tf-btn tf-btn-primary" onclick="startSundayQuiz()">📝 开始自测</button>';
+  html += '<button class="tf-btn tf-btn-primary zk-btn-primary" onclick="startSundayQuiz()">📝 开始自测</button>';
   html += '</div>';
   html += '</div>';
   area.innerHTML = html;
@@ -1013,7 +617,7 @@ function renderSundayQuiz() {
 function startSundayQuiz() {
   var container = document.getElementById('quizContainer');
   if (!container) return;
-  container.innerHTML = '<div style="color:var(--muted);font-size:12px;">正在从题库加载...</div>';
+  container.innerHTML = '<div class="tf-hint-text">正在从题库加载...</div>';
 
   // Load quiz bank from localStorage or API
   var subjects = ['系统原理', '离散数学', '数据结构'];
@@ -1056,7 +660,7 @@ function startSundayQuiz() {
 function renderQuizQuestions(questions) {
   var container = document.getElementById('quizContainer');
   if (!container || !questions.length) {
-    if (container) container.innerHTML = '<div style="color:var(--muted);font-size:12px;">题库为空，请先在背诵卡测验模式中生成题目</div>';
+    if (container) container.innerHTML = '<div class="tf-hint-text">题库为空，请先在背诵卡测验模式中生成题目</div>';
     return;
   }
   var html = '';
@@ -1113,7 +717,7 @@ function renderTask() {
   html += '<div class="tf-task-title">' + escapeHtml(t.topic || '') + '</div>';
   // ③ 行动：显示AI推荐理由
   if (t._aiReason) {
-    html += '<div style="font-size:12px;color:var(--primary);background:var(--primary-light);padding:4px 10px;border-radius:5px;margin-bottom:6px;">🧠 AI推荐：' + escapeHtml(t._aiReason) + '</div>';
+    html += '<div class="tf-ai-recommend">🧠 AI推荐：' + escapeHtml(t._aiReason) + '</div>';
   }
   html += '<div class="tf-task-meta">';
   html += '<span>⏱ ' + (t.hours || 1) + 'h</span>';
@@ -1123,7 +727,7 @@ function renderTask() {
   // 增强7: 番茄钟
   html += '<div class="tf-pomodoro">';
   html += '<span class="tf-pomodoro-time" id="pomoTime">25:00</span>';
-  html += '<button class="tf-pomodoro-btn" id="pomoBtn" onclick="togglePomodoro()">开始计时</button>';
+  html += '<button class="tf-pomodoro-btn zk-btn-primary" id="pomoBtn" onclick="togglePomodoro()">开始计时</button>';
   html += '<span class="tf-pomodoro-label" id="pomoLabel">25分钟专注 · 完成后休息5分钟</span>';
   html += '</div>';
 
@@ -1131,23 +735,23 @@ function renderTask() {
   if (cardPath) {
     html += '<div class="tf-kp-section">';
     html += '<div class="tf-kp-section-title">📖 知识点卡片</div>';
-    html += '<div id="kpCards"><div style="color:var(--muted);font-size:12px;padding:8px;">加载中...</div></div>';
+    html += '<div id="kpCards"><div class="tf-hint-block">加载中...</div></div>';
     html += '</div>';
     // Practice section
     html += '<div class="tf-kp-section">';
     html += '<div class="tf-kp-section-title">✏️ 快速练习</div>';
-    html += '<div id="practiceArea"><div style="color:var(--muted);font-size:12px;padding:8px;">加载中...</div></div>';
+    html += '<div id="practiceArea"><div class="tf-hint-block">加载中...</div></div>';
     html += '</div>';
   } else {
     html += '<div class="tf-kp-section">';
     html += '<div class="tf-kp-section-title">📝 任务说明</div>';
-    html += '<div style="font-size:13px;line-height:1.6;padding:8px 0;color:var(--ink);">' + escapeHtml(t.topic || '完成此任务') + '</div>';
+    html += '<div class="tf-task-desc-ink">' + escapeHtml(t.topic || '完成此任务') + '</div>';
     html += '</div>';
   }
 
   html += '<div class="tf-actions">';
-  html += '<button class="tf-btn tf-btn-secondary" onclick="prevTask()">← 上一个</button>';
-  html += '<button class="tf-btn tf-btn-primary" onclick="completeTask()">✅ 完成此任务 →</button>';
+  html += '<button class="tf-btn tf-btn-secondary zk-btn-outline" onclick="prevTask()">← 上一个</button>';
+  html += '<button class="tf-btn tf-btn-primary zk-btn-primary" onclick="completeTask()">✅ 完成此任务 →</button>';
   html += '</div>';
   html += '</div>';
 
@@ -1172,16 +776,15 @@ function renderTask() {
 function renderKpCards(cards, subject, chapter) {
   var el = document.getElementById('kpCards');
   if (!el) return;
-  if (!cards || !cards.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;">本章暂无知识点卡片</div>'; return; }
+  if (!cards || !cards.length) { el.innerHTML = '<div class="tf-hint-text">本章暂无知识点卡片</div>'; return; }
   var html = '';
   cards.forEach(function(c, i) {
     // ③ 行动：从learning-guide获取优先级标注
     var pri = getTopicPriority(subject, chapter, c.question);
     var priBadge = '';
     if (pri) {
-      var priColor = pri.priority === '重点' ? 'var(--orange)' : pri.priority === '一般' ? 'var(--primary)' : 'var(--muted)';
-      var priBg = pri.priority === '重点' ? 'var(--orange-light)' : pri.priority === '一般' ? 'var(--primary-light)' : 'var(--border)';
-      priBadge = '<span style="font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;background:' + priBg + ';color:' + priColor + ';margin-left:6px;">' + pri.priority + ' · ' + pri.type + '</span>';
+      var priClass = pri.priority === '重点' ? 'key' : pri.priority === '一般' ? 'normal' : 'survey';
+      priBadge = '<span class="tf-pri-badge ' + priClass + '">' + pri.priority + ' · ' + pri.type + '</span>';
     }
     html += '<div class="tf-kp-card">';
     html += '<div class="tf-kp-q" onclick="toggleKp(this)">';
@@ -1206,7 +809,7 @@ function toggleKp(el) {
 function renderPractice(cards, subject, chapter) {
   var el = document.getElementById('practiceArea');
   if (!el) return;
-  if (!cards || !cards.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;">本章暂无练习题</div>'; return; }
+  if (!cards || !cards.length) { el.innerHTML = '<div class="tf-hint-text">本章暂无练习题</div>'; return; }
   // 以任务索引为key保存练习答案，切换任务后恢复
   var practiceKey = 'tpa_' + currentTaskIdx;
   var saved = {};
@@ -1224,11 +827,11 @@ function renderPractice(cards, subject, chapter) {
     html += '</div>';
     html += '<div class="tf-practice-feedback" id="pf_' + i + '"></div>';
     // ④ 反馈：掌握状态标记按钮
-    html += '<div class="tf-mastery-feedback" id="mf_' + i + '" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);">';
-    html += '<span style="font-size:11px;color:var(--muted);">这个知识点你掌握了吗？</span><br>';
-    html += '<button class="tf-practice-btn" style="background:var(--green-light);color:var(--green);margin-top:4px;" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',2,' + i + ')">✅ 已掌握</button>';
-    html += '<button class="tf-practice-btn" style="background:var(--orange-light);color:var(--orange);margin-top:4px;margin-left:4px;" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',1,' + i + ')">🤔 不熟练</button>';
-    html += '<button class="tf-practice-btn" style="background:#fee2e2;color:#dc2626;margin-top:4px;margin-left:4px;" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',0,' + i + ')">❌ 不会</button>';
+    html += '<div class="tf-mastery-feedback zk-hidden" id="mf_' + i + '">';
+    html += '<span class="tf-mastery-hint">这个知识点你掌握了吗？</span><br>';
+    html += '<button class="tf-practice-btn tf-mastery-btn mastered" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',2,' + i + ')">✅ 已掌握</button>';
+    html += '<button class="tf-practice-btn tf-mastery-btn unsure" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',1,' + i + ')">🤔 不熟练</button>';
+    html += '<button class="tf-practice-btn tf-mastery-btn unknown" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',0,' + i + ')">❌ 不会</button>';
     html += '</div>';
     html += '</div>';
   });
@@ -1242,7 +845,7 @@ function renderPractice(cards, subject, chapter) {
     }
     if (s.masteryShown) {
       var mf = document.getElementById('mf_' + key);
-      if (mf) mf.style.display = 'block';
+      if (mf) mf.classList.remove('zk-hidden');
     }
   });
 }
@@ -1260,7 +863,7 @@ function savePracticeState(idx) {
     input: input ? input.value : '',
     feedback: fb ? fb.textContent : '',
     feedbackClass: fb ? fb.className : '',
-    masteryShown: mf ? mf.style.display === 'block' : false
+    masteryShown: mf ? !mf.classList.contains('zk-hidden') : false
   };
   sessionStorage.setItem(practiceKey, JSON.stringify(saved));
 }
@@ -1270,7 +873,7 @@ function markMastery(subject, chapter, level, practiceIdx) {
   var labels = ['不会', '不熟练', '已掌握'];
   var fb = document.getElementById('mf_' + practiceIdx);
   if (fb) {
-    fb.innerHTML = '<span style="font-size:12px;color:var(--green);">✅ 已记录：' + labels[level] + '，下次将' + (level < 2 ? '优先' : '降低') + '推送此知识点</span>';
+    fb.innerHTML = '<span class="tf-mastery-recorded">✅ 已记录：' + labels[level] + '，下次将' + (level < 2 ? '优先' : '降低') + '推送此知识点</span>';
   }
   if (aiOnline) {
     aiAddMsg('ai', '📊 已更新掌握状态：' + (CODE_SUBJECT[SUBJECT_CODE[subject]] || subject) + ' ' + chapter + ' → ' + labels[level] + (level < 2 ? '，后续会优先安排复习' : ''));
@@ -1294,7 +897,7 @@ function checkPractice(idx, answer) {
   }
   // ④ 反馈：显示掌握状态按钮
   var mf = document.getElementById('mf_' + idx);
-  if (mf) mf.style.display = 'block';
+  if (mf) mf.classList.remove('zk-hidden');
   savePracticeState(idx);
 }
 
@@ -1305,7 +908,7 @@ function showPractice(idx, answer) {
     fb.textContent = '📌 参考答案：' + answer;
   }
   var mf = document.getElementById('mf_' + idx);
-  if (mf) mf.style.display = 'block';
+  if (mf) mf.classList.remove('zk-hidden');
   savePracticeState(idx);
 }
 
@@ -1323,9 +926,9 @@ function renderOverview() {
     if (t.done) doneCount++;
   });
   list.innerHTML = html;
-  document.getElementById('overview').style.display = '';
+  document.getElementById('overview').classList.remove('zk-hidden');
   var pct = Math.round(doneCount / todayData.tasks.length * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressFill').style.setProperty('--fill-pct', pct + '%');
   document.getElementById('progressText').textContent = doneCount + '/' + todayData.tasks.length;
 }
 

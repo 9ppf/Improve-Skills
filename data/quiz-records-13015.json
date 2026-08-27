@@ -730,5 +730,41 @@
     "total": 5,
     "level": "unknown",
     "session": "today-task"
+  },
+  {
+    "questionId": "q-13015-032",
+    "timestamp": "2026-08-26T15:33:13.625Z",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13015-033",
+    "timestamp": "2026-08-27T06:23:44.058Z",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13015-041",
+    "timestamp": "2026-08-27T06:23:55.023Z",
+    "type": "choice",
+    "chapter": "第1章 计算机系统概述",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
   }
 ]

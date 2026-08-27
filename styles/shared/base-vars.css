@@ -1,104 +1,76 @@
-// 将 SASS 变量注入为 CSS 自定义属性，供运行时主题系统覆盖
-@import "variables";
-
 :root {
-  --bg: #{$bg};
-  --surface: #{$surface};
-  --sidebar: #{$sidebar};
-  --bg2: #{$bg2};
-  --bg-soft: #{$bg2};
-  --ink: #{$ink};
-  --muted: #{$muted};
-  --light: #{$light};
-  --rule: #{$rule};
-  --rule-strong: #{$rule-strong};
-
-  --accent-purple: #{$accent-purple};
-  --purple-soft: #{$purple-soft};
-  --purple-text: #{$purple-text};
-  --accent-blue: #{$accent-blue};
-  --blue-soft: #{$blue-soft};
-  --blue-text: #{$blue-text};
-  --accent-coral: #{$accent-coral};
-  --coral-soft: #{$coral-soft};
-  --coral-text: #{$coral-text};
-  --accent-green: #{$accent-green};
-  --green-soft: #{$green-soft};
-  --green-text: #{$green-text};
-  --accent-cyan: #{$accent-cyan};
-  --accent-yellow: #{$accent-yellow};
-  --accent-orange: #{$accent-orange};
-  --orange-soft: #{$orange-soft};
+  --bg: #F0F9FF;
+  --surface: #ffffff;
+  --sidebar: #DBEAFE;
+  --bg2: #f1f5f9;
+  --bg-soft: #f1f5f9;
+  --ink: #2D2A32;
+  --muted: #64748B;
+  --light: #94A3B8;
+  --rule: #E0F2FE;
+  --rule-strong: #BAE6FD;
+  --accent-purple: #A78BFA;
+  --purple-soft: #EDE9FE;
+  --purple-text: #7C3AED;
+  --accent-blue: #38BDF8;
+  --blue-soft: #E0F2FE;
+  --blue-text: #0369A1;
+  --accent-coral: #F472B6;
+  --coral-soft: #FCE7F3;
+  --coral-text: #DB2777;
+  --accent-green: #34D399;
+  --green-soft: #D1FAE5;
+  --green-text: #047857;
+  --accent-cyan: #22D3EE;
+  --accent-yellow: #FBBF24;
+  --accent-orange: #FB923C;
+  --orange-soft: #FED7AA;
   --amber-soft: #FEF3C7;
   --amber-text: #92400E;
-
-  --notice-bg: #{$notice-bg};
-  --notice-border: #{$notice-border};
-  --notice-text: #{$notice-text};
-  --reading-warm: #{$reading-warm};
-
+  --notice-bg: #fffbeb;
+  --notice-border: #fde68a;
+  --notice-text: #92400e;
+  --reading-warm: #FEF3C7;
   --brand: var(--accent-blue);
   --brand-soft: var(--blue-soft);
   --brand-text: var(--blue-text);
   --danger: var(--coral-text);
   --success: var(--accent-green);
-
-  --radius-sm: #{$radius-sm};
-  --radius: #{$radius};
-  --shadow-sm: #{$shadow-sm};
-  --shadow: #{$shadow};
-  --ease: #{$ease};
-
-  --space-xs: #{$space-xs};
-  --space-sm: #{$space-sm};
-  --space-md: #{$space-md};
-  --space-lg: #{$space-lg};
-
-  --font-sans: #{$font-sans};
-
-  // —— 内容页面变量别名 ——
-  --accent: #{$accent};
-  --accent2: #{$accent2};
-  --coral: #{$coral};
-  --green: #{$green};
-  --orange: #{$orange};
-  --accent-soft: #{$accent-soft};
-  --accent2-soft: #{$accent2-soft};
-  --card-bg: #{$card-bg};
+  --radius-sm: 10px;
+  --radius: 14px;
+  --shadow-sm: 0 2px 6px rgba(45, 42, 50, 0.05);
+  --shadow: 0 4px 14px rgba(45, 42, 50, 0.08);
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --font-sans: SF Pro Text, PingFang SC, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --accent: #38BDF8;
+  --accent2: #A78BFA;
+  --coral: #F472B6;
+  --green: #34D399;
+  --orange: #FB923C;
+  --accent-soft: #E0F2FE;
+  --accent2-soft: #EDE9FE;
+  --card-bg: rgba(255, 255, 255, 0.6);
   --surface-glass: rgba(255, 255, 255, 0.7);
-  --max: #{$max};
-
-  // —— 渐变（使用 var() 引用，主题切换时自动跟随）——
-  --grad-135: linear-gradient(135deg, #{$accent}, #{$accent2});
-  --grad-90: linear-gradient(90deg, #{$accent}, #{$accent2});
-
-  // —— 阴影补充 ——
-  --shadow-card: #{$shadow-sm};
-  --shadow-hover: #{$shadow-hover};
-
-  // —— 过渡 ——
-  --transition-base: #{$transition-base};
-
-  // —— 5 档掌握度 ——
-  --mastery-0: #{$mastery-0};
-  --mastery-1: #{$mastery-1};
-  --mastery-2: #{$mastery-2};
-  --mastery-3: #{$mastery-3};
-  --mastery-4: #{$mastery-4};
-
-  // —— 优先级 ——
-  --pri-key: #{$pri-key};
-  --pri-normal: #{$pri-normal};
-  --pri-survey: #{$pri-survey};
+  --max: 860px;
+  --grad-135: linear-gradient(135deg, #38BDF8, #A78BFA);
+  --grad-90: linear-gradient(90deg, #38BDF8, #A78BFA);
+  --shadow-card: 0 2px 6px rgba(45, 42, 50, 0.05);
+  --shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --transition-base: all 0.2s ease;
+  --mastery-0: #94A3B8;
+  --mastery-1: #3B82F6;
+  --mastery-2: #EF4444;
+  --mastery-3: #F59E0B;
+  --mastery-4: #10B981;
+  --pri-key: #DC2626;
+  --pri-normal: #D97706;
+  --pri-survey: #64748B;
 }
 
-// ============================================================
-// 多主题定义
-// 新增主题只需：1) 复制一个 [data-theme="xxx"] 块改色值
-//                2) 在 theme.js 的 THEMES 数组中添加条目
-// ============================================================
-
-// 暗夜主题
 [data-theme="dark"] {
   --bg: #0F172A;
   --surface: #1E293B;
@@ -131,7 +103,6 @@
   --notice-bg: rgba(254, 243, 199, 0.1);
 }
 
-// 暖阳主题
 [data-theme="warm"] {
   --bg: #FFFBEB;
   --surface: #FFFFFF;
@@ -159,7 +130,6 @@
   --shadow-hover: 0 8px 24px rgba(146, 64, 14, 0.1);
 }
 
-// 自然主题
 [data-theme="nature"] {
   --bg: #F0FDF4;
   --surface: #FFFFFF;
@@ -187,7 +157,6 @@
   --shadow-hover: 0 8px 24px rgba(20, 83, 45, 0.1);
 }
 
-// 玫瑰主题
 [data-theme="rose"] {
   --bg: #FFF1F2;
   --surface: #FFFFFF;

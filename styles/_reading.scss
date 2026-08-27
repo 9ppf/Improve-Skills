@@ -35,7 +35,7 @@
   transition: background-color 0.15s var(--ease);
 }
 
-.reading-section-header:hover { background: rgba(56, 189, 248, 0.07); }
+.reading-section-header:hover { background: var(--blue-soft); }
 
 .reading-section-title { flex: 1; font-weight: 700; }
 
@@ -100,13 +100,13 @@
   font-weight: 700;
   color: #fff;
   background: var(--accent-blue);
-  box-shadow: 0 2px 6px rgba(56, 189, 248, 0.25);
+  box-shadow: 0 2px 6px var(--blue-soft);
   letter-spacing: 0.02em;
 }
 
 .reading-essay:nth-child(even of .reading-essay)::before {
   background: var(--accent-purple);
-  box-shadow: 0 2px 6px rgba(167, 139, 250, 0.25);
+  box-shadow: 0 2px 6px var(--purple-soft);
 }
 
 .reading-essay-title {

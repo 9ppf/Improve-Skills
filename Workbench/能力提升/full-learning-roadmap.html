@@ -5,457 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>武汉理工自考 + AI 转型 · 完整学习路线图</title>
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --bg2: rgba(255, 255, 255, 0.72);
-      --ink: #1e293b;
-      --muted: #64748b;
-      --rule: #e2e8f0;
-      --accent: #2563eb;
-      --accent2: #8b5cf6;
-      --accent-soft: #eff6ff;
-      --coral: #f472b6;
-      --green: #34d399;
-      --orange: #fb923c;
-      --font: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-      --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
-      --max: 900px;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; scroll-behavior: smooth; }
-    body {
-      font-family: var(--font);
-      color: var(--ink);
-      background: var(--bg);
-      line-height: 1.7;
-      padding: 0;
-    }
-
-    article.page {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 2rem 1rem 3rem;
-    }
-
-    /* Hero */
-    header.hero {
-      text-align: center;
-      padding: 2rem 1.5rem;
-      margin-bottom: 1.5rem;
-      background: var(--bg2);
-      border: 1px solid var(--rule);
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.05);
-      position: relative;
-      overflow: hidden;
-    }
-    header.hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -20%;
-      width: 140%;
-      height: 140%;
-      background: none;
-      pointer-events: none;
-    }
-    .hero-badge {
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--accent);
-      background: var(--accent-soft);
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      margin-bottom: 1rem;
-      letter-spacing: 0.02em;
-    }
-    header.hero h1 {
-      font-size: 1.7rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.75rem;
-      color: var(--ink);
-      position: relative;
-    }
-    .hero-sub {
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-bottom: 2rem;
-      position: relative;
-    }
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      max-width: 560px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .stat {
-      background: rgba(255, 255, 255, 0.6);
-      border: 1px solid var(--rule);
-      border-radius: 16px;
-      padding: 1.1rem 0.5rem;
-    }
-    .stat-num {
-      display: block;
-      font-size: 1.7rem;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 0.2rem;
-    }
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    /* Sticky nav */
-    .phase-nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 0.5rem;
-      margin-bottom: 2rem;
-      background: rgba(248, 250, 252, 0.9);
-      border-bottom: 1px solid var(--rule);
-      border-radius: 0 0 16px 16px;
-      flex-wrap: wrap;
-    }
-    .phase-nav a {
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
-      padding: 0.45rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      transition: all 0.2s ease;
-    }
-    .phase-nav a:hover, .phase-nav a.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-color: rgba(37, 99, 235, 0.15);
-    }
-
-    /* Sections */
-    section {
-      background: var(--bg2);
-      border: 1px solid var(--rule);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
-    }
-    section h2 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    section h2::before {
-      content: '';
-      width: 4px;
-      height: 18px;
-      background: var(--accent);
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-    section h3 {
-      font-size: 1.05rem;
-      font-weight: 650;
-      margin: 1rem 0 0.5rem;
-    }
-    section p {
-      color: var(--ink);
-      margin-bottom: 0.9rem;
-    }
-    section p:last-child { margin-bottom: 0; }
-
-    .lead {
-      font-size: 0.92rem;
-      color: var(--muted);
-    }
-
-    /* Overview grid */
-    .phase-overview-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.75rem;
-      margin-top: 1.25rem;
-    }
-    .overview-card {
-      background: rgba(255, 255, 255, 0.6);
-      border: 1px solid var(--rule);
-      border-radius: 16px;
-      padding: 1rem;
-      text-decoration: none;
-      color: inherit;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .overview-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--phase-color, var(--accent));
-    }
-    .overview-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-    }
-    .overview-card .phase-tag {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--phase-color, var(--accent));
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.4rem;
-    }
-    .overview-card .phase-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
-    }
-    .overview-card .phase-date {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    /* Allocation */
-    .allocation-list {
-      display: grid;
-      gap: 0.6rem;
-      margin-top: 1rem;
-    }
-    .allocation-item {
-      display: grid;
-      grid-template-columns: 110px 1fr 70px;
-      gap: 0.75rem;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      background: rgba(255, 255, 255, 0.6);
-      border: 1px solid var(--rule);
-      border-radius: 12px;
-    }
-    .allocation-item .time {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .allocation-item .bar-wrap {
-      height: 8px;
-      background: var(--rule);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .allocation-item .bar {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-    }
-    .allocation-item .pct {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--accent);
-      text-align: right;
-    }
-    .allocation-item .content {
-      grid-column: 2 / 4;
-      font-size: 0.92rem;
-      color: var(--ink);
-    }
-
-    /* Phase sections */
-    .phase {
-      padding: 0;
-      overflow: hidden;
-    }
-    .phase-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      padding: 1.25rem 1.5rem 1rem;
-      background: rgba(255, 255, 255, 0.5);
-      border-bottom: 1px solid var(--rule);
-    }
-    .phase-marker {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      margin-top: 0.45rem;
-      flex-shrink: 0;
-      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.8), 0 0 0 6px currentColor;
-    }
-    .phase-a { color: var(--accent); background: var(--accent); }
-    .phase-b { color: var(--accent2); background: var(--accent2); }
-    .phase-c { color: var(--green); background: var(--green); }
-    .phase-d { color: var(--orange); background: var(--orange); }
-
-    .phase-header h2 {
-      margin-bottom: 0.25rem;
-    }
-    .phase-meta {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin: 0;
-    }
-    .phase-body {
-      padding: 1.5rem 1.75rem 1.75rem;
-    }
-
-    .week-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-    .week-card {
-      background: rgba(255, 255, 255, 0.6);
-      border: 1px solid var(--rule);
-      border-radius: 14px;
-      padding: 1rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .week-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-    }
-    .week-card .week-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 0.2rem;
-    }
-    .week-card .week-date {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 0.5rem;
-    }
-    .week-card .week-focus {
-      font-size: 0.92rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      line-height: 1.5;
-    }
-    .week-card .week-output {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-    .week-card .week-output strong {
-      color: var(--ink);
-    }
-
-    .phase-summary {
-      margin-top: 1.25rem;
-      padding: 1rem 1.1rem;
-      background: rgba(37, 99, 235, 0.04);
-      border-left: 4px solid var(--accent);
-      border-radius: 0 12px 12px 0;
-      font-size: 0.92rem;
-    }
-    .phase-summary strong { color: var(--ink); }
-
-    /* Methodology */
-    .method-card {
-      display: grid;
-      grid-template-columns: 40px 1fr;
-      gap: 1rem;
-      align-items: start;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.6);
-      border: 1px solid var(--rule);
-      border-radius: 14px;
-      margin-bottom: 0.75rem;
-    }
-    .method-num {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.9rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff;
-    }
-    .method-card h4 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
-    }
-    .method-card p {
-      font-size: 0.92rem;
-      color: var(--muted);
-      margin-bottom: 0;
-    }
-
-    /* CTA */
-    .link-cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-    }
-    .link-card {
-      display: block;
-      padding: 1.1rem 1.25rem;
-      background: rgba(255, 255, 255, 0.6);
-      border: 1px solid var(--rule);
-      border-radius: 14px;
-      text-decoration: none;
-      color: var(--ink);
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-    .link-card:hover {
-      background: rgba(37, 99, 235, 0.06);
-      border-color: rgba(37, 99, 235, 0.25);
-      color: var(--accent);
-    }
-
-    /* Responsive */
-    @media (max-width: 860px) {
-      .phase-overview-grid { grid-template-columns: repeat(2, 1fr); }
-      .week-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 640px) {
-      article.page { padding: 1rem 0.75rem 2rem; }
-      header.hero { padding: 2rem 1rem; border-radius: 20px; }
-      header.hero h1 { font-size: 1.4rem; }
-      section { padding: 1rem; }
-      .hero-stats { grid-template-columns: 1fr; }
-      .phase-overview-grid { grid-template-columns: 1fr; }
-      .week-grid { grid-template-columns: 1fr; }
-      .allocation-item { grid-template-columns: 90px 1fr 60px; }
-      .allocation-item .content { grid-column: 1 / 4; margin-top: 0.25rem; }
-      .link-cards { grid-template-columns: 1fr; }
-      .phase-nav { gap: 0.35rem; }
-      .phase-nav a { padding: 0.35rem 0.65rem; font-size: 0.78rem; }
-    }
-  </style>
+  <script src="../../styles/shared/theme-sync.js"></script>
+<link rel="stylesheet" href="../../styles/shared/base-vars.css">
+  <link rel="stylesheet" href="../../styles/shared/base.css">
+  <link rel="stylesheet" href="../../styles/shared/components.css">
+  <link rel="stylesheet" href="../../styles/能力提升/学习路线图.css">
 </head>
 <body>
   <article class="page">
     <nav class="phase-nav">
-      <a href="#phase-a">系统原理</a>
-      <a href="#phase-b">离散数学</a>
-      <a href="#phase-c">数据结构</a>
-      <a href="#phase-d">综合冲刺</a>
+      <div class="phase-steps">
+        <a href="#phase-a" data-step="A" data-color="a">系统原理</a>
+        <a href="#phase-b" data-step="B" data-color="b">离散数学</a>
+        <a href="#phase-c" data-step="C" data-color="c">数据结构</a>
+        <a href="#phase-d" data-step="D" data-color="d">综合冲刺</a>
+      </div>
+      <span class="nav-sep"></span>
       <a href="#method">拆解方法</a>
       <a href="#next">下一步</a>
     </nav>
@@ -464,22 +29,22 @@
       <h2>路线总览</h2>
       <p class="lead">这条路线把 10 月 24 日之前的自考冲刺拆成 4 个阶段，每个阶段只攻一个核心目标。考后再进入 3 个月的 AI 应用/Agent 实战集训，最终以前端 + AI 的复合能力进入就业市场。</p>
       <div class="phase-overview-grid">
-        <a href="#phase-a" class="overview-card" style="--phase-color: var(--accent);">
+        <a href="#phase-a" class="overview-card" data-color="a">
           <div class="phase-tag">阶段 A</div>
           <div class="phase-title">系统原理强攻</div>
           <div class="phase-date">8.11 – 8.31</div>
         </a>
-        <a href="#phase-b" class="overview-card" style="--phase-color: var(--accent2);">
+        <a href="#phase-b" class="overview-card" data-color="b">
           <div class="phase-tag">阶段 B</div>
           <div class="phase-title">离散数学突破</div>
           <div class="phase-date">9.1 – 9.14</div>
         </a>
-        <a href="#phase-c" class="overview-card" style="--phase-color: var(--green);">
+        <a href="#phase-c" class="overview-card" data-color="c">
           <div class="phase-tag">阶段 C</div>
           <div class="phase-title">数据结构网课</div>
           <div class="phase-date">9.15 – 9.28</div>
         </a>
-        <a href="#phase-d" class="overview-card" style="--phase-color: var(--orange);">
+        <a href="#phase-d" class="overview-card" data-color="d">
           <div class="phase-tag">阶段 D</div>
           <div class="phase-title">综合冲刺</div>
           <div class="phase-date">9.29 – 10.24</div>
@@ -495,37 +60,37 @@
           <div class="time">08:00–11:30</div>
           <div class="content">自考主科（系统原理 / 离散 / 数据结构网课）</div>
           <div class="pct">≈35%</div>
-          <div class="bar-wrap"><div class="bar" style="width: 35%;"></div></div>
+          <div class="bar-wrap"><div class="bar" style="--bar-w: 35%;"></div></div>
         </div>
         <div class="allocation-item">
           <div class="time">14:00–16:00</div>
           <div class="content">自考主科续集 / 刷题</div>
           <div class="pct">≈20%</div>
-          <div class="bar-wrap"><div class="bar" style="width: 20%;"></div></div>
+          <div class="bar-wrap"><div class="bar" style="--bar-w: 20%;"></div></div>
         </div>
         <div class="allocation-item">
           <div class="time">16:30–17:30</div>
           <div class="content">Python 小练习（实现当天数据结构/算法）</div>
           <div class="pct">≈8%</div>
-          <div class="bar-wrap"><div class="bar" style="width: 8%;"></div></div>
+          <div class="bar-wrap"><div class="bar" style="--bar-w: 8%;"></div></div>
         </div>
         <div class="allocation-item">
           <div class="time">19:30–20:30</div>
           <div class="content">AI 资讯 / 轻量学习（Agent Demo、RAG 概念等）</div>
           <div class="pct">≈8%</div>
-          <div class="bar-wrap"><div class="bar" style="width: 8%;"></div></div>
+          <div class="bar-wrap"><div class="bar" style="--bar-w: 8%;"></div></div>
         </div>
         <div class="allocation-item">
           <div class="time">20:30–21:30</div>
           <div class="content">英语积累 + 错题整理</div>
           <div class="pct">≈8%</div>
-          <div class="bar-wrap"><div class="bar" style="width: 8%;"></div></div>
+          <div class="bar-wrap"><div class="bar" style="--bar-w: 8%;"></div></div>
         </div>
         <div class="allocation-item">
           <div class="time">21:30 后</div>
           <div class="content">休息，让大脑完成记忆巩固</div>
           <div class="pct">≈10%</div>
-          <div class="bar-wrap"><div class="bar" style="width: 10%; opacity: 0.5;"></div></div>
+          <div class="bar-wrap"><div class="bar bar-dim" style="--bar-w: 10%;"></div></div>
         </div>
       </div>
     </section>

@@ -1,0 +1,563 @@
+/* ============================================================
+ * 背诵与简答.css — 核心概念背诵卡页面专属样式
+ * 依赖：base-vars.css / base.css / components.css
+ * ============================================================ */
+
+article.recite-page {
+max-width: var(--max);
+margin: 0 auto;
+}
+
+.recite-header {
+text-align: center;
+margin-bottom: 2rem;
+}
+.recite-header h1 {
+font-size: 1.6rem;
+font-weight: 700;
+margin-bottom: 0.4rem;
+background: linear-gradient(135deg, var(--accent), var(--accent2));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.recite-header p {
+color: var(--muted);
+font-size: 0.9rem;
+}
+
+.recite-tabs {
+display: flex;
+gap: 0.5rem;
+margin-bottom: 1.5rem;
+flex-wrap: wrap;
+}
+.recite-tab {
+padding: 0.5rem 1rem;
+border-radius: 10px;
+border: 1px solid var(--rule);
+background: var(--surface);
+cursor: pointer;
+font-size: 0.88rem;
+font-weight: 600;
+color: var(--muted);
+transition: all 0.2s;
+}
+.recite-tab:hover {
+border-color: var(--accent);
+color: var(--accent);
+}
+.recite-tab.zk-active {
+background: linear-gradient(135deg, var(--accent), var(--accent2));
+color: #fff;
+border-color: var(--accent);
+}
+
+.recite-section {
+background: var(--surface);
+border: 1px solid var(--blue-soft);
+border-radius: 16px;
+padding: 1.5rem;
+margin-bottom: 1.5rem;
+box-shadow: 0 4px 20px var(--bg-soft);
+}
+.recite-section h2 {
+font-size: 1.1rem;
+font-weight: 700;
+margin-bottom: 1rem;
+padding-bottom: 0.5rem;
+border-bottom: 2px solid var(--rule);
+}
+
+.recite-filter {
+display: flex;
+gap: 0.75rem;
+margin-bottom: 1rem;
+flex-wrap: wrap;
+align-items: center;
+}
+.recite-filter select {
+padding: 0.4rem 0.8rem;
+border-radius: 8px;
+border: 1px solid var(--rule);
+font-size: 0.85rem;
+background: var(--surface);
+color: var(--ink);
+cursor: pointer;
+}
+.card-type-filter {
+display: flex;
+gap: 0;
+border-radius: 8px;
+overflow: hidden;
+border: 1px solid var(--rule);
+}
+.card-type-btn {
+font-size: 0.82rem;
+color: var(--muted);
+border-right: 1px solid var(--rule);
+}
+.card-type-btn:last-child { border-right: none; }
+.card-type-btn:hover { background: var(--bg2); }
+.card-type-btn.zk-active {
+background: linear-gradient(135deg, var(--accent), var(--accent2));
+color: #fff;
+}
+.card-type-btn.memory.zk-active { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+.card-type-btn.calc.zk-active { background: var(--accent2); }
+
+.recite-stats {
+display: flex;
+gap: 1rem;
+margin-bottom: 1rem;
+flex-wrap: wrap;
+}
+.recite-stat {
+flex: 1;
+min-width: 80px;
+text-align: center;
+padding: 0.4rem 0.8rem; font-size: 0.85rem;
+border-radius: 12px;
+background: var(--blue-soft);
+}
+.recite-stat-num {
+font-size: 1.3rem;
+font-weight: 700;
+color: var(--accent);
+}
+.recite-stat-label {
+font-size: 0.75rem;
+color: var(--muted);
+}
+.recite-stat-known .recite-stat-num { color: var(--green); }
+.recite-stat-unsure .recite-stat-num { color: var(--amber); }
+.recite-stat-unknown .recite-stat-num { color: var(--coral); }
+
+.recite-card-grid {
+display: grid;
+grid-template-columns: 1fr;
+gap: 0.75rem;
+}
+
+.recite-card {
+perspective: 1000px;
+cursor: pointer;
+}
+.recite-card-inner {
+position: relative;
+width: auto; min-width: 80px;
+transition: transform 0.5s, min-height 0.3s;
+transform-style: preserve-3d;
+}
+.recite-card.flipped .recite-card-inner {
+transform: rotateY(180deg);
+}
+.recite-card-front {
+position: relative;
+top: 0;
+left: 0;
+width: auto; min-width: 80px;
+backface-visibility: hidden;
+-webkit-backface-visibility: hidden;
+border-radius: 12px;
+padding: 1.2rem;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background: var(--surface);
+border: 2px solid var(--rule);
+}
+.recite-card-back {
+position: absolute;
+top: 0;
+left: 0;
+width: auto; min-width: 80px;
+backface-visibility: hidden;
+-webkit-backface-visibility: hidden;
+border-radius: 12px;
+padding: 1.2rem;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background: linear-gradient(135deg, var(--blue-soft), var(--purple-soft));
+background: var(--surface);
+border: 2px solid var(--rule);
+}
+.recite-card-back {
+background: linear-gradient(135deg, var(--blue-soft), var(--purple-soft));
+border: 2px solid var(--accent);
+transform: rotateY(180deg);
+pointer-events: none;
+}
+.recite-card.flipped .recite-card-front {
+pointer-events: none;
+}
+.recite-card.flipped .recite-card-back {
+pointer-events: auto;
+}
+.recite-card-label {
+font-size: 0.72rem;
+color: var(--muted);
+margin-bottom: 0.4rem;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+}
+.recite-card-question {
+font-size: 1rem;
+font-weight: 600;
+color: var(--ink);
+}
+.recite-card-answer {
+font-size: 0.9rem;
+color: var(--ink);
+line-height: 1.7;
+white-space: pre-line;
+}
+.recite-card-section {
+margin-bottom: 0.6rem;
+}
+.recite-section-label {
+display: inline-block;
+font-size: 0.72rem;
+font-weight: 600;
+padding: 0.15rem 0.5rem;
+border-radius: 0.3rem;
+margin-bottom: 0.2rem;
+}
+.def-label {
+background: var(--blue-soft);
+color: var(--accent);
+}
+.ex-label {
+background: var(--purple-soft);
+color: var(--purple-text);
+}
+.exam-label {
+background: var(--orange-soft);
+color: var(--pri-normal);
+}
+.recite-section-content {
+font-size: 0.88rem;
+color: var(--ink);
+line-height: 1.65;
+white-space: pre-line;
+padding-left: 0.1rem;
+}
+.recite-ex-image {
+margin-top: 0.6rem;
+text-align: center;
+}
+.recite-ex-image img {
+max-width: auto; min-width: 80px;
+max-height: 280px;
+border-radius: 8px;
+border: 1px solid var(--rule);
+object-fit: contain;
+}
+.recite-card-chapter {
+font-size: 0.72rem;
+color: var(--accent);
+margin-bottom: 0.3rem;
+font-weight: 600;
+}
+.recite-card-actions {
+display: flex;
+gap: 0.5rem;
+margin-top: 0.5rem;
+}
+.recite-card-btn {
+flex: 1;
+padding: 0.35rem;
+border-radius: 8px;
+border: 1px solid var(--rule);
+background: var(--surface);
+font-size: 0.8rem;
+cursor: pointer;
+text-align: center;
+transition: all 0.2s;
+}
+.recite-card-btn.known { color: var(--green); border-color: var(--green); }
+.recite-card-btn.unsure { color: var(--amber); border-color: var(--amber); }
+.recite-card-btn.unknown { color: var(--coral); border-color: var(--coral); }
+.recite-card-btn:hover { opacity: 0.8; }
+.recite-card-btn.zk-active { background: currentColor; }
+.recite-card-btn.zk-active span { color: #fff; }
+
+.recite-mastery {
+display: inline-block;
+font-size: 0.7rem;
+padding: 0.1rem 0.4rem;
+border-radius: 999px;
+font-weight: 600;
+margin-left: auto;
+}
+.recite-mastery.known { background: var(--green-soft); color: var(--green); }
+.recite-mastery.unsure { background: var(--amber-soft); color: var(--amber); }
+.recite-mastery.unknown { background: var(--coral-soft); color: var(--coral); }
+
+/* 计算卡专属样式 */
+.calc-card-input {
+width: auto; min-width: 80px;
+padding: 0.5rem 0.6rem;
+border: 1.5px solid var(--rule);
+border-radius: 6px;
+font-size: 0.85rem;
+font-family: inherit;
+margin-top: 0.6rem;
+box-sizing: border-box;
+background: var(--bg-soft);
+}
+.calc-card-input:focus {
+outline: none;
+border-color: var(--accent);
+background: var(--surface);
+}
+.calc-card-submit {
+width: auto; min-width: 80px;
+margin-top: 0.4rem;
+font-size: 0.8rem;
+}
+.calc-card-submit:hover { opacity: 0.85; }
+.calc-card-feedback {
+margin-top: 0.5rem;
+padding: 0.4rem 0.6rem;
+border-radius: 6px;
+font-size: 0.75rem;
+display: none;
+}
+.calc-card-feedback.zk-show { display: block; }
+.calc-card-feedback.correct {
+background: var(--green-soft);
+color: var(--green);
+}
+.calc-card-feedback.wrong {
+background: var(--coral-soft);
+color: var(--coral);
+}
+.calc-card-symbol-toggle {
+font-size: 0.7rem;
+color: var(--muted);
+cursor: pointer;
+margin-top: 0.3rem;
+display: inline-block;
+}
+.calc-card-symbol-palette {
+display: flex;
+flex-wrap: wrap;
+gap: 0.2rem;
+margin-top: 0.3rem;
+padding: 0.3rem;
+background: var(--bg-soft);
+border-radius: 4px;
+}
+.calc-card-symbol-btn {
+font-size: 0.75rem;
+}
+.calc-card-symbol-btn:hover { background: var(--bg-soft); }
+.calc-card-type-badge {
+display: inline-block;
+font-size: 0.65rem;
+padding: 0.1rem 0.4rem;
+border-radius: 4px;
+background: var(--purple-soft);
+color: var(--purple-text);
+font-weight: 600;
+margin-bottom: 0.3rem;
+}
+/* 计算卡视觉强化 */
+.recite-card.calc .recite-card-front {
+border: 2px solid var(--accent2);
+border-top: 6px solid var(--accent2);
+background: linear-gradient(180deg, var(--purple-soft) 0%, #fff 30%);
+}
+.recite-card.calc .recite-card-back {
+border: 2px solid var(--accent2);
+border-top: 6px solid var(--accent2);
+background: linear-gradient(135deg, var(--purple-soft), var(--blue-soft));
+}
+.calc-card-front-icon {
+position: absolute;
+top: 0.5rem;
+right: 0.7rem;
+font-size: 1.5rem;
+opacity: 0.15;
+}
+.calc-formula {
+background: var(--green-soft);
+border-left: 3px solid var(--green);
+padding: 0.5rem 0.7rem;
+border-radius: 4px;
+font-size: 0.82rem;
+margin-bottom: 0.5rem;
+}
+.calc-steps {
+list-style: none;
+padding: 0;
+margin: 0 0 0.5rem 0;
+}
+.calc-steps li {
+padding: 0.3rem 0;
+border-bottom: 1px dashed var(--rule);
+font-size: 0.8rem;
+line-height: 1.5;
+}
+.calc-steps li:last-child { border-bottom: none; }
+.calc-answer-final {
+background: var(--amber-soft);
+padding: 0.4rem 0.6rem;
+border-radius: 4px;
+font-size: 0.82rem;
+font-weight: 600;
+text-align: center;
+color: var(--notice-text);
+}
+
+.recite-add-form {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 0.75rem;
+margin-bottom: 1rem;
+}
+.recite-add-form input,
+.recite-add-form select,
+.recite-add-form textarea {
+padding: 0.5rem 0.7rem;
+border-radius: 8px;
+border: 1px solid var(--rule);
+font-size: 0.85rem;
+font-family: var(--font);
+background: var(--surface);
+color: var(--ink);
+}
+.recite-add-form textarea {
+grid-column: 1 / -1;
+min-height: 60px;
+resize: vertical;
+}
+.recite-add-form button {
+grid-column: 1 / -1;
+}
+.recite-add-form button:hover { opacity: 0.9; }
+
+.recite-empty {
+text-align: center;
+padding: 2rem;
+color: var(--muted);
+font-size: 0.9rem;
+}
+
+.recite-view-tabs {
+display: flex;
+gap: 0.6rem;
+margin-bottom: 1.5rem;
+}
+.recite-view-btn {
+color: var(--muted);
+font-size: 0.9rem;
+}
+.recite-view-btn.zk-active {
+background: linear-gradient(135deg, var(--accent), var(--accent2));
+border-color: var(--accent);
+color: #fff;
+}
+.recite-hint {
+font-size: 0.82rem;
+color: var(--muted);
+margin-bottom: 0.75rem;
+}
+
+.recite-plan-section {
+background: linear-gradient(135deg, var(--blue-soft), var(--purple-soft));
+border: 1px solid var(--blue-soft);
+border-radius: 12px;
+padding: 1.2rem;
+margin-bottom: 1.5rem;
+}
+.recite-plan-section h2 {
+font-size: 1.1rem;
+font-weight: 700;
+color: var(--accent);
+margin-bottom: 0.8rem;
+padding-left: 0.6rem;
+border-left: 3px solid var(--accent);
+}
+.recite-progress-bar {
+width: auto; min-width: 80px;
+height: 8px;
+background: var(--rule);
+border-radius: 4px;
+overflow: hidden;
+margin-bottom: 0.5rem;
+}
+.recite-progress-fill {
+height: 100%;
+background: var(--grad-90);
+border-radius: 4px;
+transition: width 0.3s;
+}
+.recite-progress-label {
+display: flex;
+justify-content: space-between;
+font-size: 0.82rem;
+color: var(--muted);
+margin-bottom: 0.8rem;
+}
+.recite-plan-list {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+.recite-plan-list li {
+padding: 0.5rem 0.7rem;
+margin-bottom: 0.4rem;
+background: var(--surface);
+border-radius: 6px;
+border: 1px solid var(--rule);
+font-size: 0.88rem;
+cursor: pointer;
+transition: all 0.15s;
+}
+.recite-plan-list li:hover {
+border-color: var(--accent);
+background: var(--blue-soft);
+}
+.recite-plan-list li .pl-chapter {
+color: var(--muted);
+font-size: 0.78rem;
+margin-right: 0.4rem;
+}
+
+@media (max-width: 640px) {
+.recite-card-actions { flex-wrap: wrap; gap: 0.35rem; }
+.recite-card-btn { font-size: 0.75rem; padding: 0.3rem 0.4rem; }
+}
+
+
+/* ===== 行内样式抽离后新增类 ===== */
+
+/* 引导流按钮区 */
+.recite-guide-flow { display: none; margin-top: 16px; text-align: center; }
+.recite-guide-flow.zk-show { display: block; }
+.recite-guide-btn {
+  display: inline-block; padding: 6px 13px; border-radius: 6px; font-size: 0.85rem;
+}
+.recite-guide-subtext { font-size: 11px; font-weight: 400; opacity: 0.85; margin-top: 2px; }
+
+/* 计算卡符号面板隐藏态 */
+.calc-card-symbol-palette.zk-hidden { display: none; }
+
+/* 计算卡提示文字 */
+.calc-card-hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+
+/* 背面卡片按钮变体 */
+.recite-card-btn.practice {
+  color: var(--accent); border-color: var(--accent);
+  flex: 0 0 auto; padding: 0.35rem 0.7rem;
+  text-decoration: none; cursor: pointer; font-size: 0.8rem;
+}
+.recite-card-btn.delete {
+  color: var(--coral); border-color: var(--coral);
+  flex: 0 0 auto; padding: 0.35rem 0.7rem; margin-left: auto;
+}
+
+/* 卡片 minHeight 用CSS变量驱动 */
+.recite-card-inner { min-height: var(--card-min-h, auto); }

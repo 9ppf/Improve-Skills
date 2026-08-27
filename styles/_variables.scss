@@ -5,7 +5,7 @@
 // 背景与表面
 $bg: #F0F9FF;
 $surface: #ffffff;
-$sidebar: #F5FBFF;
+$sidebar: #DBEAFE;
 $bg2: #f1f5f9;
 
 // 文字
@@ -37,6 +37,7 @@ $green-text: #047857;
 $accent-cyan: #22D3EE;
 $accent-yellow: #FBBF24;
 $accent-orange: #FB923C;
+$orange-soft: #FED7AA;
 
 // 提示
 $notice-bg: #fffbeb;
@@ -69,3 +70,41 @@ $space-lg: 16px;
 
 // 字体
 $font-sans: "SF Pro Text", "PingFang SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+// ============================================================
+// 统一新增：内容页面别名 + 公共变量
+// 保留上方所有原有变量不动，以下为内容页面 CSS 引用的变量名
+// ============================================================
+
+// 别名：内容页面使用的变量名 → 指向已有 SASS 变量
+$accent: $accent-blue;        // #38BDF8 天蓝
+$accent2: $accent-purple;    // #A78BFA 浅紫
+$coral: $accent-coral;        // #F472B6
+$green: $accent-green;        // #34D399
+$orange: $accent-orange;      // #FB923C
+$accent-soft: $blue-soft;     // #E0F2FE
+$accent2-soft: $purple-soft;  // #EDE9FE
+$card-bg: rgba(255, 255, 255, 0.6);
+$max: 860px;
+
+// 渐变
+$grad-135: linear-gradient(135deg, $accent, $accent2);
+$grad-90: linear-gradient(90deg, $accent, $accent2);
+
+// 阴影补充
+$shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+// 过渡
+$transition-base: all 0.2s ease;
+
+// 5 档掌握度（功能色）
+$mastery-0: #94A3B8;  // 灰：未开始
+$mastery-1: #3B82F6;  // 蓝：学习中
+$mastery-2: #EF4444;  // 红：薄弱
+$mastery-3: #F59E0B;  // 橙：待复习
+$mastery-4: #10B981;  // 绿：已掌握
+
+// 优先级标签
+$pri-key: #DC2626;     // 红：重点
+$pri-normal: #D97706;  // 橙：一般
+$pri-survey: #64748B;  // 灰：了解

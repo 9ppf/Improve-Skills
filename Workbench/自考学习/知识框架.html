@@ -14,1568 +14,11 @@
 
 <title>02324 离散数学 · 目录与知识框架</title>
 
-<link rel="stylesheet" href="../shared/base-vars.css">
-<style>
-
-    
-
-
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { font-size: 16px; }
-
-    body {
-
-      font-family: var(--font);
-
-      color: var(--ink);
-
-      background: var(--bg);
-
-      line-height: 1.7;
-
-      padding: 20px;
-
-    }
-
-    article.page {
-
-      max-width: var(--max);
-
-      margin: 0 auto;
-
-    }
-
-
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.8rem;
-
-      flex-wrap: wrap;
-
-      gap: 0.5rem;
-
-    }
-
-    header h1 {
-
-      font-size: 1.1rem;
-
-      font-weight: 700;
-
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-
-      -webkit-background-clip: text;
-
-      -webkit-text-fill-color: transparent;
-
-      display: inline;
-
-    }
-
-    .kf-header-left { display: flex; align-items: baseline; gap: 0.5rem; }
-
-    .kf-subject-tag {
-      font-size: 0.68rem; color: var(--muted); background: var(--bg-soft, #f3f4f6);
-      padding: 2px 8px; border-radius: 999px; font-weight: 500; margin-left: 6px;
-    }
-
-    .kf-stats-mini { display: flex; gap: 4px; }
-
-    .kf-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
-
-    .kf-pill .kf-dot { width: 6px; height: 6px; border-radius: 50%; }
-
-    .kf-pill.kf-mastered { background: #d1fae5; color: #047857; }
-
-    .kf-pill.kf-mastered .kf-dot { background: #16a34a; }
-
-    .kf-pill.kf-progress { background: #dbeafe; color: #1d4ed8; }
-
-    .kf-pill.kf-progress .kf-dot { background: #3b82f6; }
-
-    .kf-pill.kf-review { background: #fef3c7; color: #b45309; }
-
-    .kf-pill.kf-review .kf-dot { background: #ea580c; }
-
-
-
-    section {
-      background: var(--bg2);
-      border-radius: 10px;
-
-      padding: 0.8rem;
-
-      margin-bottom: 0.6rem;
-
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-    }
-
-    section h2 {
-
-      font-size: 0.66rem;
-
-      font-weight: 700;
-
-      color: var(--accent2);
-
-      margin-bottom: 0.3rem;
-
-      text-transform: uppercase;
-
-      letter-spacing: 0.03em;
-
-      padding-bottom: 0;
-
-      border-bottom: none;
-
-    }
-
-    section h3 {
-      font-size: 0.82rem;
-      font-weight: 650;
-      margin: 0.6rem 0 0.4rem;
-    }
-
-    section p {
-
-      margin-bottom: 0.4rem;
-
-      color: var(--ink);
-
-    }
-
-
-
-    .callout {
-
-      background: rgba(37, 99, 235, 0.04);
-
-      border-left: 4px solid var(--accent);
-
-      padding: 0.8rem;
-
-      border-radius: 10px;
-
-      margin: 0.6rem 0;
-
-      font-size: 0.76rem;
-
-    }
-
-
-
-    .toc-chapter {
-
-      margin-bottom: 0.8rem;
-
-    }
-
-    .toc-title {
-
-      font-weight: 700;
-
-      color: var(--accent);
-
-      margin-bottom: 0.4rem;
-
-      display: flex;
-
-      align-items: baseline;
-
-      gap: 0.5rem;
-
-      font-size: 0.72rem;
-
-    }
-
-    .toc-title .page {
-
-      font-size: 0.72rem;
-
-      color: var(--muted);
-
-      font-weight: 400;
-
-      margin-left: auto;
-
-    }
-
-    .toc-sections {
-
-      margin-left: 1.25rem;
-
-      color: var(--ink);
-
-    }
-
-    .toc-section {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 0.4rem;
-
-      margin-bottom: 0.3rem;
-
-      font-size: 0.72rem;
-
-    }
-
-    .toc-subsection {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 0.4rem;
-
-      margin-left: 1.25rem;
-
-      color: var(--muted);
-
-      font-size: 0.76rem;
-
-    }
-
-    /* 目录小节掌握状态点（5 档） */
-    .toc-dot {
-
-      flex-shrink: 0;
-
-      display: inline-flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      width: 1.05rem;
-
-      height: 1.05rem;
-
-      border-radius: 50%;
-
-      border: 1.5px solid #d1d5db;
-
-      background: #fff;
-
-      color: #64748b;
-
-      font-size: 0.6rem;
-
-      line-height: 1;
-
-      cursor: pointer;
-
-      transition: all 0.15s ease;
-
-      user-select: none;
-
-    }
-
-    .toc-dot:hover { transform: scale(1.15); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
-
-    .toc-dot[data-mastery="0"] { border-color: #d1d5db; color: #9ca3af; background: #f9fafb; }
-
-    .toc-dot[data-mastery="1"] { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
-
-    .toc-dot[data-mastery="2"] { border-color: #ef4444; color: #ef4444; background: #fef2f2; }
-
-    .toc-dot[data-mastery="3"] { border-color: #f59e0b; color: #d97706; background: #fffbeb; }
-
-    .toc-dot[data-mastery="4"] { border-color: #10b981; color: #059669; background: #ecfdf5; }
-
-
-
-    .tag {
-
-      display: inline-block;
-
-      font-size: 0.66rem;
-
-      padding: 0.15rem 0.5rem;
-
-      border-radius: 999px;
-
-      margin-left: 0.5rem;
-
-      font-weight: 600;
-
-    }
-
-    .tag-core { background: rgba(239, 68, 68, 0.10); color: #dc2626; }
-
-    .tag-key { background: rgba(245, 158, 11, 0.10); color: #d97706; }
-
-    .tag-regular { background: rgba(37, 99, 235, 0.10); color: #3b82f6; }
-
-
-
-    ul, ol {
-
-      margin-left: 1.25rem;
-
-      margin-bottom: 0.6rem;
-
-    }
-
-    ul li { margin-bottom: 0.3rem; }
-
-
-
-    .framework-chapter {
-
-      margin-bottom: 0.6rem;
-
-      padding-bottom: 0.6rem;
-
-      border-bottom: 1px dashed var(--rule);
-
-    }
-
-    .framework-chapter:last-of-type {
-
-      border-bottom: none;
-
-      padding-bottom: 0;
-
-      margin-bottom: 0;
-
-    }
-
-    .framework-chapter h4 {
-      font-size: 0.66rem;
-      font-weight: 700;
-      color: var(--accent2);
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      margin: 0.4rem 0 0.3rem;
-    }
-
-    .framework-chapter p {
-
-      margin-bottom: 0.3rem;
-
-    }
-
-    .framework-chapter ul {
-
-      margin-left: 1.25rem;
-
-      margin-bottom: 0.3rem;
-
-    }
-
-    .key-term {
-
-      font-weight: 600;
-
-      color: var(--ink);
-
-    }
-
-    .exam-tag {
-
-      display: inline-block;
-
-      font-size: 0.64rem;
-
-      padding: 0.1rem 0.45rem;
-
-      border-radius: 999px;
-
-      background: rgba(220, 38, 38, 0.08);
-
-      color: #b91c1c;
-
-      font-weight: 600;
-
-      margin-right: 0.35rem;
-
-    }
-
-
-
-    /* === 掌握度追踪 === */
-
-    .ss-dashboard {
-
-      background: var(--bg2);
-
-      border: 1px solid var(--rule);
-
-      border-left: 4px solid var(--accent);
-
-      border-radius: 10px;
-
-      padding: 0.8rem;
-
-      margin-bottom: 0.6rem !important;
-
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-    }
-
-    .ss-dashboard-top {
-
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: baseline;
-
-      margin-bottom: 0.4rem;
-
-    }
-
-    .ss-dashboard-label { font-weight: 700; font-size: 0.66rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.03em; }
-
-    .ss-dashboard-count { font-size: 0.72rem; color: var(--muted); }
-
-    .ss-dashboard-count b { color: var(--accent); font-size: 0.82rem; font-weight: 700; }
-
-    .ss-dashboard-track {
-
-      width: 100%; height: 8px;
-
-      background: rgba(37, 99, 235, 0.08);
-
-      border-radius: 999px; overflow: hidden;
-
-      margin-bottom: 0.4rem;
-
-    }
-
-    .ss-dashboard-fill {
-
-      height: 100%; width: 0%;
-
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-
-      border-radius: 999px; transition: width 0.4s ease;
-
-    }
-
-    .ss-dashboard-stats {
-
-      display: flex; gap: 0.4rem; flex-wrap: wrap; font-size: 0.68rem; align-items: center;
-
-    }
-
-    .ss-stat { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
-
-    .ss-stat-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-
-    .ss-stat-0 { background: #f3f4f6; color: var(--muted); }
-
-    .ss-stat-0 .ss-stat-dot { background: #94a3b8; }
-
-    .ss-stat-1 { background: #dbeafe; color: #1d4ed8; }
-
-    .ss-stat-1 .ss-stat-dot { background: #3b82f6; }
-
-    .ss-stat-2 { background: #d1fae5; color: #047857; }
-
-    .ss-stat-2 .ss-stat-dot { background: #10b981; }
-
-    .ss-stat-3 { background: #fef3c7; color: #b45309; }
-
-    .ss-stat-3 .ss-stat-dot { background: #f59e0b; }
-
-    .ss-dashboard-reset {
-
-      margin-left: auto; background: none; border: none;
-
-      color: var(--muted); cursor: pointer; font-size: 0.64rem;
-
-      padding: 0; font-family: inherit;
-
-    }
-
-    .ss-dashboard-reset:hover { color: #dc2626; text-decoration: underline; }
-
-
-
-    /* 周计划折叠卡 */
-
-    .kf-accordion { display: flex; flex-direction: column; gap: 0.4rem; }
-
-    .kf-week-card {
-
-      background: #fff;
-
-      border: 1px solid var(--rule);
-
-      border-left: 4px solid var(--week-color, #8b5cf6);
-
-      border-radius: 10px;
-
-      overflow: hidden;
-
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-      margin-bottom: 0.6rem;
-
-    }
-
-    .kf-week-card summary {
-
-      padding: 0.5rem 0.8rem;
-
-      font-weight: 600;
-
-      font-size: 0.74rem;
-
-      cursor: pointer;
-
-      list-style: none;
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 0.4rem;
-
-    }
-
-    .kf-week-title { color: var(--week-color, #8b5cf6); }
-
-    .kf-week-card summary::-webkit-details-marker { display: none !important; }
-
-    .kf-week-card summary { list-style: none !important; }
-
-    .kf-week-card summary::before { display: none !important; }
-
-    .kf-week-meta { font-size: 0.7rem; color: var(--muted); font-weight: 400; margin-left: auto; }
-
-    .kf-chevron { font-size: 0.7rem; color: var(--muted); transition: transform 0.2s; }
-
-    .kf-week-card[open] .kf-chevron { transform: rotate(180deg); }
-
-    .kf-week-card ul { padding: 0 0.8rem 0.5rem 1.5rem; font-size: 0.72rem; color: var(--ink); margin: 0; }
-
-    .kf-week-card ul li { margin-bottom: 0.2rem; }
-
-
-
-    /* 学习提示卡 */
-
-    .kf-tips-card {
-
-      background: #fff;
-
-      border: 1px solid var(--rule);
-
-      border-left: 4px solid #f59e0b;
-
-      border-radius: 10px;
-
-      padding: 0.6rem 0.7rem;
-
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-      margin-bottom: 0.6rem;
-
-    }
-
-    .kf-tips-card h2 { border: none !important; padding: 0; margin: 0 0 0.4rem; font-size: 0.66rem; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.03em; }
-
-    .kf-tip { display: flex; align-items: flex-start; gap: 0.4rem; margin-bottom: 0.3rem; font-size: 0.76rem; line-height: 1.5; }
-
-    .kf-tip:last-child { margin-bottom: 0; }
-
-    .kf-tag { flex-shrink: 0; font-size: 0.6rem; font-weight: 600; padding: 1px 5px; border-radius: 4px; }
-
-    .kf-tag-calc { background: #fee2e2; color: #b91c1c; }
-
-    .kf-tag-concept { background: #dbeafe; color: #1d4ed8; }
-
-    .kf-tag-combo { background: #f3e8ff; color: #7c3aed; }
-
-    .kf-tag-example { background: #fef3c7; color: #b45309; }
-
-
-
-    .ss-chapter-controls {
-
-      display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
-
-      margin: 0.4rem 0 0.6rem; padding: 0.4rem 0.6rem;
-
-      background: rgba(255,255,255,0.7); border: 1px solid var(--rule); border-radius: 10px;
-
-    }
-
-    .ss-difficulty {
-
-      font-size: 0.66rem; font-weight: 600; padding: 0.15rem 0.6rem;
-
-      border-radius: 999px; white-space: nowrap;
-
-    }
-
-    .ss-difficulty-1 { background: rgba(37, 99, 235, 0.10); color: #3b82f6; }
-
-    .ss-difficulty-2 { background: rgba(245, 158, 11, 0.10); color: #d97706; }
-
-    .ss-difficulty-3 { background: rgba(220, 38, 38, 0.10); color: #dc2626; }
-
-    .ss-mastery-label { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
-
-    .ss-mastery-btns { display: inline-flex; gap: 0.3rem; }
-
-    .ss-mastery-btn {
-
-      font-size: 0.64rem; padding: 0.18rem 0.5rem;
-
-      border: 1.5px solid var(--rule); border-radius: 999px;
-
-      background: transparent; color: var(--muted);
-
-      cursor: pointer; font-family: inherit; transition: all 0.15s;
-
-    }
-
-    .ss-mastery-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* 5 档按钮：0灰 1蓝 2红 3橙 4绿 */
-    .ss-mastery-btn.zk-active[data-level="0"] { background: #94a3b8; border-color: #94a3b8; color: #fff; }
-
-    .ss-mastery-btn.zk-active[data-level="1"] { background: #3b82f6; border-color: #3b82f6; color: #fff; }
-
-    .ss-mastery-btn.zk-active[data-level="2"] { background: #ef4444; border-color: #ef4444; color: #fff; }
-
-    .ss-mastery-btn.zk-active[data-level="3"] { background: #f59e0b; border-color: #f59e0b; color: #fff; }
-
-    .ss-mastery-btn.zk-active[data-level="4"] { background: #10b981; border-color: #10b981; color: #fff; }
-
-    .ss-chapter-count { font-size: 0.72rem; color: var(--muted); margin-left: auto; }
-
-    .ss-keypoints {
-
-      font-size: 0.76rem; color: var(--ink); margin-bottom: 0.4rem;
-
-      padding: 0.4rem 0.7rem; background: rgba(245, 158, 11, 0.04);
-
-      border-left: 4px solid #d97706; border-radius: 8px;
-
-    }
-
-    .ss-keypoints strong { color: #d97706; }
-
-    .ss-kp-label { display: flex; align-items: flex-start; gap: 0.3rem; cursor: pointer; font-size: 0.76rem; }
-
-    .ss-kp-check { margin-top: 0.3rem; accent-color: var(--accent); flex-shrink: 0; }
-
-    .ss-kp-label.ss-checked { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(100, 116, 139, 0.3); }
-
-    .framework-chapter[data-mastery="2"] { }
-    .framework-chapter[data-mastery="3"] { }
-    .framework-chapter[data-mastery="1"] { }
-
-
-
-    @media (max-width: 640px) {
-
-      body { padding: 1rem 0.8rem; }
-
-      header h1 { font-size: 1.1rem; }
-
-      .chapter-grid { grid-template-columns: 1fr; }
-
-    }
-
-
-
-    .example-block {
-
-      background: rgba(37, 99, 235, 0.02);
-
-      border-left: 4px solid var(--accent);
-
-      border-radius: 8px;
-
-      padding: 0.6rem 0.7rem;
-
-      margin-bottom: 0.4rem;
-
-    }
-
-    .example-block.exercise {
-
-      background: rgba(16, 185, 129, 0.02);
-
-      border-left: 4px solid #10b981;
-
-    }
-
-    .example-title { margin-bottom: 0.3rem; font-weight: 600; font-size: 0.78rem; }
-
-    .example-title strong { color: var(--accent); margin-right: 0.3rem; }
-
-    .example-statement { margin-bottom: 0.3rem; font-size: 0.76rem; }
-
-    .example-statement p { margin-bottom: 0.2rem; }
-
-    .example-block.exercise .example-title strong { color: #10b981; }
-
-    .example-tag {
-
-      display: inline-block;
-
-      font-size: 0.66rem;
-
-      padding: 0.1rem 0.45rem;
-
-      border-radius: 999px;
-
-      background: rgba(245, 158, 11, 0.10);
-
-      color: #d97706;
-
-      font-weight: 600;
-
-      margin-right: 0.4rem;
-
-    }
-
-    .example-solution { color: var(--ink); }
-
-    .example-solution p { margin-bottom: 0.4rem; }
-
-    .example-solution pre {
-
-      background: rgba(15, 23, 42, 0.03);
-
-      border-radius: 6px;
-
-      padding: 0.6rem 0.7rem;
-
-      overflow-x: auto;
-
-      font-size: 0.76rem;
-
-      line-height: 1.5;
-
-      margin-bottom: 0.4rem;
-
-    }
-
-
-
-  
-
-    .chapter-tabs {
-
-      display: flex;
-
-      gap: 0.4rem;
-
-      margin-bottom: 0.8rem;
-
-      padding: 0.4rem 0.5rem;
-
-      background: rgba(255,255,255,0.7);
-
-      backdrop-filter: blur(8px);
-
-      -webkit-backdrop-filter: blur(8px);
-
-      border: 1px solid var(--rule);
-
-      border-radius: 10px;
-
-      overflow-x: auto;
-
-      -webkit-overflow-scrolling: touch;
-
-      scrollbar-width: thin;
-
-    }
-
-    #secondaryTabs { margin-top: -0.6rem; }
-
-    #secondaryTabs .chapter-tab-btn { font-size: 0.74rem; padding: 0.3rem 0.8rem; }
-
-    .chapter-tabs::-webkit-scrollbar { height: 4px; }
-
-    .chapter-tabs::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.2); border-radius: 4px; }
-
-    .chapter-tab-btn {
-
-      flex: 0 0 auto;
-
-      display: inline-flex;
-
-      align-items: center;
-
-      gap: 0.35rem;
-
-      padding: 0.3rem 0.8rem;
-
-      border: 1.5px solid var(--rule);
-
-      border-radius: 999px;
-
-      background: #fff;
-
-      color: var(--muted);
-
-      font-size: 0.74rem;
-
-      font-weight: 500;
-
-      cursor: pointer;
-
-      white-space: nowrap;
-
-      transition: all 0.15s ease;
-
-      font-family: inherit;
-
-    }
-
-    .chapter-tab-btn:hover {
-
-      border-color: var(--accent);
-
-      color: var(--accent);
-
-    }
-
-    .chapter-tab-btn.zk-active {
-
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-
-      color: #fff;
-
-      border-color: transparent;
-
-      font-weight: 600;
-
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
-
-    }
-
-    .chapter-tab-dot {
-
-      width: 7px;
-
-      height: 7px;
-
-      border-radius: 50%;
-
-      background: #94a3b8;
-
-      display: inline-block;
-
-      transition: background 0.2s;
-
-    }
-
-    .chapter-tab-btn[data-status="1"] .chapter-tab-dot { background: #3b82f6; }
-
-    .chapter-tab-btn[data-status="2"] .chapter-tab-dot { background: #16a34a; }
-
-    .chapter-tab-btn[data-status="3"] .chapter-tab-dot { background: #ea580c; }
-
-
-
-    .chapter-tab-content { position: relative; transition: opacity 0.3s ease; }
-.chapter-tab-content.kf-loading { opacity: 0; }
-
-    .chapter-tab-pane {
-
-      display: none;
-
-      animation: tabFadeIn 0.25s ease;
-
-    }
-
-    .chapter-tab-pane.zk-active { display: block; opacity: 1; }
-
-    @keyframes tabFadeIn {
-
-      from { opacity: 0; transform: translateY(4px); }
-
-      to { opacity: 1; transform: translateY(0); }
-
-    }
-
-    .chapter-tab-pane > section { margin-bottom: 0.6rem; }
-
-    .chapter-tab-pane > section:last-of-type { margin-bottom: 0; }
-
-
-
-    @media (max-width: 640px) {
-
-      .chapter-tabs {
-
-        gap: 0.25rem;
-
-        padding: 0.3rem;
-
-      }
-
-      .chapter-tab-btn {
-
-        padding: 0.4rem 0.65rem;
-
-        font-size: 0.82rem;
-
-      }
-
-    }
-
-
-
-    .toc-title-link { transition: color 0.2s, background 0.2s; }
-
-    .toc-title-link:hover { color: var(--accent); background: rgba(37, 99, 235, 0.06); border-radius: 6px; }
-
-
-
-    /* ===== 章节掌握度网格 ===== */
-
-    .chapter-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-bottom: 0.6rem;
-    }
-
-    .ch-card {
-
-      background: var(--bg2);
-
-      border-radius: 10px;
-
-      padding: 0.6rem 0.7rem;
-
-      border: 1px solid transparent;
-
-      cursor: pointer;
-
-      transition: all 0.15s ease;
-
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-    }
-
-    .ch-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.1); transform: translateY(-1px); }
-
-    /* 章节掌握度 5 档：0灰 1蓝 2红 3橙 4绿 */
-    .ch-card[data-mastery="4"] { border-left: 4px solid #10b981; }
-
-    .ch-card[data-mastery="1"] { border-left: 4px solid #3b82f6; }
-
-    .ch-card[data-mastery="2"] { border-left: 4px solid #ef4444; }
-
-    .ch-card[data-mastery="3"] { border-left: 4px solid #f59e0b; }
-
-    .ch-card[data-mastery="0"] { border-left: 4px solid #d1d5db; }
-
-    .ch-card .ch-name { font-size: 0.78rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
-
-    .ch-card .ch-meta { font-size: 0.62rem; color: var(--muted); margin-bottom: 4px; }
-
-    .ch-card .ch-status { font-size: 0.66rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
-
-    .ch-card .ch-icon { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #fff; flex-shrink: 0; }
-
-    /* 5 档：4绿 1蓝 2红 3橙 0灰 */
-    .ch-card[data-mastery="4"] .ch-status { color: #047857; }
-
-    .ch-card[data-mastery="4"] .ch-icon { background: #10b981; }
-
-    .ch-card[data-mastery="1"] .ch-status { color: #1d4ed8; }
-
-    .ch-card[data-mastery="1"] .ch-icon { background: #3b82f6; }
-
-    .ch-card[data-mastery="2"] .ch-status { color: #b91c1c; }
-
-    .ch-card[data-mastery="2"] .ch-icon { background: #ef4444; }
-
-    .ch-card[data-mastery="3"] .ch-status { color: #b45309; }
-
-    .ch-card[data-mastery="3"] .ch-icon { background: #f59e0b; }
-
-    .ch-card[data-mastery="0"] .ch-status { color: var(--muted); }
-
-    .ch-card[data-mastery="0"] .ch-icon { background: #d1d5db; }
-
-
-    /* ===== Design Draft Components ===== */
-    .kf-card { background: var(--bg2); border-radius: 10px; padding: 0.8rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 0.6rem; }
-    .card-label { font-size: 0.66rem; font-weight: 700; color: var(--accent2); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.03em; }
-    .card-body { font-size: 0.74rem; color: var(--ink); line-height: 1.5; }
-
-    .journey-step { display: flex; gap: 8px; margin-bottom: 0.4rem; align-items: center; }
-    .journey-step .step-num { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .journey-step .step-text { font-size: 0.72rem; color: var(--ink); line-height: 1.5; }
-    .journey-step .step-text .step-ch { font-size: 0.64rem; color: var(--muted); }
-
-    .collapse-card { cursor: pointer; }
-    .collapse-card .chevron { transition: transform 0.2s; font-size: 0.7rem; color: var(--muted); }
-    .collapse-card.open .chevron { transform: rotate(90deg); }
-    .collapse-card .collapse-body { display: none; margin-top: 0.4rem; }
-    .collapse-card.open .collapse-body { display: block; }
-
-    /* 章节掌握度由 data-mastery 属性驱动（syncUI 设置），不再使用 class 名 */
-
-    .ch-card { border-left: 4px solid #d1d5db; }
-
-
-/* ===== Learning Guide Annotations ===== */
-
-.lg-badge {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 3px;
-
-    font-size: 11px;
-
-    padding: 1px 6px;
-
-    border-radius: 8px;
-
-    margin-left: 6px;
-
-    vertical-align: middle;
-
-    font-weight: 600;
-
-    white-space: nowrap;
-
-}
-
-.lg-priority-key { color: #dc2626; }
-.lg-priority-normal { color: #d97706; }
-.lg-priority-survey { color: #64748b; }
-
-.lg-badge.lg-priority-key { background: #fee2e2; border: 1px solid #fecaca; }
-.lg-badge.lg-priority-normal { background: #fef3c7; border: 1px solid #fde68a; }
-.lg-badge.lg-priority-survey { background: #f1f5f9; border: 1px solid #e2e8f0; }
-
-
-
-.lg-kp-item {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    margin-bottom: 8px;
-    overflow: hidden;
-    list-style: none;
-}
-.lg-kp-item > ul { list-style: none; padding: 0; margin: 0; }
-
-.kp-header {
-    padding: 8px 12px;
-    border-radius: 8px 8px 0 0;
-}
-.kp-header.kp-priority-key { background: rgba(254, 226, 226, 0.5); }
-.kp-header.kp-priority-normal { background: rgba(254, 243, 199, 0.5); }
-.kp-header.kp-priority-survey { background: rgba(220, 252, 231, 0.5); }
-
-.kp-header .key-term { font-weight: 600; font-size: 14px; color: var(--ink); }
-
-.kp-body { padding: 8px 12px; }
-
-.kf-summary { display: block; font-size: 12px; color: #64748b; margin-bottom: 6px; line-height: 1.5; }
-
-.kf-points {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-.kf-points li {
-    font-size: 12.5px;
-    line-height: 1.8;
-    color: #475569;
-    display: flex;
-    align-items: flex-start;
-}
-.kf-points li::before {
-    content: '';
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    margin: 8px 6px 0 0;
-    flex-shrink: 0;
-}
-.kf-points.kf-points-key li::before { background: #ef4444; }
-.kf-points.kf-points-normal li::before { background: #f59e0b; }
-.kf-points.kf-points-survey li::before { background: #22c55e; }
-
-
-
-.lg-howto {
-
-    font-size: 12px;
-
-    color: #6366f1;
-
-    margin-top: 4px;
-
-    padding-left: 4px;
-
-    display: none;
-
-}
-
-.lg-kp-item:hover .lg-howto { display: block; }
-
-
-
-.lg-chapter-summary {
-
-    display: flex;
-
-    gap: 12px;
-
-    align-items: center;
-
-    flex-wrap: wrap;
-
-    padding: 8px 12px;
-
-    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-
-    border-radius: 8px;
-
-    margin-bottom: 12px;
-
-    font-size: 13px;
-
-    border: 1px solid #bae6fd;
-
-}
-
-.lg-chapter-summary .lg-stat {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 4px;
-
-}
-
-.lg-chapter-summary .lg-stat-dot {
-
-    width: 8px;
-
-    height: 8px;
-
-    border-radius: 50%;
-
-}
-
-.lg-stat-key .lg-stat-dot { background: #dc2626; }
-
-.lg-stat-normal .lg-stat-dot { background: #d97706; }
-
-.lg-stat-survey .lg-stat-dot { background: #94a3b8; }
-
-
-
-.lg-filter-bar {
-
-    display: flex;
-
-    gap: 8px;
-
-    margin-bottom: 10px;
-
-    flex-wrap: wrap;
-
-}
-
-.lg-filter-btn {
-
-    padding: 4px 10px;
-
-    border-radius: 16px;
-
-    font-size: 12px;
-
-    border: 1px solid #ddd;
-
-    background: #fff;
-
-    cursor: pointer;
-
-    transition: all 0.2s;
-
-}
-
-.lg-filter-btn.zk-active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
-
-.lg-filter-btn:hover { opacity: 0.8; }
-
-
-
-/* ===== Display Fix ===== */
-
-.chapter-tab-pane.zk-active { display: block !important; opacity: 1 !important; }
-
-
-
-
-
-    /* === 章节精讲新结构 === */
-
-    .lg-chapter-summary {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 8px;
-
-        font-size: 0.72rem;
-
-        margin-bottom: 0.6rem;
-
-        flex-wrap: wrap;
-
-    }
-
-    .ch-meta-tag {
-
-        display: inline-block;
-
-        padding: 2px 8px;
-
-        border-radius: 6px;
-
-        font-size: 0.68rem;
-
-        font-weight: 600;
-
-        background: rgba(37, 99, 235, 0.08);
-
-        color: #3b82f6;
-
-    }
-
-    .ch-pages { color: var(--muted); }
-
-    .ch-items { color: var(--ink); font-weight: 500; }
-
-    .ch-tag {
-
-        display: inline-flex;
-
-        align-items: center;
-
-        gap: 4px;
-
-        font-size: 0.66rem;
-
-        font-weight: 600;
-
-        padding: 2px 8px;
-
-        border-radius: 999px;
-
-    }
-
-    .ch-tag-key { background: rgba(239, 68, 68, 0.10); color: #dc2626; }
-
-    .ch-tag-normal { background: rgba(245, 158, 11, 0.10); color: #d97706; }
-
-
-
-    .lg-filter-bar {
-
-        display: flex;
-
-        gap: 8px;
-
-        margin-bottom: 0.6rem;
-
-        flex-wrap: wrap;
-
-    }
-
-    .lg-filter-btn {
-
-        padding: 4px 12px;
-
-        border-radius: 999px;
-
-        font-size: 0.72rem;
-
-        border: 1.5px solid var(--rule);
-
-        background: #fff;
-
-        cursor: pointer;
-
-        color: var(--muted);
-
-        font-weight: 500;
-
-        transition: all 0.15s;
-
-    }
-
-    .lg-filter-btn:hover {
-
-        border-color: var(--accent);
-
-        color: var(--accent);
-
-    }
-
-    .lg-filter-btn.zk-active {
-
-        background: linear-gradient(135deg, var(--accent), var(--accent2));
-
-        color: #fff;
-
-        border-color: transparent;
-
-        font-weight: 600;
-
-    }
-
-
-
-    .section-card {
-
-        background: var(--bg2);
-
-        border-radius: 10px;
-
-        padding: 0.8rem;
-
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-        margin-bottom: 0.6rem;
-
-    }
-
-    .section-card-header {
-
-        display: flex;
-
-        align-items: center;
-
-        cursor: pointer;
-
-        gap: 8px;
-
-    }
-
-    .section-card-title {
-
-        font-size: 0.74rem;
-
-        font-weight: 700;
-
-        color: var(--ink);
-
-    }
-
-    .section-card-pri-stats {
-      display: flex;
-      gap: 6px;
-      margin-left: 8px;
-    }
-    .section-card-pri-stats .pri-stat {
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: 500;
-    }
-    .section-card-pri-stats .pri-stat-key { background: #fee2e2; color: #991b1b; }
-    .section-card-pri-stats .pri-stat-normal { background: #fef3c7; color: #92400e; }
-    .section-card-pri-stats .pri-stat-survey { background: #f1f5f9; color: #475569; }
-
-    .section-card-count {
-
-        font-size: 0.66rem;
-
-        color: var(--muted);
-
-        font-weight: 500;
-
-    }
-
-    .section-card .chevron {
-
-        margin-left: auto;
-
-        font-size: 0.7rem;
-
-        color: var(--muted);
-
-        transition: transform 0.2s;
-
-    }
-
-    .section-card.open .chevron {
-
-        transform: rotate(90deg);
-
-    }
-
-    .section-card-body {
-
-        display: none;
-
-        margin-top: 0.5rem;
-
-    }
-
-    .section-card.open .section-card-body {
-
-        display: block;
-
-    }
-
-
-
-    .req-group {
-
-        margin-bottom: 12px;
-
-        padding-left: 12px;
-
-        border-left: 2px solid #e5e7eb;
-
-    }
-
-    .req-topic-title {
-
-        font-weight: 600;
-
-        color: #1e40af;
-
-        margin-bottom: 6px;
-
-        font-size: 14px;
-
-    }
-
-    .req-line {
-
-        display: flex;
-
-        gap: 8px;
-
-        margin-bottom: 4px;
-
-        align-items: flex-start;
-
-    }
-
-    .req-badge {
-
-        flex-shrink: 0;
-
-        padding: 1px 8px;
-
-        border-radius: 4px;
-
-        font-size: 12px;
-
-        font-weight: 600;
-
-        white-space: nowrap;
-
-    }
-
-    .req-content {
-
-        flex: 1;
-
-        font-size: 13px;
-
-        line-height: 1.6;
-
-        color: #374151;
-
-    }
-
-
-
-    .lg-quiz-btn {
-
-        display: block;
-
-        width: auto;
-
-        text-align: center;
-
-        padding: 0.7rem 1rem;
-
-        background: linear-gradient(135deg, var(--accent), var(--accent2));
-
-        color: #fff;
-
-        border-radius: 10px;
-
-        text-decoration: none;
-
-        font-size: 0.82rem;
-
-        font-weight: 600;
-
-        margin: 0.8rem 0 0;
-
-        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
-
-        transition: transform 0.15s, box-shadow 0.15s;
-
-    }
-
-    .lg-quiz-btn:hover {
-
-        transform: translateY(-1px);
-
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
-
-    }
-
-
-
-    /* 隐藏旧的大标题 */
-
-    .framework-chapter > h3 {
-
-        display: none;
-
-    }
-
-
-
-    /* 旧结构适配 */
-
-    .framework-chapter h4 {
-
-        display: none;
-
-    }
-
-
-    .kt-priority-key { color: #dc2626; font-weight: 700; }
-    .kt-priority-normal { color: #d97706; font-weight: 700; }
-    .kt-priority-survey { color: #64748b; font-weight: 700; }
-</style>
+<script src="../../styles/shared/theme-sync.js"></script>
+<link rel="stylesheet" href="../../styles/shared/base-vars.css">
+<link rel="stylesheet" href="../../styles/shared/base.css">
+<link rel="stylesheet" href="../../styles/shared/components.css">
+<link rel="stylesheet" href="../../styles/自考学习/知识框架.css">
 
 </head>
 
@@ -1605,16 +48,16 @@
 
 </header>
 
-<div class="chapter-tabs" id="primaryTabs"><button class="chapter-tab-btn zk-active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn" data-tab="chapter-detail"><span class="chapter-tab-text">章节精讲</span></button></div><div class="chapter-tabs" id="secondaryTabs" style="display:none;">
-      <button class="chapter-tab-btn" data-chapter="1" data-tab="chapter-1">第 1 章</button>
-      <button class="chapter-tab-btn" data-chapter="2" data-tab="chapter-2">第 2 章</button>
-      <button class="chapter-tab-btn" data-chapter="3" data-tab="chapter-3">第 3 章</button>
-      <button class="chapter-tab-btn" data-chapter="4" data-tab="chapter-4">第 4 章</button>
-      <button class="chapter-tab-btn" data-chapter="5" data-tab="chapter-5">第 5 章</button>
-      <button class="chapter-tab-btn" data-chapter="6" data-tab="chapter-6">第 6 章</button>
-      <button class="chapter-tab-btn" data-chapter="7" data-tab="chapter-7">第 7 章</button>
-      <button class="chapter-tab-btn" data-chapter="8" data-tab="chapter-8">第 8 章</button>
-      <button class="chapter-tab-btn" data-chapter="9" data-tab="chapter-9">第 9 章</button>
+<div class="chapter-tabs" id="primaryTabs"><button class="chapter-tab-btn zk-seg zk-active" data-tab="study-plan"><span class="chapter-tab-text">学习计划</span></button><button class="chapter-tab-btn zk-seg" data-tab="knowledge-overview"><span class="chapter-tab-text">知识总览</span></button><button class="chapter-tab-btn zk-seg" data-tab="chapter-detail"><span class="chapter-tab-text">章节精讲</span></button></div><div class="chapter-tabs" id="secondaryTabs">
+      <button class="chapter-tab-btn zk-seg" data-chapter="1" data-tab="chapter-1">第 1 章</button>
+      <button class="chapter-tab-btn zk-seg" data-chapter="2" data-tab="chapter-2">第 2 章</button>
+      <button class="chapter-tab-btn zk-seg" data-chapter="3" data-tab="chapter-3">第 3 章</button>
+      <button class="chapter-tab-btn zk-seg" data-chapter="4" data-tab="chapter-4">第 4 章</button>
+      <button class="chapter-tab-btn zk-seg" data-chapter="5" data-tab="chapter-5">第 5 章</button>
+      <button class="chapter-tab-btn zk-seg" data-chapter="6" data-tab="chapter-6">第 6 章</button>
+      <button class="chapter-tab-btn zk-seg" data-chapter="7" data-tab="chapter-7">第 7 章</button>
+      <button class="chapter-tab-btn zk-seg" data-chapter="8" data-tab="chapter-8">第 8 章</button>
+      <button class="chapter-tab-btn zk-seg" data-chapter="9" data-tab="chapter-9">第 9 章</button>
     </div>
 
 
@@ -1639,12 +82,12 @@
 
 <div class="ss-dashboard-stats" id="ss-dashboard-stats"></div>
 
-<button class="ss-dashboard-reset" id="ss-reset-btn">重置</button>
+<button class="ss-dashboard-reset zk-btn-ghost" id="ss-reset-btn">重置</button>
 
 </section>
 
 <div class="kf-accordion">
-    <details class="kf-week-card" style="--week-color: #8b5cf6;" open>
+    <details class="kf-week-card" open>
       <summary>第 1 周：逻辑推理 + 集合基础 <span class="kf-week-meta">第1-4章</span></summary>
       <ul>
         <li>第1天：第1章 命题与命题公式（联结词、真值表、等值演算）</li>
@@ -1654,7 +97,7 @@
         <li>第5-7天：复习第1-4章 + 做课后习题</li>
       </ul>
     </details>
-    <details class="kf-week-card" style="--week-color: #8b5cf6;">
+    <details class="kf-week-card">
       <summary>第 2 周：关系函数 + 代数图论 <span class="kf-week-meta">第5-9章</span></summary>
       <ul>
         <li>第1-2天：第5章 关系与函数（关系性质、闭包、等价/偏序关系）</li>
@@ -1671,7 +114,7 @@
       <div class="kf-tip"><span class="kf-tag kf-tag-concept">概念</span>命题/谓词逻辑概念、集合运算恒等式、群/格的定义与性质需要精准背诵</div>
       <div class="kf-tip"><span class="kf-tag kf-tag-combo">综合</span>推理理论证明题（P/T/CP规则）、关系性质综合判断是综合题高频考点</div>
       <div class="kf-tip"><span class="kf-tag kf-tag-example">实例</span>邻接矩阵运算、图的遍历实例需要动手画图练习</div>
-    </div></div><div class="chapter-tab-pane" data-tab="knowledge-overview"><div class="kf-card" style="border-left:4px solid var(--accent2);"><div class="card-label">整体定位</div><div class="card-body">离散数学共9章194页，三大板块：① 逻辑推理（第1-3章）② 集合与关系（第4-5章）③ 代数与图论（第6-9章）。建议2周集中串讲。</div></div>
+    </div></div><div class="chapter-tab-pane" data-tab="knowledge-overview"><div class="kf-card kf-accent2"><div class="card-label">整体定位</div><div class="card-body">离散数学共9章194页，三大板块：① 逻辑推理（第1-3章）② 集合与关系（第4-5章）③ 代数与图论（第6-9章）。建议2周集中串讲。</div></div>
 
 <!-- 章节掌握度网格 -->
 
@@ -1725,10 +168,10 @@
 
 
 
-<div class="kf-card collapse-card open" style="border-left:4px solid var(--accent2);">
-  <div style="display:flex;align-items:center;" onclick="toggleCollapse(this)">
+<div class="kf-card collapse-card open kf-accent2">
+  <div class="kf-header-flex" onclick="toggleCollapse(this)">
     <span class="card-label">完整目录</span>
-    <span class="chevron" style="margin-left:auto;">▶</span>
+    <span class="chevron kf-chevron-right">▶</span>
   </div>
   <div class="collapse-body">
 
@@ -1754,7 +197,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-1')" style="cursor: pointer;">第 1 章 命题与命题公式 <span class="tag tag-core">核心</span> <span class="page">P17–33</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-1')" >第 1 章 命题与命题公式 <span class="tag tag-core">核心</span> <span class="page">P17–33</span></div>
 
 <div class="toc-sections">
 
@@ -1780,7 +223,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-2')" style="cursor: pointer;">第 2 章 命题逻辑的推理理论 <span class="tag tag-core">核心</span> <span class="page">P37–51</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-2')" >第 2 章 命题逻辑的推理理论 <span class="tag tag-core">核心</span> <span class="page">P37–51</span></div>
 
 <div class="toc-sections">
 
@@ -1806,7 +249,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-3')" style="cursor: pointer;">第 3 章 谓词逻辑 <span class="tag tag-core">核心</span> <span class="page">P53–64</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-3')" >第 3 章 谓词逻辑 <span class="tag tag-core">核心</span> <span class="page">P53–64</span></div>
 
 <div class="toc-sections">
 
@@ -1828,7 +271,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-4')" style="cursor: pointer;">第 4 章 集合 <span class="tag tag-key">重点</span> <span class="page">P66–78</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-4')" >第 4 章 集合 <span class="tag tag-key">重点</span> <span class="page">P66–78</span></div>
 
 <div class="toc-sections">
 
@@ -1858,7 +301,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-5')" style="cursor: pointer;">第 5 章 关系与函数 <span class="tag tag-core">核心</span> <span class="page">P81–104</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-5')" >第 5 章 关系与函数 <span class="tag tag-core">核心</span> <span class="page">P81–104</span></div>
 
 <div class="toc-sections">
 
@@ -1898,7 +341,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-6')" style="cursor: pointer;">第 6 章 代数系统的一般概念 <span class="tag tag-key">重点</span> <span class="page">P107–122</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-6')" >第 6 章 代数系统的一般概念 <span class="tag tag-key">重点</span> <span class="page">P107–122</span></div>
 
 <div class="toc-sections">
 
@@ -1920,7 +363,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-7')" style="cursor: pointer;">第 7 章 格与布尔代数 <span class="tag tag-regular">常规</span> <span class="page">P125–135</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-7')" >第 7 章 格与布尔代数 <span class="tag tag-regular">常规</span> <span class="page">P125–135</span></div>
 
 <div class="toc-sections">
 
@@ -1946,7 +389,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-8')" style="cursor: pointer;">第 8 章 图 <span class="tag tag-key">重点</span> <span class="page">P135–144</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-8')" >第 8 章 图 <span class="tag tag-key">重点</span> <span class="page">P135–144</span></div>
 
 <div class="toc-sections">
 
@@ -1964,7 +407,7 @@
 
 <div class="toc-chapter">
 
-<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-9')" style="cursor: pointer;">第 9 章 图的应用 <span class="tag tag-key">重点</span> <span class="page">P146–160</span></div>
+<div class="toc-title toc-title-link" onclick="switchChapterTab('chapter-9')" >第 9 章 图的应用 <span class="tag tag-key">重点</span> <span class="page">P146–160</span></div>
 
 <div class="toc-sections">
 
@@ -2004,9 +447,9 @@
 
   </div>
 </div></div><div class="chapter-tab-pane" data-chapter="1" data-tab="chapter-1"><div class="framework-chapter" data-chapter="1" data-meta="中等" data-pages="P17-33">
-<h3 style="display:none;">第1章 命题与命题公式</h3>
+<h3>第1章 命题与命题公式</h3>
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(9)</span>
@@ -2026,7 +469,7 @@
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(5)</span>
@@ -2042,7 +485,7 @@
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(3)</span>
@@ -2145,7 +588,7 @@ F F F
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #10b981;">
+<div class="section-card collapse-card pri-green">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(2)</span>
@@ -2166,7 +609,7 @@ A. A B. — C. ∨ D.6</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(5)</span>
@@ -2183,11 +626,11 @@ A. A B. — C. ∨ D.6</p></div>
   </div>
 </div>
 
-<a class="lg-quiz-btn" href="练习测验.html?subject=02324&chapter=1">📝 去练习测验 →</a>
+<a class="lg-quiz-btn zk-btn-primary" href="练习测验.html?subject=02324&chapter=1">📝 去练习测验 →</a>
 </div></div>
 <div class="chapter-tab-pane" data-chapter="2" data-tab="chapter-2"><div class="framework-chapter" data-chapter="2" data-meta="难点" data-pages="P37-51">
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(9)</span>
@@ -2207,7 +650,7 @@ A. A B. — C. ∨ D.6</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(5)</span>
@@ -2223,7 +666,7 @@ A. A B. — C. ∨ D.6</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(0)</span>
@@ -2452,7 +895,7 @@ o（¬PA¬QA（RV¬R）） ∨ （¬PA（QV'Q） A¬K） V（PAQAR）（拼上�
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(0)</span>
@@ -2473,7 +916,7 @@ A. P NQ B. P ¬Q C. ¬P AQ D.¬PJQ</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(6)</span>
@@ -2490,11 +933,11 @@ A. P NQ B. P ¬Q C. ¬P AQ D.¬PJQ</p></div>
 </ul>
 </div>
   </div>
-<a href="练习测验.html?subject=02324&chapter=2" class="lg-quiz-btn">📝 去练习测验 →</a>
+<a href="练习测验.html?subject=02324&chapter=2" class="lg-quiz-btn zk-btn-primary">📝 去练习测验 →</a>
 </div></div>
 <div class="chapter-tab-pane" data-chapter="3" data-tab="chapter-3"><div class="framework-chapter" data-chapter="3" data-meta="难点" data-pages="P53-64">
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(10)</span>
@@ -2515,7 +958,7 @@ A. P NQ B. P ¬Q C. ¬P AQ D.¬PJQ</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(6)</span>
@@ -2532,7 +975,7 @@ A. P NQ B. P ¬Q C. ¬P AQ D.¬PJQ</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(0)</span>
@@ -2623,7 +1066,7 @@ R⑺)。</p>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(0)</span>
@@ -2646,7 +1089,7 @@ C. R(a) VR(6) AR(c) D. R(a) Y R(b) ' R(c)</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(6)</span>
@@ -2663,11 +1106,11 @@ C. R(a) VR(6) AR(c) D. R(a) Y R(b) ' R(c)</p></div>
 </ul>
 </div>
   </div>
-<a href="练习测验.html?subject=02324&chapter=3" class="lg-quiz-btn">📝 去练习测验 →</a>
+<a href="练习测验.html?subject=02324&chapter=3" class="lg-quiz-btn zk-btn-primary">📝 去练习测验 →</a>
 </div></div>
 <div class="chapter-tab-pane" data-chapter="4" data-tab="chapter-4"><div class="framework-chapter" data-chapter="4" data-meta="中等" data-pages="P66-78">
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(8)</span>
@@ -2686,7 +1129,7 @@ C. R(a) VR(6) AR(c) D. R(a) Y R(b) ' R(c)</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(6)</span>
@@ -2703,7 +1146,7 @@ C. R(a) VR(6) AR(c) D. R(a) Y R(b) ' R(c)</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(0)</span>
@@ -2761,7 +1204,7 @@ Q 有理数集 R 实数集 Z + 正整数集 Q + 正有理数集</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(0)</span>
@@ -2782,7 +1225,7 @@ C. D. {2,⑵}</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(6)</span>
@@ -2799,11 +1242,11 @@ C. D. {2,⑵}</p></div>
 </ul>
 </div>
   </div>
-<a href="练习测验.html?subject=02324&chapter=4" class="lg-quiz-btn">📝 去练习测验 →</a>
+<a href="练习测验.html?subject=02324&chapter=4" class="lg-quiz-btn zk-btn-primary">📝 去练习测验 →</a>
 </div></div>
 <div class="chapter-tab-pane" data-chapter="5" data-tab="chapter-5"><div class="framework-chapter" data-chapter="5" data-meta="难点" data-pages="P81-104">
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(11)</span>
@@ -2825,7 +1268,7 @@ C. D. {2,⑵}</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(6)</span>
@@ -2842,7 +1285,7 @@ C. D. {2,⑵}</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(0)</span>
@@ -2890,7 +1333,7 @@ IB!| dom/'= \a,b,cfd\ , ranf= 11,3,4) o</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(0)</span>
@@ -2916,7 +1359,7 @@ D. R = ( <1,1>,<1,2>,<3,1>,<3,2>,<3,3>,<4,1>,<4,3>}</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(6)</span>
@@ -2933,11 +1376,11 @@ D. R = ( <1,1>,<1,2>,<3,1>,<3,2>,<3,3>,<4,1>,<4,3>}</p></div>
 </ul>
 </div>
   </div>
-<a href="练习测验.html?subject=02324&chapter=5" class="lg-quiz-btn">📝 去练习测验 →</a>
+<a href="练习测验.html?subject=02324&chapter=5" class="lg-quiz-btn zk-btn-primary">📝 去练习测验 →</a>
 </div></div>
 <div class="chapter-tab-pane" data-chapter="6" data-tab="chapter-6"><div class="framework-chapter" data-chapter="6" data-meta="中等" data-pages="P107-122">
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(11)</span>
@@ -2959,7 +1402,7 @@ D. R = ( <1,1>,<1,2>,<3,1>,<3,2>,<3,3>,<4,1>,<4,3>}</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(7)</span>
@@ -2977,7 +1420,7 @@ D. R = ( <1,1>,<1,2>,<3,1>,<3,2>,<3,3>,<4,1>,<4,3>}</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(0)</span>
@@ -3033,7 +1476,7 @@ HI 0 11,2} ⑵ _________m_________ _________12}_________<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(0)</span>
@@ -3054,7 +1497,7 @@ A. x * y = max(x,y) B. x * y = min(x ,y)</p>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(6)</span>
@@ -3071,11 +1514,11 @@ A. x * y = max(x,y) B. x * y = min(x ,y)</p>
 </ul>
 </div>
   </div>
-<a href="练习测验.html?subject=02324&chapter=6" class="lg-quiz-btn">📝 去练习测验 →</a>
+<a href="练习测验.html?subject=02324&chapter=6" class="lg-quiz-btn zk-btn-primary">📝 去练习测验 →</a>
 </div></div>
 <div class="chapter-tab-pane" data-chapter="7" data-tab="chapter-7"><div class="framework-chapter" data-chapter="7" data-meta="中等" data-pages="P125-135">
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(10)</span>
@@ -3096,7 +1539,7 @@ A. x * y = max(x,y) B. x * y = min(x ,y)</p>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(5)</span>
@@ -3112,7 +1555,7 @@ A. x * y = max(x,y) B. x * y = min(x ,y)</p>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(0)</span>
@@ -3218,7 +1661,7 @@ a*c = (a*6) *c = a* (6*c) = a * b = a,即 aWc,故 W 是传递的。<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(0)</span>
@@ -3239,7 +1682,7 @@ C. aV(aA6)Wa D. a\] {a l\b) ＞ a</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(5)</span>
@@ -3255,11 +1698,11 @@ C. aV(aA6)Wa D. a\] {a l\b) ＞ a</p></div>
 </ul>
 </div>
   </div>
-<a href="练习测验.html?subject=02324&chapter=7" class="lg-quiz-btn">📝 去练习测验 →</a>
+<a href="练习测验.html?subject=02324&chapter=7" class="lg-quiz-btn zk-btn-primary">📝 去练习测验 →</a>
 </div></div>
 <div class="chapter-tab-pane" data-chapter="8" data-tab="chapter-8"><div class="framework-chapter" data-chapter="8" data-meta="中等" data-pages="P135-144">
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(10)</span>
@@ -3280,7 +1723,7 @@ C. aV(aA6)Wa D. a\] {a l\b) ＞ a</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(6)</span>
@@ -3297,7 +1740,7 @@ C. aV(aA6)Wa D. a\] {a l\b) ＞ a</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(0)</span>
@@ -3390,7 +1833,7 @@ A( G) = max j deg(。)I v eV),<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(0)</span>
@@ -3412,7 +1855,7 @@ A. 1 B. 2 C. 3 D. 4</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(6)</span>
@@ -3429,11 +1872,11 @@ A. 1 B. 2 C. 3 D. 4</p></div>
 </ul>
 </div>
   </div>
-<a href="练习测验.html?subject=02324&chapter=8" class="lg-quiz-btn">📝 去练习测验 →</a>
+<a href="练习测验.html?subject=02324&chapter=8" class="lg-quiz-btn zk-btn-primary">📝 去练习测验 →</a>
 </div></div>
 <div class="chapter-tab-pane" data-chapter="9" data-tab="chapter-9"><div class="framework-chapter" data-chapter="9" data-meta="中等" data-pages="P146-160">
 
-<div class="section-card collapse-card open" style="border-left:4px solid #ef4444;">
+<div class="section-card collapse-card open pri-key">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">核心概念</span>
     <span class="section-card-count">(9)</span>
@@ -3453,7 +1896,7 @@ A. 1 B. 2 C. 3 D. 4</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #f59e0b;">
+<div class="section-card collapse-card pri-normal">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">常见题型</span>
     <span class="section-card-count">(6)</span>
@@ -3470,7 +1913,7 @@ A. 1 B. 2 C. 3 D. 4</p></div>
 </ul>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">典型例题</span>
     <span class="section-card-count">(0)</span>
@@ -3560,7 +2003,7 @@ g ∨ ∨<br/>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">同步练习</span>
     <span class="section-card-count">(0)</span>
@@ -3583,7 +2026,7 @@ D.连通但删去一条边则不连通的图</p></div>
 </div>
   </div>
 </div>
-<div class="section-card collapse-card" style="border-left:4px solid #3b82f6;">
+<div class="section-card collapse-card pri-survey">
   <div class="section-card-header" onclick="toggleCollapse(this)">
     <span class="section-card-title">易错点</span>
     <span class="section-card-count">(7)</span>
@@ -3601,7 +2044,7 @@ D.连通但删去一条边则不连通的图</p></div>
 </ul>
 </div></div>
   </div>
-<a href="练习测验.html?subject=02324&chapter=9" class="lg-quiz-btn">📝 去练习测验 →</a>
+<a href="练习测验.html?subject=02324&chapter=9" class="lg-quiz-btn zk-btn-primary">📝 去练习测验 →</a>
 </div></div>
 </article>
 
@@ -3846,7 +2289,7 @@ D.连通但删去一条边则不连通的图</p></div>
             var tip = document.createElement("div");
             tip.className = "ss-mastery-tip";
             tip.textContent = "章节状态由知识点完成度自动判定：≥50%掌握 · 40-49%不熟 · 20-39%学习中 · <20%待学习";
-            tip.style.cssText = "position:absolute;z-index:99;background:#1e293b;color:#fff;padding:6px 10px;border-radius:6px;font-size:12px;max-width:280px;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.2);pointer-events:none;";
+            /* tooltip样式由CSS类 .ss-mastery-tip 提供 */
             var rect = btn.getBoundingClientRect();
             tip.style.top = (rect.top - 8) + "px";
             tip.style.left = rect.left + "px";
@@ -3870,7 +2313,7 @@ D.连通但删去一条边则不连通的图</p></div>
 
         count.id = "ss-count-" + chapterNum;
 
-        count.style.display = "none";
+        count.classList.add("zk-hidden");
 
         controls.appendChild(count);
 
@@ -4056,7 +2499,7 @@ D.连通但删去一条边则不连通的图</p></div>
 
         var pct = totalChapters ? Math.round((masteredCount / totalChapters) * 100) : 0;
 
-        document.getElementById("ss-dashboard-fill").style.width = pct + "%";
+        document.getElementById("ss-dashboard-fill").style.setProperty("--fill-pct", pct + "%");
 
 
 
@@ -4261,7 +2704,7 @@ D.连通但删去一条边则不连通的图</p></div>
 
           tabPanes.forEach(function(pane) { pane.classList.remove('zk-active'); });
 
-          secondaryBar.style.display = "flex";
+          secondaryBar.classList.add("zk-show");
 
           var savedCh = null;
 
@@ -4287,7 +2730,7 @@ D.连通但删去一条边则不连通的图</p></div>
 
           });
 
-          secondaryBar.style.display = "none";
+          secondaryBar.classList.remove("zk-show");
 
           secondaryBtns.forEach(function(btn) { btn.classList.remove('zk-active'); });
 
@@ -4408,7 +2851,7 @@ D.连通但删去一条边则不连通的图</p></div>
 
         if (!document.getElementById("secondaryTabs")) return;
 
-        if (secondaryBar.style.display === "none") {
+        if (!secondaryBar.classList.contains("zk-show")) {
 
           switchTab("chapter-detail");
 
@@ -4705,7 +3148,7 @@ var LG_SUBJECT_CODE = SS_SUBJECT;
 
             '<span class="ch-items">' + totalItems + '/' + (chData.totalCount || totalItems) + ' 知识点</span>' +
 
-            '<span style="margin-left:auto;display:flex;gap:6px;">' +
+            '<span class="kf-flex-right">' +
 
             '<span class="ch-tag ch-tag-key">🔴 重点 ' + (counts['重点']||0) + '</span>' +
 
@@ -4725,13 +3168,13 @@ var LG_SUBJECT_CODE = SS_SUBJECT;
 
         filterBar.innerHTML =
 
-            '<button class="lg-filter-btn zk-active" data-filter="all">全部 ' + totalCount + '</button>' +
+            '<button class="lg-filter-btn zk-seg zk-active" data-filter="all">全部 ' + totalCount + '</button>' +
 
-            '<button class="lg-filter-btn" data-filter="重点">🔴 重点 ' + (counts['重点']||0) + '</button>' +
+            '<button class="lg-filter-btn zk-seg" data-filter="重点">🔴 重点 ' + (counts['重点']||0) + '</button>' +
 
-            '<button class="lg-filter-btn" data-filter="一般">🟡 一般 ' + (counts['一般']||0) + '</button>' +
+            '<button class="lg-filter-btn zk-seg" data-filter="一般">🟡 一般 ' + (counts['一般']||0) + '</button>' +
 
-            '<button class="lg-filter-btn" data-filter="了解">🟢 了解 ' + (counts['了解']||0) + '</button>';
+            '<button class="lg-filter-btn zk-seg" data-filter="了解">🟢 了解 ' + (counts['了解']||0) + '</button>';
 
         chapterEl.insertBefore(filterBar, chapterEl.children[1]);
 
@@ -4753,11 +3196,11 @@ var LG_SUBJECT_CODE = SS_SUBJECT;
 
                     if (filter === 'all' || item.dataset.priority === filter) {
 
-                        item.style.display = '';
+                        item.classList.remove("zk-hidden");
 
                     } else {
 
-                        item.style.display = 'none';
+                        item.classList.add("zk-hidden");
 
                     }
 
@@ -5046,10 +3489,11 @@ function toggleCollapse(header) {
     var type = sec.type;
     var items = sec.items || [];
     var color = '#3b82f6';
+    var cls = 'pri-survey';
     var open = (type === '核心概念' || type === '考核知识点与考核要求') ? ' open' : '';
-    if (type === '核心概念') color = '#ef4444';
-    if (type === '常见题型') color = '#f59e0b';
-    if (type === '考核知识点与考核要求') color = '#8b5cf6';
+    if (type === '核心概念') { color = '#ef4444'; cls = 'pri-key'; }
+    if (type === '常见题型') { color = '#f59e0b'; cls = 'pri-normal'; }
+    if (type === '考核知识点与考核要求') { color = '#8b5cf6'; cls = 'pri-accent2'; }
 
     var body = '';
     if (type === '核心概念') {
@@ -5079,11 +3523,11 @@ function toggleCollapse(header) {
           '<div class="example-statement"><p>' + esc(it.statement) + '</p></div>' + sol + '\n</div>';
       }).join('\n');
     } else if (type === '考核知识点与考核要求') {
-      var lvColors = {'识记': {'bg':'#dbeafe','fg':'#1e40af'}, '领会': {'bg':'#fef3c7','fg':'#92400e'}, '简单应用': {'bg':'#dcfce7','fg':'#166534'}};
+      var lvCls = {'识记': 'lv-recall', '领会': 'lv-comprehend', '简单应用': 'lv-apply'};
       body = items.map(function(it) {
         var lvls = (it.levels || []).map(function(r) {
-          var c = lvColors[r.level] || {'bg':'#e5e7eb','fg':'#374151'};
-          return '<div class="req-line"><span class="req-badge" style="background:' + c.bg + ';color:' + c.fg + '">' + esc(r.level) + '</span><span class="req-content">' + esc(r.content) + '</span></div>';
+          var cls = lvCls[r.level] || '';
+          return '<div class="req-line"><span class="req-badge ' + cls + '">' + esc(r.level) + '</span><span class="req-content">' + esc(r.content) + '</span></div>';
         }).join('');
         return '<div class="req-group"><div class="req-topic-title">' + esc(it.topic) + '</div>' + lvls + '</div>';
       }).join('');
@@ -5110,7 +3554,7 @@ function toggleCollapse(header) {
     } else {
       countHtml = '<span class="section-card-count">(' + items.length + ')</span>';
     }
-    return '<div class="section-card collapse-card' + open + '" style="border-left:4px solid ' + color + ';">\n' +
+    return '<div class="section-card collapse-card' + open + ' ' + cls + '">\n' +
       '  <div class="section-card-header" onclick="toggleCollapse(this)">\n' +
       '    <span class="section-card-title">' + esc(type) + '</span>\n' +
       countHtml +
@@ -5124,7 +3568,7 @@ function toggleCollapse(header) {
     var secTabs = document.getElementById('secondaryTabs');
     if (secTabs && fw.chapters && fw.chapters.length) {
       secTabs.innerHTML = fw.chapters.map(function(ch) {
-        return '<button class="chapter-tab-btn" data-chapter="' + ch.id + '" data-tab="chapter-' + ch.id + '">第 ' + ch.id + ' 章</button>';
+        return '<button class="chapter-tab-btn zk-seg" data-chapter="' + ch.id + '" data-tab="chapter-' + ch.id + '">第 ' + ch.id + ' 章</button>';
       }).join('\n');
     }
     // 清空并重建所有章节 pane（不再依赖静态HTML兜底）
@@ -5140,7 +3584,7 @@ function toggleCollapse(header) {
       pane.dataset.tab = 'chapter-' + ch.id;
       var html = '<div class="framework-chapter" data-chapter="' + ch.id + '" data-meta="' +
         esc(ch.difficulty) + '" data-pages="' + esc(ch.pages) + '">\n' +
-        '<h3 style="display:none;">' + esc(ch.name) + '</h3>\n' +
+        '<h3>' + esc(ch.name) + '</h3>\n' +
         (ch.sections || []).map(renderSectionCard).join('\n') +
         '\n</div>';
       pane.innerHTML = html;
@@ -5198,7 +3642,7 @@ function toggleCollapse(header) {
           return secHtml + '\n' + subs;
         }).join('\n');
         return '<div class="toc-chapter">\n' +
-          '<div class="toc-title toc-title-link" onclick="switchChapterTab(\'chapter-' + ch.id + '\')" style="cursor:pointer;">' +
+          '<div class="toc-title toc-title-link" onclick="switchChapterTab(\'chapter-' + ch.id + '\')">' +
           esc(ch.name) + ' <span class="tag ' + tagCls + '">' + esc(ch.priority || '重点') + '</span> ' +
           '<span class="page">' + esc(ch.pages) + '</span></div>\n' +
           '<div class="toc-sections">\n' + secs + '\n</div>\n</div>';
@@ -5239,7 +3683,7 @@ function toggleCollapse(header) {
       });
       // 隐藏学习计划 tab 里的旧 tips 卡片（避免重复）
       var oldTips = document.querySelector('[data-tab="study-plan"] .kf-tips-card');
-      if (oldTips) oldTips.style.display = 'none';
+      if (oldTips) oldTips.classList.add("zk-hidden");
     }
   }
 
@@ -5266,7 +3710,7 @@ function toggleCollapse(header) {
     phases.forEach(function(ph) {
       var pWeeks = weeks.filter(function(w) { return (w.phase || 0) === ph.phase; });
       if (!pWeeks.length) return;
-      html += '<details class="kf-week-card" style="--week-color:#8b5cf6;"' + (ph.phase === 0 ? ' open' : '') + '>';
+      html += '<details class="kf-week-card"' + (ph.phase === 0 ? ' open' : '') + '>';
       html += '<summary>' + esc(ph.name) + ' <span class="kf-week-meta">' + esc(extractWeekRange(pWeeks)) + '</span></summary><ul>';
       pWeeks.forEach(function(w) {
         var subs = w.goals.filter(function(g) { return g.subject === PLAN_SUBJECT; });

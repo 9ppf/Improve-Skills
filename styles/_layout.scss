@@ -7,7 +7,7 @@
   left: 0;
   right: 0;
   height: 54px;
-  background: var(--surface);
+  background: linear-gradient(180deg, var(--sidebar), var(--bg));
   border-bottom: 1px solid var(--rule);
   display: flex;
   align-items: center;
@@ -64,7 +64,7 @@
 /* 侧边栏 */
 .sidebar {
   width: 300px;
-  background: var(--sidebar);
+  background: linear-gradient(180deg, var(--sidebar), var(--bg));
   border-right: 1px solid var(--rule);
   display: flex;
   flex-direction: column;
@@ -97,7 +97,7 @@
   padding: 9px 11px 9px 34px;
   border: 2px solid var(--rule);
   border-radius: var(--radius);
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.4);
   font-size: 0.88rem;
   color: var(--ink);
   outline: none;
@@ -106,7 +106,7 @@
 
 .search input:focus {
   border-color: var(--accent-cyan);
-  box-shadow: 0 0 0 4px rgba(56, 249, 215, 0.12);
+  box-shadow: 0 0 0 4px rgba($accent-cyan, 0.12);
 }
 
 .search-icon {
@@ -125,7 +125,7 @@
   border-top: 1px solid var(--rule);
   display: flex;
   gap: var(--space-sm);
-  background: var(--surface);
+  background: transparent;
 }
 
 /* 主内容区 */

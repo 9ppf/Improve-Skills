@@ -60,26 +60,26 @@
   border: 1px solid var(--rule, #e2e8f0);
 }
 .pomo-float.idle {
-  background: var(--surface, #fff);
-  color: var(--muted, #64748b);
+  background: var(--surface);
+  color: var(--muted);
 }
 .pomo-float.idle:hover {
-  border-color: #2563eb;
-  color: #2563eb;
+  border-color: var(--accent);
+  color: var(--accent);
   transform: translateY(-2px);
 }
 .pomo-float.active {
-  background: linear-gradient(135deg, #2563eb, #8b5cf6);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #fff;
   border-color: transparent;
   animation: pomoPulse 2s ease-in-out infinite;
 }
 .pomo-float.active.break {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, var(--green), var(--accent-green));
 }
 @keyframes pomoPulse {
-  0%, 100% { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-  50% { box-shadow: 0 4px 20px rgba(37, 99, 235, 0.55); }
+  0%, 100% { box-shadow: 0 4px 12px var(--shadow-sm); }
+  50% { box-shadow: 0 4px 20px var(--shadow); }
 }
 .pomo-float-icon { font-size: 1.05rem; line-height: 1; }
 .pomo-float-time { font-family: "JetBrains Mono", Consolas, monospace; font-size: 0.9rem; }
@@ -88,7 +88,8 @@
 /* 问AI常驻按钮 */
 .ask-ai-bar {
   padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--rule, #e2e8f0);
+  background: var(--sidebar);
+  border-bottom: 1px solid var(--rule);
 }
 .ask-ai-btn {
   width: 100%;
@@ -104,25 +105,24 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s;
-  background: linear-gradient(135deg, #2563eb, #8b5cf6);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #fff;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  box-shadow: var(--shadow-sm);
 }
 .ask-ai-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+  filter: brightness(1.1);
+  box-shadow: var(--shadow);
 }
 .ask-ai-btn.offline {
-  background: var(--surface, #fff);
-  color: var(--muted, #64748b);
-  border: 1px solid var(--rule, #e2e8f0);
-  box-shadow: none;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 .ask-ai-dot {
   width: 6px; height: 6px; border-radius: 50%;
-  background: #4ade80; flex-shrink: 0;
+  background: var(--accent-green); flex-shrink: 0;
 }
-.ask-ai-dot.offline { background: #cbd5e1; }
+.ask-ai-dot.offline { background: var(--light); }
 
 /* AI聊天弹窗 */
 .ai-modal-overlay {
@@ -166,8 +166,8 @@
   border-radius: 10px; max-width: 85%; word-break: break-word;
 }
 .ai-modal-msg.ai {
-  background: var(--primary-soft, #dbeafe);
-  color: var(--primary-text, #1e40af);
+  background: var(--blue-soft);
+  color: var(--blue-text);
   align-self: flex-start;
 }
 .ai-modal-msg.user {
@@ -192,14 +192,14 @@
   font-family: inherit; background: var(--surface, #fff);
   color: var(--ink, #1e293b);
 }
-.ai-modal-footer textarea:focus { outline: none; border-color: #2563eb; }
+.ai-modal-footer textarea:focus { outline: none; border-color: var(--accent); }
 .ai-modal-send {
-  background: #2563eb; color: #fff; border: none;
+  background: var(--accent); color: #fff; border: none;
   border-radius: 10px; padding: 0 18px; font-size: 0.85rem;
   font-weight: 600; cursor: pointer;
 }
-.ai-modal-send:hover { background: #1d4ed8; }
-.ai-modal-send:disabled { background: #cbd5e1; cursor: not-allowed; }
+.ai-modal-send:hover { filter: brightness(1.1); }
+.ai-modal-send:disabled { background: var(--light); cursor: not-allowed; }
   </style>
 {{ theme_script }}
 </head>

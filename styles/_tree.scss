@@ -15,9 +15,9 @@
   transition: background-color 0.15s var(--ease);
 }
 
-.tree-row:hover { background: rgba(56, 189, 248, 0.07); }
-.tree-row:focus-within { background: rgba(56, 189, 248, 0.1); }
-.tree-row.header:hover { background: rgba(56, 189, 248, 0.09); }
+.tree-row:hover { background: var(--blue-soft); }
+.tree-row:focus-within { background: var(--blue-soft); }
+.tree-row.header:hover { background: var(--blue-soft); }
 
 .row-main {
   flex: 1;

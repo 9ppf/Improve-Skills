@@ -5,589 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>核心概念背诵卡</title>
-  <link rel="stylesheet" href="../shared/base-vars.css">
-<style>
-    
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
-    body {
-      font-family: var(--font);
-      color: var(--ink);
-      background: var(--bg);
-      line-height: 1.75;
-      padding: 2rem 1rem;
-    }
-    article.recite-page {
-      max-width: var(--max);
-      margin: 0 auto;
-    }
-
-    .recite-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .recite-header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .recite-header p {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .recite-tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .recite-tab {
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      border: 1px solid var(--rule);
-      background: var(--bg2);
-      cursor: pointer;
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--muted);
-      transition: all 0.2s;
-    }
-    .recite-tab:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .recite-tab.zk-active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-
-    .recite-section {
-      background: var(--bg2);
-      border: 1px solid rgba(37, 99, 235, 0.10);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
-    }
-    .recite-section h2 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--rule);
-    }
-
-    .recite-filter {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .recite-filter select {
-      padding: 0.4rem 0.8rem;
-      border-radius: 8px;
-      border: 1px solid var(--rule);
-      font-size: 0.85rem;
-      background: #fff;
-      color: var(--ink);
-      cursor: pointer;
-    }
-    .card-type-filter {
-      display: flex;
-      gap: 0;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--rule);
-    }
-    .card-type-btn {
-      padding: 0.4rem 0.9rem;
-      font-size: 0.82rem;
-      border: none;
-      background: #fff;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.2s;
-      border-right: 1px solid var(--rule);
-    }
-    .card-type-btn:last-child { border-right: none; }
-    .card-type-btn:hover { background: #f1f5f9; }
-    .card-type-btn.zk-active {
-      background: var(--accent);
-      color: #fff;
-    }
-    .card-type-btn.memory.zk-active { background: var(--accent); }
-    .card-type-btn.calc.zk-active { background: var(--accent2); }
-
-    .recite-stats {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-    .recite-stat {
-      flex: 1;
-      min-width: 80px;
-      text-align: center;
-      padding: 0.6rem;
-      border-radius: 12px;
-      background: rgba(37, 99, 235, 0.05);
-    }
-    .recite-stat-num {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-    .recite-stat-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-    .recite-stat-known .recite-stat-num { color: var(--green); }
-    .recite-stat-unsure .recite-stat-num { color: var(--amber); }
-    .recite-stat-unknown .recite-stat-num { color: var(--coral); }
-
-    .recite-card-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-    }
-
-    .recite-card {
-      perspective: 1000px;
-      cursor: pointer;
-    }
-    .recite-card-inner {
-      position: relative;
-      width: 100%;
-      transition: transform 0.5s, min-height 0.3s;
-      transform-style: preserve-3d;
-    }
-    .recite-card.flipped .recite-card-inner {
-      transform: rotateY(180deg);
-    }
-    .recite-card-front {
-      position: relative;
-      top: 0;
-      left: 0;
-      width: 100%;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      border-radius: 12px;
-      padding: 1.2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      background: #fff;
-      border: 2px solid var(--rule);
-    }
-    .recite-card-back {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      border-radius: 12px;
-      padding: 1.2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(139, 92, 246, 0.08));
-      background: #fff;
-      border: 2px solid var(--rule);
-    }
-    .recite-card-back {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(139, 92, 246, 0.08));
-      border: 2px solid var(--accent);
-      transform: rotateY(180deg);
-      pointer-events: none;
-    }
-    .recite-card.flipped .recite-card-front {
-      pointer-events: none;
-    }
-    .recite-card.flipped .recite-card-back {
-      pointer-events: auto;
-    }
-    .recite-card-label {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-bottom: 0.4rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .recite-card-question {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--ink);
-    }
-    .recite-card-answer {
-      font-size: 0.9rem;
-      color: var(--ink);
-      line-height: 1.7;
-      white-space: pre-line;
-    }
-    .recite-card-section {
-      margin-bottom: 0.6rem;
-    }
-    .recite-section-label {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.15rem 0.5rem;
-      border-radius: 0.3rem;
-      margin-bottom: 0.2rem;
-    }
-    .def-label {
-      background: rgba(37, 99, 235, 0.12);
-      color: #2563eb;
-    }
-    .ex-label {
-      background: rgba(139, 92, 246, 0.12);
-      color: #7c3aed;
-    }
-    .exam-label {
-      background: rgba(234, 88, 12, 0.12);
-      color: #ea580c;
-    }
-    .recite-section-content {
-      font-size: 0.88rem;
-      color: var(--ink);
-      line-height: 1.65;
-      white-space: pre-line;
-      padding-left: 0.1rem;
-    }
-    .recite-ex-image {
-      margin-top: 0.6rem;
-      text-align: center;
-    }
-    .recite-ex-image img {
-      max-width: 100%;
-      max-height: 280px;
-      border-radius: 8px;
-      border: 1px solid var(--rule);
-      object-fit: contain;
-    }
-    .recite-card-chapter {
-      font-size: 0.72rem;
-      color: var(--accent);
-      margin-bottom: 0.3rem;
-      font-weight: 600;
-    }
-    .recite-card-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .recite-card-btn {
-      flex: 1;
-      padding: 0.35rem;
-      border-radius: 8px;
-      border: 1px solid var(--rule);
-      background: #fff;
-      font-size: 0.8rem;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-    }
-    .recite-card-btn.known { color: var(--green); border-color: var(--green); }
-    .recite-card-btn.unsure { color: var(--amber); border-color: var(--amber); }
-    .recite-card-btn.unknown { color: var(--coral); border-color: var(--coral); }
-    .recite-card-btn:hover { opacity: 0.8; }
-    .recite-card-btn.zk-active { background: currentColor; }
-    .recite-card-btn.zk-active span { color: #fff; }
-
-    .recite-mastery {
-      display: inline-block;
-      font-size: 0.7rem;
-      padding: 0.1rem 0.4rem;
-      border-radius: 999px;
-      font-weight: 600;
-      margin-left: auto;
-    }
-    .recite-mastery.known { background: rgba(5, 150, 105, 0.10); color: var(--green); }
-    .recite-mastery.unsure { background: rgba(217, 119, 6, 0.10); color: var(--amber); }
-    .recite-mastery.unknown { background: rgba(225, 29, 72, 0.10); color: var(--coral); }
-
-    /* 计算卡专属样式 */
-    .calc-card-input {
-      width: 100%;
-      padding: 0.5rem 0.6rem;
-      border: 1.5px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-family: inherit;
-      margin-top: 0.6rem;
-      box-sizing: border-box;
-      background: var(--bg-soft);
-    }
-    .calc-card-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: #fff;
-    }
-    .calc-card-submit {
-      width: 100%;
-      padding: 0.45rem;
-      margin-top: 0.4rem;
-      border: none;
-      border-radius: 6px;
-      background: var(--primary);
-      color: #fff;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .calc-card-submit:hover { opacity: 0.85; }
-    .calc-card-feedback {
-      margin-top: 0.5rem;
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      display: none;
-    }
-    .calc-card-feedback.zk-show { display: block; }
-    .calc-card-feedback.correct {
-      background: rgba(5, 150, 105, 0.10);
-      color: var(--green);
-    }
-    .calc-card-feedback.wrong {
-      background: rgba(225, 29, 72, 0.10);
-      color: var(--coral);
-    }
-    .calc-card-symbol-toggle {
-      font-size: 0.7rem;
-      color: var(--muted);
-      cursor: pointer;
-      margin-top: 0.3rem;
-      display: inline-block;
-    }
-    .calc-card-symbol-palette {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.2rem;
-      margin-top: 0.3rem;
-      padding: 0.3rem;
-      background: var(--bg-soft);
-      border-radius: 4px;
-    }
-    .calc-card-symbol-btn {
-      padding: 0.15rem 0.4rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: #fff;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .calc-card-symbol-btn:hover { background: var(--bg-soft); }
-    .calc-card-type-badge {
-      display: inline-block;
-      font-size: 0.65rem;
-      padding: 0.1rem 0.4rem;
-      border-radius: 4px;
-      background: rgba(139, 92, 246, 0.12);
-      color: #7c3aed;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-    /* 计算卡视觉强化 */
-    .recite-card.calc .recite-card-front {
-      border: 2px solid var(--accent2);
-      border-top: 6px solid var(--accent2);
-      background: linear-gradient(180deg, rgba(139, 92, 246, 0.06) 0%, #fff 30%);
-    }
-    .recite-card.calc .recite-card-back {
-      border: 2px solid var(--accent2);
-      border-top: 6px solid var(--accent2);
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(59, 130, 246, 0.06));
-    }
-    .calc-card-front-icon {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.7rem;
-      font-size: 1.5rem;
-      opacity: 0.15;
-    }
-    .calc-formula {
-      background: #f0fdf4;
-      border-left: 3px solid var(--green);
-      padding: 0.5rem 0.7rem;
-      border-radius: 4px;
-      font-size: 0.82rem;
-      margin-bottom: 0.5rem;
-    }
-    .calc-steps {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 0.5rem 0;
-    }
-    .calc-steps li {
-      padding: 0.3rem 0;
-      border-bottom: 1px dashed var(--border);
-      font-size: 0.8rem;
-      line-height: 1.5;
-    }
-    .calc-steps li:last-child { border-bottom: none; }
-    .calc-answer-final {
-      background: #fef3c7;
-      padding: 0.4rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      text-align: center;
-      color: #92400e;
-    }
-
-    .recite-add-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    .recite-add-form input,
-    .recite-add-form select,
-    .recite-add-form textarea {
-      padding: 0.5rem 0.7rem;
-      border-radius: 8px;
-      border: 1px solid var(--rule);
-      font-size: 0.85rem;
-      font-family: var(--font);
-      background: #fff;
-      color: var(--ink);
-    }
-    .recite-add-form textarea {
-      grid-column: 1 / -1;
-      min-height: 60px;
-      resize: vertical;
-    }
-    .recite-add-form button {
-      grid-column: 1 / -1;
-      padding: 0.6rem;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .recite-add-form button:hover { opacity: 0.9; }
-
-    .recite-empty {
-      text-align: center;
-      padding: 2rem;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .recite-view-tabs {
-      display: flex;
-      gap: 0.6rem;
-      margin-bottom: 1.5rem;
-    }
-    .recite-view-btn {
-      padding: 0.5rem 1.2rem;
-      border: 2px solid var(--rule);
-      border-radius: 8px;
-      background: #fff;
-      color: var(--muted);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .recite-view-btn.zk-active {
-      background: linear-gradient(135deg, #2563eb, #8b5cf6);
-      border-color: #2563eb;
-      color: #fff;
-    }
-    .recite-hint {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-    }
-
-    .recite-plan-section {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(139, 92, 246, 0.06));
-      border: 1px solid rgba(37, 99, 235, 0.2);
-      border-radius: 12px;
-      padding: 1.2rem;
-      margin-bottom: 1.5rem;
-    }
-    .recite-plan-section h2 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #2563eb;
-      margin-bottom: 0.8rem;
-      padding-left: 0.6rem;
-      border-left: 3px solid #2563eb;
-    }
-    .recite-progress-bar {
-      width: 100%;
-      height: 8px;
-      background: #e5e7eb;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 0.5rem;
-    }
-    .recite-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #2563eb, #8b5cf6);
-      border-radius: 4px;
-      transition: width 0.3s;
-    }
-    .recite-progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-bottom: 0.8rem;
-    }
-    .recite-plan-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .recite-plan-list li {
-      padding: 0.5rem 0.7rem;
-      margin-bottom: 0.4rem;
-      background: #fff;
-      border-radius: 6px;
-      border: 1px solid var(--rule);
-      font-size: 0.88rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .recite-plan-list li:hover {
-      border-color: #2563eb;
-      background: rgba(37, 99, 235, 0.04);
-    }
-    .recite-plan-list li .pl-chapter {
-      color: var(--muted);
-      font-size: 0.78rem;
-      margin-right: 0.4rem;
-    }
-
-    @media (max-width: 640px) {
-      body { padding: 1.5rem 0.9rem; }
-      .recite-add-form { grid-template-columns: 1fr; }
-      .recite-card-actions { flex-wrap: wrap; gap: 0.35rem; }
-      .recite-card-btn { font-size: 0.75rem; padding: 0.3rem 0.4rem; }
-    }
-  </style>
+  <script src="../../styles/shared/theme-sync.js"></script>
+<link rel="stylesheet" href="../../styles/shared/base-vars.css">
+<link rel="stylesheet" href="../../styles/shared/base.css">
+<link rel="stylesheet" href="../../styles/shared/components.css">
+<link rel="stylesheet" href="../../styles/自考学习/背诵与简答.css">
 </head>
 <body>
   <article class="recite-page">
     <div class="recite-view-tabs">
-      <button class="recite-view-btn zk-active" data-view="today" id="btnViewToday">📌 今日任务</button>
-      <button class="recite-view-btn" data-view="total" id="btnViewTotal">📚 总任务</button>
+      <button class="recite-view-btn zk-active zk-seg" data-view="today" id="btnViewToday">📌 今日任务</button>
+      <button class="recite-view-btn zk-seg" data-view="total" id="btnViewTotal">📚 总任务</button>
     </div>
 
     <div class="recite-section" id="sectionStats">
@@ -612,7 +40,7 @@
         <input type="text" id="cardQuestion" placeholder="正面：问题/术语（如：什么是补码？）" />
         <input type="text" id="cardHint" placeholder="提示（选填，如：注意0的表示）" />
         <textarea id="cardAnswer" placeholder="背面：答案/定义/解释"></textarea>
-        <button id="addCardBtn">添加卡片</button>
+        <button id="addCardBtn" class="zk-btn-primary">添加卡片</button>
       </div>
     </div>
 
@@ -620,9 +48,9 @@
       <h2 id="cardsTitle">🎴 今日卡片</h2>
       <div class="recite-filter" id="cardFilter">
         <div class="card-type-filter">
-          <button class="card-type-btn zk-active" onclick="setCardTypeFilter('all', this)">全部卡片</button>
-          <button class="card-type-btn memory" onclick="setCardTypeFilter('memory', this)">🧠 记忆卡</button>
-          <button class="card-type-btn calc" onclick="setCardTypeFilter('calculation', this)">🧮 计算卡</button>
+          <button class="card-type-btn zk-active zk-seg" onclick="setCardTypeFilter('all', this)">全部卡片</button>
+          <button class="card-type-btn memory zk-seg" onclick="setCardTypeFilter('memory', this)">🧠 记忆卡</button>
+          <button class="card-type-btn calc zk-seg" onclick="setCardTypeFilter('calculation', this)">🧮 计算卡</button>
         </div>
         <select id="filterChapter">
           <option value="">全部章节</option>
@@ -636,10 +64,10 @@
       </div>
       <p class="recite-hint">💡 点击卡片翻转查看答案 · 章节内按不会→不熟→掌握排列</p>
       <div class="recite-card-grid" id="cardGrid"></div>
-      <div class="recite-guide-flow" id="guideFlow" style="display:none;margin-top:16px;text-align:center;">
-        <a class="recite-guide-btn" id="guideBtn" href="#" style="display:inline-block;padding:14px 28px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;text-decoration:none;font-weight:600;font-size:14px;box-shadow:0 4px 12px rgba(34,197,94,0.3);">
+      <div class="recite-guide-flow" id="guideFlow">
+        <a class="recite-guide-btn zk-btn-primary" id="guideBtn" href="#">
           ✅ 去练习测验 →
-          <div style="font-size:11px;font-weight:400;opacity:0.85;margin-top:2px;">点击检验今日学习成果</div>
+          <div class="recite-guide-subtext">点击检验今日学习成果</div>
         </a>
       </div>
     </div>
@@ -991,12 +419,12 @@
         if (isCalc) {
           // 计算卡正面：问题 + 输入框 + 提交按钮 + 符号面板
           frontExtra = '<input type="text" class="calc-card-input" id="calc-input-' + c.id + '" placeholder="输入答案..." onclick="event.stopPropagation()" onkeydown="if(event.key===\'Enter\'){checkCalcCardAnswer(' + c.id + ');event.stopPropagation();}">' +
-            '<button class="calc-card-submit" onclick="event.stopPropagation();checkCalcCardAnswer(' + c.id + ')">提交答案</button>' +
+            '<button class="calc-card-submit zk-btn-primary" onclick="event.stopPropagation();checkCalcCardAnswer(' + c.id + ')">提交答案</button>' +
             '<div class="calc-card-feedback" id="calc-fb-' + c.id + '"></div>' +
             '<span class="calc-card-symbol-toggle" onclick="event.stopPropagation();toggleCalcCardSymbols(' + c.id + ')">🔣 特殊符号</span>' +
-            '<div class="calc-card-symbol-palette" id="calc-sym-' + c.id + '" style="display:none;" onclick="event.stopPropagation()">' +
+            '<div class="calc-card-symbol-palette zk-hidden" id="calc-sym-' + c.id + '" onclick="event.stopPropagation()">' +
             QUIZ_SYMBOLS.map(function(s) {
-              return '<button type="button" class="calc-card-symbol-btn" onclick="insertCalcCardSymbol(' + c.id + ',\'' + s + '\')">' + s + '</button>';
+              return '<button type="button" class="calc-card-symbol-btn zk-btn-outline" onclick="insertCalcCardSymbol(' + c.id + ',\'' + s + '\')">' + s + '</button>';
             }).join('') +
             '</div>';
           // 计算卡背面：定义/公式说明 + 举例 + 考点 + 解题步骤 + 最终答案
@@ -1048,7 +476,7 @@
           '<div class="recite-card-chapter">' + (c.chapter || '未分类') + (isCalc ? ' · 计算' : '') + '</div>' +
           '<div class="recite-card-label">' + (isCalc ? '计算' : '问题') + '</div>' +
           '<div class="recite-card-question">' + esc(c.question) + '</div>' +
-          (c.hint ? '<div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem;">💡 ' + esc(c.hint) + '</div>' : '') +
+          (c.hint ? '<div class="calc-card-hint">💡 ' + esc(c.hint) + '</div>' : '') +
           frontExtra +
           '<span class="recite-mastery ' + c.mastery + '">' + masteryLabel[c.mastery] + '</span>' +
           '</div>' +
@@ -1059,8 +487,8 @@
           '<button class="recite-card-btn known' + (c.mastery === 'known' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'known\')"><span>✓ 掌握</span></button>' +
           '<button class="recite-card-btn unsure' + (c.mastery === 'unsure' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'unsure\')"><span>○ 不熟</span></button>' +
           '<button class="recite-card-btn unknown' + (c.mastery === 'unknown' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'unknown\')"><span>✗ 不会</span></button>' +
-          '<a class="recite-card-btn" style="color:var(--accent);border-color:var(--accent);flex:0 0 auto;padding:0.35rem 0.7rem;text-decoration:none;cursor:pointer;font-size:0.8rem;" href="练习测验.html?subject=' + currentSubject + '&from=recite' + (c.chapter ? '&chapter=' + encodeURIComponent(c.chapter) : '') + '" onclick="event.stopPropagation()">📝 练习</a>' +
-          '<button class="recite-card-btn" style="color:var(--coral);border-color:var(--coral);flex:0 0 auto;padding:0.35rem 0.7rem;margin-left:auto;" onclick="deleteCard(' + c.id + ')">删</button>' +
+          '<a class="recite-card-btn practice" href="练习测验.html?subject=' + currentSubject + '&from=recite' + (c.chapter ? '&chapter=' + encodeURIComponent(c.chapter) : '') + '" onclick="event.stopPropagation()">📝 练习</a>' +
+          '<button class="recite-card-btn delete" onclick="deleteCard(' + c.id + ')">删</button>' +
           '</div></div></div></div>';
       }).join('');
       adjustCardHeights();
@@ -1072,9 +500,9 @@
         var back = inner.querySelector('.recite-card-back');
         var card = inner.closest('.recite-card');
         if (!front || !back) return;
-        inner.style.minHeight = '';
+        inner.style.removeProperty('--card-min-h');
         var target = card && card.classList.contains('flipped') ? back : front;
-        inner.style.minHeight = target.scrollHeight + 'px';
+        inner.style.setProperty('--card-min-h', target.scrollHeight + 'px');
       });
     }
 
@@ -1084,7 +512,7 @@
       var back = inner.querySelector('.recite-card-back');
       el.classList.toggle('flipped');
       var target = el.classList.contains('flipped') ? back : front;
-      if (target) inner.style.minHeight = target.scrollHeight + 'px';
+      if (target) inner.style.setProperty('--card-min-h', target.scrollHeight + 'px');
     }
 
     function scrollToCard(id) {
@@ -1142,7 +570,7 @@
     function toggleCalcCardSymbols(cardId) {
       var pal = document.getElementById('calc-sym-' + cardId);
       if (!pal) return;
-      pal.style.display = pal.style.display === 'none' ? '' : 'none';
+      pal.classList.toggle('zk-hidden');
     }
 
     // 计算卡：插入符号
@@ -1206,8 +634,8 @@
       var guide = document.getElementById('guideFlow');
       var btn = document.getElementById('guideBtn');
       if (!guide || !btn) return;
-      if (cards.length === 0) { guide.style.display = 'none'; return; }
-      guide.style.display = 'block';
+      if (cards.length === 0) { guide.classList.remove('zk-show'); return; }
+      guide.classList.add('zk-show');
       var basePath = (location.protocol === 'file:') ? '' : '';
       btn.href = basePath + '练习测验.html?subject=' + currentSubject + '&from=recite';
     }

@@ -1,0 +1,526 @@
+/* ============================================================
+ * 学习路线图.css — 完整学习路线图页面专属样式
+ * 依赖：base-vars.css / base.css / components.css
+ * 页面自有变量: --coral --green --orange --max --card-bg
+ * ============================================================ */
+
+/* 页面特有变量（值与 base-vars.css 不同，在 body 作用域覆盖） */
+body {
+  --coral: #f472b6;
+  --green: var(--green);
+  --orange: #fb923c;
+  --max: 900px;
+  --card-bg: var(--card-bg);
+  background: var(--bg);
+  line-height: 1.7;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+article.page {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+/* ---------- Hero ---------- */
+header.hero {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--bg-soft);
+  position: relative;
+  overflow: hidden;
+}
+header.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  background: none;
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+header.hero h1 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+  color: var(--ink);
+  position: relative;
+}
+.hero-sub {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 560px;
+  margin: 0 auto;
+  position: relative;
+}
+.stat {
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 1.1rem 0.5rem;
+}
+.stat-num {
+  display: block;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ---------- Sticky nav - 步骤指示器 ---------- */
+.phase-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 2rem;
+  background: var(--bg2);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0 0 16px 16px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+/* 阶段步骤组 */
+.phase-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+.phase-steps a {
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: var(--transition-base);
+  position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+/* 步骤圆形节点 */
+.phase-steps a::before {
+  content: attr(data-step);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--rule);
+  color: #fff;
+  transition: var(--transition-base);
+  flex-shrink: 0;
+}
+/* 步骤间连接线 */
+.phase-steps a::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 0.35rem;
+  height: 2px;
+  background: var(--rule);
+  transform: translateY(-50%);
+}
+.phase-steps a:last-child::after { display: none; }
+
+/* 各阶段激活态配色 */
+.phase-steps a.active[data-color="a"]::before { background: var(--accent); }
+.phase-steps a.active[data-color="a"] { color: var(--accent); background: var(--accent-soft); border-color: var(--blue-soft); }
+.phase-steps a.active[data-color="b"]::before { background: var(--accent2); }
+.phase-steps a.active[data-color="b"] { color: var(--accent2); background: var(--purple-soft); border-color: var(--purple-soft); }
+.phase-steps a.active[data-color="c"]::before { background: var(--green); }
+.phase-steps a.active[data-color="c"] { color: var(--green); background: var(--green-soft); border-color: var(--green-soft); }
+.phase-steps a.active[data-color="d"]::before { background: var(--orange); }
+.phase-steps a.active[data-color="d"] { color: var(--orange); background: var(--orange-soft); border-color: var(--orange-soft); }
+
+/* 步骤组与辅助链接之间的分隔线 */
+.nav-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+
+/* 辅助链接（非阶段） */
+.phase-nav > a {
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: var(--transition-base);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.phase-nav > a:hover, .phase-nav > a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--blue-soft);
+}
+
+/* ---------- Sections ---------- */
+section {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px var(--bg-soft);
+}
+section h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+section h2::before {
+  content: '';
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+section h3 {
+  font-size: 1.05rem;
+  font-weight: 650;
+  margin: 1rem 0 0.5rem;
+}
+section p {
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+}
+section p:last-child { margin-bottom: 0; }
+
+.lead {
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+/* ---------- Overview grid ---------- */
+.phase-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+.overview-card {
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+/* 阶段配色映射（替代行内 style="--phase-color"） */
+.overview-card[data-color="a"] { --phase-color: var(--accent); }
+.overview-card[data-color="b"] { --phase-color: var(--accent2); }
+.overview-card[data-color="c"] { --phase-color: var(--green); }
+.overview-card[data-color="d"] { --phase-color: var(--orange); }
+.overview-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--phase-color, var(--accent));
+}
+.overview-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+.overview-card .phase-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--phase-color, var(--accent));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+.overview-card .phase-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+.overview-card .phase-date {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ---------- Allocation ---------- */
+.allocation-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.allocation-item {
+  display: grid;
+  grid-template-columns: 110px 1fr 70px;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+}
+.allocation-item .time {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.allocation-item .bar-wrap {
+  height: 8px;
+  background: var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.allocation-item .bar {
+  height: 100%;
+  width: var(--bar-w, 0%);
+  border-radius: 999px;
+  background: var(--grad-90);
+}
+.allocation-item .bar-dim {
+  opacity: 0.5;
+}
+.allocation-item .pct {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: right;
+}
+.allocation-item .content {
+  grid-column: 2 / 4;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+/* ---------- Phase sections ---------- */
+.phase {
+  padding: 0;
+  overflow: hidden;
+}
+.phase-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem 1rem;
+  background: var(--surface-glass);
+  border-bottom: 1px solid var(--rule);
+}
+.phase-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-top: 0.45rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.8), 0 0 0 6px currentColor;
+}
+.phase-a { color: var(--accent); background: var(--accent); }
+.phase-b { color: var(--accent2); background: var(--accent2); }
+.phase-c { color: var(--green); background: var(--green); }
+.phase-d { color: var(--orange); background: var(--orange); }
+
+.phase-header h2 {
+  margin-bottom: 0.25rem;
+}
+.phase-meta {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+}
+.phase-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.week-card {
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.week-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px var(--bg-soft);
+}
+.week-card .week-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+.week-card .week-date {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.week-card .week-focus {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+.week-card .week-output {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.week-card .week-output strong {
+  color: var(--ink);
+}
+
+.phase-summary {
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  background: var(--blue-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 12px 12px 0;
+  font-size: 0.92rem;
+}
+.phase-summary strong { color: var(--ink); }
+
+/* ---------- Methodology ---------- */
+.method-card {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  margin-bottom: 0.75rem;
+}
+.method-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+}
+.method-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+.method-card p {
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin-bottom: 0;
+}
+
+/* ---------- CTA ---------- */
+.link-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.link-card {
+  display: block;
+  padding: 1.1rem 1.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  transition: var(--transition-base);
+}
+.link-card:hover {
+  background: var(--blue-soft);
+  border-color: var(--blue-soft);
+  color: var(--accent);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .phase-overview-grid { grid-template-columns: repeat(2, 1fr); }
+  .week-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  article.page { padding: 1rem 0.75rem 2rem; }
+  header.hero { padding: 2rem 1rem; border-radius: 20px; }
+  header.hero h1 { font-size: 1.4rem; }
+  section { padding: 1rem; }
+  .hero-stats { grid-template-columns: 1fr; }
+  .phase-overview-grid { grid-template-columns: 1fr; }
+  .week-grid { grid-template-columns: 1fr; }
+  .allocation-item { grid-template-columns: 90px 1fr 60px; }
+  .allocation-item .content { grid-column: 1 / 4; margin-top: 0.25rem; }
+  .link-cards { grid-template-columns: 1fr; }
+  .phase-nav { gap: 0.35rem; padding: 0.5rem 0.75rem; }
+  .phase-steps { gap: 0.25rem; }
+  .phase-steps a { padding: 0.3rem 0.5rem; font-size: 0.75rem; }
+  .phase-steps a::before { width: 20px; height: 20px; font-size: 0.65rem; }
+  .phase-steps a::after { width: 0.25rem; }
+  .phase-nav > a { padding: 0.3rem 0.5rem; font-size: 0.75rem; }
+}
