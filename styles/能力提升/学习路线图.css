@@ -6,9 +6,9 @@
 
 /* 页面特有变量（值与 base-vars.css 不同，在 body 作用域覆盖） */
 body {
-  --coral: #f472b6;
+  --coral: var(--accent-coral);
   --green: var(--green);
-  --orange: #fb923c;
+  --orange: var(--orange);
   --max: 900px;
   --card-bg: var(--card-bg);
   background: var(--bg);
@@ -153,7 +153,7 @@ header.hero h1 {
   font-size: 0.72rem;
   font-weight: 700;
   background: var(--rule);
-  color: #fff;
+  color: var(--surface);
   transition: var(--transition-base);
   flex-shrink: 0;
 }
@@ -465,7 +465,7 @@ section p:last-child { margin-bottom: 0; }
   font-weight: 700;
   font-size: 0.9rem;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
+  color: var(--surface);
 }
 .method-card h4 {
   font-size: 1rem;

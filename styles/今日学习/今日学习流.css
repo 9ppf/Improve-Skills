@@ -100,7 +100,7 @@ display: flex;
 align-items: center;
 gap: 10px;
 background: var(--bg);
-border: 1px solid #bae6fd;
+border: 1px solid var(--rule-strong);
 border-radius: 8px;
 padding: 8px 12px;
 margin-bottom: 14px;
@@ -202,7 +202,7 @@ font-size: 12px;
 font-weight: 600;
 cursor: pointer;
 }
-.tf-practice-btn.check { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+.tf-practice-btn.check { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--surface); }
 .tf-practice-btn.show { background: var(--surface); border: 1px solid var(--rule); color: var(--muted); }
 .tf-practice-feedback {
 font-size: 12px;
@@ -367,11 +367,6 @@ color: var(--muted);
 }
 .tf-empty h2 { font-size: 16px; margin-bottom: 6px; }
 .tf-empty p { font-size: 13px; }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-thumb { background: var(--light); border-radius: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
 
 /* ===== 行内样式抽离后新增类 ===== */
 

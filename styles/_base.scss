@@ -5,6 +5,13 @@
 
 html { font-size: 16px; scroll-behavior: smooth; }
 
+// 隐藏所有滚动条，保留滚动功能
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar { width: 0; display: none; }
+
 // 尊重用户「减少动画」的系统偏好
 @media (prefers-reduced-motion: reduce) {
   * {

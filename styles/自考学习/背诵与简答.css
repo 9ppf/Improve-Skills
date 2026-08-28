@@ -48,7 +48,7 @@ color: var(--accent);
 }
 .recite-tab.zk-active {
 background: linear-gradient(135deg, var(--accent), var(--accent2));
-color: #fff;
+color: var(--surface);
 border-color: var(--accent);
 }
 
@@ -100,7 +100,7 @@ border-right: 1px solid var(--rule);
 .card-type-btn:hover { background: var(--bg2); }
 .card-type-btn.zk-active {
 background: linear-gradient(135deg, var(--accent), var(--accent2));
-color: #fff;
+color: var(--surface);
 }
 .card-type-btn.memory.zk-active { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
 .card-type-btn.calc.zk-active { background: var(--accent2); }
@@ -280,7 +280,7 @@ transition: all 0.2s;
 .recite-card-btn.unknown { color: var(--coral); border-color: var(--coral); }
 .recite-card-btn:hover { opacity: 0.8; }
 .recite-card-btn.zk-active { background: currentColor; }
-.recite-card-btn.zk-active span { color: #fff; }
+.recite-card-btn.zk-active span { color: var(--surface); }
 
 .recite-mastery {
 display: inline-block;
@@ -367,7 +367,7 @@ margin-bottom: 0.3rem;
 .recite-card.calc .recite-card-front {
 border: 2px solid var(--accent2);
 border-top: 6px solid var(--accent2);
-background: linear-gradient(180deg, var(--purple-soft) 0%, #fff 30%);
+background: linear-gradient(180deg, var(--purple-soft) 0%, var(--surface) 30%);
 }
 .recite-card.calc .recite-card-back {
 border: 2px solid var(--accent2);
@@ -457,7 +457,7 @@ font-size: 0.9rem;
 .recite-view-btn.zk-active {
 background: linear-gradient(135deg, var(--accent), var(--accent2));
 border-color: var(--accent);
-color: #fff;
+color: var(--surface);
 }
 .recite-hint {
 font-size: 0.82rem;
@@ -530,7 +530,6 @@ margin-right: 0.4rem;
 .recite-card-actions { flex-wrap: wrap; gap: 0.35rem; }
 .recite-card-btn { font-size: 0.75rem; padding: 0.3rem 0.4rem; }
 }
-
 
 /* ===== 行内样式抽离后新增类 ===== */
 

@@ -42,7 +42,7 @@ display: inline;
 .kf-header-left { display: flex; align-items: baseline; gap: 0.5rem; }
 
 .kf-subject-tag {
-font-size: 0.68rem; color: var(--muted); background: var(--bg-soft, #f3f4f6);
+font-size: 0.68rem; color: var(--muted); background: var(--bg-soft, var(--bg-soft));
 padding: 2px 8px; border-radius: 999px; font-weight: 500; margin-left: 6px;
 }
 
@@ -587,15 +587,15 @@ cursor: pointer; font-family: inherit; transition: all 0.15s;
 .ss-mastery-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 /* 5 档按钮：0灰 1蓝 2红 3橙 4绿 */
-.ss-mastery-btn.zk-active[data-level="0"] { background: var(--mastery-0); border-color: var(--mastery-0); color: #fff; }
+.ss-mastery-btn.zk-active[data-level="0"] { background: var(--mastery-0); border-color: var(--mastery-0); color: var(--surface); }
 
-.ss-mastery-btn.zk-active[data-level="1"] { background: var(--mastery-1); border-color: var(--mastery-1); color: #fff; }
+.ss-mastery-btn.zk-active[data-level="1"] { background: var(--mastery-1); border-color: var(--mastery-1); color: var(--surface); }
 
-.ss-mastery-btn.zk-active[data-level="2"] { background: var(--mastery-2); border-color: var(--mastery-2); color: #fff; }
+.ss-mastery-btn.zk-active[data-level="2"] { background: var(--mastery-2); border-color: var(--mastery-2); color: var(--surface); }
 
-.ss-mastery-btn.zk-active[data-level="3"] { background: var(--mastery-3); border-color: var(--mastery-3); color: #fff; }
+.ss-mastery-btn.zk-active[data-level="3"] { background: var(--mastery-3); border-color: var(--mastery-3); color: var(--surface); }
 
-.ss-mastery-btn.zk-active[data-level="4"] { background: var(--mastery-4); border-color: var(--mastery-4); color: #fff; }
+.ss-mastery-btn.zk-active[data-level="4"] { background: var(--mastery-4); border-color: var(--mastery-4); color: var(--surface); }
 
 .ss-chapter-count { font-size: 0.72rem; color: var(--muted); margin-left: auto; }
 
@@ -886,7 +886,7 @@ box-shadow: var(--shadow-card);
 
 .ch-card .ch-status { font-size: 0.66rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
 
-.ch-card .ch-icon { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #fff; flex-shrink: 0; }
+.ch-card .ch-icon { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(--surface); flex-shrink: 0; }
 
 /* 5 档：4绿 1蓝 2红 3橙 0灰 */
 .ch-card[data-mastery="4"] .ch-status { color: var(--green-text); }
@@ -912,10 +912,10 @@ box-shadow: var(--shadow-card);
 /* ===== Design Draft Components ===== */
 .kf-card { background: var(--surface); border-radius: 10px; padding: 0.8rem; box-shadow: var(--shadow-card); margin-bottom: 0.6rem; }
 .card-label { font-size: 0.66rem; font-weight: 700; color: var(--accent2); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.03em; }
-.card-body { font-size: 0.74rem; color: var(--ink); line-height: 1.5; }
+.card-
 
 .journey-step { display: flex; gap: 8px; margin-bottom: 0.4rem; align-items: center; }
-.journey-step .step-num { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.journey-step .step-num { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--surface); font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .journey-step .step-text { font-size: 0.72rem; color: var(--ink); line-height: 1.5; }
 .journey-step .step-text .step-ch { font-size: 0.64rem; color: var(--muted); }
 
@@ -961,7 +961,7 @@ white-space: nowrap;
 
 .lg-badge.lg-priority-key { background: var(--coral-soft); border: 1px solid var(--coral-soft); }
 .lg-badge.lg-priority-normal { background: var(--amber-soft); border: 1px solid var(--amber-soft); }
-.lg-badge.lg-priority-survey { background: var(--bg2); border: 1px solid #e2e8f0; }
+.lg-badge.lg-priority-survey { background: var(--bg2); border: 1px solid var(--rule); }
 
 .lg-kp-item {
 background: var(--surface);
@@ -995,7 +995,7 @@ list-style: none;
 .kf-points li {
 font-size: 12.5px;
 line-height: 1.8;
-color: #475569;
+color: var(--ink);
 display: flex;
 align-items: flex-start;
 }
@@ -1040,7 +1040,7 @@ flex-wrap: wrap;
 
 padding: 8px 12px;
 
-background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+background: linear-gradient(135deg, var(--bg), var(--blue-soft));
 
 border-radius: 8px;
 
@@ -1048,7 +1048,7 @@ margin-bottom: 12px;
 
 font-size: 13px;
 
-border: 1px solid #bae6fd;
+border: 1px solid var(--rule-strong);
 
 }
 
@@ -1235,7 +1235,7 @@ font-weight: 500;
 }
 .section-card-pri-stats .pri-stat-key { background: var(--coral-soft); color: var(--coral-text); }
 .section-card-pri-stats .pri-stat-normal { background: var(--amber-soft); color: var(--notice-text); }
-.section-card-pri-stats .pri-stat-survey { background: var(--bg2); color: #475569; }
+.section-card-pri-stats .pri-stat-survey { background: var(--bg2); color: var(--ink); }
 
 .section-card-count {
 
@@ -1337,7 +1337,7 @@ font-size: 13px;
 
 line-height: 1.6;
 
-color: #374151;
+color: var(--ink);
 
 }
 
@@ -1375,13 +1375,12 @@ display: none;
 .kt-priority-normal { color: var(--pri-normal); font-weight: 700; }
 .kt-priority-survey { color: var(--pri-survey); font-weight: 700; }
 
-
 /* ===== 行内样式抽离后新增类 ===== */
 
 /* tooltip提示框 */
 .ss-mastery-tip {
   position: absolute; z-index: 99;
-  background: #1e293b; color: #fff;
+  background: var(--ink); color: var(--surface);
   padding: 6px 10px; border-radius: 6px;
   font-size: 12px; max-width: 280px; line-height: 1.5;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -1422,4 +1421,4 @@ display: none;
 /* req-badge 按考核层级配色 */
 .req-badge.lv-recall { background: var(--blue-soft); color: var(--blue-text); }
 .req-badge.lv-comprehend { background: var(--amber-soft); color: var(--notice-text); }
-.req-badge.lv-apply { background: #dcfce7; color: #166534; }
+.req-badge.lv-apply { background: var(--green-soft); color: var(--green-text); }

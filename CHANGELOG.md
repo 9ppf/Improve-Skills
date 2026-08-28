@@ -4,6 +4,98 @@
 
 ---
 
+## v2.32.0
+
+**发布时间**：2026-08-28（北京时间）
+
+### 33页面CSS批量抽离+去重+颜色变量化+滚动条全局隐藏+今日学习流随机抽取
+
+**核心变更**：33个页面的内联CSS批量抽离为外部文件，引用共享CSS（base-vars/base/components）；去重删除:root/reset/body重复块；80+种硬编码颜色全部替换为CSS变量（0残留）；全局隐藏滚动条；今日学习流知识点卡片和快速练习改为随机抽取；新增PWA改造方案文档；dev_server.py新增错因更新API。
+
+| 文件 | 更新内容 |
+|---|---|
+| `.gitignore` | 新增*.log规则，防止系统日志误提交 |
+| `AGENT_HANDOFF.md` | 新增CSS/SASS两层分离架构规则(4.1节)+4条构建踩坑记录(43-46条) |
+| `BACKLOG_TODO.md` | 新增移动端PWA改造方案待办（优先级6） |
+| `CHANGELOG.md` | v2.32.0版本记录 |
+| `dev_server.py` | 新增POST /api/quiz-wrong-reason端点处理错题原因保存 |
+| `工作台搭建总结.md` | 文档版本同步至v2.32.0 |
+| `文件说明.md` | 最后更新版本同步至v2.32.0 |
+| `styles/_root.scss` | 新增--font/--font-mono/--red/--amber/--pass/--warn/--fail变量别名 |
+| `styles/_base.scss` | 新增全局滚动条隐藏规则（scrollbar-width:none + ::-webkit-scrollbar） |
+| `styles/_variables.scss` | 新增别名变量定义 |
+| `styles/shared/base-vars.css` | SASS编译产物，新增变量别名 |
+| `styles/shared/base.css` | SASS编译产物，包含全局滚动条隐藏 |
+| `styles/AI学习/ai-code-review.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/AI学习/ai-demos.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/AI学习/ai-learning-plan.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/AI学习/ai-news-digest.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/AI学习/ai-roles-hub.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/AI学习/daily-plan.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/AI学习/job-learning-loop.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/Python基础/python-demos.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/Python基础/python-learning-loop.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/阅读/2019.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/阅读/2020.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/阅读/2021.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/阅读/2022.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/阅读/2023.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/阅读/2024.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/阅读/2025.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/阅读/2026.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/自考学习/复盘总结.css` | 去重+颜色变量化 |
+| `styles/自考学习/真题练习-真题与错题本.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/自考学习/知识框架.css` | 去重+颜色变量化 |
+| `styles/自考学习/练习测验.css` | 去重+颜色变量化 |
+| `styles/自考学习/背诵与简答.css` | 去重+颜色变量化 |
+| `styles/自考学习/英语（二）/00015英语（二）-备考指南.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/自考学习/英语（二）/00015英语（二）-知识框架与学习计划.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/自考学习/英语（二）/英语（二）-作文模板.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/自考学习/英语（二）/英语（二）-真题模拟.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/自考学习/英语（二）/英语（二）-词汇系统.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/自考学习/英语（二）/英语（二）-题型专项.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/自考学习/高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/今日学习/今日学习流.css` | 去重+颜色变量化 |
+| `styles/番茄钟/番茄钟.css` | 新增：从HTML抽离的CSS，去重+颜色变量化 |
+| `styles/能力提升/学习路线图.css` | 去重+颜色变量化 |
+| `styles/能力提升/能力提升驾驶舱.css` | 去重+颜色变量化 |
+| `Workbench/Python基础/python-demos.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/Python基础/python-learning-loop.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/ai-learning/ai-code-review.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/ai-learning/ai-demos.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/ai-learning/ai-learning-plan.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/ai-learning/ai-news-digest.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/ai-learning/ai-roles-hub.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/ai-learning/daily-plan.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/ai-learning/job-learning-loop.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/read/2019.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/read/2020.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/read/2021.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/read/2022.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/read/2023.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/read/2024.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/read/2025.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/read/2026.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/today/today-flow.html` | CSS抽离+知识点卡片和快速练习改为随机抽取 |
+| `Workbench/此刻便是春天.html` | 工作台主页CSS更新 |
+| `Workbench/番茄钟/番茄钟.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/未考科目/00015英语（二）/00015英语（二）-备考指南.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/未考科目/00015英语（二）/00015英语（二）-知识框架与学习计划.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/未考科目/00015英语（二）/英语（二）-作文模板.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/未考科目/00015英语（二）/英语（二）-真题模拟.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/未考科目/00015英语（二）/英语（二）-词汇系统.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/未考科目/00015英语（二）/英语（二）-题型专项.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/未考科目/00023高等数学（工本）/00023高等数学（工本）-知识框架与学习计划.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/真题练习-真题与错题本.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/自考学习/练习测验.html` | 内联CSS抽离为外部文件，引用shared CSS |
+| `Workbench/工作台迁移方案/_shared/js/mermaid.min.js` | 删除（清理旧迁移方案文件） |
+| `Workbench/工作台迁移方案/工作台迁移方案-说明.html` | 删除（清理旧迁移方案文件） |
+| `Workbench/设计规范-春天活力主题.html` | 删除（已迁移到styles/目录） |
+| `Workbench/设计规范-样式指南.html` | 删除（已迁移到styles/目录） |
+| `data/mastery-progress.json` | 掌握度数据同步 |
+| `data/modules/self-study.json` | 版本号更新至v2.32.0 |
+| `data/quiz-records-13015.json` | 答题记录同步 |
+
 ## v2.31.53
 
 **发布时间**：2026-08-27（北京时间）

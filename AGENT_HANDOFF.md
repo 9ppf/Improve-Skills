@@ -18,7 +18,7 @@
 - **用户**：自考本科生（武汉理工·计算机），上海嘉定
 - **目标**：2026 年 10 月自考三科（系统原理/离散数学/数据结构），考后转型 AI 岗位
 - **技术栈**：Python（build.py 从模板 + JSON 生成 HTML），dev_server.py 提供 API 代理与数据持久化
-- **当前版本**：v2.31.15（2026-08-26）
+- **当前版本**：v2.32.0（2026-08-28）
 - **模块数**：7 个（今日学习、能力提升、自考学习、Python基础、AI学习、AI助手角色、阅读资料）
 - **自考科目**：3 科已建知识框架 + 背诵卡（187张） + 练习测验（6题型/4模式） + 复盘总结（错题/题库管理） + AI答疑
 - **数据持久化**：掌握状态/AI对话/题库 已通过 API 持久化到 JSON 文件，跨浏览器不丢
@@ -128,6 +128,60 @@
 | 40 | **renderChapters 重建 innerHTML 后事件丢失** | v2.31.9 | `renderChapters` 用 `secTabs.innerHTML = ...` 重建章节按钮后，旧 `addEventListener` 绑定全部失效。`__reinitChapters` 中必须重新绑定事件。且 `__reinitChapters` 与 `switchChapter` 在不同 IIFE 中，跨作用域引用会报 `ReferenceError`，需用 `window.switchChapterTab` 全局函数。 |
 | 41 | **checkbox 注入破坏卡片布局** | v2.31.9 | 掌握度 checkbox 注入代码遍历所有 `ul > li`，把 `.kp-header` 和 `.kp-body` 包进 `<label style="display:flex">` 导致水平排列。核心概念卡片（`.lg-kp-item`）不再需要 checkbox（章节掌握度已全自动判定），应直接跳过。 |
 | 42 | **JSON 加载闪烁** | v2.31.9 | 页面先渲染静态 HTML 再被 JSON 覆盖会产生闪烁。解决方案：内容区初始 `opacity: 0`，JSON 加载完成后移除 `kf-loading` 类配合 `transition` 实现淡入。 |
+| 43 | **SASS 编译 BOM 陷阱** | v2.31.53 | `sass.compile()` 输出可能包含 UTF-8 BOM（`EF BB BF`），导致内联 `<style>` 中第一个选择器失效（如 `:root` 被吞）。`build.py` 的 `_compile_styles()` 和 `_compile_shared_styles()` 必须在写入前 `strip BOM`。 |
+| 44 | **CSS 变量嵌套 `var()` 陷阱** | v2.31.53 | `--grad-135: linear-gradient(135deg, var(--accent), var(--accent2))` 在浏览器中解析失败（自定义属性内嵌套 `var()` 返回空值）。解决方案：直接写 `linear-gradient(135deg, var(--accent), var(--accent2))`，不在自定义属性内嵌套 `var()` 引用。 |
+| 45 | **CSS 抽离路径前缀陷阱** | v2.32.0 | `Workbench/` 目录在项目根目录下一级，计算 HTML 到 `styles/` 的相对路径时必须 +1 层。如 `Workbench/module/page.html` 的前缀是 `../../`（不是 `../`），`Workbench/a/b/c/page.html` 是 `../../../../`。 |
+| 46 | **validate_workbench.py 只查内联 CSS** | v2.32.0 | 验证器的 Tab 完整性检查在 HTML 的 `<style>` 块和 `<link>` 引用的外部 CSS 中搜索类名。CSS 抽离后需确保 `<link>` 路径正确（相对路径前缀不能少算一层），否则验证器找不到 CSS 文件会报 "incomplete Tab implementation"。 |
+
+### 4.1 CSS/SASS 架构规则（v2.32.0 确立）
+
+> 触发场景：修改样式、新增页面、调整颜色、改主题时必读。
+
+#### 两层分离架构
+
+```
+SASS 编译层（shared/）— build.py 用 libsass 编译
+├── _variables.scss    → $ 变量定义（单一真相源）
+├── _root.scss          → 编译为 base-vars.css（CSS 变量 + 5 套主题）
+├── _base.scss          → 编译为 base.css（reset + body + 滚动条隐藏）
+├── _components.scss    → 编译为 components.css（按钮/卡片/表格/主题切换器等）
+├── _layout.scss        → 工作台外壳布局（topbar/sidebar）
+├── main.scss           → 编译内联到工作台 HTML
+└── build.py _compile_shared_styles() 负责编译
+
+页面 CSS 层（33个 .css 文件）— 纯 CSS，不经过 SASS 编译
+├── 引用 shared 三个 .css（<link> 标签）
+├── 引用 theme-sync.js（主题跟随工作台切换）
+├── 使用 var(--accent) 等 CSS 变量（值来自 base-vars.css）
+├── 不含 :root/reset/body 重复块（v2.32.0 已批量清理）
+└── 不含硬编码颜色（v2.32.0 已全部替换为 CSS 变量，0 残留）
+```
+
+#### 修改规则
+
+1. **改颜色/主题**：修改 `_variables.scss` 或 `_root.scss`，运行 `python build.py` 重新编译。不要直接改 `.css` 产物文件。
+2. **改共享组件**：修改 `_components.scss` 或 `_base.scss`，重新编译。
+3. **改页面样式**：直接修改对应页面 `.css` 文件（如 `styles/自考学习/知识框架.css`），不需要编译。
+4. **新增页面**：创建 `.css` 文件，在 HTML 中 `<link>` 引用 `shared/base-vars.css` + `shared/base.css` + `shared/components.css` + `theme-sync.js` + 页面专属 CSS。路径前缀 = `Workbench` 内深度 + 1。
+5. **禁止**：在页面 CSS 中定义 `:root {}` 变量块（变量已在 `base-vars.css` 中定义）。
+6. **禁止**：在页面 CSS 中写 `* { margin:0; padding:0 }` reset（已在 `base.css` 中定义）。
+7. **禁止**：硬编码颜色值（`#xxx`、`rgba()`），必须用 `var(--xxx)` CSS 变量。
+
+#### 可用 CSS 变量速查
+
+| 变量 | 用途 | 变量 | 用途 |
+|---|---|---|---|
+| `--bg` | 页面背景 | `--ink` | 主文字色 |
+| `--surface` | 卡片/表面背景 | `--muted` | 次要文字色 |
+| `--rule` | 边框/分割线 | `--accent` | 主强调色（蓝） |
+| `--accent2` | 次强调色（紫） | `--green` | 绿色 |
+| `--coral` / `--red` | 红色 | `--amber` | 橙黄色 |
+| `--accent-soft` | 主色浅底 | `--blue-soft` | 蓝色浅底 |
+| `--green-soft` | 绿色浅底 | `--coral-soft` | 红色浅底 |
+| `--purple-soft` | 紫色浅底 | `--amber-soft` | 橙色浅底 |
+| `--font` | 字体族 | `--font-mono` | 等宽字体 |
+| `--max` | 内容最大宽度 | `--radius` | 圆角 |
+| `--shadow` | 阴影 | `--ease` | 缓动函数 |
 
 ### 5. 快速上手（3 步启动）
 

@@ -1,0 +1,76 @@
+body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.75;padding:1.5rem 1rem}
+article.page{max-width:760px;margin:0 auto}
+
+/* 按钮组 */
+.vocab-btns{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.vocab-btn{padding:0.55rem 1.2rem;border:none;border-radius:10px;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;background:var(--accent-soft);color:var(--accent)}
+.vocab-btn:hover{background:var(--blue-soft)}
+.vocab-btn.active{background:var(--accent);color:var(--surface)}
+
+/* 统计卡片 */
+.vocab-stats{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.stat-card{flex:1;min-width:120px;background:var(--bg2);border:1px solid var(--rule);border-radius:12px;padding:1rem;text-align:center}
+.stat-num{font-size:1.6rem;font-weight:700;color:var(--accent)}
+.stat-label{font-size:0.82rem;color:var(--muted);margin-top:0.25rem}
+.stat-card .stat-bar{height:6px;border-radius:3px;background:var(--rule);margin-top:0.5rem;overflow:hidden}
+.stat-card .stat-fill{height:100%;border-radius:3px;background:var(--accent);transition:width 0.3s}
+
+/* 学习卡片 */
+.flashcard-area{display:none;margin-bottom:1.5rem}
+.flashcard{background:var(--surface);border:2px solid var(--rule);border-radius:16px;padding:2rem;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;position:relative}
+.flashcard:hover{box-shadow:0 8px 24px rgba(37,99,235,0.12);border-color:var(--accent)}
+.fc-word{font-size:2rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem}
+.fc-phonetic{font-size:1rem;color:var(--muted);margin-bottom:1rem}
+.fc-meaning{font-size:1.1rem;color:var(--ink);text-align:center}
+.fc-hint{font-size:0.82rem;color:var(--muted);margin-top:1.5rem}
+.fc-level{position:absolute;top:0.75rem;right:1rem;font-size:0.75rem;color:var(--muted);background:var(--bg-soft);padding:0.15rem 0.5rem;border-radius:6px}
+
+/* 评分按钮 */
+.rate-btns{display:flex;gap:0.75rem;justify-content:center;margin-top:1.25rem;flex-wrap:wrap}
+.rate-btn{padding:0.6rem 1.5rem;border:none;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s}
+.rate-again{background:var(--coral-soft);color:var(--red)}
+.rate-hard{background:var(--amber-soft);color:var(--amber)}
+.rate-good{background:var(--green-soft);color:var(--green)}
+.rate-easy{background:var(--accent-soft);color:var(--accent)}
+.rate-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+
+/* 测验区 */
+.quiz-area{display:none;margin-bottom:1.5rem}
+.quiz-question{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+.quiz-q-text{font-size:1.1rem;font-weight:600;margin-bottom:0.75rem}
+.quiz-q-text .q-type{font-size:0.82rem;color:var(--muted);font-weight:400;margin-left:0.5rem}
+.quiz-input{width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--rule);border-radius:8px;font-size:1rem;font-family:var(--font);outline:none;transition:border-color 0.2s}
+.quiz-input:focus{border-color:var(--accent)}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.75rem}
+.quiz-opt{padding:0.6rem 1rem;border:1.5px solid var(--rule);border-radius:8px;cursor:pointer;text-align:center;font-size:0.92rem;transition:all 0.2s;background:var(--surface)}
+.quiz-opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:var(--coral-soft);color:var(--red)}
+.quiz-feedback{margin-top:0.75rem;padding:0.75rem;border-radius:8px;font-size:0.9rem;display:none}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:var(--green-soft);color:var(--green)}
+.quiz-feedback.wrong{background:var(--coral-soft);color:var(--red)}
+
+/* 词表 */
+.wordlist-area{display:none}
+.wordlist-search{width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--rule);border-radius:8px;font-size:0.95rem;margin-bottom:1rem;outline:none;font-family:var(--font)}
+.wordlist-search:focus{border-color:var(--accent)}
+.wordlist-table{width:100%;border-collapse:collapse}
+.wordlist-table th,.wordlist-table td{padding:0.5rem 0.6rem;text-align:left;border-bottom:1px solid var(--rule);font-size:0.88rem}
+.wordlist-table th{background:var(--bg-soft);color:var(--muted);font-weight:600;font-size:0.82rem}
+.wordlist-table td:first-child{font-weight:600;color:var(--accent)}
+.wordlist-level{display:inline-block;padding:0.1rem 0.4rem;border-radius:4px;font-size:0.75rem;font-weight:600}
+.lv-core{background:var(--blue-soft);color:var(--accent)}
+.lv-key{background:var(--purple-soft);color:var(--accent2)}
+.lv-ext{background:var(--amber-soft);color:var(--amber)}
+.wordlist-status{font-size:0.8rem}
+.st-new{color:var(--muted)}
+.st-learning{color:var(--amber)}
+.st-known{color:var(--green)}
+
+@media(max-width:640px){
+  .vocab-stats{flex-direction:column}
+  .quiz-options{grid-template-columns:1fr}
+  .flashcard{padding:1.5rem;min-height:160px}
+  .fc-word{font-size:1.5rem}
+}

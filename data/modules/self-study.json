@@ -66,7 +66,7 @@
               "current": "章节复盘与错题反思",
               "tasks": [],
               "review": "计算机系统原理章节复盘总结。",
-              "renderMode": "content",
+              "renderMode": "bare",
               "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=13015&v=2.31.53"
             }
           ]
@@ -126,7 +126,7 @@
               "current": "章节复盘与错题反思",
               "tasks": [],
               "review": "离散数学章节复盘总结。",
-              "renderMode": "content",
+              "renderMode": "bare",
               "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=02324&v=2.31.53"
             }
           ]
@@ -186,7 +186,7 @@
               "current": "章节复盘与错题反思",
               "tasks": [],
               "review": "数据结构与算法章节复盘总结。",
-              "renderMode": "content",
+              "renderMode": "bare",
               "contentUrl": "自考学习/复盘总结-章节复盘.html?subject=13003&v=2.31.53"
             }
           ]

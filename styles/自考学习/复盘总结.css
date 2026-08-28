@@ -63,7 +63,7 @@ transition: width 0.4s ease;
 .ss-dashboard-pct {
 position: absolute; right: 0.4rem; top: 50%;
 transform: translateY(-50%);
-font-size: 0.68rem; font-weight: 700; color: #fff;
+font-size: 0.68rem; font-weight: 700; color: var(--surface);
 mix-blend-mode: difference;
 }
 .ss-dashboard-meta {
@@ -126,7 +126,7 @@ width: 24px;
 height: 24px;
 border-radius: 7px;
 background: linear-gradient(135deg, var(--accent), var(--accent2));
-color: #fff;
+color: var(--surface);
 font-weight: 700;
 font-size: 0.78rem;
 flex-shrink: 0;
@@ -295,7 +295,7 @@ font-size: 0.76rem; color: var(--ink);
 display: inline-block; margin-left: auto;
 padding: 3px 10px; border-radius: 999px;
 background: linear-gradient(135deg, var(--accent), var(--accent2));
-color: #fff; font-size: 0.74rem; font-weight: 600;
+color: var(--surface); font-size: 0.74rem; font-weight: 600;
 text-decoration: none; cursor: pointer; white-space: nowrap;
 }
 .ss-insight-action:hover { opacity: 0.9; }
@@ -339,7 +339,7 @@ transition: opacity 0.2s;
 font-size: 0.82rem; font-weight: 600; font-family: inherit;
 }
 .ss-wrong-redo { border-color: var(--accent); color: var(--accent); }
-.ss-wrong-redo:hover { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+.ss-wrong-redo:hover { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--surface); }
 .ss-wrong-solve:hover { border-color: var(--green); color: var(--green); background: var(--green-soft); }
 
 /* ============ 题库管理 ============ */
@@ -359,18 +359,18 @@ font-size: 0.82rem; font-weight: 600; font-family: inherit;
 .ss-bank-select-chapter:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px var(--purple-soft); }
 /* 题型筛选：紫色系 */
 .ss-bank-select-type { border-color: var(--purple-soft); background: var(--purple-soft); color: var(--purple-text); }
-.ss-bank-select-type:focus { border-color: #9333ea; box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12); }
+.ss-bank-select-type:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12); }
 /* 状态筛选：青绿色系 */
-.ss-bank-select-status { border-color: #99f6e4; background: var(--green-soft); color: var(--green-text); }
-.ss-bank-select-status:focus { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12); }
-.ss-bank-add { font-family: inherit; font-size: 0.85rem; font-weight: 600; padding: 0.45rem 1rem; border-radius: 8px; border: none; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 3px 12px var(--blue-soft); transition: transform 0.15s; }
+.ss-bank-select-status { border-color: var(--green-soft); background: var(--green-soft); color: var(--green-text); }
+.ss-bank-select-status:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12); }
+.ss-bank-add { font-family: inherit; font-size: 0.85rem; font-weight: 600; padding: 0.45rem 1rem; border-radius: 8px; border: none; cursor: pointer; color: var(--surface); background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 3px 12px var(--blue-soft); transition: transform 0.15s; }
 .ss-bank-add:hover { transform: translateY(-1px); }
 
 /* 题库卡片答题状态标签 */
 .ss-bank-status { font-size: 0.74rem; font-weight: 600; padding: 0.12rem 0.5rem; border-radius: 999px; white-space: nowrap; }
-.ss-bank-status-unanswered { background: rgba(107, 114, 128, 0.1); color: #4b5563; }
+.ss-bank-status-unanswered { background: rgba(107, 114, 128, 0.1); color: var(--muted); }
 .ss-bank-status-correct { background: var(--green-soft); color: var(--green-text); }
-.ss-bank-status-wrong { background: var(--coral-soft); color: #be123c; }
+.ss-bank-status-wrong { background: var(--coral-soft); color: var(--coral); }
 
 .ss-bank-group { margin-bottom: 1.4rem; }
 .ss-bank-group-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; padding-left: 0.2rem; font-weight: 700; }
@@ -410,11 +410,11 @@ font-size: 0.82rem; font-weight: 600; font-family: inherit;
 .ss-bank-textarea { min-height: 70px; resize: vertical; line-height: 1.6; }
 #bfAnswerHint { font-size: 0.72rem; color: var(--muted); font-weight: 400; margin-left: 0.2rem; }
 .ss-bank-form-actions { display: flex; gap: 0.6rem; margin-top: 0.3rem; }
-.ss-bank-form-save { font-family: inherit; font-size: 0.86rem; font-weight: 600; padding: 0.55rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 3px 12px var(--blue-soft); }
+.ss-bank-form-save { font-family: inherit; font-size: 0.86rem; font-weight: 600; padding: 0.55rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; color: var(--surface); background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 3px 12px var(--blue-soft); }
 .ss-bank-form-cancel { font-family: inherit; font-size: 0.86rem; font-weight: 600; padding: 0.55rem 1.2rem; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--muted); cursor: pointer; }
 
 /* ============ Toast 提示 ============ */
-.ss-toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translate(-50%, 20px); background: var(--ink); color: #fff; padding: 0.7rem 1.2rem; border-radius: 10px; font-size: 0.86rem; box-shadow: 0 8px 28px var(--bg-soft); opacity: 0; transition: all 0.3s; z-index: 9999; }
+.ss-toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translate(-50%, 20px); background: var(--ink); color: var(--surface); padding: 0.7rem 1.2rem; border-radius: 10px; font-size: 0.86rem; box-shadow: 0 8px 28px var(--bg-soft); opacity: 0; transition: all 0.3s; z-index: 9999; }
 .ss-toast.ss-toast-error { background: var(--coral); }
 .ss-toast.ss-toast-show { opacity: 1; transform: translate(-50%, 0); }
 
@@ -436,7 +436,6 @@ min-height: 90px;
 .ss-insight-bar { gap: 0.4rem; font-size: 0.74rem; }
 }
 
-
 /* ===== 行内样式抽离后新增类 ===== */
 
 /* 引导流按钮区 */
@@ -447,9 +446,9 @@ min-height: 90px;
 .ss-guide-subtext { font-size: 11px; font-weight: 400; opacity: 0.85; margin-top: 2px; }
 
 /* 题库统计chip变体 */
-.ss-bank-stat-chip.unanswered { background: rgba(107,114,128,0.1); color: #4b5563; }
+.ss-bank-stat-chip.unanswered { background: rgba(107,114,128,0.1); color: var(--muted); }
 .ss-bank-stat-chip.correct { background: var(--green-soft); color: var(--green-text); }
-.ss-bank-stat-chip.wrong { background: var(--coral-soft); color: #be123c; }
+.ss-bank-stat-chip.wrong { background: var(--coral-soft); color: var(--coral); }
 .ss-bank-stat-chip.total { background: var(--blue-soft); color: var(--accent); font-weight: 700; }
 
 /* 通用隐藏类 */

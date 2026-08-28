@@ -57,16 +57,23 @@
   --font-sans: #{$font-sans};
 
   // —— 内容页面变量别名 ——
+  --font: var(--font-sans);
+  --font-mono: "JetBrains Mono", Consolas, "SF Mono", monospace;
   --accent: #{$accent};
   --accent2: #{$accent2};
   --coral: #{$coral};
+  --red: #{$coral};
   --green: #{$green};
+  --amber: #F59E0B;
   --orange: #{$orange};
   --accent-soft: #{$accent-soft};
   --accent2-soft: #{$accent2-soft};
   --card-bg: #{$card-bg};
   --surface-glass: rgba(255, 255, 255, 0.7);
   --max: #{$max};
+  --pass: var(--green);
+  --warn: var(--amber);
+  --fail: var(--coral);
 
   // —— 渐变（使用 var() 引用，主题切换时自动跟随）——
   --grad-135: linear-gradient(135deg, #{$accent}, #{$accent2});
@@ -117,7 +124,7 @@
   --blue-soft: rgba(56, 189, 248, 0.15);
   --purple-soft: rgba(167, 139, 250, 0.15);
   --green-soft: rgba(16, 185, 129, 0.15);
-  --coral-soft: rgba(244, 114, 182, 0.15);
+  --coral-soft: rgba(220, 38, 38, 0.15);
   --orange-soft: rgba(251, 146, 60, 0.15);
   --amber-soft: rgba(251, 191, 36, 0.15);
   --amber-text: #FCD34D;
@@ -150,7 +157,7 @@
   --blue-soft: #FEF3C7;
   --purple-soft: #FED7AA;
   --green-soft: #D1FAE5;
-  --coral-soft: #FED7AA;
+  --coral-soft: #FECACA;
   --orange-soft: #FED7AA;
   --amber-soft: #FED7AA;
   --amber-text: #92400E;
@@ -178,7 +185,7 @@
   --blue-soft: #D1FAE5;
   --purple-soft: #ECFCCB;
   --green-soft: #D1FAE5;
-  --coral-soft: #FECDD3;
+  --coral-soft: #FECACA;
   --orange-soft: #FED7AA;
   --amber-soft: #FEF3C7;
   --amber-text: #92400E;
@@ -206,7 +213,7 @@
   --blue-soft: #FFE4E6;
   --purple-soft: #FCE7F3;
   --green-soft: #D1FAE5;
-  --coral-soft: #FFE4E6;
+  --coral-soft: #FECACA;
   --orange-soft: #FED7AA;
   --amber-soft: #FED7AA;
   --amber-text: #92400E;

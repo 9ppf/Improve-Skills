@@ -392,6 +392,36 @@ function renderReference(label, content, isProof) {
   return html;
 }
 
+function renderUserAnswer(qId) {
+  var r = results[qId];
+  if (!r || !r.details) return '';
+  var ua = r.details.userAnswer || '';
+  if (!ua) return '';
+  return '<div class="user-answer zk-show"><div class="user-answer-label">✍️ 我的答案</div><div class="user-answer-text">'+esc(ua)+'</div></div>';
+}
+
+function renderWrongReason(qId) {
+  var r = results[qId];
+  if (!r) return '';
+  if (r.score >= r.total) return '';
+  var existing = r.wrongReason || '';
+  var html = '<div class="wrong-reason" id="wr-'+qId+'">';
+  if (existing) {
+    html += '<div class="wrong-reason-label">📝 错因记录</div>';
+    html += '<div class="wrong-reason-text">'+esc(existing)+'</div>';
+    html += '<button class="wrong-reason-edit-btn zk-btn-outline" onclick="toggleWrongReasonEdit(\''+qId+'\')">编辑</button>';
+  } else {
+    html += '<button class="wrong-reason-btn zk-btn-outline" onclick="toggleWrongReasonEdit(\''+qId+'\')">📝 写错因</button>';
+  }
+  html += '<div class="wrong-reason-editor" id="wr-edit-'+qId+'" style="display:none">';
+  html += '<textarea class="wrong-reason-textarea" id="wr-input-'+qId+'" placeholder="记录错因：概念混淆？公式没记住？计算失误？" rows="3">'+esc(existing)+'</textarea>';
+  html += '<div class="wrong-reason-actions">';
+  html += '<button class="zk-btn-primary" onclick="saveWrongReason(\''+qId+'\')">保存</button>';
+  html += '<button class="zk-btn-outline" onclick="cancelWrongReason(\''+qId+'\')">取消</button>';
+  html += '</div></div></div>';
+  return html;
+}
+
 function renderChoiceCard(q) {
   var r = results[q.id];
   var letters = 'ABCDEFGH';
@@ -416,7 +446,7 @@ function renderChoiceCard(q) {
     '<div class="quiz-question">'+esc(q.question)+'</div>' +
     '<div class="choice-options">'+optionsHTML+'</div>' +
     '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitChoice(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
-    (r ? '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+'</div>' : '') +
+    (r ? '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+renderWrongReason(q.id)+'</div>' : '') +
     '</div>';
 }
 
@@ -458,7 +488,7 @@ function renderFillCard(q) {
     '<div class="quiz-question">'+esc(q.text||q.question).replace(/__\d+__/g,'____')+'</div>' +
     blanksHTML +
     '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitFill(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
-    (r ? '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+compHTML+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+'</div>' : '') +
+    (r ? '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+compHTML+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+renderWrongReason(q.id)+'</div>' : '') +
     '</div>';
 }
 
@@ -468,9 +498,11 @@ function renderCalculateCard(q) {
   if (r) {
     var stepsHTML = (q.steps||[]).map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('');
     calcResult = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q) +
+      renderUserAnswer(q.id) +
       (q.formula?'<div class="calc-formula">📐 '+esc(q.formula)+'</div>':'') +
       (stepsHTML?'<ol class="calc-steps">'+stepsHTML+'</ol>':'') +
       (q.answer?'<span class="calc-answer">答案：'+esc(q.answer)+'</span>':'') +
+      renderWrongReason(q.id) +
       '</div>';
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
@@ -498,11 +530,11 @@ function renderShortAnswerCard(q) {
         (h.matched && h.matchedTerm && h.matchedTerm !== h.point ? ' <span class="match-hint">（命中：'+esc(h.matchedTerm)+'）</span>' : '') +
         synHTML + '</div></li>';
     }).join('');
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+'<ul class="points-list">'+pointsHTML+'</ul>'+
-      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '简答题评分仅供参考，你觉得实际掌握了吗？') + '</div>';
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+'<ul class="points-list">'+pointsHTML+'</ul>'+
+      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '简答题评分仅供参考，你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
     } else {
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+
-      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '简答题评分仅供参考，你觉得实际掌握了吗？') + '</div>';
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+
+      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '简答题评分仅供参考，你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
     }
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
@@ -529,11 +561,11 @@ function renderEssayCard(q) {
         (h.matched && h.matchedTerm && h.matchedTerm !== h.point ? ' <span class="match-hint">（命中：'+esc(h.matchedTerm)+'）</span>' : '') +
         synHTML + '</div></li>';
     }).join('');
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+'<ul class="points-list">'+pointsHTML+'</ul>'+
-      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '论述题主观性较强，系统评分仅供参考。你觉得实际掌握了吗？') + '</div>';
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+'<ul class="points-list">'+pointsHTML+'</ul>'+
+      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '论述题主观性较强，系统评分仅供参考。你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
     } else {
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+
-      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '论述题主观性较强，系统评分仅供参考。你觉得实际掌握了吗？') + '</div>';
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+
+      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '论述题主观性较强，系统评分仅供参考。你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
     }
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
@@ -559,11 +591,11 @@ function renderProofCard(q) {
         (!h.matched ? '<div class="point-desc">期望关键词：'+h.keywords.slice(0,3).map(esc).join('、')+'…</div>' : '') +
         '</div></li>';
     }).join('');
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+'<ul class="points-list">'+stepsHTML+'</ul>'+
-      renderReference('📖 参考证明（'+q.method+'）', q.referenceProof, true) + renderSelfEval(q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？') + '</div>';
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+'<ul class="points-list">'+stepsHTML+'</ul>'+
+      renderReference('📖 参考证明（'+q.method+'）', q.referenceProof, true) + renderSelfEval(q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？') + renderWrongReason(q.id) + '</div>';
     } else {
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+
-      renderReference('📖 参考证明（'+q.method+'）', q.referenceProof, true) + renderSelfEval(q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？') + '</div>';
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+
+      renderReference('📖 参考证明（'+q.method+'）', q.referenceProof, true) + renderSelfEval(q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？') + renderWrongReason(q.id) + '</div>';
     }
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
@@ -619,7 +651,7 @@ function submitChoice(qId) {
   var sel = window.choiceSelections[qId] || '';
   if (!sel) { alert('请先选择答案'); return; }
   var result = scoreChoice(q, sel);
-  results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null };
+  results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
   updateMastery(q.chapter, result.level);
   saveQuizRecord(q, null, sel, result);
   updateStats(); render();
@@ -635,7 +667,7 @@ function submitFill(qId) {
   });
   if (answers.every(function(a){return !a;})) { alert('请先填写答案'); return; }
   var result = scoreFill(q, answers);
-  results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null };
+  results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
   updateMastery(q.chapter, result.level);
   saveQuizRecord(q, answers.join(' | '), null, result);
   updateStats(); render();
@@ -650,7 +682,9 @@ function submitText(qId) {
   var ans = ta.value.trim();
   if (!ans) { alert('请先输入答案'); return; }
   var result = scoreQuestion(q, ans, null);
-  results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null };
+  if (!result.details) result.details = {};
+  result.details.userAnswer = ans;
+  results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
   updateMastery(q.chapter, result.level);
   saveQuizRecord(q, ans, null, result);
   updateStats(); render();
@@ -662,6 +696,36 @@ function selfEval(qId, level) {
   var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (q) updateMastery(q.chapter, level);
   updateStats(); render();
+}
+
+function toggleWrongReasonEdit(qId) {
+  var editor = document.getElementById('wr-edit-'+qId);
+  if (editor) {
+    editor.style.display = editor.style.display === 'none' ? 'block' : 'none';
+    if (editor.style.display === 'block') {
+      var ta = document.getElementById('wr-input-'+qId);
+      if (ta) ta.focus();
+    }
+  }
+}
+
+function saveWrongReason(qId) {
+  var ta = document.getElementById('wr-input-'+qId);
+  if (!ta) return;
+  var reason = ta.value.trim();
+  if (!results[qId]) return;
+  results[qId].wrongReason = reason;
+  fetch(apiUrl('/api/quiz-wrong-reason'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subject: currentSubject, questionId: qId, wrongReason: reason })
+  }).catch(function(e) { console.error('错因保存失败:', e); });
+  render();
+}
+
+function cancelWrongReason(qId) {
+  var editor = document.getElementById('wr-edit-'+qId);
+  if (editor) editor.style.display = 'none';
 }
 
 function toggleSymbols(qId) {
@@ -1341,9 +1405,9 @@ function init() {
             return { idx: i, userAnswer: userArr[i] || '', correctAnswer: b.answer, matched: (userArr[i] || '').indexOf(b.answer) >= 0 };
           })};
         } else if (q.type === 'calculate') {
-          details = { isCorrect: rec.isCorrect };
+          details = { isCorrect: rec.isCorrect, userAnswer: rec.userAnswer || '' };
         } else if ((q.type === 'shortAnswer' || q.type === 'essay') && q.points) {
-          details = { hits: q.points.map(function(p) {
+          details = { userAnswer: rec.userAnswer || '', hits: q.points.map(function(p) {
             var matched = false; var matchedTerm = null;
             var ua = rec.userAnswer.toLowerCase();
             var candidates = [p.point].concat(p.synonyms || []);
@@ -1353,7 +1417,7 @@ function init() {
             return { point: p.point, synonyms: p.synonyms || [], matched: matched, matchedTerm: matchedTerm, weight: p.weight || 1 };
           })};
         } else if (q.type === 'proof' && q.steps) {
-          details = { hits: q.steps.map(function(s) {
+          details = { userAnswer: rec.userAnswer || '', hits: q.steps.map(function(s) {
             var matched = false; var matchedTerm = null;
             var ua = rec.userAnswer.toLowerCase();
             var keywords = s.keywords || [];
@@ -1369,7 +1433,8 @@ function init() {
         total: rec.total || 1,
         level: rec.level || 'unknown',
         details: details,
-        selfOverride: null
+        selfOverride: null,
+        wrongReason: rec.wrongReason || ''
       };
     });
     pendingRecords = [];

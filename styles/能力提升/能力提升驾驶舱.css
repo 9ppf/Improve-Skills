@@ -57,7 +57,7 @@ min-width: fit-content;
 
 .dash-btn-primary {
 background: linear-gradient(135deg, var(--accent), var(--accent2));
-color: #fff;
+color: var(--surface);
 box-shadow: 0 2px 8px var(--blue-soft);
 }
 
@@ -77,7 +77,7 @@ color: var(--accent);
 
 .dash-view-btn.zk-active {
 background: linear-gradient(135deg, var(--accent), var(--accent2));
-color: #fff;
+color: var(--surface);
 border: none;
 box-shadow: 0 2px 8px var(--blue-soft);
 }
@@ -189,7 +189,7 @@ transition: width 0.3s ease;
 .dash-time-fill.exam { background: linear-gradient(90deg, var(--mastery-2), var(--orange)); }
 .dash-time-fill.python { background: linear-gradient(90deg, var(--mastery-4), var(--green)); }
 .dash-time-fill.ai { background: var(--grad-90); }
-.dash-time-fill.rest { background: linear-gradient(90deg, var(--mastery-1), #60a5fa); }
+.dash-time-fill.rest { background: linear-gradient(90deg, var(--mastery-1), var(--accent)); }
 
 .dash-time-input {
 width: 100%;
@@ -394,7 +394,7 @@ border-radius: 5px;
 transition: width 0.5s ease;
 }
 .comp-card-fill.good { background: linear-gradient(90deg, var(--mastery-4), var(--green)); }
-.comp-card-fill.mid { background: linear-gradient(90deg, var(--mastery-3), #fbbf24); }
+.comp-card-fill.mid { background: linear-gradient(90deg, var(--mastery-3), var(--accent-yellow)); }
 .comp-card-fill.low { background: linear-gradient(90deg, var(--mastery-0), var(--light)); }
 .comp-card-detail {
 font-size: 0.8rem;
@@ -591,7 +591,7 @@ bottom: 2rem;
 left: 50%;
 transform: translateX(-50%) translateY(20px);
 background: var(--ink);
-color: #fff;
+color: var(--surface);
 padding: 0.6rem 1.4rem;
 border-radius: 10px;
 font-size: 0.875rem;
@@ -600,7 +600,7 @@ opacity: 0;
 pointer-events: none;
 transition: all 0.3s;
 z-index: 9999;
-box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+box-shadow: 0 8px 30px var(--shadow-hover);
 }
 
 .dash-toast.dash-show {
@@ -700,7 +700,7 @@ font-weight: 600;
 padding: 0.12rem 0.45rem;
 border-radius: 5px;
 background: var(--accent);
-color: #fff;
+color: var(--surface);
 }
 
 .wk-week-dates {
@@ -796,7 +796,7 @@ border-color: var(--pass);
 
 .wk-check.checked::after {
 content: "✓";
-color: #fff;
+color: var(--surface);
 font-size: 0.75rem;
 font-weight: 700;
 }
@@ -1007,7 +1007,7 @@ padding: 0.4rem 0.8rem;
 border: none;
 border-radius: 6px;
 background: linear-gradient(135deg, var(--green), var(--mastery-4));
-color: #fff;
+color: var(--surface);
 font-family: var(--font);
 font-size: 0.85rem;
 font-weight: 600;
@@ -1084,17 +1084,17 @@ font-size: 0.7rem;
 font-weight: 500;
 padding: 2px 0.5rem;
 border-radius: 999px;
-color: #fff;
+color: var(--surface);
 min-width: 3.5rem;
 text-align: center;
 white-space: nowrap;
 }
 .dp-tag-core { background: var(--accent2); }
-.dp-tag-core2 { background: #0ea5e9; }
+.dp-tag-core2 { background: var(--accent); }
 .dp-tag-key { background: var(--mastery-3); }
 .dp-tag-py { background: var(--mastery-4); }
 .dp-tag-ai { background: var(--accent); }
-.dp-tag-en { background: #ec4899; }
+.dp-tag-en { background: var(--coral); }
 .dp-tag-review { background: var(--muted); }
 .dp-task-text { flex: 1; font-size: 0.82rem; line-height: 1.5; }
 .dp-task-chapter { flex-shrink: 0; font-weight: 600; color: var(--accent); font-size: 0.78rem; white-space: nowrap; }
@@ -1143,7 +1143,7 @@ font-weight: 600;
 padding: 2px 0.5rem;
 border-radius: 999px;
 background: var(--accent);
-color: #fff;
+color: var(--surface);
 }
 .dp-exec-day-header .dp-exec-badge.past {
 background: var(--muted);
@@ -1178,7 +1178,7 @@ position: relative;
 }
 .dp-exec-check.checked::after {
 content: '✓';
-color: #fff;
+color: var(--surface);
 font-size: 12px;
 position: absolute;
 top: 50%;
@@ -1207,12 +1207,12 @@ text-align: center;
 white-space: nowrap;
 }
 .dp-exec-tag.core { background: var(--purple-soft); color: var(--purple-text); }
-.dp-exec-tag.core2 { background: rgba(14,165,233,0.12); color: #0284c7; }
+.dp-exec-tag.core2 { background: rgba(14,165,233,0.12); color: var(--blue-text); }
 .dp-exec-tag.key { background: var(--amber-soft); color: var(--pri-normal); }
 .dp-exec-tag.py { background: var(--green-soft); color: var(--green-text); }
 .dp-exec-tag.ai { background: var(--blue-soft); color: var(--purple-text); }
 .dp-exec-tag.en { background: var(--coral-soft); color: var(--coral-text); }
-.dp-exec-tag.review { background: rgba(100,116,139,0.12); color: #475569; }
+.dp-exec-tag.review { background: rgba(100,116,139,0.12); color: var(--ink); }
 .dp-exec-tag.rest { background: rgba(34,197,94,0.12); color: var(--mastery-4); }
 
 .dp-exec-output {
@@ -1321,7 +1321,7 @@ content: '';
 position: absolute;
 bottom: 0; left: 0; right: 0;
 height: 1rem;
-background: linear-gradient(transparent, #fff);
+background: linear-gradient(transparent, var(--surface));
 pointer-events: none;
 }
 .ai-msg-toggle {
@@ -1448,7 +1448,6 @@ line-height: 1.6;
 .ai-scenario-btn { width: auto; justify-content: center; }
 .ai-apply-btn { width: auto; justify-content: center; }
 }
-
 
 /* ===== 行内样式抽离后新增类 ===== */
 

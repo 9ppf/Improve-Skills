@@ -59,6 +59,16 @@ function escapeHtml(s) {
   });
 }
 
+function pickRandom(arr, n) {
+  var pool = arr.slice();
+  var result = [];
+  while (pool.length > 0 && result.length < n) {
+    var idx = Math.floor(Math.random() * pool.length);
+    result.push(pool.splice(idx, 1)[0]);
+  }
+  return result;
+}
+
 var CARD_MAP = {
   '系统原理': '/data/knowledge-framework-13015.json',
   '离散数学': '/data/knowledge-framework-02324.json',
@@ -764,8 +774,8 @@ function renderTask() {
       var matched = cards.filter(function(c) {
         return c.chapter && c.chapter.indexOf(chapter) >= 0;
       });
-      renderKpCards(matched.slice(0, 5), subject, chapter);
-      renderPractice(matched.slice(0, 2), subject, chapter);
+      renderKpCards(pickRandom(matched, 5), subject, chapter);
+      renderPractice(pickRandom(matched, 2), subject, chapter);
       if (aiOnline) aiTaskContext(t, matched.length);
     });
   } else {

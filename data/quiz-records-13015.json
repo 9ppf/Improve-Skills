@@ -153,7 +153,8 @@
     "score": 3,
     "total": 6,
     "level": "unknown",
-    "session": "today-task"
+    "session": "today-task",
+    "wrongReason": "答案没有分条目，但是基本是对的"
   },
   {
     "questionId": "q-13015-005",
@@ -465,7 +466,8 @@
     "score": 0,
     "total": 2,
     "level": "unknown",
-    "session": "today-task"
+    "session": "today-task",
+    "wrongReason": "公式没有记住"
   },
   {
     "questionId": "q-13015-016",
@@ -669,7 +671,8 @@
     "score": 2,
     "total": 5,
     "level": "unknown",
-    "session": "today-task"
+    "session": "today-task",
+    "wrongReason": "没有写出两者的关系"
   },
   {
     "questionId": "q-13015-012",

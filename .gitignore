@@ -23,5 +23,9 @@ data/*.bak-*
 .DS_Store
 Thumbs.db
 
+# Log files
+*.log
+debug.log
+
 # API Keys (never commit)
 .env

@@ -115,6 +115,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_save_quiz('bank')
         elif self.path == '/api/quiz-records':
             self._handle_append_quiz_record()
+        elif self.path == '/api/quiz-wrong-reason':
+            self._handle_update_wrong_reason()
         elif self.path == '/api/quiz-ai':
             self._handle_save_quiz('ai')
         elif self.path == '/api/ai-plan':
@@ -375,6 +377,46 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
         self._send_json(200, {'status': 'ok', 'total': len(records)})
+
+    def _handle_update_wrong_reason(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        question_id = data.get('questionId', '')
+        wrong_reason = data.get('wrongReason', '')
+        if not subject or not question_id:
+            self._send_json(400, {'error': 'Missing subject or questionId'})
+            return
+        filename = f'quiz-records-{subject}.json'
+        path = ROOT / 'data' / filename
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                records = json.load(f)
+            if not isinstance(records, list):
+                records = []
+        except (FileNotFoundError, json.JSONDecodeError):
+            records = []
+        updated = False
+        for i in range(len(records) - 1, -1, -1):
+            if records[i].get('questionId') == question_id:
+                records[i]['wrongReason'] = wrong_reason
+                updated = True
+                break
+        if not updated:
+            self._send_json(404, {'error': 'Record not found'})
+            return
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(records, f, ensure_ascii=False, indent=2)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write: {e}'})
+            return
+        self._send_json(200, {'status': 'ok'})
 
     def _handle_load_ai_plan(self):
         path = ROOT / 'data' / 'ai-daily-plan.json'
