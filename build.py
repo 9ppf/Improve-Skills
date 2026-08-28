@@ -179,7 +179,8 @@ if str(SKILLS_DIR) not in sys.path:
 if str(TRANSFORMERS_DIR) not in sys.path:
     sys.path.insert(0, str(TRANSFORMERS_DIR))
 
-from reading_integration import validate_js, build_reading_html, count_sections
+from reading_integration import validate_js
+from check_css_standards import check_shared_css_references
 
 
 def load_workbench_config() -> dict:
@@ -359,9 +360,9 @@ def _extract_year(name: str) -> Optional[int]:
 def _build_module_workspace(data: dict) -> tuple[str, str]:
     """Build (constants_js, workspace_js) for any module.
 
-    For reading items with a contentSource, the source HTML is transformed and
-    injected as a JS constant. For all other items, fields are serialized
-    directly so the runtime can render them (e.g. via contentUrl iframe).
+    For reading items, structured JSON data is injected as a JS object
+    constant. For all other items, fields are serialized directly so the
+    runtime can render them (e.g. via contentUrl iframe).
     """
     module_id = data.get('id', 'module')
     constants = []
@@ -377,30 +378,27 @@ def _build_module_workspace(data: dict) -> tuple[str, str]:
         for item in category.get('items', []):
             enriched = dict(item)
 
-            # reading 类型：内联转换后的 HTML
+            # reading 类型：注入 JSON 数据为 JS 对象常量
             if enriched.get('type') == 'reading':
-                # 若 transformer 已提供 HTML 字符串则直接使用；否则从 contentSource 读取
-                if 'readingHtml' in enriched and isinstance(enriched['readingHtml'], str):
-                    transformed = enriched['readingHtml']
-                    section_count = enriched.get('chapters', count_sections(transformed))
+                if 'readingData' in enriched and isinstance(enriched['readingData'], dict):
+                    data_obj = enriched['readingData']
+                    section_count = len(data_obj.get('sections', []))
                 elif 'contentSource' in enriched:
                     content_source = enriched.pop('contentSource')
-                    source_path = WORKBENCH.parent / content_source
+                    source_path = DATA_DIR / content_source
                     if not source_path.exists():
-                        raise FileNotFoundError(f'Reading content source not found: {source_path}')
-                    source_html = source_path.read_text(encoding='utf-8')
-                    section_count = count_sections(source_html)
-                    transformed = build_reading_html(source_html)
+                        raise FileNotFoundError(f'Reading data source not found: {source_path}')
+                    data_obj = json.loads(source_path.read_text(encoding='utf-8'))
+                    section_count = len(data_obj.get('sections', []))
                 else:
-                    raise ValueError(f'Reading item must have readingHtml or contentSource: {enriched.get("name")}')
+                    raise ValueError(f'Reading item must have readingData or contentSource: {enriched.get("name")}')
 
-                # 优先按条目名称中的 4 位年份命名常量，保持与验证脚本兼容
                 year_match = re.search(r'(\d{4})年', enriched.get('name', ''))
-                const_name = f'readingHtml{year_match.group(1)}' if year_match else f'readingHtml{module_id}_{const_index}'
+                const_name = f'readingData{year_match.group(1)}' if year_match else f'readingData{module_id}_{const_index}'
                 if not year_match:
                     const_index += 1
-                constants.append(f'    const {const_name} = `{transformed}`;')
-                enriched['readingHtml'] = const_name
+                constants.append(f'    var {const_name} = {json.dumps(data_obj, ensure_ascii=False)};')
+                enriched['readingData'] = const_name
                 enriched['chapters'] = section_count
                 enriched.setdefault('done', 0)
 
@@ -674,9 +672,12 @@ def build() -> Path:
     styles_css = _compile_styles()
 
     print('Rendering workbench...')
+    reading_js_path = SHARED_DIR / 'reading.js'
+    reading_js = reading_js_path.read_text(encoding='utf-8') if reading_js_path.exists() else ''
     context = {
         'styles': styles_css,
         'theme_script': _build_theme_script(config),
+        'reading_js': reading_js,
         'reading_constants': reading_constants,
         'workspaces_array': workspaces_array,
     }
@@ -763,6 +764,19 @@ def main() -> int:
         _report_cleaned(pre_cleaned, dry_run=False)
 
     build()
+
+    # CSS 标准硬性检查（不可跳过，即使 --skip-validate 也会执行）
+    print('Checking CSS standards (hard gate)...')
+    css_errors, css_warnings = check_shared_css_references()
+    if css_errors:
+        print(f'  [ERROR] CSS标准检查发现 {len(css_errors)} 个硬性错误：')
+        for e in css_errors:
+            print(f'    - {e}')
+        print('Build failed: CSS standards violation.')
+        return 1
+    if css_warnings:
+        print(f'  [warn] {len(css_warnings)} 个建议性CSS问题（不阻断构建）')
+    print('  CSS standards OK')
 
     if not args.skip_validate:
         print('Running full validation...')

@@ -55,6 +55,7 @@
   --space-lg: #{$space-lg};
 
   --font-sans: #{$font-sans};
+  --font-serif: "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
 
   // —— 内容页面变量别名 ——
   --font: var(--font-sans);
@@ -97,6 +98,10 @@
   --pri-key: #{$pri-key};
   --pri-normal: #{$pri-normal};
   --pri-survey: #{$pri-survey};
+
+  // —— 代码块（暗色编辑器风格，跨主题统一）——
+  --code-bg: #1e293b;
+  --code-text: #e2e8f0;
 }
 
 // ============================================================
@@ -136,6 +141,8 @@
   --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
   --reading-warm: rgba(254, 243, 199, 0.1);
   --notice-bg: rgba(254, 243, 199, 0.1);
+  --code-bg: #0d1117;
+  --code-text: #e2e8f0;
 }
 
 // 暖阳主题

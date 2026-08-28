@@ -14,15 +14,15 @@
   cursor: pointer;
   border: none;
   transition: all 0.15s var(--ease);
-  color: #fff;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  color: var(--surface);
+  box-shadow: var(--shadow);
   outline: none;
 }
 
 .btn:focus-visible { box-shadow: 0 0 0 3px var(--blue-soft); }
 .btn:active {
   transform: translateY(2px);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary {
@@ -83,7 +83,7 @@
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--surface);
 }
 
 .badge-core { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); }
@@ -199,7 +199,7 @@
 
 .plan-tab.active {
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-  color: #fff;
+  color: var(--surface);
   box-shadow: 0 3px 10px var(--blue-soft);
 }
 
@@ -387,7 +387,7 @@
 // 渐变按钮
 .zk-grad-btn {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
+  color: var(--surface);
   border: none;
   border-radius: 6px;
   padding: 0.4rem 0.8rem;
@@ -413,7 +413,7 @@
 
 .zk-btn-primary {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
+  color: var(--surface);
   border: none;
   border-radius: 6px;
   padding: 0.4rem 0.8rem;
@@ -428,7 +428,7 @@
 
 .zk-btn-solid {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
+  color: var(--surface);
   border: none;
   border-radius: 6px;
   padding: 0.4rem 0.8rem;
@@ -473,7 +473,7 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
+  color: var(--surface);
   font-weight: 700;
 }
 
@@ -510,7 +510,7 @@
 .zk-seg:hover { border-color: var(--accent); }
 .zk-seg.zk-active {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
+  color: var(--surface);
   border-color: transparent;
   font-weight: 600;
 }

@@ -265,6 +265,11 @@
   </div>
 
   <script>
+// <!-- reading-js-begin -->
+{{ reading_js }}
+// <!-- reading-js-end -->
+  </script>
+  <script>
 // <!-- reading-constants-begin -->
 {{ reading_constants }}
 // <!-- reading-constants-end -->
@@ -335,26 +340,6 @@ const workspaces = [
     }
 
     
-    function renderReadingContent(item) {
-      const html = item.readingHtml || '<div class="reading-content"><p>暂无内容</p></div>';
-      return html;
-    }
-
-    function renderContentFrame(item) {
-      const url = item.contentUrl || '';
-      const bareCls = item.renderMode === 'bare' ? ' content-frame-bare' : '';
-      return `
-        <div class="content-frame-wrap${bareCls}">
-          <iframe class="content-frame" src="${url}" title="${item.name}" loading="lazy"></iframe>
-        </div>
-      `;
-    }
-
-    function toggleReadingSection(id) {
-      const section = document.querySelector('.reading-section[data-section="' + id + '"]');
-      if (section) section.classList.toggle('collapsed');
-    }
-
     // ---- 实时进度集成：从交互页面读取 localStorage ----
     var PY_KT_TOTAL = 29; // python-knowledge-tree.html 有 29 个知识点
 
@@ -680,14 +665,6 @@ function renderTree() {
 
     function isExamItem(item) {
       return item && (item.type === 'core' || item.type === 'public' || item.type === 'practice');
-    }
-
-    function isReadingItem(item) {
-      return item && item.type === 'reading';
-    }
-
-    function hasContentUrl(item) {
-      return item && typeof item.contentUrl === 'string' && item.contentUrl.trim() !== '';
     }
 
     function getItemMetaFields(item) {

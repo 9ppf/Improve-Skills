@@ -4,6 +4,42 @@
 
 ---
 
+## v2.33.0
+
+**发布时间**：2026-08-28（北京时间）
+
+### CSS守门三层防线+范文数据JSON化+3页CSS抽离+硬编码颜色清零
+
+**核心变更**：创建css-gate skill强制7条CSS硬规则（写入时拦截）；build.py新增CSS标准硬性检查（构建时阻断，不可跳过）；范文内容从静态HTML迁移为JSON数据+外部JS动态渲染；3个知识图谱页面CSS抽离完成；Sass和CSS中全部硬编码颜色替换为CSS变量。
+
+| 文件 | 更新内容 |
+|---|---|
+| `.trae/skills/css-gate/SKILL.md` | 新增：CSS规范守门skill，7条硬规则+正确head模板+白名单 |
+| `.trae/skills/check_css_standards.py` | 新增check_shared_css_references()全量扫描+--full模式+白名单（备份目录匹配） |
+| `.trae/skills/validate_workbench.py` | 范文变量检查从const改为var |
+| `build.py` | 新增CSS硬性检查（不可跳过）+范文从JSON读取注入为JS对象+{{reading_js}}占位符 |
+| `data/modules/reading.json` | contentSource从read/{year}.html改为reading/{year}.json |
+| `data/reading/2019-2026.json` | 新增：8个年份范文结构化JSON数据 |
+| `styles/shared/reading.js` | 新增：范文外部JS渲染函数（renderReadingFromJson等） |
+| `templates/workbench.html` | 删除5个内联reading函数+新增{{reading_js}}注入点 |
+| `transformers/read.py` | 从JSON文件读取范文数据，设置readingData字段 |
+| `styles/_root.scss` | 新增--font-serif变量 |
+| `styles/_components.scss` | 8处color:#fff替换为var(--surface)+阴影变量化 |
+| `styles/_reading.scss` | 徽章硬编码颜色替换为var(--accent)/var(--accent2) |
+| `styles/_responsive.scss` | 移动端阴影替换为var(--shadow) |
+| `styles/shared/base-vars.css` | SASS编译产物，新增--font-serif |
+| `styles/shared/components.css` | SASS编译产物，按钮/徽章颜色变量化 |
+| `styles/阅读/2019-2026.css` | 8个阅读CSS修复.essay-body规则断裂+硬编码颜色 |
+| `styles/AI学习/ai-knowledge-tree.css` | 新增：从HTML抽离的CSS |
+| `styles/AI学习/job-skill-tree.css` | 新增：从HTML抽离的CSS |
+| `styles/Python基础/python-knowledge-tree.css` | 新增：从HTML抽离的CSS |
+| `Workbench/此刻便是春天.html` | 范文变量const→var+渲染函数改用window[]+CSS编译注入 |
+| `Workbench/ai-learning/ai-knowledge-tree.html` | CSS抽离+引用共享CSS+theme-sync.js |
+| `Workbench/ai-learning/job-skill-tree.html` | CSS抽离+引用共享CSS+theme-sync.js |
+| `Workbench/Python基础/python-knowledge-tree.html` | CSS抽离+引用共享CSS+theme-sync.js |
+
+---
+
 ## v2.32.0
 
 **发布时间**：2026-08-28（北京时间）

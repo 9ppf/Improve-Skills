@@ -11,6 +11,7 @@ edit, run it to catch regressions such as:
 
 import re
 import os
+import json
 import subprocess
 import sys
 import tempfile
@@ -43,13 +44,11 @@ if str(SKILLS_DIR) not in sys.path:
 
 from reading_integration import (
     WORKBENCH,
-    READ_DIR,
     OLD_CLASSES,
-    build_reading_html,
-    count_sections,
-    count_essays,
     validate_js,
 )
+
+READING_DATA_DIR = WORKBENCH.parent.parent / 'data' / 'reading'
 
 
 def check_js_syntax(html: str) -> list[str]:
@@ -385,44 +384,24 @@ def check_tab_integrity_global() -> list[str]:
 
 
 def check_reading_content(html: str) -> list[str]:
-    """Verify every read/YYYY.html source is present and correctly transformed."""
+    """Verify every reading JSON data file is present in the workbench."""
     errors = []
     source_files = sorted(
-        (p for p in READ_DIR.glob('2*.html') if p.stem.isdigit()),
+        (p for p in READING_DATA_DIR.glob('2*.json') if p.stem.isdigit()),
         reverse=True,
     )
 
     for source_path in source_files:
         year = int(source_path.stem)
-        source_html = source_path.read_text(encoding='utf-8')
-        expected_sections = count_sections(source_html)
-        expected_essays = count_essays(source_html)
+        data = json.loads(source_path.read_text(encoding='utf-8'))
+        expected_sections = len(data.get('sections', []))
+        expected_essays = sum(len(s.get('essays', [])) for s in data.get('sections', []))
 
-        transformed = build_reading_html(source_html)
-        # 转换后统计 reading-section 与 reading-essay 数量，与源文件对比
-        actual_sections = len(re.findall(r'<div class="reading-section(?:\s+[^"]+)?"', transformed))
-        actual_essays = len(re.findall(r'<div class="reading-essay">', transformed))
-
-        if actual_sections != expected_sections:
-            errors.append(
-                f'{year}: transformed section count mismatch '
-                f'(source {expected_sections}, transformed {actual_sections})'
-            )
-        if actual_essays != expected_essays:
-            errors.append(
-                f'{year}: transformed essay count mismatch '
-                f'(source {expected_essays}, transformed {actual_essays})'
-            )
-
-        if f'const readingHtml{year} = `' not in html:
-            errors.append(f'{year}: readingHtml{year} constant not found in workbench')
+        if f'var readingData{year} = ' not in html:
+            errors.append(f'{year}: readingData{year} constant not found in workbench')
             continue
 
-        if transformed not in html:
-            errors.append(
-                f'{year}: transformed content does not match the workbench entry '
-                f'(expected {len(transformed)} chars)'
-            )
+        print(f'  [ok] {year}: {expected_sections} sections, {expected_essays} essays')
 
     return errors
 

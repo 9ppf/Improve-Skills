@@ -34,7 +34,7 @@
       right: -20%;
       width: 60%;
       height: 200%;
-      background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
       pointer-events: none;
     }
     header.hero h1 {
@@ -85,7 +85,7 @@
       border-radius: 16px;
       padding: 1.5rem;
       margin-bottom: 2.5rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 1px 3px var(--shadow-sm);
     }
     nav.toc h2 {
       font-size: 1.1rem;
@@ -113,7 +113,7 @@
       border-color: var(--accent);
       color: var(--accent);
       transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(59,130,246,0.1);
+      box-shadow: 0 2px 8px var(--shadow-sm);
     }
 
     /* === Section === */
@@ -136,7 +136,7 @@
       font-weight: 600;
       padding: 0.25rem 0.65rem;
       background: var(--accent);
-      color: white;
+      color: var(--surface);
       border-radius: 6px;
     }
 
@@ -147,7 +147,7 @@
       border-radius: 16px;
       padding: 1.75rem;
       margin-bottom: 1.5rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 1px 3px var(--shadow-sm);
     }
     .card h3 {
       font-size: 1.15rem;
@@ -211,7 +211,13 @@
       margin-bottom: 1.25rem;
       color: var(--ink);
     }
-    .essay-
+    .essay-body {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      line-height: 2;
+      text-align: justify;
+      color: var(--ink);
+    }
     .essay-body p {
       text-indent: 2em;
       margin-bottom: 0.75rem;
@@ -267,14 +273,14 @@
       width: 44px;
       height: 44px;
       background: var(--accent);
-      color: white;
+      color: var(--surface);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
       font-size: 1.25rem;
-      box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+      box-shadow: 0 4px 12px var(--shadow);
       transition: transform 0.2s ease;
     }
     .back-to-top:hover { transform: translateY(-3px); }

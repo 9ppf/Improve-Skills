@@ -8,142 +8,10 @@
   <meta http-equiv="Expires" content="0">
   <title>岗位技能图谱</title>
   <link rel="stylesheet" href="../../styles/shared/base-vars.css">
-<style>
-    body {
-  --green-soft: rgba(22,163,74,0.08);
-  --orange-soft: rgba(234,88,12,0.08);
-}
-
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{font-size:16px;scroll-behavior:smooth}
-    body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.75;padding:1.5rem 1rem}
-    article.ai-page{max-width:var(--max);margin:0 auto}
-
-    .ai-toolbar{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap}
-    .ai-search{flex:1;min-width:180px;position:relative}
-    .ai-search input{width:100%;padding:0.5rem 0.8rem 0.5rem 2.2rem;border:1px solid var(--rule);border-radius:10px;font-size:0.88rem;background:#fff;color:var(--ink);outline:none}
-    .ai-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.10)}
-    .ai-search-icon{position:absolute;left:0.7rem;top:50%;transform:translateY(-50%);font-size:0.9rem;opacity:0.5}
-    .ai-progress{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--muted);white-space:nowrap}
-    .ai-progress-bar{width:100px;height:8px;background:var(--rule);border-radius:999px;overflow:hidden}
-    .ai-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width 0.4s ease}
-    .ai-progress b{color:var(--accent);font-weight:700}
-
-    .stage-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
-    .stage-tab{padding:0.45rem 1rem;border-radius:10px;font-size:0.85rem;font-weight:600;border:1px solid var(--rule);background:#fff;color:var(--muted);cursor:pointer;transition:all 0.2s}
-    .stage-tab:hover{border-color:var(--accent);color:var(--accent)}
-    .stage-tab.zk-active{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .stage-tab .stage-count{font-size:0.72rem;opacity:0.8;margin-left:0.3rem}
-
-    .kp-list{display:flex;flex-direction:column;gap:0.8rem}
-    .kp-card{background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,0.03);transition:border-color 0.2s}
-    .kp-card:hover{border-color:rgba(37,99,235,0.30)}
-    .kp-header{display:flex;align-items:center;gap:0.8rem;padding:0.8rem 1.1rem;cursor:pointer;user-select:none}
-    .kp-num{flex-shrink:0;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.82rem;font-weight:800;color:var(--accent);background:rgba(37,99,235,0.08)}
-    .kp-card.done .kp-num{background:var(--green-soft);color:var(--green)}
-    .kp-title{flex:1;font-size:0.95rem;font-weight:600;color:var(--ink)}
-    .kp-level{font-size:0.72rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:999px}
-    .kp-level.entry{color:var(--green);background:var(--green-soft)}
-    .kp-level.advanced{color:var(--orange);background:var(--orange-soft)}
-    .kp-tag{font-size:0.72rem;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:0.1rem 0.55rem;border-radius:999px}
-    .kp-check{flex-shrink:0;width:20px;height:20px;cursor:pointer;accent-color:var(--accent)}
-    .kp-body{display:none;padding:0 1.1rem 1.1rem}
-    .kp-card.open .kp-body{display:block}
-    .kp-layer{padding:0.8rem 0;border-top:1px solid var(--rule)}
-    .kp-layer h3{font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;color:var(--ink)}
-    .kp-layer p{font-size:0.88rem;color:var(--ink);line-height:1.7}
-    .kp-code-block{position:relative}
-    .kp-copy-btn{position:absolute;top:0.5rem;right:0.5rem;z-index:1;font-size:0.72rem;font-weight:600;color:var(--code-text);background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:0.2rem 0.55rem;cursor:pointer;opacity:0.55;transition:opacity 0.2s,background 0.2s}
-    .kp-code-block:hover .kp-copy-btn{opacity:1}
-    .kp-copy-btn:hover{background:rgba(255,255,255,0.25)}
-    .kp-copy-btn.copied{background:rgba(166,227,161,0.25);color:#a6e3a1;opacity:1}
-    pre.kp-code{background:var(--code-bg);color:var(--code-text);padding:0.9rem 1rem;border-radius:10px;overflow-x:auto;font-family:var(--font-mono);font-size:0.82rem;line-height:1.6}
-    .kp-answer-wrap{max-height:0;overflow:hidden;opacity:0;transition:max-height 0.3s ease,opacity 0.3s ease}
-    .kp-answer-wrap.zk-show{max-height:2000px;opacity:1}
-    .kp-answer-toggle{font-size:0.8rem;font-weight:600;color:var(--accent);cursor:pointer;border:none;background:none;padding:0.3rem 0;display:flex;align-items:center;gap:0.3rem}
-    .kp-answer-toggle:hover{text-decoration:underline}
-    .kp-answer-toggle .arrow{transition:transform 0.3s ease;display:inline-block}
-    .kp-answer-toggle.open .arrow{transform:rotate(180deg)}
-
-    .kp-project{background:var(--green-soft);border:1px solid rgba(22,163,74,0.15);border-radius:10px;padding:0.6rem 0.8rem;margin-top:0.5rem}
-    .kp-project h3{color:var(--green)!important}
-    .kp-project .resume-line{font-size:0.82rem;color:var(--ink);background:#fff;border:1px solid rgba(22,163,74,0.15);border-radius:8px;padding:0.4rem 0.6rem;margin-top:0.4rem;font-style:italic}
-    .kp-project .resume-line::before{content:'简历: ';font-weight:700;font-style:normal;color:var(--green)}
-
-    .kp-note{font-size:0.8rem;color:var(--orange);background:var(--orange-soft);border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:0.4rem 0.6rem;margin-top:0.4rem}
-
-  /* === 今日任务版块 === */
-  .today-panel{display:flex;gap:1rem;margin-bottom:1.5rem;background:#fff;border:1px solid var(--ai-border,#e2e8f0);border-radius:14px;overflow:hidden}
-  .today-tasks{flex:0 0 240px;padding:1rem;background:linear-gradient(135deg,#eff6ff,#f5f3ff);border-right:1px solid #e2e8f0;overflow-x:hidden}
-  .today-tasks h3{font-size:0.8rem;color:#64748b;margin:0 0 0.6rem;font-weight:600}
-  .today-task-item{padding:0.6rem 0.8rem;margin-bottom:0.5rem;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all 0.2s;min-height:60px}
-  .today-task-item:hover{border-color:#2563eb;box-shadow:0 2px 8px rgba(37,99,235,0.1)}
-  .today-task-item.zk-active{border-color:#2563eb;background:#eff6ff}
-  .today-task-item .tt-stage{font-size:0.7rem;color:#8b5cf6;font-weight:600;margin-bottom:0.2rem}
-  .today-task-item .tt-title{font-size:0.8rem;color:#1e293b;line-height:1.4}
-  .today-task-item .tt-time{font-size:0.7rem;color:#64748b;margin-top:0.2rem}
-  .today-empty{padding:2rem 1rem;text-align:center;color:#94a3b8;font-size:0.85rem}
-  .today-guide{flex:1;padding:1rem;overflow-y:auto}
-  .today-guide h3{font-size:0.85rem;color:#64748b;margin:0 0 0.6rem;font-weight:600}
-  .guide-kp-wrap{border-left:3px solid #e2e8f0;padding-left:0.8rem;margin-bottom:1.5rem}
-  .guide-kp-wrap>h4{font-size:0.85rem;color:#1e293b;margin:0 0 0.8rem;font-weight:700}
-  .guide-section{margin-bottom:1.2rem}
-  .guide-section h4{font-size:0.8rem;color:#2563eb;margin:0 0 0.5rem;font-weight:600;display:flex;align-items:center;gap:0.3rem}
-  .guide-prereq{list-style:none;padding:0;margin:0}
-  .guide-prereq li{padding:0.3rem 0;font-size:0.78rem;color:#64748b;display:flex;align-items:flex-start;gap:0.3rem;line-height:1.5}
-  .guide-prereq li::before{content:"☑";color:#16a34a;flex-shrink:0}
-  .guide-step{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.8rem;margin-bottom:0.6rem}
-  .guide-step .gs-why{font-size:0.78rem;color:#1e293b;margin-bottom:0.4rem;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
-  .guide-step .gs-cmd{font-family:'JetBrains Mono',Consolas,monospace;font-size:0.75rem;background:#1e293b;color:#4ade80;padding:0.4rem 0.6rem;border-radius:4px;margin:0.4rem 0;word-break:break-all;overflow-wrap:break-word}
-  .guide-step .gs-meaning{font-size:0.72rem;color:#8b5cf6;margin:0.3rem 0;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
-  .guide-step .gs-error{font-size:0.72rem;color:#ea580c;background:#fff7ed;padding:0.3rem 0.5rem;border-radius:4px;margin-top:0.3rem;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
-  .guide-practice{background:#f0fdf4;border:1px solid #dcfce7;border-radius:8px;padding:0.8rem;margin-bottom:0.6rem}
-  .guide-practice .gp-step{font-size:0.75rem;color:#1e293b;margin-bottom:0.4rem;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
-  .guide-practice .gp-label{font-weight:600;color:#16a34a}
-  .guide-completion{background:#fefce8;border:1px solid #fef08a;border-radius:8px;padding:0.8rem}
-  .guide-completion .gc-item{font-size:0.75rem;color:#1e293b;display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;line-height:1.5}
-  .guide-completion .gc-check{width:20px;height:20px;cursor:pointer;accent-color:#2563eb;flex-shrink:0}
-  .guide-completion .gc-verify{margin-top:0.6rem;padding:0.4rem 1rem;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:0.78rem;cursor:pointer}
-  .guide-completion .gc-verify:hover{background:#1d4ed8}
-  .guide-completion .gc-verify:disabled{opacity:0.5;cursor:not-allowed}
-  .guide-jump{display:flex;gap:0.5rem;margin-top:0.8rem;flex-wrap:wrap}
-  .guide-jump a{padding:0.4rem 0.8rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;font-size:0.75rem;color:#2563eb;cursor:pointer;text-decoration:none;transition:all 0.2s}
-  .guide-jump a:hover{background:#eff6ff;border-color:#2563eb}
-  /* 前置学习关卡 */
-  .prereq-list{display:flex;flex-direction:column;gap:0.6rem}
-  .prereq-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem 0.8rem;transition:all 0.2s}
-  .prereq-item.must-learn{border-left:3px solid #f59e0b;background:#fffbeb}
-  .prereq-item.must-learn.done{border-left-color:#16a34a;background:#f0fdf4}
-  .prereq-head{display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:#1e293b}
-  .prereq-head input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#f59e0b;flex-shrink:0}
-  .prereq-item.must-learn.done .prereq-head input[type=checkbox]{accent-color:#16a34a}
-  .prereq-title{flex:1;font-weight:600}
-  .prereq-time{font-size:0.68rem;color:#94a3b8;white-space:nowrap}
-  .prereq-expand{font-size:0.68rem;color:#2563eb;cursor:pointer;background:none;border:none;padding:0.2rem 0.4rem;border-radius:4px;transition:background 0.2s}
-  .prereq-expand:hover{background:#eff6ff}
-  .prereq-content{display:none;margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed #e2e8f0}
-  .prereq-content.zk-show{display:block}
-  .prereq-concept{font-size:0.75rem;color:#475569;line-height:1.6;margin-bottom:0.5rem}
-  .prereq-steps{list-style:decimal;padding-left:1.2rem;margin:0}
-  .prereq-steps li{font-size:0.73rem;color:#1e293b;line-height:1.6;margin-bottom:0.3rem}
-  .prereq-steps code{font-family:'JetBrains Mono',Consolas,monospace;background:#1e293b;color:#e2e8f0;padding:0.1rem 0.4rem;border-radius:3px;font-size:0.7rem}
-  /* tutorial 锁定态 */
-  .guide-tutorial-locked{opacity:0.45;filter:grayscale(0.5);pointer-events:none;user-select:none}
-  .guide-lock-msg{text-align:center;font-size:0.75rem;color:#f59e0b;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:0.6rem;margin-bottom:0.8rem}
-  .guide-lock-msg.unlocked{display:none}
-  .kp-guide-layer{margin:0.6rem 0;padding:0.8rem;background:#fafafa;border:1px solid #e2e8f0;border-radius:10px}
-  .kp-guide-layer h3{font-size:0.8rem;color:#2563eb;margin:0 0 0.5rem}
-  .kp-guide-toggle{cursor:pointer;color:#2563eb;font-size:0.75rem;font-weight:600}
-  .kp-guide-content{display:none;margin-top:0.5rem}
-  .kp-guide-content.zk-show{display:block}
-
-  /* 响应式：窄屏垂直堆叠 */
-  @media(max-width:640px){
-    .today-panel{flex-direction:column}
-    .today-tasks{flex:0 0 auto;border-right:none;border-bottom:1px solid #e2e8f0}
-    .today-guide{max-height:400px}
-  }
-  </style>
+<link rel="stylesheet" href="../../styles/shared/base.css">
+<link rel="stylesheet" href="../../styles/shared/components.css">
+<link rel="stylesheet" href="../../styles/AI学习/job-skill-tree.css">
+<script src="../../styles/shared/theme-sync.js"></script>
 </head>
 <body>
 <article class="ai-page">
@@ -160,7 +28,7 @@
   </div>
   <div class="today-panel" id="todayPanel" style="display:none">
     <div class="today-tasks" id="todayTasks"><h3>📌 今日AI任务</h3></div>
-    <div class="today-guide" id="todayGuide"><h3>📚 教学指引</h3><p style="color:#94a3b8;font-size:0.8rem">点击左侧任务查看教学指引</p></div>
+    <div class="today-guide" id="todayGuide"><h3>📚 教学指引</h3><p style="color:var(--light);font-size:0.8rem">点击左侧任务查看教学指引</p></div>
   </div>
   <div class="stage-tabs" id="stageTabs"></div>
   <div class="kp-list" id="kpList"></div>
@@ -771,7 +639,7 @@
   function renderTodayGuide(task){
     var el=document.getElementById('todayGuide');
     if(!task||!task.kpIds||task.kpIds.length===0){
-      el.innerHTML='<h3>📚 教学指引</h3><p style="color:#94a3b8;font-size:0.8rem">本周无具体知识点教学指引</p>';
+      el.innerHTML='<h3>📚 教学指引</h3><p style="color:var(--light);font-size:0.8rem">本周无具体知识点教学指引</p>';
       return;
     }
     var html='<h3>📚 教学指引</h3>';
@@ -875,7 +743,7 @@
       html+='</div>';
 
       // 预估时间
-      html+='<div style="font-size:0.72rem;color:#64748b;margin-top:0.4rem">⏱ 预估 '+g.estTime+'</div>';
+      html+='<div style="font-size:0.72rem;color:var(--muted);margin-top:0.4rem">⏱ 预估 '+g.estTime+'</div>';
 
       html+='</div>';
     });
@@ -1023,7 +891,7 @@
     }
     // 快速步骤
     if(g.steps&&g.steps.length){
-      html+='<div style="margin-top:0.4rem"><b>⚡ 快速步骤:</b><pre style="font-size:0.72rem;background:#1e293b;color:#4ade80;padding:0.4rem;border-radius:4px;overflow-x:auto;margin:0.3rem 0">'+g.steps.join('\n')+'</pre></div>';
+      html+='<div style="margin-top:0.4rem"><b>⚡ 快速步骤:</b><pre style="font-size:0.72rem;background:var(--code-bg);color:#4ade80;padding:0.4rem;border-radius:4px;overflow-x:auto;margin:0.3rem 0">'+g.steps.join('\n')+'</pre></div>';
     }
     // 渐进练习
     if(g.practice){
@@ -1032,9 +900,9 @@
     }
     // 关联
     html+='<div style="margin-top:0.4rem;font-size:0.75rem">';
-    if(g.pyKp&&g.pyKp.length) html+='<span style="color:#8b5cf6">📖 Python: '+g.pyKp.join(', ')+'</span> ';
-    if(g.pyDemo) html+='<span style="color:#ea580c">💻 Demo'+g.pyDemo+'</span> ';
-    html+='<span style="color:#64748b">⏱ '+g.estTime+'</span>';
+    if(g.pyKp&&g.pyKp.length) html+='<span style="color:var(--accent2)">📖 Python: '+g.pyKp.join(', ')+'</span> ';
+    if(g.pyDemo) html+='<span style="color:var(--orange)">💻 Demo'+g.pyDemo+'</span> ';
+    html+='<span style="color:var(--muted)">⏱ '+g.estTime+'</span>';
     html+='</div>';
     html+='</div></div>';
     return html;

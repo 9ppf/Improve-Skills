@@ -46,6 +46,7 @@
   --space-md: 12px;
   --space-lg: 16px;
   --font-sans: SF Pro Text, PingFang SC, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-serif: "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
   --font: var(--font-sans);
   --font-mono: "JetBrains Mono", Consolas, "SF Mono", monospace;
   --accent: #38BDF8;
@@ -76,6 +77,8 @@
   --pri-key: #DC2626;
   --pri-normal: #D97706;
   --pri-survey: #64748B;
+  --code-bg: #1e293b;
+  --code-text: #e2e8f0;
 }
 
 [data-theme="dark"] {
@@ -108,6 +111,8 @@
   --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
   --reading-warm: rgba(254, 243, 199, 0.1);
   --notice-bg: rgba(254, 243, 199, 0.1);
+  --code-bg: #0d1117;
+  --code-text: #e2e8f0;
 }
 
 [data-theme="warm"] {
