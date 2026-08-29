@@ -4,6 +4,23 @@
 
 ---
 
+## v2.33.5
+
+**发布时间**：2026-08-29（北京时间）
+
+### 删除public-js-css-refactor-plan可视化页面
+
+**核心变更**：删除 public-js-css-refactor-plan/ 目录（含 HTML 展示页 + mermaid.min.js 2.5MB），方案内容已在 docs/公共JS与CSS抽离方案B.md 中保留。
+
+| 文件 | 更新内容 |
+|---|---|
+| `public-js-css-refactor-plan/` | 删除：可视化展示页面（方案已在md中保留） |
+| `docs/文件说明.md` | 更新：移除 public-js-css-refactor-plan 条目，版本号同步 |
+| `docs/AGENT_HANDOFF.md` | 更新：版本号同步至 v2.33.5 |
+| `docs/工作台搭建总结.md` | 更新：版本号同步至 v2.33.5 |
+
+---
+
 ## v2.33.4
 
 **发布时间**：2026-08-29（北京时间）
