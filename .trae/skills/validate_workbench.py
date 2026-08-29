@@ -430,7 +430,7 @@ def check_file_documentation() -> list[str]:
     and stable as the project grows.
     """
     root = SKILLS_DIR.parent.parent
-    doc_path = root / '文件说明.md'
+    doc_path = root / 'docs' / '文件说明.md'
     if not doc_path.exists():
         return ['文件说明.md not found']
 
@@ -888,7 +888,7 @@ def check_directory_structure_sync() -> list[str]:
     同时检查 CHANGELOG.md 版本与 AGENT_HANDOFF.md 当前版本是否一致。
     """
     root = SKILLS_DIR.parent.parent
-    handoff_path = root / 'AGENT_HANDOFF.md'
+    handoff_path = root / 'docs' / 'AGENT_HANDOFF.md'
     if not handoff_path.exists():
         return ['AGENT_HANDOFF.md not found']
 
@@ -1008,7 +1008,7 @@ def check_directory_structure_sync() -> list[str]:
                         f'transformers/{item.name} 未在 AGENT_HANDOFF.md 目录结构中列出')
 
     # 检查 CHANGELOG.md 版本是否与 AGENT_HANDOFF.md 一致
-    changelog_path = root / 'CHANGELOG.md'
+    changelog_path = root / 'docs' / 'CHANGELOG.md'
     if changelog_path.exists():
         changelog_content = changelog_path.read_text(encoding='utf-8')
         # 从 AGENT_HANDOFF.md 提取当前版本号
@@ -1032,7 +1032,7 @@ def check_changelog_coverage() -> list[str]:
     import fnmatch
 
     root = SKILLS_DIR.parent.parent
-    changelog_path = root / 'CHANGELOG.md'
+    changelog_path = root / 'docs' / 'CHANGELOG.md'
     if not changelog_path.exists():
         return ['CHANGELOG.md not found']
 
@@ -1142,9 +1142,9 @@ def check_summary_version_sync() -> list[str]:
     不一致时警告，防止文档被遗漏更新。
     """
     root = SKILLS_DIR.parent.parent
-    summary_path = root / '工作台搭建总结.md'
-    changelog_path = root / 'CHANGELOG.md'
-    filedoc_path = root / '文件说明.md'
+    summary_path = root / 'docs' / '工作台搭建总结.md'
+    changelog_path = root / 'docs' / 'CHANGELOG.md'
+    filedoc_path = root / 'docs' / '文件说明.md'
 
     warnings = []
 
@@ -1198,7 +1198,7 @@ def check_self_study_version_sync() -> list[str]:
     import json
 
     root = SKILLS_DIR.parent.parent
-    changelog_path = root / 'CHANGELOG.md'
+    changelog_path = root / 'docs' / 'CHANGELOG.md'
     self_study_path = root / 'data' / 'modules' / 'self-study.json'
     warnings = []
 

@@ -4,6 +4,28 @@
 
 ---
 
+## v2.33.2
+
+**发布时间**：2026-08-29（北京时间）
+
+### 全部根目录文档统一归档至 docs/ 文件夹
+
+**核心变更**：将23个根目录 .md 文件统一移入 `docs/` 文件夹，便于团队协作；同步更新 validate_workbench.py、build.py、check_file_doc_coverage.py 中的路径引用；更新 AGENT_HANDOFF.md 目录结构、文件说明.md 归档分类、版本控制规范.md 提交范围。
+
+| 文件 | 更新内容 |
+|---|---|
+| `docs/*.md` | 23个根目录 .md 文件移入 docs/ 文件夹（git rename） |
+| `.trae/skills/validate_workbench.py` | AGENT_HANDOFF.md/CHANGELOG.md/文件说明.md/工作台搭建总结.md 路径加 docs/ 前缀 |
+| `build.py` | 文件说明.md/项目约束总览.md 路径加 docs/ 前缀+empty_root_keep 更新 |
+| `.trae/skills/check_file_doc_coverage.py` | DOC_PATH 路径加 docs/ 前缀 |
+| `docs/AGENT_HANDOFF.md` | 目录结构更新：根目录 .md 项替换为 docs/ 目录树 |
+| `docs/文件说明.md` | 根目录 .md 条目移至新建 docs/ 章节 |
+| `docs/版本控制规范.md` | 根目录文档列表替换为 docs/ 目录说明 |
+| `docs/工作台搭建总结.md` | 版本号同步至 v2.33.2 |
+| `docs/CHANGELOG.md` | v2.33.2 版本记录 |
+
+---
+
 ## v2.33.1
 
 **发布时间**：2026-08-29（北京时间）

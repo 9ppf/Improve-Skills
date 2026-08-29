@@ -82,15 +82,15 @@ CLEANUP_CONFIG = {
         ROOT / 'templates',
         ROOT / 'styles',
         ROOT / 'build.py',
-        ROOT / '文件说明.md',
-        ROOT / '项目约束总览.md',
+        ROOT / 'docs' / '文件说明.md',
+        ROOT / 'docs' / '项目约束总览.md',
     },
     # 临时目录名通配规则；即使位于受保护根目录下也可清理
     'temp_dir_patterns': {'__pycache__', '.trae-html-share-*'},
     # 根目录下允许保留的空目录白名单
     'empty_root_keep': {
         'build.py', '.trae', '.git', 'temp', 'transformers', 'data',
-        'templates', 'styles', 'Workbench', '文件说明.md',
+        'templates', 'styles', 'Workbench', 'docs',
     },
     # 备份保留规则：保留最近 keep 个备份
     'backup_rules': [

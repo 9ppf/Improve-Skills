@@ -22,7 +22,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DOC_PATH = os.path.join(ROOT, "文件说明.md")
+DOC_PATH = os.path.join(ROOT, "docs", "文件说明.md")
 
 SKIP_DIRS = {
     "__pycache__", "node_modules", ".git", "temp", "tmp",
