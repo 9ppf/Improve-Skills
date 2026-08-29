@@ -4,6 +4,22 @@
 
 ---
 
+## v2.33.1
+
+**发布时间**：2026-08-29（北京时间）
+
+### 练习测验页面新增浮动题号导航面板
+
+**核心变更**：在练习测验页面右侧新增可折叠的浮动题号导航面板，通过颜色区分题目状态（已答/未答/做错/不确定），支持点击题号快速跳转，面板状态随筛选条件联动更新。
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/自考学习/练习测验.html` | 新增浮动题号导航面板HTML结构+renderQuizNav/quizNavJump/toggleQuizNav函数 |
+| `styles/自考学习/练习测验.css` | 新增.quiz-nav-panel/.quiz-nav-grid/.quiz-nav-item等样式类 |
+| `CHANGELOG.md` | v2.33.1版本记录+v2.33.0文件名通配符优化 |
+
+---
+
 ## v2.33.0
 
 **发布时间**：2026-08-28（北京时间）
@@ -19,7 +35,7 @@
 | `.trae/skills/validate_workbench.py` | 范文变量检查从const改为var |
 | `build.py` | 新增CSS硬性检查（不可跳过）+范文从JSON读取注入为JS对象+{{reading_js}}占位符 |
 | `data/modules/reading.json` | contentSource从read/{year}.html改为reading/{year}.json |
-| `data/reading/2019-2026.json` | 新增：8个年份范文结构化JSON数据 |
+| `data/reading/*.json` | 新增：8个年份范文结构化JSON数据（2019-2026） |
 | `styles/shared/reading.js` | 新增：范文外部JS渲染函数（renderReadingFromJson等） |
 | `templates/workbench.html` | 删除5个内联reading函数+新增{{reading_js}}注入点 |
 | `transformers/read.py` | 从JSON文件读取范文数据，设置readingData字段 |
@@ -29,7 +45,7 @@
 | `styles/_responsive.scss` | 移动端阴影替换为var(--shadow) |
 | `styles/shared/base-vars.css` | SASS编译产物，新增--font-serif |
 | `styles/shared/components.css` | SASS编译产物，按钮/徽章颜色变量化 |
-| `styles/阅读/2019-2026.css` | 8个阅读CSS修复.essay-body规则断裂+硬编码颜色 |
+| `styles/阅读/*.css` | 8个阅读CSS（2019-2026）修复.essay-body规则断裂+硬编码颜色 |
 | `styles/AI学习/ai-knowledge-tree.css` | 新增：从HTML抽离的CSS |
 | `styles/AI学习/job-skill-tree.css` | 新增：从HTML抽离的CSS |
 | `styles/Python基础/python-knowledge-tree.css` | 新增：从HTML抽离的CSS |
@@ -37,6 +53,10 @@
 | `Workbench/ai-learning/ai-knowledge-tree.html` | CSS抽离+引用共享CSS+theme-sync.js |
 | `Workbench/ai-learning/job-skill-tree.html` | CSS抽离+引用共享CSS+theme-sync.js |
 | `Workbench/Python基础/python-knowledge-tree.html` | CSS抽离+引用共享CSS+theme-sync.js |
+| `CHANGELOG.md` | v2.33.0版本记录 |
+| `文件说明.md` | 最后更新版本同步至v2.33.0 |
+| `工作台搭建总结.md` | 文档版本同步至v2.33.0 |
+| `AGENT_HANDOFF.md` | 当前版本同步至v2.33.0 |
 
 ---
 

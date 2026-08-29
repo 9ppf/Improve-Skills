@@ -53,6 +53,12 @@
     </a>
   </div>
 </div>
+
+<!-- 浮动题号导航面板 -->
+<div class="quiz-nav-panel collapsed" id="quizNavPanel">
+  <button class="quiz-nav-collapsed-btn" onclick="toggleQuizNav()">📋</button>
+</div>
+
 <script>
 // 知识框架 JSON 转换为卡片数组（统一数据源，不再依赖 recite-cards）
 function transformKfToCards(data) {
@@ -1111,6 +1117,7 @@ function render() {
     }
     list.innerHTML = filtered.map(renderCardWithAIActions).join('');
     updateSessionAndStats(filtered);
+    renderQuizNav();
     return;
   }
 
@@ -1128,6 +1135,7 @@ function render() {
   }
   list.innerHTML = filtered.map(renderCard).join('');
   updateSessionAndStats(filtered);
+  renderQuizNav();
   if (Object.keys(window.choiceSelections).length > 0) {
     Object.keys(window.choiceSelections).forEach(function(qId) {
       var sel = window.choiceSelections[qId] || '';
@@ -1490,6 +1498,65 @@ document.addEventListener('click', function(e) {
 });
 
 init();
+</script>
+<script>
+/* ====== 浮动题号导航面板 ====== */
+function renderQuizNav() {
+  var panel = document.getElementById('quizNavPanel');
+  if (!panel || panel.classList.contains('collapsed')) return;
+
+  var filtered = getFilteredQuiz();
+  if (chapterParam) filtered = filtered.filter(function(q) { return q.chapter === chapterParam; });
+  if (questionIdParam) filtered = filtered.filter(function(q) { return q.id === questionIdParam; });
+
+  if (filtered.length === 0) {
+    panel.innerHTML = '<div class="quiz-nav-header"><span class="quiz-nav-count">无题目</span>' +
+      '<button class="quiz-nav-toggle" onclick="toggleQuizNav()">▾</button></div>';
+    return;
+  }
+
+  var answered = 0;
+  var items = filtered.map(function(q, i) {
+    var r = results[q.id];
+    var level = r ? getCurrentLevel(q.id) : null;
+    var cls = 'unanswered';
+    if (level === 'mastered') { cls = 'answered'; answered++; }
+    else if (level === 'unknown') { cls = 'wrong'; answered++; }
+    else if (level === 'unsure') { cls = 'unsure'; answered++; }
+    else if (r) { cls = 'answered'; answered++; }
+
+    var title = (q.chapter || '') + ' · ' + (q.type || '');
+    return '<div class="quiz-nav-item ' + cls + '" onclick="quizNavJump(\'' + q.id + '\')" title="' + title + '">' + (i + 1) + '</div>';
+  }).join('');
+
+  panel.innerHTML =
+    '<div class="quiz-nav-header">' +
+      '<span class="quiz-nav-count">已答 ' + answered + '/' + filtered.length + '</span>' +
+      '<button class="quiz-nav-toggle" onclick="toggleQuizNav()">▾</button>' +
+    '</div>' +
+    '<div class="quiz-nav-grid">' + items + '</div>';
+}
+
+function quizNavJump(qId) {
+  var card = document.getElementById('card-' + qId);
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.style.transition = 'box-shadow 0.3s';
+    card.style.boxShadow = '0 0 0 3px var(--accent)';
+    setTimeout(function() { card.style.boxShadow = ''; }, 1000);
+  }
+}
+
+function toggleQuizNav() {
+  var panel = document.getElementById('quizNavPanel');
+  if (!panel) return;
+  panel.classList.toggle('collapsed');
+  if (!panel.classList.contains('collapsed')) {
+    renderQuizNav();
+  } else {
+    panel.innerHTML = '<button class="quiz-nav-collapsed-btn" onclick="toggleQuizNav()">📋</button>';
+  }
+}
 </script>
 </body>
 </html>
