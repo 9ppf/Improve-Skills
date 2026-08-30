@@ -35,6 +35,7 @@
 | `data/modules/self-study.json` | 更新6处contentUrl引用（知识框架/练习测验重命名） |
 | `data/modules/tasks.json` | 更新1处contentUrl引用（番茄钟重命名） |
 | `data/modules/today.json` | 更新1处contentUrl引用（today/→今日学习/） |
+| `docs/用户偏好与AI协作建议.md` | 新增：质量洁癖、工具链思维、全局风险意识、协作节奏稳4条性格速写 + 主动推动工具链完善1条内容设计偏好 |
 
 ---
 
