@@ -36,6 +36,9 @@
 | `data/modules/tasks.json` | 更新1处contentUrl引用（番茄钟重命名） |
 | `data/modules/today.json` | 更新1处contentUrl引用（today/→今日学习/） |
 | `docs/用户偏好与AI协作建议.md` | 新增：质量洁癖、工具链思维、全局风险意识、协作节奏稳4条性格速写 + 主动推动工具链完善1条内容设计偏好 |
+| `约束体系基线问题清单.html` | 删除：扫描完成，问题已整理到 BACKLOG_TODO.md |
+| `docs/BACKLOG_TODO.md` | 新增4条待办：备份目录归档、temp超期清理、行内样式抽离、console.log清理 |
+| `docs/文件说明.md` | 移除已删除的约束体系基线问题清单条目 |
 
 ---
 
