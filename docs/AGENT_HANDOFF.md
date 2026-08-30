@@ -18,7 +18,7 @@
 - **用户**：自考本科生（武汉理工·计算机），上海嘉定
 - **目标**：2026 年 10 月自考三科（系统原理/离散数学/数据结构），考后转型 AI 岗位
 - **技术栈**：Python（build.py 从模板 + JSON 生成 HTML），dev_server.py 提供 API 代理与数据持久化
-- **当前版本**：v2.33.5（2026-08-29）
+- **当前版本**：v2.33.6（2026-08-29）
 - **模块数**：7 个（今日学习、能力提升、自考学习、Python基础、AI学习、AI助手角色、阅读资料）
 - **自考科目**：3 科已建知识框架 + 背诵卡（187张） + 练习测验（6题型/4模式） + 复盘总结（错题/题库管理） + AI答疑
 - **数据持久化**：掌握状态/AI对话/题库 已通过 API 持久化到 JSON 文件，跨浏览器不丢
@@ -404,6 +404,13 @@ e:\TraeWorkToDo\
 ├── .env                              # API Key 存储（已加入 .gitignore，不入版本控制）
 ├── .gitignore                        # Git 忽略规则
 ├── .gitattributes                    # Git LFS 与属性配置
+├── githooks/                          # Git hooks 目录（core.hooksPath 指向此处）
+│   ├── pre-commit                       # 运行 validate_workbench.py --strict
+│   ├── commit-msg                       # 校验提交标记 [已检查]/[验收通过]/[方案已确认]
+│   └── post-checkout/post-commit/...    # 其他 hooks
+├── tools/                            # 工具脚本目录
+├── 约束体系基线问题清单.html            # 约束体系基线问题清单（可视化页面）
+├── debug.log                         # 调试日志（临时，可删）
 ├── docs/                              # 全部文档统一归档（便于团队协作）
 │   ├── AGENT_HANDOFF.md                  # 本文档
 │   ├── CHANGELOG.md                      # 变更日志
@@ -470,7 +477,7 @@ e:\TraeWorkToDo\
 │   ├── 此刻便是春天.html             # 构建产物（由 build.py 生成，禁止手动编辑）
 │   │                                  # 注意：Workbench/ 下其他 HTML 文件均为独立内容页，
 │   │                                  # 不经过 build.py，可直接编辑
-│   ├── today/                         # 今日学习模块页面
+│   ├── 今日学习/                      # 今日学习模块页面
 │   │   └── today-flow.html               # 今日学习流（线性任务流+AI伴读+自适应进度）
 │   ├── ai-learning/                  # AI 学习相关页面
 │   │   ├── ai-knowledge-tree.html          # AI 知识图谱（四阶段29个知识点）
@@ -491,9 +498,10 @@ e:\TraeWorkToDo\
 │   │   ├── 能力提升-学习驾驶舱.html         # 进度驾驶舱
 │   │   └── full-learning-roadmap.html      # 学习路线图
 │   ├── 自考学习/                     # 自考科目页面
-│   │   ├── 知识框架.html                   # 三科共用知识框架（URL 参数 ?subject=XXX，方案A-1）
+│   │   ├── 知识框架-三科共用.html           # 三科共用知识框架（URL 参数 ?subject=XXX，方案A-1）
+│   │   ├── assets/                         # 自考学习资源目录（图片等）
 │   │   ├── 背诵与简答-核心概念背诵卡.html   # 翻转卡片背诵系统（URL 参数 ?subject=XXX）
-│   │   ├── 练习测验.html                    # 练习测验（URL 参数 ?subject=XXX）
+│   │   ├── 练习测验-在线测验.html            # 练习测验（URL 参数 ?subject=XXX）
 │   │   ├── 复盘总结-章节复盘.html           # 章节复盘总结（URL 参数 ?subject=XXX）
 │   │   ├── 真题练习-真题与错题本.html       # 交互式真题与错题管理（URL 参数 ?subject=XXX）
 │   │   ├── 备考科目/
@@ -504,6 +512,8 @@ e:\TraeWorkToDo\
 │   │       ├── 00015英语（二）/             # 6个子页面：备考指南/词汇/题型/真题/作文/AI助手
 │   │       └── 00023高等数学（工本）/
 │   ├── read/                         # 阅读原始 HTML（2019 ~ 2026）
+│   ├── 番茄钟/                       # 番茄钟任务闹钟
+│   │   └── 番茄钟-计时器.html             # 番茄钟页面
 │   └── 工作台迁移方案/               # 历史说明文档
 │
 ├── transformers/
@@ -513,7 +523,17 @@ e:\TraeWorkToDo\
     ├── reading_integration.py        # 阅读内容转换与注入核心
     ├── validate_workbench.py         # 校验脚本（可独立运行或被 build.py 调用）
     ├── integrate_reading.py          # 手动批量集成入口（已统一走 build.py）
-    ├── zujian-file-router/           # 文件路由 skill
+    ├── check_css_standards.py        # CSS规范检查脚本（!important/硬编码色值等）
+    ├── check_file_doc_coverage.py    # 文件说明完整性校验脚本（方案B级别）
+    ├── check_html_structure.py      # HTML结构检查脚本（pane深度/div平衡/游离元素）
+    ├── check_priority_labels.py     # 知识点优先级标注检查脚本（重点/一般/了解标签）
+    ├── check_structural_change.py   # 结构性变更自动检测脚本
+    ├── check_temp_cleanliness.py    # temp目录规范检查脚本（散落文件/超期清理）
+    ├── zujian-file-router/           # 文件路由 skill（最终交付物→Workbench，中间产物→temp）
+    ├── css-gate/                     # CSS规范守门 skill（创建/修改HTML页面时强制检查）
+    ├── documentation-versioning/    # 文档与版本管理工作流 skill
+    ├── structural-change-workflow/  # 结构性变更工作流 skill
+    ├── ui-design-restoration/       # 设计稿1:1还原工作流 skill
     └── integrate_reading_year/
         └── integrate_reading_year.py # 单年份手动集成入口
 ```

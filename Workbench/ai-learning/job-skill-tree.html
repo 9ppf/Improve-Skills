@@ -22,13 +22,13 @@
     </div>
     <div class="ai-progress">
       <span>入门进度</span>
-      <div class="ai-progress-bar"><div class="ai-progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="ai-progress-bar"><div class="ai-progress-fill" id="progressFill"></div></div>
       <b id="progressText">0/17</b>
     </div>
   </div>
   <div class="today-panel" id="todayPanel" style="display:none">
     <div class="today-tasks" id="todayTasks"><h3>📌 今日AI任务</h3></div>
-    <div class="today-guide" id="todayGuide"><h3>📚 教学指引</h3><p style="color:var(--light);font-size:0.8rem">点击左侧任务查看教学指引</p></div>
+    <div class="today-guide" id="todayGuide"><h3>📚 教学指引</h3><p class="ai-guide-hint">点击左侧任务查看教学指引</p></div>
   </div>
   <div class="stage-tabs" id="stageTabs"></div>
   <div class="kp-list" id="kpList"></div>
@@ -639,7 +639,7 @@
   function renderTodayGuide(task){
     var el=document.getElementById('todayGuide');
     if(!task||!task.kpIds||task.kpIds.length===0){
-      el.innerHTML='<h3>📚 教学指引</h3><p style="color:var(--light);font-size:0.8rem">本周无具体知识点教学指引</p>';
+      el.innerHTML='<h3>📚 教学指引</h3><p class="ai-guide-hint">本周无具体知识点教学指引</p>';
       return;
     }
     var html='<h3>📚 教学指引</h3>';

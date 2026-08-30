@@ -24,7 +24,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 # 方案A-1 后三科共用一页（自考学习/知识框架.html，?subject= 参数区分），
 # 静态兜底内容为 02324，知识点优先级数据以 JSON 为准（knowledge-framework-*.json + learning-guide.json）
 SUBJECTS = {
-    '知识框架（三科共用）': 'Workbench/自考学习/知识框架.html',
+    '知识框架（三科共用）': 'Workbench/自考学习/知识框架-三科共用.html',
 }
 
 # 优先级标记
@@ -115,6 +115,9 @@ def check_subject(subject_name, filepath):
         items = extract_li_items(section)
         for item in items:
             if not item.strip():
+                continue
+            # 跳过 JS 模板字符串（动态渲染的 li，非静态知识点）
+            if 'esc(' in item or "' +" in item or '"+' in item:
                 continue
             total += 1
             if not has_priority_marker(item):

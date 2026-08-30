@@ -4,6 +4,40 @@
 
 ---
 
+## v2.33.6
+
+**发布时间**：2026-08-30（北京时间）
+
+### 修复全部建议性警告（68→16项）
+
+**核心变更**：系统性修复验证器报告的文档同步、CSS规范、命名规范、交互样式、中文注释、知识点优先级等建议性警告。
+
+| 文件 | 更新内容 |
+|---|---|
+| `docs/AGENT_HANDOFF.md` | 补充16项目录结构（githooks/tools/debug.log/约束体系基线问题清单.html/番茄钟/自考学习/assets/6个check_*.py/4个skill目录），更新文件名引用 |
+| `docs/文件说明.md` | 补充css-gate/SKILL.md和data/reading/2019~2026.json，更新重命名文件引用，版本号同步 |
+| `docs/CHANGELOG.md` | v2.33.6版本记录 |
+| `docs/工作台搭建总结.md` | 版本号同步至 v2.33.6 |
+| `.trae/skills/validate_workbench.py` | 修复：交互样式检查读取外部CSS文件（消除18项误报） |
+| `.trae/skills/check_priority_labels.py` | 修复：跳过JS模板字符串，更新知识框架文件名引用 |
+| `styles/AI学习/ai-knowledge-tree.css` | 添加 .ai-progress-fill width:0% 初始值 |
+| `styles/AI学习/job-skill-tree.css` | 添加 .ai-progress-fill width:0% 和 .ai-guide-hint 类 |
+| `Workbench/ai-learning/ai-knowledge-tree.html` | 移除行内 style="width:0%" |
+| `Workbench/ai-learning/job-skill-tree.html` | 移除4处行内样式（width/font-size），改用CSS类 |
+| `Workbench/ai-learning/job-learning-loop.html` | JS注释翻译为中文（4处） |
+| `Workbench/ai-learning/AI_News_Digest/2026.08.15_AI_News_Digest.md` | 重命名：日期格式 YYYY-MM→YYYY.MM |
+| `Workbench/ai-learning/AI_News_Digest/2026.08.18_AI_News_Digest.md` | 重命名：日期格式 YYYY-MM→YYYY.MM |
+| `Workbench/ai-learning/AI_News_Digest/2026.08.25_AI_News_Digest.md` | 重命名：日期格式 YYYY-MM→YYYY.MM |
+| `Workbench/自考学习/知识框架-三科共用.html` | 重命名：知识框架.html→知识框架-三科共用.html |
+| `Workbench/自考学习/练习测验-在线测验.html` | 重命名：练习测验.html→练习测验-在线测验.html |
+| `Workbench/番茄钟/番茄钟-计时器.html` | 重命名：番茄钟.html→番茄钟-计时器.html |
+| `Workbench/今日学习/today-flow.html` | 文件夹重命名：today/→今日学习/ |
+| `data/modules/self-study.json` | 更新6处contentUrl引用（知识框架/练习测验重命名） |
+| `data/modules/tasks.json` | 更新1处contentUrl引用（番茄钟重命名） |
+| `data/modules/today.json` | 更新1处contentUrl引用（today/→今日学习/） |
+
+---
+
 ## v2.33.5
 
 **发布时间**：2026-08-29（北京时间）

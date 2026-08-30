@@ -841,6 +841,15 @@ def check_interactive_styles_global() -> list[str]:
         # 提取 CSS 和 JS
         css_blocks = re.findall(r'<style[^>]*>(.*?)</style>', content, re.DOTALL)
         css = '\n'.join(css_blocks)
+        # 也读取外部 CSS 文件（<link rel="stylesheet" href="...">）
+        link_hrefs = re.findall(r'<link\s+[^>]*rel=["\']stylesheet["\'][^>]*href=["\']([^"\']+)["\']', content)
+        for href in link_hrefs:
+            css_path = (item.parent / href).resolve()
+            if css_path.exists():
+                try:
+                    css += '\n' + css_path.read_text(encoding='utf-8')
+                except OSError:
+                    pass
         scripts = re.findall(r'<script[^>]*>(.*?)</script>', content, re.DOTALL)
         js = '\n'.join(scripts)
 
