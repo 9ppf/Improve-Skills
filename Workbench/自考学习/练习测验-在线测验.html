@@ -154,6 +154,118 @@ var SUBJECT_NAME_MAP = { '13015': '系统原理', '02324': '离散数学', '1300
 var currentMode = 'today';        /* 'today' | 'ai' */
 var todayChapters = [];           /* 本周计划中当前科目的章节列表 */
 
+/* ====== 筛选状态持久化（按科目存 localStorage）====== */
+function saveFilterState() {
+  try {
+    localStorage.setItem('quiz-filter-' + currentSubject, JSON.stringify({
+      mode: currentMode,
+      chapter: currentChapterFilter,
+      type: currentTypeFilter,
+      status: currentStatusFilter
+    }));
+  } catch(e) {}
+}
+
+function loadFilterState() {
+  try {
+    var saved = localStorage.getItem('quiz-filter-' + currentSubject);
+    if (!saved) return null;
+    return JSON.parse(saved);
+  } catch(e) { return null; }
+}
+
+/* 根据当前模式更新按钮/提示 UI（不修改筛选值，用于恢复状态） */
+function applyModeUI() {
+  var todayBtn = document.getElementById('todayBtn');
+  var aiBtn = document.getElementById('aiBtn');
+  if (currentMode === 'ai') {
+    if (todayBtn) todayBtn.classList.remove('zk-active');
+    if (aiBtn) aiBtn.classList.add('zk-active');
+  } else {
+    if (todayBtn) todayBtn.classList.add('zk-active');
+    if (aiBtn) aiBtn.classList.remove('zk-active');
+  }
+  var hint = document.getElementById('todayHint');
+  if (hint && currentMode === 'today') {
+    var chLabel = todayChapters.length > 0 ? todayChapters.join('、') : '未加载';
+    hint.textContent = '本周计划：' + chLabel;
+  }
+  updateModeHint();
+  updateChrome(currentMode);
+}
+
+/* ====== 拍照上传（计算题手写答案替代键盘输入）====== */
+var quizPhotos = {};  /* qId -> dataURL 内存缓存 */
+
+function getPhotoKey(qId) {
+  return 'quiz-photo-' + currentSubject + '-' + qId;
+}
+
+function savePhoto(qId, dataURL) {
+  quizPhotos[qId] = dataURL;
+  try { localStorage.setItem(getPhotoKey(qId), dataURL); } catch(e) { console.warn('照片存储失败:', e); }
+}
+
+function loadPhoto(qId) {
+  if (quizPhotos[qId]) return quizPhotos[qId];
+  try {
+    var saved = localStorage.getItem(getPhotoKey(qId));
+    if (saved) { quizPhotos[qId] = saved; return saved; }
+  } catch(e) {}
+  return null;
+}
+
+function removePhoto(qId) {
+  delete quizPhotos[qId];
+  try { localStorage.removeItem(getPhotoKey(qId)); } catch(e) {}
+}
+
+/* 压缩图片：限制最大宽度 800px，JPEG 0.7 质量，避免 localStorage 溢出 */
+function compressImage(file, callback) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var maxW = 800;
+      var scale = Math.min(1, maxW / img.width);
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      callback(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* 拍照上传处理：压缩→存 localStorage→创建答题记录→显示自评按钮 */
+function uploadQuizPhoto(qId) {
+  var input = document.getElementById('photo-input-' + qId);
+  if (!input || !input.files || !input.files[0]) return;
+  compressImage(input.files[0], function(dataURL) {
+    savePhoto(qId, dataURL);
+    if (!results[qId]) {
+      var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
+      if (q) {
+        results[qId] = { score: 0, total: 1, level: 'unknown', details: { userAnswer: '📷 照片提交', photo: true }, selfOverride: null, wrongReason: '' };
+        saveQuizRecord(q, '📷 照片提交', null, results[qId]);
+        updateMastery(q.chapter, 'unknown');
+      }
+    }
+    input.value = '';
+    updateStats(); render();
+  });
+}
+
+/* 渲染照片缩略图（点击新窗口查看原图） */
+function renderQuizPhoto(qId) {
+  var photo = loadPhoto(qId);
+  if (!photo) return '';
+  return '<div class="quiz-photo zk-show"><div class="quiz-photo-label">📷 我的拍照</div>' +
+    '<img src="'+photo+'" class="quiz-photo-img" onclick="window.open(this.src, \'_blank\')"/></div>';
+}
+
 function normalize(str) {
   if (!str) return '';
   return str.replace(/\s+/g, '').replace(/[，。、；：""''（）\(\)\[\]\{\}]/g, '').toLowerCase();
@@ -366,9 +478,9 @@ function renderSelfEval(qId, label) {
   var overrideLevel = r ? (r.selfOverride || r.level) : null;
   return '<div class="self-eval zk-show"><div class="self-eval-label">'+label+'</div>' +
     '<div class="self-eval-buttons">' +
-    '<button class="self-eval-btn '+(overrideLevel==='mastered'?'selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'mastered\')">🟢 完全掌握</button>' +
-    '<button class="self-eval-btn '+(overrideLevel==='unsure'?'selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'unsure\')">🟡 部分掌握</button>' +
-    '<button class="self-eval-btn '+(overrideLevel==='unknown'?'selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'unknown\')">🔴 不会</button>' +
+    '<button class="self-eval-btn '+(overrideLevel==='mastered'?'quiz-selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'mastered\')">🟢 完全掌握</button>' +
+    '<button class="self-eval-btn '+(overrideLevel==='unsure'?'quiz-selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'unsure\')">🟡 部分掌握</button>' +
+    '<button class="self-eval-btn '+(overrideLevel==='unknown'?'quiz-selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'unknown\')">🔴 不会</button>' +
     '</div></div>';
 }
 
@@ -402,7 +514,7 @@ function renderUserAnswer(qId) {
   var r = results[qId];
   if (!r || !r.details) return '';
   var ua = r.details.userAnswer || '';
-  if (!ua) return '';
+  if (!ua || ua === '📷 照片提交') return '';
   return '<div class="user-answer zk-show"><div class="user-answer-label">✍️ 我的答案</div><div class="user-answer-text">'+esc(ua)+'</div></div>';
 }
 
@@ -500,14 +612,17 @@ function renderFillCard(q) {
 
 function renderCalculateCard(q) {
   var r = results[q.id];
+  var photo = loadPhoto(q.id);
   var calcResult = '';
   if (r) {
     var stepsHTML = (q.steps||[]).map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('');
     calcResult = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q) +
+      renderQuizPhoto(q.id) +
       renderUserAnswer(q.id) +
       (q.formula?'<div class="calc-formula">📐 '+esc(q.formula)+'</div>':'') +
       (stepsHTML?'<ol class="calc-steps">'+stepsHTML+'</ol>':'') +
       (q.answer?'<span class="calc-answer">答案：'+esc(q.answer)+'</span>':'') +
+      renderSelfEval(q.id, '计算题自动评分可能有误差，你觉得实际掌握了吗？') +
       renderWrongReason(q.id) +
       '</div>';
   }
@@ -517,7 +632,12 @@ function renderCalculateCard(q) {
     (q.hint?'<div class="quiz-hint">💡 '+esc(q.hint)+'</div>':'') +
     '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入计算结果..."' +(r?' disabled':'')+'></textarea>' +
     renderSymbolPalette(q.id) +
-    '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
+    '<div class="submit-row">' +
+      '<input type="file" accept="image/*" id="photo-input-'+q.id+'" style="display:none" onchange="uploadQuizPhoto(\''+q.id+'\')"/>' +
+      '<button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button>' +
+      '<button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button>' +
+      (r ? (photo ? '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 重拍</button>' : '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 补拍</button>') : '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 拍照上传</button>') +
+    '</div>' +
     calcResult + '</div>';
 }
 
@@ -586,6 +706,7 @@ function renderEssayCard(q) {
 
 function renderProofCard(q) {
   var r = results[q.id];
+  var photo = loadPhoto(q.id);
   var scoreHTML = '';
   if (r) {
     if (r.details && r.details.hits) {
@@ -597,10 +718,10 @@ function renderProofCard(q) {
         (!h.matched ? '<div class="point-desc">期望关键词：'+h.keywords.slice(0,3).map(esc).join('、')+'…</div>' : '') +
         '</div></li>';
     }).join('');
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+'<ul class="points-list">'+stepsHTML+'</ul>'+
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderQuizPhoto(q.id)+renderUserAnswer(q.id)+'<ul class="points-list">'+stepsHTML+'</ul>'+
       renderReference('📖 参考证明（'+q.method+'）', q.referenceProof, true) + renderSelfEval(q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？') + renderWrongReason(q.id) + '</div>';
     } else {
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderQuizPhoto(q.id)+renderUserAnswer(q.id)+
       renderReference('📖 参考证明（'+q.method+'）', q.referenceProof, true) + renderSelfEval(q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？') + renderWrongReason(q.id) + '</div>';
     }
   }
@@ -610,7 +731,12 @@ function renderProofCard(q) {
     '<div class="method-box"><div class="method-label">📐 规定证明方法：'+esc(q.method)+'</div><div class="method-hint">'+esc(q.methodHint||'')+'</div></div>' +
     '<textarea class="answer-textarea xl" id="input-'+q.id+'" placeholder="按上述方法写出证明过程..."' +(r?' disabled':'')+'></textarea>' +
     renderSymbolPalette(q.id) +
-    '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
+    '<div class="submit-row">' +
+      '<input type="file" accept="image/*" id="photo-input-'+q.id+'" style="display:none" onchange="uploadQuizPhoto(\''+q.id+'\')"/>' +
+      '<button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button>' +
+      '<button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button>' +
+      (r ? (photo ? '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 重拍</button>' : '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 补拍</button>') : '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 拍照上传</button>') +
+    '</div>' +
     scoreHTML + '</div>';
 }
 
@@ -806,8 +932,8 @@ function renderStatusFilter() {
   filter.innerHTML = html;
 }
 
-function switchChapter(val) { currentChapterFilter = val; renderChapterFilter(); updateFilterCount(); render(); }
-function switchStatus(val) { currentStatusFilter = val; renderStatusFilter(); updateFilterCount(); render(); }
+function switchChapter(val) { currentChapterFilter = val; saveFilterState(); renderChapterFilter(); updateFilterCount(); render(); }
+function switchStatus(val) { currentStatusFilter = val; saveFilterState(); renderStatusFilter(); updateFilterCount(); render(); }
 
 /* 更新筛选计数 */
 function updateFilterCount() {
@@ -872,7 +998,7 @@ function activateToday() {
     var chLabel = todayChapters.length > 0 ? todayChapters.join('、') : '未加载';
     hint.textContent = '本周计划：' + chLabel;
   }
-  renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount(); render();
+  saveFilterState(); renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount(); render();
 }
 
 function updateSessionAndStats(filtered) {
@@ -1149,6 +1275,7 @@ function render() {
 
 function switchType(type) {
   currentTypeFilter = type;
+  saveFilterState();
   renderTypeFilter();
   updateFilterCount();
   render();
@@ -1215,7 +1342,7 @@ function switchMode(mode) {
   var aiBtn = document.getElementById('aiBtn');
   if (todayBtn) todayBtn.classList.remove('zk-active');
   if (aiBtn) aiBtn.classList.add('zk-active');
-  renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount();
+  saveFilterState(); renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount();
   updateModeHint();
   updateChrome(mode);
   render();
@@ -1449,7 +1576,29 @@ function init() {
     /* 初始化筛选器和今日任务 */
     renderChapterFilter(); renderTypeFilter(); renderStatusFilter();
     if (currentMode !== 'free') {
-      activateToday();
+      /* 尝试恢复保存的筛选状态 */
+      var saved = loadFilterState();
+      if (saved && saved.mode) {
+        currentMode = saved.mode;
+        currentChapterFilter = saved.chapter || 'all';
+        currentTypeFilter = saved.type || 'all';
+        currentStatusFilter = saved.status || 'all';
+        /* 验证保存的章节/题型在当前题库中仍存在 */
+        if (currentChapterFilter !== 'all') {
+          var chExists = quizData.some(function(q) { return (q.chapter || '') === currentChapterFilter; });
+          if (!chExists) currentChapterFilter = 'all';
+        }
+        if (currentTypeFilter !== 'all') {
+          var tpExists = quizData.some(function(q) { return q.type === currentTypeFilter; });
+          if (!tpExists) currentTypeFilter = 'all';
+        }
+        applyModeUI();
+        renderChapterFilter(); renderTypeFilter(); renderStatusFilter();
+        updateFilterCount();
+        render();
+      } else {
+        activateToday();
+      }
     } else {
       updateFilterCount();
       updateChrome(currentMode);
