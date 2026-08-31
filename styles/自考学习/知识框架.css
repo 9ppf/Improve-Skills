@@ -1422,3 +1422,63 @@ display: none;
 .req-badge.lv-recall { background: var(--blue-soft); color: var(--blue-text); }
 .req-badge.lv-comprehend { background: var(--amber-soft); color: var(--notice-text); }
 .req-badge.lv-apply { background: var(--green-soft); color: var(--green-text); }
+
+/* 章节难度和页码内联显示（替代旧 data-meta 注解层） */
+.ch-difficulty {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--coral);
+  background: var(--coral-soft);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+.ch-pages {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 0.3rem;
+}
+
+/* 加载状态 */
+.kf-loading-mask {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 0;
+  color: var(--muted);
+}
+.kf-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--rule);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: kf-spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+@keyframes kf-spin { to { transform: rotate(360deg); } }
+
+/* 错误状态 */
+.kf-error-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--coral);
+}
+.kf-error-detail {
+  color: var(--muted);
+  font-size: 0.875rem;
+  margin: 0.5rem 0 1.5rem;
+}
+.kf-retry-btn {
+  padding: 0.5rem 1.5rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--accent);
+  cursor: pointer;
+}
+.kf-retry-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}

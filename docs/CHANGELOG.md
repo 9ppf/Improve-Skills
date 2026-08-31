@@ -4,6 +4,25 @@
 
 ---
 
+## v2.34.0
+
+**发布时间**：2026-08-31（北京时间）
+
+### 知识框架纯动态渲染改造
+
+**核心变更**：删除知识框架页面1600行静态HTML兜底内容，实现纯JSON驱动渲染；删除废弃的 annotateChapter 注解层。
+
+| 文件 | 更新内容 |
+|---|---|
+| `Workbench/自考学习/知识框架-三科共用.html` | 删除02324静态章节兜底内容（1600行）、删除 annotateChapter 函数及 lgAnnotate 导出、renderChapters 移除 data-meta 改为显式渲染难度/页码、renderOverview 从 JSON meta.extraToc 渲染非章节条目（删除02324静态TOC特殊处理）、catch 分支增加错误提示+重试按钮、清空学习计划tab静态周卡片和提示卡片（保留空容器）、清空知识总览tab静态整体定位/章节网格/完整目录（保留空容器）、清理renderOverview旧tips隐藏逻辑 |
+| `data/knowledge-framework-02324.json` | meta 新增 extraToc 字段（6项非章节条目：大纲/编者的话/参考答案等） |
+| `styles/自考学习/知识框架.css` | 新增 .ch-difficulty/.ch-pages 内联难度页码样式、.kf-loading-mask 加载动画、.kf-error-state 错误提示样式 |
+| `data/modules/self-study.json` | 3处知识框架 contentUrl 版本号同步至 v=2.34.0 |
+
+**影响范围**：三科（02324/13015/13003）知识框架页面，已全部浏览器验证通过。
+
+---
+
 ## v2.33.6
 
 **发布时间**：2026-08-30（北京时间）
