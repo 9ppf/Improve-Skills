@@ -648,6 +648,15 @@ function scoreQuestion(q, userAnswer, userSelection) {
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+/* 渲染选项内容：支持 svg: 前缀（内联SVG）、img: 前缀（图片）、纯文本 */
+function renderContent(s) {
+  s = String(s || '');
+  s = s.replace(/^[A-H]\.\s*/, '');
+  if (s.indexOf('svg:') === 0) return s.slice(4);
+  if (s.indexOf('img:') === 0) return '<img src="' + s.slice(4) + '" style="max-width:100%;border-radius:6px;display:block;margin:4px 0" />';
+  return esc(s);
+}
+
 function renderSymbolPalette(qId) {
   return '<span class="symbol-toggle" onclick="toggleSymbols(\''+qId+'\')">🔣 特殊符号</span>' +
     '<div class="symbol-palette" id="sym-'+qId+'">' +
@@ -738,12 +747,12 @@ function renderChoiceCard(q) {
       else if (userSel.indexOf(letter) >= 0 && correctAns.indexOf(letter) < 0) cls += ' wrong';
     }
     return '<div class="choice-option'+cls+'" data-letter="'+letter+'" data-qid="'+q.id+'">' +
-      '<span class="choice-letter">'+letter+'</span><span>'+esc(opt.replace(/^[A-H]\.\s*/, ''))+'</span></div>';
+      '<span class="choice-letter">'+letter+'</span><span class="choice-content">'+renderContent(opt)+'</span></div>';
   }).join('');
 
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
     '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.choice.badge+'">'+TYPE_META.choice.icon+' 选择题'+subLabel+'</span></div>' +
-    '<div class="quiz-question">'+esc(q.question)+'</div>' +
+    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
     '<div class="choice-options">'+optionsHTML+'</div>' +
     '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitChoice(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
     (r ? '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+renderWrongReason(q.id)+'</div>' : '') +
@@ -810,7 +819,7 @@ function renderCalculateCard(q) {
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
     '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.calculate.badge+'">'+TYPE_META.calculate.icon+' 计算题</span></div>' +
-    '<div class="quiz-question">'+esc(q.question)+'</div>' +
+    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
     (q.hint?'<div class="quiz-hint">💡 '+esc(q.hint)+'</div>':'') +
     '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入计算结果..."' +(r?' disabled':'')+'></textarea>' +
     renderSymbolPalette(q.id) +
@@ -847,7 +856,7 @@ function renderShortAnswerCard(q) {
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
     '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.shortAnswer.badge+'">'+TYPE_META.shortAnswer.icon+' 简答题</span></div>' +
-    '<div class="quiz-question">'+esc(q.question)+'</div>' +
+    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
     '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入你的答案..."' +(r?' disabled':'')+'></textarea>' +
     renderSymbolPalette(q.id) +
     '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
@@ -878,7 +887,7 @@ function renderEssayCard(q) {
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
     '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.essay.badge+'">'+TYPE_META.essay.icon+' 论述题</span></div>' +
-    '<div class="quiz-question">'+esc(q.question)+'</div>' +
+    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
     (q.hint?'<div class="quiz-hint">💡 '+esc(q.hint)+'</div>':'') +
     '<textarea class="answer-textarea lg" id="input-'+q.id+'" placeholder="输入你的论述...（建议 200-400 字）"' +(r?' disabled':'')+'></textarea>' +
     renderSymbolPalette(q.id) +
@@ -909,7 +918,7 @@ function renderProofCard(q) {
   }
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
     '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span><span class="quiz-badge '+TYPE_META.proof.badge+'">'+TYPE_META.proof.icon+' 证明题</span></div>' +
-    '<div class="quiz-question">'+esc(q.question)+'</div>' +
+    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
     '<div class="method-box"><div class="method-label">📐 规定证明方法：'+esc(q.method)+'</div><div class="method-hint">'+esc(q.methodHint||'')+'</div></div>' +
     '<textarea class="answer-textarea xl" id="input-'+q.id+'" placeholder="按上述方法写出证明过程..."' +(r?' disabled':'')+'></textarea>' +
     renderSymbolPalette(q.id) +
