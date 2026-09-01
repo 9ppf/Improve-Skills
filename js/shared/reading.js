@@ -23,8 +23,35 @@ function renderContentFrame(item) {
 
 function renderReadingContent(item) {
   var data = item.readingData && window[item.readingData];
-  if (!data) return '<div class="reading-content"><p>暂无内容</p></div>';
+  if (!data) return '<div class="reading-content"><p>加载中...</p></div>';
   return renderReadingFromJson(data);
+}
+
+/**
+ * 确保范文数据已加载（按需加载，兼容 file:// 协议）
+ * 返回 Promise，加载完成后 resolve（数据挂载到 window[item.readingData]）
+ * 已加载过的直接 resolve
+ */
+var _readingDataCache = {};
+function ensureReadingData(item) {
+  if (!item || !item.readingData) return Promise.resolve();
+  if (window[item.readingData]) return Promise.resolve();
+  if (_readingDataCache[item.readingData]) return _readingDataCache[item.readingData];
+
+  var dataUrl = item.dataUrl;
+  if (!dataUrl) {
+    // 兼容旧格式：没有 dataUrl 时直接 resolve（数据可能已内联）
+    return Promise.resolve();
+  }
+
+  _readingDataCache[item.readingData] = new Promise(function(resolve) {
+    var script = document.createElement('script');
+    script.src = dataUrl;
+    script.onload = resolve;
+    script.onerror = resolve; // 失败也继续，避免卡住
+    document.head.appendChild(script);
+  });
+  return _readingDataCache[item.readingData];
 }
 
 function renderReadingFromJson(data) {

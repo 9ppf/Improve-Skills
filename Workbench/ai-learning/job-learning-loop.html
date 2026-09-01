@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="../../styles/shared/base.css">
 <link rel="stylesheet" href="../../styles/shared/components.css">
 <link rel="stylesheet" href="../../styles/AI学习/job-learning-loop.css">
-<script src="../../styles/shared/theme-sync.js"></script>
+<script src="../../js/shared/theme-sync.js"></script>
 </head>
 <body>
 <article class="loop-page">
@@ -54,159 +54,9 @@
   <div class="project-list" id="projectList"></div>
 
 </article>
-<script>
-(function(){
-  var STAGES=[
-    {id:1,name:"AI工程基础",weeks:"第1-2周",kp:[1,2,3,4],project:"AI对话API服务"},
-    {id:2,name:"RAG系统",weeks:"第3-5周",kp:[5,6,7,8,9],project:"知识库问答机器人"},
-    {id:3,name:"LangChain+Agent",weeks:"第6-8周",kp:[10,11,12,13,14],project:"学习计划Agent"},
-    {id:4,name:"全栈项目+部署",weeks:"第9-10周",kp:[15,16,17],project:"AI错题分析平台"}
-  ];
 
-  var PROJECTS=[
-    {
-      icon:"💬",title:"AI对话API服务",stage:"阶段1",weeks:"第1-2周",
-      desc:"基于FastAPI+LLM API构建对话服务，支持流式输出和多轮对话。",
-      resume:"基于FastAPI + DeepSeek API 构建 AI 对话服务，支持流式响应、多轮对话和错误重试",
-      tasks:["Python项目搭建(venv+requirements)","FastAPI基础接口(hello+路由)","LLM API调用封装(同步+流式)","Prompt工程实践(角色/Few-shot)","前端聊天界面(流式输出)"]
-    },
-    {
-      icon:"📚",title:"知识库问答机器人",stage:"阶段2",weeks:"第3-5周",
-      desc:"基于RAG构建知识库问答系统，上传文档后智能问答，用自考笔记做数据源。",
-      resume:"基于 RAG 构建知识库问答系统，支持文档上传、语义检索与智能问答，技术栈: FastAPI + Chroma + LLM API",
-      tasks:["文本向量化(Embedding)","向量数据库(Chroma CRUD)","文档切分策略(递归切分)","RAG Pipeline完整构建","RAG评估与优化(召回率/幻觉)"]
-    },
-    {
-      icon:"🤖",title:"AI错题分析平台",stage:"阶段4",weeks:"第9-10周",
-      desc:"全栈项目: 拍照上传错题，AI识别+讲解+推荐练习，整合RAG+Agent+前端。",
-      resume:"端到端开发 AI 错题分析平台，集成 OCR、RAG、Agent，前端 React + 后端 FastAPI + Docker 部署",
-      tasks:["前端+AI集成(流式/上传/Markdown)","Docker容器化部署","全栈项目整合(OCR+RAG+Agent)"]
-    }
-  ];
 
-  var KP_KEY='job_kp_detail_v1';
-  var PROJ_KEY='job_project_detail_v1';
-
-  function loadKP(){
-    try{return JSON.parse(localStorage.getItem(KP_KEY))||{}}catch(e){return{}}
-  }
-  function loadProj(){
-    try{return JSON.parse(localStorage.getItem(PROJ_KEY))||{}}catch(e){return{}}
-  }
-  var kpProgress=loadKP();
-  var projProgress=loadProj();
-
-  // 倒计时
-  function renderCountdown(){
-    var exam=new Date('2026-10-24');
-    var now=new Date();
-    var days=Math.ceil((exam-now)/(1000*60*60*24));
-    document.getElementById('countdown').textContent=days+'天';
-    if(days<=0){
-      document.getElementById('countdown').textContent='考试结束';
-      document.getElementById('countdownSub').textContent='开始投简历!';
-    }else if(days<=30){
-      document.getElementById('countdownSub').textContent='冲刺阶段，AI占比可适当提高';
-    }else if(days<=60){
-      document.getElementById('countdownSub').textContent='中间阶段，按计划推进岗位技能';
-    }else{
-      document.getElementById('countdownSub').textContent='初级阶段，打牢工程基础';
-    }
-  }
-
-  // 总体进度
-  function renderOverall(){
-    var entryIds=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
-    var done=entryIds.filter(function(id){return kpProgress[id]}).length;
-    var pct=Math.round(done/entryIds.length*100);
-
-    var projDone=PROJECTS.filter(function(p,i){
-      var key='proj_'+i;
-      var tasks=projProgress[key]||[];
-      return tasks.filter(function(t){return t}).length===p.tasks.length;
-    }).length;
-
-    document.getElementById('overallNum').textContent=pct+'%';
-    document.getElementById('overallFill').style.width=pct+'%';
-    document.getElementById('overallText').textContent=done+'/'+entryIds.length;
-    document.getElementById('projectText').textContent=projDone+'/'+PROJECTS.length;
-  }
-
-  // 阶段路线图
-  function renderStages(){
-    var html='';
-    STAGES.forEach(function(s){
-      var total=s.kp.length;
-      var done=s.kp.filter(function(id){return kpProgress[id]}).length;
-      var pct=Math.round(done/total*100);
-      html+='<div class="stage-row">';
-      html+='<div class="stage-badge"><div class="stage-num">'+s.id+'</div><div class="stage-label">'+s.weeks+'</div></div>';
-      html+='<div class="stage-body">';
-      html+='<div class="stage-name">'+s.name+'</div>';
-      html+='<div class="stage-meta"><span>📅 '+s.weeks+'</span><span>📊 '+done+'/'+total+'知识点</span></div>';
-      html+='<div class="stage-project">🎯 '+s.project+'</div>';
-      html+='<div class="stage-progress-bar"><div class="stage-progress-fill" style="width:'+pct+'%"></div></div>';
-      html+='<div class="stage-progress-text">完成 <b>'+pct+'%</b> ('+done+'/'+total+')</div>';
-      html+='</div></div>';
-    });
-    document.getElementById('stageRoadmap').innerHTML=html;
-  }
-
-  // 项目跟踪
-  function renderProjects(){
-    var html='';
-    PROJECTS.forEach(function(p,i){
-      var key='proj_'+i;
-      var checked=projProgress[key]||new Array(p.tasks.length).fill(false);
-      if(!projProgress[key]){
-        projProgress[key]=checked;
-        try{localStorage.setItem(PROJ_KEY,JSON.stringify(projProgress))}catch(e){}
-      }
-      var doneCount=checked.filter(function(t){return t}).length;
-      var pct=Math.round(doneCount/p.tasks.length*100);
-      var allDone=doneCount===p.tasks.length;
-
-      html+='<div class="project-card'+(allDone?' done':'')+'">';
-      html+='<div class="project-header">';
-      html+='<span class="project-icon">'+p.icon+'</span>';
-      html+='<span class="project-title">'+p.title+'</span>';
-      html+='<span class="project-stage">'+p.stage+' · '+p.weeks+'</span>';
-      html+='</div>';
-      html+='<div class="project-desc">'+p.desc+'</div>';
-      html+='<div class="project-resume">'+p.resume+'</div>';
-      html+='<div class="project-tasks">';
-      p.tasks.forEach(function(t,j){
-        var isChecked=checked[j];
-        html+='<label class="project-task'+(isChecked?' done':'')+'">';
-        html+='<input type="checkbox" '+(isChecked?'checked':'')+' onclick="toggleProjTask('+i+','+j+')" />';
-        html+='<span>'+t+'</span>';
-        html+='</label>';
-      });
-      html+='</div>';
-      html+='<div class="project-progress">';
-      html+='<div class="project-progress-bar"><div class="project-progress-fill" style="width:'+pct+'%"></div></div>';
-      html+='<span class="project-progress-text">完成 <b>'+doneCount+'/'+p.tasks.length+'</b></span>';
-      html+='</div>';
-      html+='</div>';
-    });
-    document.getElementById('projectList').innerHTML=html;
-  }
-
-  window.toggleProjTask=function(projIdx,taskIdx){
-    var key='proj_'+projIdx;
-    var checked=projProgress[key]||[];
-    checked[taskIdx]=!checked[taskIdx];
-    projProgress[key]=checked;
-    try{localStorage.setItem(PROJ_KEY,JSON.stringify(projProgress))}catch(e){}
-    renderProjects();
-    renderOverall();
-  };
-
-  renderCountdown();
-  renderOverall();
-  renderStages();
-  renderProjects();
-})();
-</script>
+  <script src="../../js/shared/utils.js"></script>
+  <script src="../../js/AI学习/job-learning-loop.js"></script>
 </body>
 </html>

@@ -1,0 +1,226 @@
+// ============================================================
+// 英语（二）-作文模板 页面 JS
+// 抽离自 英语（二）-作文模板.html
+// ============================================================
+
+(function(){
+  var STORAGE_KEY='en_writing_practice';
+  var practices={};
+  try{practices=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){practices={}}
+
+  var TEMPLATES=[
+    {
+      id:'opinion',name:'观点论述',icon:'💭',
+      framework:[
+        {title:'开头段（引出话题+表明观点）',content:'Nowadays, there is a growing concern over __【话题】__. Some people believe that __【观点A】__, while others argue that __【观点B】__. In my opinion, I firmly agree/disagree that __【你的观点】__.'},
+        {title:'主体段1（第一个论点+举例）',content:'First of all, __【论点1】__. For example, __【具体例子】__. This shows that __【小结】__.'},
+        {title:'主体段2（第二个论点+举例）',content:'Furthermore, __【论点2】__. A case in point is that __【具体例子】__. Therefore, __【小结】__.'},
+        {title:'结尾段（总结+建议）',content:'In conclusion, although __【让步】__, I believe that __【重申观点】__. It is suggested that __【建议】__.'}
+      ],
+      sentences:[
+        {cat:'intro',en:'There is a growing concern over...',cn:'人们对...越来越关注'},
+        {cat:'intro',en:'When it comes to..., opinions vary from person to person.',cn:'谈到...时，各人看法不一'},
+        {cat:'body',en:'First and foremost, ...',cn:'首先也是最重要的...'},
+        {cat:'body',en:'Furthermore, it is worth noting that...',cn:'此外，值得注意的是...'},
+        {cat:'body',en:'A case in point is that...',cn:'一个恰当的例子是...'},
+        {cat:'conclude',en:'In conclusion, I firmly believe that...',cn:'总之，我坚信...'},
+        {cat:'conclude',en:'It is high time that we took measures to...',cn:'是我们采取措施...的时候了'}
+      ],
+      essays:[
+        {title:'范文：是否应该禁止手机进课堂',body:'Nowadays, there is a growing concern over whether mobile phones should be banned in classrooms. Some people believe that phones are useful learning tools, while others argue that they cause distractions. In my opinion, I firmly agree that mobile phones should be banned in classrooms.\n\nFirst and foremost, mobile phones can significantly distract students from learning. For example, many students cannot resist the temptation to check social media or play games during class. This shows that phones do more harm than good in a learning environment.\n\nFurthermore, phones can also disrupt other students. A case in point is that when a phone rings or vibrates during class, it breaks the concentration of not only the owner but also those around them. Therefore, banning phones can create a better learning atmosphere for everyone.\n\nIn conclusion, although mobile phones have many benefits in daily life, I believe that they should not be allowed in classrooms. It is suggested that schools establish clear rules about phone usage to ensure a focused learning environment.',score:'参考分数：24-27/30'}
+      ]
+    },
+    {
+      id:'problem',name:'问题解决',icon:'🔧',
+      framework:[
+        {title:'开头段（描述问题）',content:'Recently, the issue of __【问题】__ has aroused wide concern. This problem is becoming increasingly serious, and it is high time that we paid attention to it.'},
+        {title:'主体段1（分析原因）',content:'There are several reasons behind this problem. To begin with, __【原因1】__. In addition, __【原因2】__. Moreover, __【原因3】__.'},
+        {title:'主体段2（提出解决方案）',content:'To solve this problem, effective measures should be taken. On the one hand, __【方案1】__. On the other hand, __【方案2】__. Besides, __【方案3】__.'},
+        {title:'结尾段（总结+展望）',content:'In a word, __【问题】__ is a complex issue that requires joint efforts. Only when __【条件】__ can we __【期望结果】__.'}
+      ],
+      sentences:[
+        {cat:'intro',en:'Recently, the issue of...has aroused wide concern.',cn:'最近，...的问题引起了广泛关注'},
+        {cat:'body',en:'There are several reasons behind this problem.',cn:'这个问题背后有几个原因'},
+        {cat:'body',en:'To solve this problem, effective measures should be taken.',cn:'要解决这个问题，应采取有效措施'},
+        {cat:'body',en:'On the one hand... On the other hand...',cn:'一方面...另一方面...'},
+        {cat:'conclude',en:'Only when...can we...',cn:'只有当...我们才能...'}
+      ],
+      essays:[
+        {title:'范文：如何解决交通拥堵问题',body:'Recently, the issue of traffic congestion has aroused wide concern in many cities. This problem is becoming increasingly serious, and it is high time that we paid attention to it.\n\nThere are several reasons behind this problem. To begin with, the number of private cars has increased dramatically in recent years. In addition, public transportation systems in many cities are not well-developed enough. Moreover, poor urban planning also contributes to traffic jams.\n\nTo solve this problem, effective measures should be taken. On the one hand, the government should invest more in public transportation to make it more convenient and affordable. On the other hand, carpooling and shared mobility should be encouraged to reduce the number of vehicles on the road. Besides, improving road infrastructure and using smart traffic management systems can also help.\n\nIn a word, traffic congestion is a complex issue that requires joint efforts. Only when the government and citizens work together can we create a smoother traffic environment for everyone.',score:'参考分数：22-26/30'}
+      ]
+    },
+    {
+      id:'phenomenon',name:'现象分析',icon:'📊',
+      framework:[
+        {title:'开头段（描述现象）',content:'In recent years, __【现象】__ has become a common phenomenon in our society. This trend has sparked heated discussion among the public.'},
+        {title:'主体段1（分析原因）',content:'Several factors contribute to this phenomenon. Firstly, __【原因1】__. Secondly, with the development of __【背景】__, __【原因2】__. Last but not least, __【原因3】__.'},
+        {title:'主体段2（分析影响）',content:'This phenomenon has both positive and negative effects. On the positive side, __【正面影响】__. However, on the negative side, __【负面影响】__.'},
+        {title:'结尾段（态度+建议）',content:'As far as I am concerned, we should take a rational attitude toward this phenomenon. While enjoying its benefits, we should also be aware of its potential risks and take steps to minimize the negative effects.'}
+      ],
+      sentences:[
+        {cat:'intro',en:'In recent years,...has become a common phenomenon.',cn:'近年来，...已成为普遍现象'},
+        {cat:'body',en:'Several factors contribute to this phenomenon.',cn:'几个因素导致了这一现象'},
+        {cat:'body',en:'This phenomenon has both positive and negative effects.',cn:'这一现象既有积极影响也有消极影响'},
+        {cat:'conclude',en:'As far as I am concerned, we should take a rational attitude toward...',cn:'就我而言，我们应对...持理性态度'}
+      ],
+      essays:[]
+    },
+    {
+      id:'letter',name:'书信应用',icon:'✉️',
+      framework:[
+        {title:'称呼',content:'Dear __【收信人】__,'},
+        {title:'开头段（说明写信目的）',content:'I am writing to __【写信目的：邀请/感谢/投诉/建议】__. I would like to __【具体内容】__.'},
+        {title:'主体段（详细说明）',content:'__【详细说明原因/安排/建议等，2-3点】__. First, __【要点1】__. Second, __【要点2】__.'},
+        {title:'结尾段（期待+署名）',content:'I would appreciate it if you could __【期待对方做的事】__. I am looking forward to your reply.\n\nYours sincerely,\n__【你的名字】__'}
+      ],
+      sentences:[
+        {cat:'intro',en:'I am writing to express my gratitude for...',cn:'我写信是为了表达对...的感谢'},
+        {cat:'intro',en:'I am writing to invite you to...',cn:'我写信邀请您...'},
+        {cat:'intro',en:'I am writing to complain about...',cn:'我写信投诉...'},
+        {cat:'body',en:'I would appreciate it if you could...',cn:'如果您能...我将不胜感激'},
+        {cat:'conclude',en:'I am looking forward to your reply.',cn:'期待您的回复'}
+      ],
+      essays:[
+        {title:'范文：感谢信',body:'Dear Professor Smith,\n\nI am writing to express my sincere gratitude for your guidance during my study abroad program. I truly appreciate the time and effort you devoted to helping me with my research paper.\n\nFirst, your insightful comments on my draft helped me improve the quality of my work significantly. Second, your recommendations for further reading broadened my understanding of the subject. I have learned so much from your expertise and patience.\n\nI would appreciate it if you could continue to provide me with advice in the future. I am looking forward to staying in touch with you.\n\nYours sincerely,\nLi Ming',score:'参考分数：23-27/30'}
+      ]
+    },
+    {
+      id:'universal',name:'万能句型',icon:'⭐',
+      framework:[],
+      sentences:[],
+      essays:[],
+      universal:[
+        {cat:'intro',text:'There is a growing concern over...',cn:'人们对...越来越关注'},
+        {cat:'intro',text:'When it comes to..., opinions vary from person to person.',cn:'谈到...时，各人看法不一'},
+        {cat:'intro',text:'It is widely acknowledged that...',cn:'人们普遍认为...'},
+        {cat:'intro',text:'In recent years, ...has become a hot topic.',cn:'近年来，...成为热门话题'},
+        {cat:'body',text:'First and foremost, ...',cn:'首先也是最重要的...'},
+        {cat:'body',text:'Furthermore, it is worth noting that...',cn:'此外，值得注意的是...'},
+        {cat:'body',text:'A case in point is that...',cn:'一个恰当的例子是...'},
+        {cat:'body',text:'Compared with..., ...has more advantages.',cn:'与...相比，...有更多优势'},
+        {cat:'body',text:'It is universally accepted that...',cn:'人们普遍接受...'},
+        {cat:'body',text:'However, every coin has two sides.',cn:'然而，凡事都有两面性'},
+        {cat:'trans',text:'On the one hand... On the other hand...',cn:'一方面...另一方面...'},
+        {cat:'trans',text:'Despite the fact that..., we cannot deny that...',cn:'尽管...，我们不能否认...'},
+        {cat:'trans',text:'In contrast, ...',cn:'相比之下...'},
+        {cat:'example',text:'Take...as an example.',cn:'以...为例'},
+        {cat:'example',text:'As is shown in the chart/graph...',cn:'如图表所示...'},
+        {cat:'conclude',text:'In conclusion, ...',cn:'总之...'},
+        {cat:'conclude',text:'It is high time that we took measures to...',cn:'是我们采取措施...的时候了'},
+        {cat:'conclude',text:'Only when...can we...',cn:'只有当...我们才能...'},
+        {cat:'conclude',text:'As far as I am concerned, ...',cn:'就我而言...'},
+        {cat:'conclude',text:'Taking all these factors into consideration, we may draw the conclusion that...',cn:'综合考虑所有因素，我们可以得出结论...'}
+      ]
+    }
+  ];
+
+  var tabsHtml='';
+  TEMPLATES.forEach(function(t,i){
+    tabsHtml+='<button class="wt-tab'+(i===0?' active':'')+'" onclick="switchWt(\''+t.id+'\')">'+t.icon+' '+t.name+'</button>';
+  });
+  document.getElementById('wtTabs').innerHTML=tabsHtml;
+
+  function renderPanel(t){
+    var html='<div class="wt-panel'+(t===TEMPLATES[0]?' active':'')+'" id="panel_'+t.id+'">';
+
+    if(t.id==='universal'){
+      html+='<div class="wt-section"><h3>万能句型库（20句）</h3>';
+      html+='<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.75rem">按功能分类，可套用于各类作文。点击复制按钮复制英文句型。</p>';
+      html+='<ul class="ub-list">';
+      t.universal.forEach(function(u){
+        var catName={intro:'引入',body:'主体',trans:'转折',example:'举例',conclude:'总结'}[u.cat];
+        var catClass={intro:'ub-cat-intro',body:'ub-cat-body',trans:'ub-cat-trans',example:'ub-cat-example',conclude:'ub-cat-conclude'}[u.cat];
+        html+='<li><button class="copy-btn" onclick="copyText(this,\''+u.text.replace(/'/g,"\\'")+'\')">复制</button><span class="ub-cat '+catClass+'">'+catName+'</span><span class="ub-en">'+u.text+'</span><span class="ub-cn">'+u.cn+'</span></li>';
+      });
+      html+='</ul></div>';
+      return html+'</div>';
+    }
+
+    // 结构框架
+    if(t.framework.length>0){
+      html+='<div class="wt-section"><h3>结构框架</h3>';
+      t.framework.forEach(function(f){
+        html+='<div class="framework-box"><div class="fb-title">'+f.title+'</div><div class="fb-content">'+f.content.replace(/__/g,'<span class="placeholder">')+'</div></div>';
+      });
+      html+='</div>';
+    }
+
+    // 高分句型
+    if(t.sentences.length>0){
+      html+='<div class="wt-section"><h3>高分句型</h3><ul class="sentence-list">';
+      t.sentences.forEach(function(s){
+        var catName={intro:'引入',body:'主体',trans:'转折',example:'举例',conclude:'总结'}[s.cat];
+        var catClass={intro:'sl-tag-en',body:'sl-tag-cn',trans:'sl-tag-cn',example:'sl-tag-en',conclude:'sl-tag-cn'}[s.cat]||'sl-tag-en';
+        html+='<li><span class="sl-tag '+catClass+'">'+catName+'</span><span><b>'+s.en+'</b><br><span style="color:var(--muted);font-size:0.85rem">'+s.cn+'</span></span></li>';
+      });
+      html+='</ul></div>';
+    }
+
+    // 范文
+    if(t.essays.length>0){
+      html+='<div class="wt-section"><h3>范文</h3>';
+      t.essays.forEach(function(e){
+        html+='<div class="essay-box"><div class="essay-title">'+e.title+'</div><div class="essay-body">'+e.body+'</div><div class="essay-score">'+e.score+'</div></div>';
+      });
+      html+='</div>';
+    }
+
+    // 练习区
+    html+='<div class="wt-section"><h3>练习区</h3>';
+    html+='<div class="practice-area">';
+    var saved=practices[t.id];
+    html+='<textarea id="practice_'+t.id+'" placeholder="在此练习写作...（目标150词）" oninput="updateCount(\''+t.id+'\')">'+(saved?saved.content:'')+'</textarea>';
+    html+='<div class="practice-actions"><button class="pa-btn pa-save" onclick="savePractice(\''+t.id+'\')">💾 保存</button><span class="pa-count" id="count_'+t.id+'">词数：'+(saved?countWords(saved.content):0)+'</span></div>';
+    html+='</div></div>';
+
+    html+='</div>';
+    return html;
+  }
+
+  var panelsHtml='';
+  TEMPLATES.forEach(function(t){panelsHtml+=renderPanel(t)});
+  document.getElementById('wtPanels').innerHTML=panelsHtml;
+
+  function countWords(text){
+    if(!text||!text.trim())return 0;
+    return text.trim().split(/\s+/).length;
+  }
+
+  window.switchWt=function(id){
+    document.querySelectorAll('.wt-tab').forEach(function(t){t.classList.remove('active')});
+    document.querySelectorAll('.wt-panel').forEach(function(p){p.classList.remove('active')});
+    event.target.classList.add('active');
+    document.getElementById('panel_'+id).classList.add('active');
+  };
+
+  window.updateCount=function(id){
+    var text=document.getElementById('practice_'+id).value;
+    document.getElementById('count_'+id).textContent='词数：'+countWords(text);
+  };
+
+  window.savePractice=function(id){
+    var text=document.getElementById('practice_'+id).value;
+    practices[id]={content:text,date:Date.now(),words:countWords(text)};
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(practices))}catch(e){}
+    var btn=event.target;
+    var orig=btn.textContent;
+    btn.textContent='✅ 已保存';
+    btn.style.background='var(--green)';
+    setTimeout(function(){btn.textContent=orig;btn.style.background=''},1500);
+  };
+
+  window.copyText=function(btn,text){
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(text);
+    }else{
+      var ta=document.createElement('textarea');
+      ta.value=text;document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy')}catch(e){}
+      document.body.removeChild(ta);
+    }
+    var orig=btn.textContent;
+    btn.textContent='已复制';
+    btn.style.background='var(--green)';btn.style.color='#fff';btn.style.borderColor='var(--green)';
+    setTimeout(function(){btn.textContent=orig;btn.style.background='';btn.style.color='';btn.style.borderColor=''},1500);
+  };
+})();

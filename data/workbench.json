@@ -8,10 +8,14 @@
   "themes": {
     "light": {
       "name": "明亮春景",
+      "icon": "🌤️",
+      "order": 1,
       "tokens": {}
     },
     "dark": {
       "name": "暗色夜读",
+      "icon": "🌙",
+      "order": 2,
       "tokens": {
         "bg": "#0f172a",
         "surface": "#1e293b",
@@ -35,6 +39,24 @@
         "notice-text": "#fcd34d",
         "reading-warm": "#451a03"
       }
+    },
+    "warm": {
+      "name": "暖日斜阳",
+      "icon": "☀️",
+      "order": 3,
+      "tokens": {}
+    },
+    "nature": {
+      "name": "自然原野",
+      "icon": "🌿",
+      "order": 4,
+      "tokens": {}
+    },
+    "rose": {
+      "name": "玫瑰花园",
+      "icon": "🌹",
+      "order": 5,
+      "tokens": {}
     }
   },
   "modules": [

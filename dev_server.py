@@ -18,12 +18,63 @@ import os
 import socket
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
+
+
+def atomic_write_json(path, data):
+    """Write JSON to file with retry for transient permission errors.
+
+    Retries up to 5 times with backoff on OSError (e.g. file locked by
+    antivirus or sync tool).
+    The write itself is done directly — callers should ensure data integrity
+    by keeping a copy before passing in.
+    """
+    path = Path(path)
+    last_error = None
+    for attempt in range(5):
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
+            return
+        except OSError as e:
+            last_error = e
+            if attempt < 4:
+                time.sleep(0.1 * (attempt + 1))
+            continue
+    raise last_error
+
+
+def _load_json_backup_on_corrupt(path, default=None):
+    """Load JSON from file; if parsing fails, rename the corrupt file to .bak and return default.
+
+    This prevents a corrupt file from being silently overwritten on the next write,
+    which would permanently lose the data.
+    """
+    path = Path(path)
+    if not path.exists():
+        return default if default is not None else []
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        # 文件损坏，先备份再返回默认值
+        ts = time.strftime('%Y%m%d_%H%M%S')
+        bak_path = path.with_suffix(path.suffix + f'.corrupt-{ts}.bak')
+        try:
+            path.rename(bak_path)
+        except OSError:
+            pass  # 重命名失败也不影响主流程
+        return default if default is not None else []
+    except OSError:
+        return default if default is not None else []
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -32,6 +83,9 @@ from watchdog.observers import Observer
 ROOT = Path(__file__).resolve().parent
 WORKBENCH = ROOT / 'Workbench' / '此刻便是春天.html'
 DEFAULT_PORT = 8000
+
+# 全局文件写入锁：防止多线程并发写同一个 JSON 文件导致数据丢失
+_file_lock = threading.Lock()
 
 # 会触发重新构建的源文件扩展名集合
 WATCH_PATTERNS = {
@@ -43,6 +97,7 @@ IGNORE_PATTERNS = {
     '__pycache__', '.git', '.gitignore', '.gitattributes',
     '.trae-html-share-packages', '.trae-html-share-*',
     'temp', '*.tmp', '*.bak-*', '*.log', '.env',
+    'data',
 }
 
 
@@ -123,6 +178,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_save_ai_plan()
         elif self.path == '/api/ai-conv':
             self._handle_save_ai_conv()
+        elif self.path == '/api/quiz-photo':
+            self._handle_save_quiz_photo()
         else:
             self.send_error(404, 'Not Found')
 
@@ -160,6 +217,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_ai_conv()
         elif self.path.startswith('/api/study-plan'):
             self._handle_load_study_plan()
+        elif self.path.startswith('/api/quiz-photos'):
+            self._handle_load_quiz_photos()
         else:
             super().do_GET()
 
@@ -224,8 +283,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             return
 
         try:
-            with open(plan_path, 'w', encoding='utf-8') as f:
-                json.dump(plan, f, ensure_ascii=False, indent=2)
+            atomic_write_json(plan_path, plan)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write study-plan.json: {e}'})
             return
@@ -270,8 +328,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             pass
         existing[subject] = payload
         try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(existing, f, ensure_ascii=False, indent=2)
+            atomic_write_json(path, existing)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
@@ -298,8 +355,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             return
         path = ROOT / 'data' / 'recite-mastery.json'
         try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+            atomic_write_json(path, data)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
@@ -337,8 +393,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         filename = f'quiz-{kind}-{subject}.json'
         path = ROOT / 'data' / filename
         try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(content, f, ensure_ascii=False, indent=2)
+            atomic_write_json(path, content)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
@@ -360,22 +415,33 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         if not record:
             self._send_json(400, {'error': 'Missing record field'})
             return
+        question_id = record.get('questionId', '')
+        if not question_id:
+            self._send_json(400, {'error': 'Missing questionId in record'})
+            return
         filename = f'quiz-records-{subject}.json'
         path = ROOT / 'data' / filename
-        try:
-            with open(path, 'r', encoding='utf-8') as f:
-                records = json.load(f)
+        with _file_lock:
+            records = _load_json_backup_on_corrupt(path, default=[])
             if not isinstance(records, list):
                 records = []
-        except (FileNotFoundError, json.JSONDecodeError):
-            records = []
-        records.append(record)
-        try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(records, f, ensure_ascii=False, indent=2)
-        except OSError as e:
-            self._send_json(500, {'error': f'Cannot write: {e}'})
-            return
+            # 按 questionId 去重：已存在则更新（保留原 wrongReason 等字段），不存在则追加
+            updated = False
+            for i in range(len(records)):
+                if records[i].get('questionId') == question_id:
+                    # 合并：新记录覆盖旧记录的字段，但保留旧记录中不在新记录里的字段（如 wrongReason）
+                    merged = dict(records[i])
+                    merged.update(record)
+                    records[i] = merged
+                    updated = True
+                    break
+            if not updated:
+                records.append(record)
+            try:
+                atomic_write_json(path, records)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
         self._send_json(200, {'status': 'ok', 'total': len(records)})
 
     def _handle_update_wrong_reason(self):
@@ -394,29 +460,69 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             return
         filename = f'quiz-records-{subject}.json'
         path = ROOT / 'data' / filename
-        try:
-            with open(path, 'r', encoding='utf-8') as f:
-                records = json.load(f)
+        with _file_lock:
+            records = _load_json_backup_on_corrupt(path, default=[])
             if not isinstance(records, list):
                 records = []
-        except (FileNotFoundError, json.JSONDecodeError):
-            records = []
-        updated = False
-        for i in range(len(records) - 1, -1, -1):
-            if records[i].get('questionId') == question_id:
-                records[i]['wrongReason'] = wrong_reason
-                updated = True
-                break
-        if not updated:
-            self._send_json(404, {'error': 'Record not found'})
-            return
-        try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(records, f, ensure_ascii=False, indent=2)
-        except OSError as e:
-            self._send_json(500, {'error': f'Cannot write: {e}'})
-            return
+            updated = False
+            for i in range(len(records) - 1, -1, -1):
+                if records[i].get('questionId') == question_id:
+                    records[i]['wrongReason'] = wrong_reason
+                    updated = True
+                    break
+            if not updated:
+                self._send_json(404, {'error': 'Record not found'})
+                return
+            try:
+                atomic_write_json(path, records)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
         self._send_json(200, {'status': 'ok'})
+
+    def _handle_save_quiz_photo(self):
+        """保存拍照答案到服务端（跨设备同步）"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        question_id = data.get('questionId', '')
+        data_url = data.get('dataURL', '')
+        if not subject or not question_id or not data_url:
+            self._send_json(400, {'error': 'Missing subject, questionId or dataURL'})
+            return
+        filename = f'quiz-photos-{subject}.json'
+        path = ROOT / 'data' / filename
+        with _file_lock:
+            photos = _load_json_backup_on_corrupt(path, default={})
+            if not isinstance(photos, dict):
+                photos = {}
+            photos[question_id] = data_url
+            try:
+                atomic_write_json(path, photos)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
+        self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_quiz_photos(self):
+        """拉取某科目的全部拍照答案（跨设备同步）"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject parameter'})
+            return
+        filename = f'quiz-photos-{subject}.json'
+        path = ROOT / 'data' / filename
+        photos = _load_json_backup_on_corrupt(path, default={})
+        if not isinstance(photos, dict):
+            photos = {}
+        self._send_json(200, photos)
 
     def _handle_load_ai_plan(self):
         path = ROOT / 'data' / 'ai-daily-plan.json'
@@ -437,8 +543,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             return
         path = ROOT / 'data' / 'ai-daily-plan.json'
         try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+            atomic_write_json(path, data)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
@@ -473,8 +578,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             return
         path = ROOT / 'data' / 'ai-conversation.json'
         try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+            atomic_write_json(path, data)
         except OSError as e:
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
@@ -655,8 +759,11 @@ def _start_http_server(host: str, port: int) -> ThreadingHTTPServer:
 def main() -> int:
     parser = argparse.ArgumentParser(description='Workbench development server with hot reload.')
     parser.add_argument('--host', default='0.0.0.0', help='Bind host (default: 0.0.0.0 for LAN access)')
-    parser.add_argument('--port', type=int, default=DEFAULT_PORT, help='HTTP server port')
+    parser.add_argument('--port', type=int, default=int(os.environ.get('PORT', DEFAULT_PORT)),
+                        help='HTTP server port (default: env PORT or 8000)')
     parser.add_argument('--no-build', action='store_true', help='Skip the initial build')
+    parser.add_argument('--no-watch', action='store_true',
+                        help='Disable file watcher (production mode, e.g. Render)')
     args = parser.parse_args()
 
     # 启动时先执行一次完整构建
@@ -673,11 +780,14 @@ def main() -> int:
         print(f'[dev] error: port {args.port} is already in use; try --port {args.port + 1}', file=sys.stderr)
         return 1
 
-    # 启动文件观察器与 HTTP 服务
-    handler = RebuildHandler()
-    observer = Observer()
-    observer.schedule(handler, str(ROOT), recursive=True)
-    observer.start()
+    # 启动文件观察器与 HTTP 服务（生产模式跳过观察器）
+    if not args.no_watch:
+        handler = RebuildHandler()
+        observer = Observer()
+        observer.schedule(handler, str(ROOT), recursive=True)
+        observer.start()
+    else:
+        print('[dev] file watcher disabled (--no-watch mode)')
 
     server = _start_http_server(args.host, args.port)
 

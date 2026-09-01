@@ -1,0 +1,209 @@
+// ============================================================
+// python-demos 页面 JS
+// 抽离自 python-demos.html
+// ============================================================
+
+(function () {
+    var DEMOS = [
+      {
+        stage: 1, title: "Prompt 模板引擎", difficulty: "★★☆ 入门",
+        weeks: "阶段1 · 语法基础（第1-2周）",
+        objective: "手写一个 Prompt 模板系统——这是 LangChain PromptTemplate 的核心原理。学完阶段1全部 9 个知识点后，你将独立实现这个引擎。",
+        features: ["变量插值", "多模板管理", "模板持久化", "条件分支", "批量渲染"],
+        files: [
+          { name: "prompt_engine.py", desc: "引擎核心代码（PromptTemplate + TemplateStore + 异常类）" },
+          { name: "main.py", desc: "使用示例" },
+          { name: "templates/", desc: "模板文件目录（greet.txt 等）" },
+          { name: "test_prompt_engine.py", desc: "测试文件（可选）" }
+        ],
+        code: 'class TemplateNotFoundError(Exception):\n    """Raised when template not found"""\n    pass\n\nclass PromptTemplate:\n    def __init__(self, template: str):\n        self.template = template\n\n    def render(self, **kwargs) -> str:\n        result = self.template\n        for key, value in kwargs.items():\n            result = result.replace(f"{{{key}}}", str(value))\n        return result\n\nclass TemplateStore:\n    def __init__(self, base_dir: str = "templates"):\n        self.base_dir = Path(base_dir)\n        self._templates: dict[str, PromptTemplate] = {}\n\n    def add(self, name: str, template: str) -> None:\n        if not template:\n            raise ValueError("template cannot be empty")\n        self._templates[name] = PromptTemplate(template)\n\n    def get(self, name: str) -> PromptTemplate:\n        if name not in self._templates:\n            raise TemplateNotFoundError(f"template \'{name}\' not found")\n        return self._templates[name]\n\n    def render(self, name: str, **kwargs) -> str:\n        return self.get(name).render(**kwargs)\n\n    def save_all(self) -> None:\n        self.base_dir.mkdir(parents=True, exist_ok=True)\n        for name, tpl in self._templates.items():\n            (self.base_dir / f"{name}.txt").write_text(tpl.template, encoding="utf-8")\n\n    def load_all(self) -> None:\n        if not self.base_dir.exists():\n            return\n        for f in self.base_dir.glob("*.txt"):\n            self.add(f.stem, f.read_text(encoding="utf-8"))\n\n    def list_names(self) -> list:\n        return list(self._templates.keys())',
+        testCode: '# test_prompt_engine.py\nfrom prompt_engine import PromptTemplate, TemplateStore, TemplateNotFoundError\n\n# 1. Basic render\nt = PromptTemplate("你好{name}")\nassert t.render(name="Alice") == "你好Alice"\n\n# 2. Multi-variable\nt = PromptTemplate("{role}讲解{topic}")\nassert t.render(role="老师", topic="链表") == "老师讲解链表"\n\n# 3. int auto-conversion\nt = PromptTemplate("温度{temp}")\nassert t.render(temp=42) == "温度42"\n\n# 4. Missing var stays as-is\nt = PromptTemplate("你好{name}{missing}")\nassert t.render(name="Bob") == "你好Bob{missing}"\n\n# 5. Template store\nstore = TemplateStore()\nstore.add("greet", "你好{name}")\nstore.add("quiz", "请出一道关于{topic}的{type}题")\nassert store.render("greet", name="Bob") == "你好Bob"\nassert set(store.list_names()) == {"greet", "quiz"}\n\n# 6. Exception handling\ntry:\n    store.get("不存在")\n    assert False, "should raise"\nexcept TemplateNotFoundError:\n    pass\n\ntry:\n    store.add("empty", "")\n    assert False, "should raise"\nexcept ValueError:\n    pass\n\n# 7. Persistence\nstore.save_all()\nstore2 = TemplateStore()\nstore2.load_all()\nassert store2.render("greet", name="Charlie") == "你好Charlie"\n\nprint("All tests passed!")',
+        mapping: [
+          { kp: "01 变量与类型", use: "模板变量的类型判断与转换（int -> str）" },
+          { kp: "02 字符串操作", use: "模板插值核心：{key} 占位符替换" },
+          { kp: "03 条件语句", use: "空模板检查、变量类型判断分支" },
+          { kp: "04 循环语句", use: "批量渲染、遍历所有模板保存到文件" },
+          { kp: "05 函数定义", use: "render(**kwargs) 核心函数" },
+          { kp: "06 列表/字典", use: "TemplateStore 内部用 dict 存储模板" },
+          { kp: "07 文件操作", use: "save_all / load_all 模板持久化" },
+          { kp: "08 异常处理", use: "TemplateNotFoundError + ValueError" },
+          { kp: "09 模块与包", use: "拆分为 prompt_engine.py + main.py" }
+        ]
+      },
+      {
+        stage: 2, title: "LLM 上下文管理器", difficulty: "★★★ 中级",
+        weeks: "阶段2 · 数据结构（第3-5周）",
+        objective: "将 4 个数据结构组件组合成一个完整的 LLM 上下文管理系统。这是 LangChain Memory + Agent + RAG 的手写简化版。",
+        features: ["链表→对话历史", "栈→工具调用", "树→查询路由", "图→知识检索", "统计与计数"],
+        files: [
+          { name: "context_manager.py", desc: "主模块（4个组件 + 整合）" },
+          { name: "main.py", desc: "使用示例" },
+          { name: "test_context_manager.py", desc: "测试文件" }
+        ],
+        code: '# 1. ChatHistory (Linked List)\nclass ChatHistory:\n    def append(self, role: str, content: str) -> None: ...\n    def get_last_n(self, n: int) -> list: ...\n    def trim_to(self, max_size: int) -> None: ...\n    def size(self) -> int: ...\n    def to_messages(self) -> list: ...  # Convert to LLM API format\n\n# 2. ToolCallStack (Stack)\nclass ToolCallStack:\n    def push(self, tool: str, params: dict) -> None: ...\n    def pop(self) -> dict: ...\n    def peek(self) -> dict: ...\n    def get_history(self) -> list: ...\n    def size(self) -> int: ...\n\n# 3. QueryRouter (Binary Tree)\nclass QueryRouter:\n    def route(self, query: str) -> str: ...  # Returns handler name\n    def add_rule(self, keywords: list, handler: str) -> None: ...\n\n# 4. KnowledgeGraph (Graph + BFS)\nclass KnowledgeGraph:\n    def add_node(self, name: str) -> None: ...\n    def add_edge(self, a: str, b: str) -> None: ...\n    def search(self, start: str, max_depth: int = 3) -> list: ...\n\n# 5. ContextManager (Integration)\nclass ContextManager:\n    def __init__(self, max_history: int = 20):\n        self.history = ChatHistory()\n        self.tools = ToolCallStack()\n        self.router = QueryRouter()\n        self.kg = KnowledgeGraph()\n\n    def handle_query(self, query: str) -> dict:\n        handler = self.router.route(query)\n        related = self.kg.search(handler, max_depth=2)\n        context = {\n            "handler": handler,\n            "related_knowledge": related,\n            "recent_messages": self.history.get_last_n(5),\n        }\n        return context',
+        testCode: '# Test ContextManager integration\ncm = ContextManager()\n\n# Add knowledge graph nodes\ncm.kg.add_node("python"); cm.kg.add_node("链表"); cm.kg.add_node("栈")\ncm.kg.add_edge("栈", "链表")\n\n# Route query\nassert cm.router.route("写一段python代码") == "python_handler"\n\n# Handle full query\nresult = cm.handle_query("写一段python代码")\nassert "handler" in result\nassert "related_knowledge" in result\nassert "recent_messages" in result\n\n# Chat history\ncm.history.append("user", "你好")\ncm.history.append("assistant", "有什么帮助？")\nassert cm.history.size() == 2\nassert len(cm.history.get_last_n(1)) == 1',
+        mapping: [
+          { kp: "10 列表推导式", use: "消息过滤、统计计数" },
+          { kp: "11 栈与队列", use: "ToolCallStack — Agent 工具调用链" },
+          { kp: "12 链表", use: "ChatHistory — 对话历史管理与截断" },
+          { kp: "13 树结构", use: "QueryRouter — 查询意图分类路由" },
+          { kp: "14 图遍历", use: "KnowledgeGraph — RAG 知识检索" },
+          { kp: "15 collections", use: "ConversationStats — 对话统计与缓存" }
+        ]
+      },
+      {
+        stage: 3, title: "LLM API 客户端", difficulty: "★★★ 中高",
+        weeks: "阶段3 · 常用库（第6-7周）",
+        objective: "将常用库组合成一个完整的 AI API 调用工具包——你工作台 dev_server.py 的手写版。命令行聊天机器人，支持限流、日志、对话管理。",
+        features: ["requests→API调用", "json→响应解析", "re→文本提取", "datetime→限流", "pathlib→日志", "完整工程化"],
+        files: [
+          { name: "llm_client.py", desc: "API 客户端核心（LLMClient 类）" },
+          { name: "conversation.py", desc: "对话管理与日志（ConversationManager + ConversationLogger）" },
+          { name: "main.py", desc: "使用示例：命令行聊天机器人" }
+        ],
+        code: 'class LLMClient:\n    def __init__(self, api_key: str, model: str = "deepseek-chat"):\n        self.api_key = api_key\n        self.model = model\n        self.history = ConversationManager()\n        self.logger = ConversationLogger()\n        self.limiter = RateLimiter(max_calls=60, per_seconds=60)\n\n    def chat(self, user_input: str, system_prompt: str = "") -> str:\n        # 1. Rate limit check\n        if not self.limiter.can_call():\n            raise RuntimeError(f"Rate limited, wait {self.limiter.wait_time():.0f}s")\n\n        # 2. Build messages\n        self.history.append("user", user_input)\n        messages = self.history.to_messages()\n        if system_prompt:\n            messages.insert(0, {"role": "system", "content": system_prompt})\n\n        # 3. Call API\n        raw = call_llm(self.api_key, messages, model=self.model)\n        response = parse_api_response(raw)\n\n        # 4. Log and return\n        self.history.append("assistant", response["content"])\n        self.logger.log("assistant", response["content"])\n        return response["content"]\n\n    def clear_history(self) -> None:\n        self.history.clear()\n\n# main.py - CLI chat bot\nfrom llm_client import LLMClient\nfrom prompt_engine import TemplateStore  # Reuse Stage 1!\n\nconfig = load_config()\nclient = LLMClient(config["api_key"], config["model"])\n\n# Use Stage 1 template engine\nstore = TemplateStore()\nstore.add("system", "你是一个{role}，请回答关于{topic}的问题。")\nsystem_prompt = store.render("system", role="老师", topic="数据结构")\n\n# Chat loop\nwhile True:\n    user_input = input("你: ")\n    if user_input == "quit":\n        break\n    reply = client.chat(user_input, system_prompt)\n    print(f"AI: {reply}\\n")',
+        testCode: '# Test LLMClient (with mock)\nfrom unittest.mock import patch\n\n# Mock the API call\nwith patch("llm_client.call_llm") as mock_call:\n    mock_call.return_value = \'{"choices": [{"message": {"role": "assistant", "content": "你好！"}}], "usage": {"total_tokens": 10}}\'\n\n    client = LLMClient("test_key")\n    reply = client.chat("你好")\n    assert reply == "你好！"\n    assert client.history.size() == 2  # user + assistant\n\n    # Rate limiter\n    limiter = RateLimiter(max_calls=2, per_seconds=60)\n    assert limiter.can_call() == True\n    assert limiter.can_call() == True\n    assert limiter.can_call() == False\n\n    # Response parser\n    result = parse_api_response(\'{"choices": [{"message": {"content": "test"}}], "usage": {"total_tokens": 5}}\')\n    assert result["content"] == "test"\n    assert result["total_tokens"] == 5\n    assert parse_api_response("invalid") is None',
+        mapping: [
+          { kp: "16 os/sys", use: "从环境变量加载 API Key 和配置" },
+          { kp: "17 json", use: "构建 API 请求、解析 API 响应" },
+          { kp: "18 re", use: "从 LLM 回复中提取代码块/JSON" },
+          { kp: "19 datetime", use: "RateLimiter 速率限制、日志时间戳" },
+          { kp: "20 requests", use: "调用 DeepSeek API（核心）" },
+          { kp: "21 pathlib", use: "ConversationLogger 日志文件管理" },
+          { kp: "22 typing", use: "Message/APIResponse 类型定义" }
+        ],
+        reuse: "复用阶段1的 <code>PromptTemplate</code> 构建 system prompt，复用阶段2的 <code>ChatHistory</code> 管理对话上下文"
+      },
+      {
+        stage: 4, title: "真题数据分析仪表盘", difficulty: "★★★★ 进阶",
+        weeks: "阶段4 · AI Python（第8-10周）",
+        objective: "整合阶段4所有知识点，构建一个完整的考试数据分析工具——输入成绩 CSV，输出统计报告 + 可视化图表 + AI 学习建议。",
+        features: ["NumPy→数值计算", "Pandas→数据处理", "Matplotlib→可视化", "AI分析报告", "批量处理", "数据清洗"],
+        files: [
+          { name: "data_loader.py", desc: "数据加载与批处理（batch_load_exams）" },
+          { name: "data_cleaner.py", desc: "数据清洗（clean_exam_data）" },
+          { name: "analyzer.py", desc: "统计分析（analyze_scores, load_and_summarize）" },
+          { name: "visualizer.py", desc: "图表生成（generate_charts）" },
+          { name: "reporter.py", desc: "AI 报告生成（generate_report）" },
+          { name: "main.py", desc: "入口：一键生成分析报告" }
+        ],
+        code: '# main.py - One-click analysis pipeline\nfrom data_loader import batch_load_exams\nfrom data_cleaner import clean_exam_data\nfrom analyzer import analyze_scores, load_and_summarize\nfrom visualizer import generate_charts\nfrom reporter import generate_report\nfrom llm_client import LLMClient  # Reuse Stage 3!\nimport os\n\ndef main(data_dir: str, output_dir: str = "report"):\n    """One-click analysis pipeline"""\n    # 1. Batch load\n    df = batch_load_exams(data_dir)\n    print(f"Loaded {len(df)} records")\n\n    # 2. Clean data\n    df = clean_exam_data(df)\n    print(f"Cleaned: {len(df)} valid records")\n\n    # 3. Statistical analysis\n    summary = analyze_scores(df)\n    print("Analysis complete")\n\n    # 4. Generate charts\n    charts = generate_charts(df, output_dir)\n    print(f"Charts saved to {output_dir}/")\n\n    # 5. AI report generation\n    api_key = os.environ.get("DEEPSEEK_API_KEY")\n    if api_key:\n        client = LLMClient(api_key)\n        analysis = client.chat(f"分析以下数据并给出建议：\\n{summary}")\n    else:\n        analysis = "请设置 DEEPSEEK_API_KEY 环境变量以生成 AI 报告"\n\n    # 6. Save report\n    from pathlib import Path\n    Path(output_dir).mkdir(exist_ok=True)\n    Path(f"{output_dir}/report.md").write_text(\n        f"# 自考成绩分析报告\\n\\n{analysis}\\n\\n"\n        f"![各科平均分]({charts[\'bar\']})\\n"\n        f"![成绩趋势]({charts[\'trend\']})\\n",\n        encoding="utf-8"\n    )\n    print(f"Report saved to {output_dir}/report.md")\n\nif __name__ == "__main__":\n    import sys\n    main(sys.argv[1] if len(sys.argv) > 1 else "data")',
+        testCode: '# Test the full pipeline\nimport pandas as pd\nfrom pathlib import Path\n\n# Create test data\npd.DataFrame([\n    {"subject": "DS", "chapter": "Ch1", "score": 85, "date": "2026-08-01"},\n    {"subject": "DS", "chapter": "Ch1", "score": 90, "date": "2026-08-10"},\n    {"subject": "DS", "chapter": "Ch2", "score": 60, "date": "2026-08-10"},\n    {"subject": "DM", "chapter": "Ch1", "score": 70, "date": "2026-08-01"},\n    {"subject": "DM", "chapter": "Ch1", "score": 88, "date": "2026-08-10"},\n]).to_csv("test_data.csv", index=False)\n\n# Test each component\ndf = pd.read_csv("test_data.csv")\n\n# Data cleaning\ncleaned = clean_exam_data(df)\nassert cleaned["score"].isna().sum() == 0\nassert cleaned["score"].max() <= 100\n\n# Analysis\nresult = analyze_scores(cleaned)\nassert "DS" in result\nassert "mean" in result["DS"]\n\n# Charts\noutput = Path("test_charts")\noutput.mkdir(exist_ok=True)\ncharts = generate_charts(cleaned, output)\nassert Path(charts["bar"]).exists()\nassert Path(charts["trend"]).exists()\n\nprint("All pipeline tests passed!")',
+        mapping: [
+          { kp: "23 NumPy", use: "成绩统计计算（均值/标准差/百分位）" },
+          { kp: "24 Pandas", use: "数据加载、筛选、分组聚合" },
+          { kp: "25 Matplotlib", use: "生成柱状图/热力图/趋势图" },
+          { kp: "26 API调用", use: "发送数据给 LLM 生成分析报告" },
+          { kp: "27 文件批处理", use: "批量加载多个月份的 CSV" },
+          { kp: "28 数据清洗", use: "处理缺失/重复/异常数据" },
+          { kp: "29 爬虫", use: "采集考试时间表等外部数据" }
+        ],
+        reuse: "复用阶段3的 <code>LLMClient</code> 调用 AI 生成报告。阶段1+2+3+4 组合 = 手写迷你 AI 数据分析平台"
+      }
+    ];
+
+    var currentDemo = 1;
+    var demoTabs = document.getElementById("demoTabs");
+    var demoContent = document.getElementById("demoContent");
+
+    var kpState = {};
+    try { kpState = JSON.parse(localStorage.getItem("py_kp_detail_v1")) || {}; } catch(e) {}
+
+    function esc(s) {
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function hl(code) {
+      var s = esc(code);
+      s = s.replace(/(#.*?)(?=\n|$)/g, function(m) {
+        return "\x01CMT\x01" + m + "\x01/CMT\x01";
+      });
+      s = s.replace(/("[^"]*")/g, function(m) {
+        return "\x01STR\x01" + m + "\x01/STR\x01";
+      });
+      s = s.replace(/\b(def|class|if|elif|else|for|while|return|import|from|as|try|except|finally|raise|with|pass|None|True|False|and|or|not|in|is|lambda|assert|yield|break|continue|global|del)\b/g, '<span class="kw">$1</span>');
+      s = s.replace(/\x01CMT\x01/g, '<span class="cmt">').replace(/\x01\/CMT\x01/g, "</span>");
+      s = s.replace(/\x01STR\x01/g, '<span class="str">').replace(/\x01\/STR\x01/g, "</span>");
+      return s;
+    }
+
+    function renderTabs() {
+      demoTabs.innerHTML = DEMOS.map(function(d) {
+        return '<button class="stage-tab' + (d.stage === currentDemo ? " active" : "") + '" data-stage="' + d.stage + '">' +
+          '<span class="stage-num">' + d.weeks + '</span>' +
+          d.title +
+        '</button>';
+      }).join("");
+      demoTabs.querySelectorAll(".stage-tab").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          currentDemo = parseInt(this.getAttribute("data-stage"));
+          renderTabs();
+          renderContent();
+        });
+      });
+    }
+
+    function renderContent() {
+      var d = DEMOS.find(function(x) { return x.stage === currentDemo; });
+      var html = '<div class="demo-card">' +
+        '<div class="demo-header">' +
+          '<span class="demo-no">' + d.stage + '</span>' +
+          '<span class="demo-title">' + d.title + '</span>' +
+          '<span class="demo-difficulty">' + d.difficulty + '</span>' +
+        '</div>' +
+        '<div class="demo-block-label">学习目标</div>' +
+        '<div class="demo-objective">' + d.objective + '</div>' +
+        '<div class="demo-block-label">核心功能</div>' +
+        '<div class="demo-features">' +
+          d.features.map(function(f) { return '<span class="demo-feature">' + f + '</span>'; }).join("") +
+        '</div>' +
+        '<div class="demo-block-label">文件结构</div>' +
+        '<ul class="demo-files">' +
+          d.files.map(function(f) { return '<li><code>' + f.name + '</code> — ' + f.desc + '</li>'; }).join("") +
+        '</ul>';
+
+      if (d.reuse) {
+        html += '<div class="reuse-banner"><strong>复用关系：</strong>' + d.reuse + '</div>';
+      }
+
+      html += '<div class="demo-block-label">接口设计</div>' +
+        '<pre class="demo-code">' + hl(d.code) + '</pre>' +
+        '<div class="demo-block-label">测试用例</div>' +
+        '<pre class="demo-code">' + hl(d.testCode) + '</pre>' +
+        '<div class="demo-block-label">知识点映射</div>' +
+        '<table class="mapping-table"><tr><th>知识点</th><th>在 Demo 中的用途</th><th>掌握</th></tr>' +
+          d.mapping.map(function(m) {
+            var kpId = parseInt(m.kp);
+            var mastered = kpState[kpId];
+            return '<tr><td>' + m.kp + '</td><td>' + m.use + '</td><td style="text-align:center">' + (mastered ? '<span style="color:#16a34a;font-weight:700">✓</span>' : '<span style="color:var(--muted)">—</span>') + '</td></tr>';
+          }).join("") +
+        '</table>' +
+      '</div>';
+
+      if (JOB_DEMO_MAP[d.stage]) {
+        html += '<div class="demo-block-label" style="color:#8b5cf6">🎯 关联岗位技能</div><div style="display:flex;gap:0.3rem;flex-wrap:wrap">' +
+          JOB_DEMO_MAP[d.stage].map(function(j) {
+            return '<span style="padding:2px 8px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:4px;font-size:0.75rem;color:#8b5cf6;cursor:pointer" onclick="navigateToJobTree('+j.id+')">KP'+j.id+': '+j.t+'</span>';
+          }).join('') + '</div>';
+      }
+
+      html += '</div>';
+      demoContent.innerHTML = html;
+    }
+
+    var JOB_DEMO_MAP = {
+      1: [{id:1, t:"Python工程化"}, {id:4, t:"Prompt工程实践"}],
+      2: [{id:13, t:"Agent记忆与多轮对话"}],
+      3: [{id:2, t:"FastAPI接口开发"}, {id:3, t:"LLM API调用"}],
+      4: [{id:17, t:"项目3：AI错题分析平台"}]
+    };
+
+    function navigateToJobTree(kpId) {
+      try {
+        window.parent.postMessage({ action: 'navigate', module: 'ai-learning', page: 'job-skill-tree.html', kpId: kpId }, '*');
+      } catch(e) { console.log('navigate failed:', e); }
+    }
+
+    renderTabs();
+    renderContent();
+  })();

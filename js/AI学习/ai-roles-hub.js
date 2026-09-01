@@ -1,0 +1,749 @@
+// ============================================================
+// ai-roles-hub 页面 JS
+// 抽离自 ai-roles-hub.html
+// ============================================================
+
+(function() {
+  "use strict";
+
+  // ---------- Config ----------
+  var SUBJECT_NAMES = {
+    "02324": "离散数学",
+    "13015": "计算机系统原理",
+    "13003": "数据结构与算法",
+    "00023": "高等数学（工本）",
+    "00015": "英语（二）"
+  };
+
+  var MASTERY_LABELS = ["未开始", "学习中", "已掌握", "需复习"];
+
+  var roles = {
+    planner: {
+      name: "学习规划师",
+      icon: "🧭",
+      description: "拆解目标、制定计划、调整节奏。适合制定周计划、冲刺安排、时间分配。"
+    },
+    organizer: {
+      name: "资料整理员",
+      icon: "📂",
+      description: "OCR 校对、生成框架、整理错题。适合处理教材截图、整理笔记。"
+    },
+    explainer: {
+      name: "错题讲解员",
+      icon: "💡",
+      description: "分析错因、举一反三。适合讲解错题、梳理易错点。"
+    },
+    collector: {
+      name: "资讯采集员",
+      icon: "📡",
+      description: "抓取 AI 热点、政策、补贴。适合整理周报、查询资讯。"
+    },
+    reviewer: {
+      name: "代码 Reviewer",
+      icon: "🔍",
+      description: "检查 Python 实现、提优化建议。适合代码 review、算法实现。"
+    },
+    reminder: {
+      name: "进度提醒员",
+      icon: "⏰",
+      description: "提醒偏差、建议调整策略。适合复盘进度、调整计划。"
+    }
+  };
+
+  // ---------- State ----------
+  var urlParams = new URLSearchParams(window.location.search);
+  var mode = urlParams.get("mode") || (urlParams.get("subject") ? "subject" : "global");
+  var subjectCode = urlParams.get("subject") || "";
+  var subjectName = SUBJECT_NAMES[subjectCode] || subjectCode;
+
+  var selfStudyData = null;
+  var subjectItem = null;
+  var interactionMode = "prompt"; // "prompt" or "chat"
+
+  // ---------- DOM ----------
+  var modeBadge = document.getElementById("modeBadge");
+  var contextLoading = document.getElementById("contextLoading");
+  var contextGrid = document.getElementById("contextGrid");
+  var contextChapters = document.getElementById("contextChapters");
+  var scenarioGrid = document.getElementById("scenarioGrid");
+  var customRequest = document.getElementById("customRequest");
+  var generateCustomBtn = document.getElementById("generateCustom");
+  var clearCustomBtn = document.getElementById("clearCustom");
+  var chatCustomBtn = document.getElementById("chatCustom");
+  var modeSwitcher = document.getElementById("modeSwitcher");
+  var scenarioTitle = document.getElementById("scenarioTitle");
+  var outputSection = document.getElementById("outputSection");
+  var outputText = document.getElementById("outputText");
+  var copyOutputBtn = document.getElementById("copyOutput");
+  var clearOutputBtn = document.getElementById("clearOutput");
+  var roleTabs = document.getElementById("roleTabs");
+  var roleDesc = document.getElementById("roleDesc");
+  var toastEl = document.getElementById("aiRoleToast");
+
+  // ---------- Utilities ----------
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("ai-role-show");
+    setTimeout(function() { toastEl.classList.remove("ai-role-show"); }, 2000);
+  }
+
+  function copyToClipboard(text) {
+    if (!text) { showToast("没有可复制的内容"); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() { showToast("已复制到剪贴板"); })
+        .catch(function() { fallbackCopy(text); });
+    } else { fallbackCopy(text); }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showToast("已复制到剪贴板");
+    } catch (e) { showToast("复制失败，请手动复制"); }
+    document.body.removeChild(ta);
+  }
+
+  function safeParse(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key) || "") || fallback; }
+    catch(e) { return fallback; }
+  }
+
+  function daysUntil(dateStr) {
+    if (!dateStr || dateStr === "待定") return null;
+    var match = String(dateStr).match(/(\d{4})\.(\d{1,2})/);
+    if (!match) return null;
+    var target = new Date(parseInt(match[1]), parseInt(match[2]) - 1, 15);
+    var now = new Date();
+    var diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+    return diff;
+  }
+
+  // ---------- Data Loading ----------
+  function loadSelfStudyData() {
+    return fetch("../../data/modules/self-study.json")
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        selfStudyData = data;
+        if (subjectCode) {
+          subjectItem = findSubjectItem(subjectCode);
+        }
+      })
+      .catch(function(err) {
+        console.error("加载 self-study.json 失败", err);
+        selfStudyData = { categories: [] };
+      });
+  }
+
+  function findSubjectItem(code) {
+    if (!selfStudyData || !selfStudyData.categories) return null;
+    for (var i = 0; i < selfStudyData.categories.length; i++) {
+      var cat = selfStudyData.categories[i];
+      for (var j = 0; j < (cat.items || []).length; j++) {
+        var item = cat.items[j];
+        if (item.code === code) return item;
+        if (item.items) {
+          for (var k = 0; k < item.items.length; k++) {
+            // 返回匹配 code 的子项（含 stage/exam/review 等字段），而非父级文件夹
+            if (item.items[k].code === code) return item.items[k];
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function getSubjectMastery(code) {
+    return safeParse("ss_mastery_" + code, { mastery: {} }).mastery || {};
+  }
+
+  function getAllSubjectProgress() {
+    var subjects = [];
+    if (!selfStudyData || !selfStudyData.categories) return subjects;
+    selfStudyData.categories.forEach(function(cat) {
+      (cat.items || []).forEach(function(item) {
+        if (!item.code) return;
+        var mastery = getSubjectMastery(item.code);
+        var total = Object.keys(mastery).length;
+        var learned = Object.values(mastery).filter(function(v) { return v >= 2; }).length;
+        var reviewing = Object.values(mastery).filter(function(v) { return v === 3; }).length;
+        subjects.push({
+          code: item.code,
+          name: SUBJECT_NAMES[item.code] || item.name,
+          exam: item.exam,
+          days: daysUntil(item.exam),
+          stage: item.stage,
+          review: item.review,
+          total: total,
+          learned: learned,
+          reviewing: reviewing,
+          percent: total ? Math.round(learned / total * 100) : 0,
+          mastery: mastery
+        });
+      });
+    });
+    return subjects;
+  }
+
+  function getPyProgress() {
+    var kt = safeParse("py_knowledge_tree_v1", {});
+    var loops = safeParse("py_learning_loops_v1", []);
+    return {
+      ktDone: Object.keys(kt).length,
+      ktTotal: 29,
+      loopsDone: loops.filter(function(l) { return (l.steps || []).every(Boolean); }).length,
+      loopsTotal: loops.length
+    };
+  }
+
+  function getExamReciteStats() {
+    var exam = safeParse("exam-questions-data", {});
+    var recite = safeParse("recite-cards-data", {});
+    var examTotal = 0, examCorrect = 0;
+    Object.values(exam).forEach(function(items) {
+      items.forEach(function(q) {
+        examTotal++;
+        if (q.status === "correct") examCorrect++;
+      });
+    });
+    var reciteTotal = 0, reciteKnown = 0;
+    Object.values(recite).forEach(function(items) {
+      items.forEach(function(c) {
+        reciteTotal++;
+        if (c.mastery === "known") reciteKnown++;
+      });
+    });
+    return { examTotal: examTotal, examCorrect: examCorrect, reciteTotal: reciteTotal, reciteKnown: reciteKnown };
+  }
+
+  // ---------- Rendering ----------
+  function renderModeBadge() {
+    if (mode === "subject" && subjectCode) {
+      modeBadge.textContent = "单科模式 · " + subjectName;
+      modeBadge.className = "ai-role-mode-badge subject";
+    } else {
+      modeBadge.textContent = "统筹模式 · 跨科目规划";
+      modeBadge.className = "ai-role-mode-badge global";
+    }
+  }
+
+  function renderContext() {
+    contextLoading.style.display = "none";
+    contextGrid.style.display = "grid";
+    contextGrid.innerHTML = "";
+
+    if (mode === "subject" && subjectCode) {
+      renderSubjectContext();
+    } else {
+      renderGlobalContext();
+    }
+  }
+
+  function renderSubjectContext() {
+    var mastery = getSubjectMastery(subjectCode);
+    var total = Object.keys(mastery).length;
+    var learned = Object.values(mastery).filter(function(v) { return v >= 2; }).length;
+    var reviewing = Object.values(mastery).filter(function(v) { return v === 3; }).length;
+    var percent = total ? Math.round(learned / total * 100) : 0;
+    var days = subjectItem ? daysUntil(subjectItem.exam) : null;
+
+    contextGrid.innerHTML =
+      contextItem("科目", subjectName) +
+      contextItem("考试", (subjectItem && subjectItem.exam) ? subjectItem.exam + (days !== null ? "（约 " + days + " 天）" : "") : "待定") +
+      contextItem("阶段", (subjectItem && subjectItem.stage) ? subjectItem.stage : "—") +
+      contextItem("掌握度", learned + "/" + total + " 章（" + percent + "%）") +
+      contextItem("需复习", reviewing > 0 ? reviewing + " 章" : "无", reviewing > 0 ? "warn" : "good");
+
+    renderChapterPills(mastery);
+  }
+
+  function renderGlobalContext() {
+    var subjects = getAllSubjectProgress();
+    var py = getPyProgress();
+    var stats = getExamReciteStats();
+
+    var totalChapters = subjects.reduce(function(s, sub) { return s + sub.total; }, 0);
+    var learnedChapters = subjects.reduce(function(s, sub) { return s + sub.learned; }, 0);
+    var reviewingChapters = subjects.reduce(function(s, sub) { return s + sub.reviewing; }, 0);
+    var urgentSubjects = subjects.filter(function(s) { return s.days !== null && s.days <= 60; });
+
+    contextGrid.innerHTML =
+      contextItem("备考科目", subjects.length + " 科") +
+      contextItem("已掌握章节", learnedChapters + "/" + totalChapters + " 章") +
+      contextItem("需复习章节", reviewingChapters > 0 ? reviewingChapters + " 章" : "无", reviewingChapters > 0 ? "warn" : "good") +
+      contextItem("Python 知识树", py.ktDone + "/" + py.ktTotal) +
+      contextItem("学习闭环", py.loopsDone + "/" + py.loopsTotal + " 个") +
+      contextItem("真题掌握", stats.examCorrect + "/" + stats.examTotal) +
+      contextItem("背诵卡", stats.reciteKnown + "/" + stats.reciteTotal) +
+      contextItem("临近考试", urgentSubjects.length > 0 ? urgentSubjects.map(function(s) { return s.name; }).join("、") : "无", urgentSubjects.length > 0 ? "warn" : "good");
+
+    contextChapters.style.display = "none";
+  }
+
+  function contextItem(label, value, valueClass) {
+    valueClass = valueClass || "";
+    return '<div class="ai-context-item">' +
+      '<div class="ai-context-item-label">' + label + '</div>' +
+      '<div class="ai-context-item-value ' + valueClass + '">' + value + '</div>' +
+    '</div>';
+  }
+
+  function renderChapterPills(mastery) {
+    contextChapters.style.display = "flex";
+    contextChapters.innerHTML = "";
+    var chapters = Object.keys(mastery).map(Number).sort(function(a, b) { return a - b; });
+    if (chapters.length === 0) {
+      contextChapters.innerHTML = '<span style="color:var(--muted);font-size:0.8rem">尚未标记章节掌握度</span>';
+      return;
+    }
+    chapters.forEach(function(ch) {
+      var level = mastery[ch];
+      var pill = document.createElement("span");
+      pill.className = "ai-context-chapter m" + level;
+      pill.textContent = "第 " + ch + " 章：" + MASTERY_LABELS[level];
+      contextChapters.appendChild(pill);
+    });
+  }
+
+  function renderScenarios() {
+    scenarioGrid.innerHTML = "";
+    var scenarios = mode === "subject" && subjectCode ? subjectScenarios() : globalScenarios();
+    scenarios.forEach(function(s) {
+      var btn = document.createElement("button");
+      btn.className = "ai-scenario-btn";
+      btn.innerHTML = '<span class="icon">' + s.icon + '</span><span>' + s.name + '</span>';
+      btn.addEventListener("click", function() {
+        if (interactionMode === "chat") {
+          startChatWithGenerator(s.generator);
+        } else {
+          generatePrompt(s.generator);
+        }
+      });
+      scenarioGrid.appendChild(btn);
+    });
+  }
+
+  function globalScenarios() {
+    return [
+      { name: "制定本周跨科目计划", icon: "📅", generator: generateWeeklyPlan },
+      { name: "分析进度偏差", icon: "📊", generator: generateProgressAnalysis },
+      { name: "调整时间分配", icon: "⚖️", generator: generateTimeAllocation },
+      { name: "考前冲刺方案", icon: "🚀", generator: generateSprintPlan },
+      { name: "推荐今日任务", icon: "✅", generator: generateTodayTasks },
+      { name: "Python + AI 学习建议", icon: "🐍", generator: generatePyAiAdvice }
+    ];
+  }
+
+  function subjectScenarios() {
+    return [
+      { name: "制定本章学习计划", icon: "📅", generator: generateSubjectChapterPlan },
+      { name: "出本章练习题", icon: "📝", generator: generateSubjectExercises },
+      { name: "讲解本章易错点", icon: "💡", generator: generateSubjectPitfalls },
+      { name: "针对薄弱点出题", icon: "🎯", generator: generateWeakPointExercises },
+      { name: "生成本章背诵卡", icon: "🎴", generator: generateSubjectCards },
+      { name: "考前冲刺方案", icon: "🚀", generator: generateSubjectSprint }
+    ];
+  }
+
+  // ---------- Prompt Generators ----------
+  function baseContext() {
+    var subjects = getAllSubjectProgress();
+    var py = getPyProgress();
+    var stats = getExamReciteStats();
+    var ctx = "【我的学习背景】\n";
+    ctx += "- 身份：武汉理工大学计算机科学与技术自考本科生\n";
+    ctx += "- 当前在上海嘉定区自学，每天可用学习时间约 3–4 小时\n";
+    ctx += "- 学习分配原则：70% 自考备考、10% Python 基础、10% AI 学习、10% 休息\n\n";
+
+    ctx += "【备考科目进度】\n";
+    if (subjects.length === 0) {
+      ctx += "- 暂无科目数据\n";
+    } else {
+      subjects.forEach(function(s) {
+        ctx += "- " + s.name + "（" + s.code + "）：考试 " + (s.exam || "待定") + "，阶段「" + s.stage + "」，已掌握 " + s.learned + "/" + s.total + " 章（" + s.percent + "%）";
+        if (s.reviewing > 0) ctx += "，需复习 " + s.reviewing + " 章";
+        if (s.days !== null) ctx += "，距考试约 " + s.days + " 天";
+        ctx += "\n";
+      });
+    }
+
+    ctx += "\n【其他模块进度】\n";
+    ctx += "- Python 知识树：" + py.ktDone + "/" + py.ktTotal + "\n";
+    ctx += "- Python 学习闭环：" + py.loopsDone + "/" + py.loopsTotal + " 个完整闭环\n";
+    ctx += "- 真题练习：已掌握 " + stats.examCorrect + "/" + stats.examTotal + " 题\n";
+    ctx += "- 背诵卡：已掌握 " + stats.reciteKnown + "/" + stats.reciteTotal + " 张\n";
+
+    return ctx;
+  }
+
+  function generateWeeklyPlan() {
+    return baseContext() + "\n\n【我的需求】\n请根据以上进度，帮我制定接下来一周（7 天）的跨科目学习计划。要求：\n" +
+      "1. 每天任务具体到小时级；\n" +
+      "2. 优先安排临近考试科目和薄弱章节；\n" +
+      "3. 每天保留 30 分钟休息/缓冲时间；\n" +
+      "4. 周末安排一次复盘；\n" +
+      "5. 如果某科进度明显落后，请给出调整建议。";
+  }
+
+  function generateProgressAnalysis() {
+    return baseContext() + "\n\n【我的需求】\n请帮我分析当前学习进度是否存在偏差。具体包括：\n" +
+      "1. 哪些科目/章节明显落后？\n" +
+      "2. 哪些科目进度健康？\n" +
+      "3. 接下来 2 周最高优先级的 3 件事是什么？\n" +
+      "4. 针对落后项，给出可执行的补救方案。";
+  }
+
+  function generateTimeAllocation() {
+    return baseContext() + "\n\n【我的需求】\n我本周可用学习时间有限，请帮我重新优化时间分配。要求：\n" +
+      "1. 基于 70/10/10/10 原则给出建议；\n" +
+      "2. 考虑考试倒计时和当前掌握度；\n" +
+      "3. 如果我要突击某一科，给出具体调整后的分配方案；\n" +
+      "4. 说明每种分配方案的适用场景。";
+  }
+
+  function generateSprintPlan() {
+    return baseContext() + "\n\n【我的需求】\n距离 2026 年 10 月自考还有约 2 个月，请帮我制定考前冲刺方案。要求：\n" +
+      "1. 以周为单位，划分基础巩固期、强化期、模考期；\n" +
+      "2. 每科给出具体的冲刺重点；\n" +
+      "3. 每天的学习、做题、背诵、复盘时间比例；\n" +
+      "4. 最后一周的注意事项。";
+  }
+
+  function generateTodayTasks() {
+    return baseContext() + "\n\n【我的需求】\n请根据当前进度，帮我推荐今天的 3–5 个具体学习任务。要求：\n" +
+      "1. 每个任务可在 1–2 小时内完成；\n" +
+      "2. 优先选择「需复习」和「学习中」的章节；\n" +
+      "3. 包含一个 Python 小练习或 AI 学习任务；\n" +
+      "4. 给出每个任务的完成标准。";
+  }
+
+  function generatePyAiAdvice() {
+    var py = getPyProgress();
+    return baseContext() + "\n\n【我的需求】\n我同时在学 Python 基础和 AI 相关内容，请帮我协调这两个模块。要求：\n" +
+      "1. Python 当前进度 " + py.ktDone + "/" + py.ktTotal + "，给出本周 Python 学习重点；\n" +
+      "2. AI 学习方面，推荐本周可以看的方向或做的项目；\n" +
+      "3. 如何把 Python 练习和 AI 学习结合起来？\n" +
+      "4. 给出每天 30–60 分钟的具体安排。";
+  }
+
+  function subjectBaseContext() {
+    var mastery = getSubjectMastery(subjectCode);
+    var total = Object.keys(mastery).length;
+    var learned = Object.values(mastery).filter(function(v) { return v >= 2; }).length;
+    var learning = Object.values(mastery).filter(function(v) { return v === 1; }).length;
+    var reviewing = Object.values(mastery).filter(function(v) { return v === 3; }).length;
+    var notStarted = Object.values(mastery).filter(function(v) { return v === 0; }).length;
+    var days = subjectItem ? daysUntil(subjectItem.exam) : null;
+
+    var ctx = "【科目背景】\n";
+    ctx += "- 科目：" + subjectName + "（" + subjectCode + "）\n";
+    ctx += "- 考试：" + (subjectItem && subjectItem.exam ? subjectItem.exam : "待定") + (days !== null ? "，约 " + days + " 天后考试" : "") + "\n";
+    ctx += "- 当前阶段：" + ((subjectItem && subjectItem.stage) ? subjectItem.stage : "—") + "\n";
+    ctx += "- 整体进度：已掌握 " + learned + " 章，学习中 " + learning + " 章，需复习 " + reviewing + " 章，未开始 " + notStarted + " 章，共 " + total + " 章\n";
+    if (subjectItem && subjectItem.review) ctx += "- 历史评估：" + subjectItem.review + "\n";
+
+    ctx += "\n【章节掌握度】\n";
+    var chapters = Object.keys(mastery).map(Number).sort(function(a, b) { return a - b; });
+    if (chapters.length === 0) {
+      ctx += "- 尚未标记章节掌握度\n";
+    } else {
+      chapters.forEach(function(ch) {
+        ctx += "- 第 " + ch + " 章：" + MASTERY_LABELS[mastery[ch]] + "\n";
+      });
+    }
+
+    return ctx;
+  }
+
+  function generateSubjectChapterPlan() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请帮我制定该科目下一章（或当前正在学的一章）的详细学习计划。要求：\n" +
+      "1. 把一章拆成 3–5 天；\n" +
+      "2. 每天包含：概念学习、例题练习、自我检测；\n" +
+      "3. 每天任务具体到小时；\n" +
+      "4. 给出本章的达标标准。";
+  }
+
+  function generateSubjectExercises() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请为当前科目出 10–15 道练习题。要求：\n" +
+      "1. 覆盖「学习中」和「需复习」的章节；\n" +
+      "2. 包含选择题、填空题、简答题/证明题；\n" +
+      "3. 每道题给出答案和详细解析；\n" +
+      "4. 标注每道题对应的知识点。";
+  }
+
+  function generateSubjectPitfalls() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请针对当前科目「学习中」和「需复习」的章节，总结常见易错点和解题陷阱。要求：\n" +
+      "1. 按章节列出易错点；\n" +
+      "2. 每个易错点给出正确理解和记忆方法；\n" +
+      "3. 给出 1–2 道典型反例题。";
+  }
+
+  function generateWeakPointExercises() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请针对当前科目掌握度为「需复习」和「学习中」的章节，专门出题强化。要求：\n" +
+      "1. 每个薄弱章节出 2–3 道题；\n" +
+      "2. 题目难度中等偏上，直击常见错误；\n" +
+      "3. 每题给出解析和对应补救建议。";
+  }
+
+  function generateSubjectCards() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请为当前科目生成 10–20 张背诵卡（正面问题/背面答案）。要求：\n" +
+      "1. 覆盖核心概念、公式、定理、定义；\n" +
+      "2. 优先覆盖「学习中」和「需复习」章节；\n" +
+      "3. 每张卡片正面简洁，背面包含解释和例子；\n" +
+      "4. 以 JSON 或 Markdown 列表形式输出，方便导入背诵卡系统。";
+  }
+
+  function generateSubjectSprint() {
+    return subjectBaseContext() + "\n\n【我的需求】\n请为该科目制定考前冲刺方案。要求：\n" +
+      "1. 按剩余天数倒排，分为基础回顾、真题训练、错题复盘三个阶段；\n" +
+      "2. 优先突破「需复习」章节；\n" +
+      "3. 推荐该科目近 5 年真题的使用策略；\n" +
+      "4. 给出考前 3 天的重点。";
+  }
+
+  function generateCustomPrompt() {
+    var request = customRequest.value.trim();
+    if (!request) { showToast("请先输入需求"); customRequest.focus(); return; }
+    var ctx = mode === "subject" ? subjectBaseContext() : baseContext();
+    return ctx + "\n\n【我的需求】\n" + request + "\n\n请根据以上背景给出具体、可执行的建议。";
+  }
+
+  function generatePrompt(generator) {
+    var prompt = typeof generator === "function" ? generator() : generator;
+    outputText.textContent = prompt;
+    outputSection.style.display = "block";
+    outputSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // ---------- Role Reference ----------
+  function renderRoleReference() {
+    roleTabs.innerHTML = "";
+    Object.keys(roles).forEach(function(key) {
+      var r = roles[key];
+      var btn = document.createElement("button");
+      btn.className = "ai-role-tab";
+      btn.innerHTML = '<span>' + r.icon + '</span><span>' + r.name + '</span>';
+      btn.addEventListener("click", function() {
+        document.querySelectorAll(".ai-role-tab").forEach(function(t) { t.classList.remove("active"); });
+        btn.classList.add("active");
+        roleDesc.textContent = r.description;
+      });
+      roleTabs.appendChild(btn);
+    });
+    if (roleTabs.firstChild) roleTabs.firstChild.click();
+  }
+
+  // ---------- Event Bindings ----------
+  generateCustomBtn.addEventListener("click", function() {
+    var prompt = generateCustomPrompt();
+    if (prompt) generatePrompt(prompt);
+  });
+
+  clearCustomBtn.addEventListener("click", function() {
+    customRequest.value = "";
+    showToast("已清空");
+    customRequest.focus();
+  });
+
+  copyOutputBtn.addEventListener("click", function() {
+    copyToClipboard(outputText.textContent);
+  });
+
+  clearOutputBtn.addEventListener("click", function() {
+    outputSection.style.display = "none";
+    outputText.textContent = "";
+  });
+
+  // ---------- Mode Switcher ----------
+  modeSwitcher.addEventListener("click", function(e) {
+    var tab = e.target.closest(".ai-mode-tab");
+    if (!tab) return;
+    var newMode = tab.dataset.mode;
+    if (newMode === interactionMode) return;
+    interactionMode = newMode;
+    modeSwitcher.querySelectorAll(".ai-mode-tab").forEach(function(t) {
+      t.classList.toggle("active", t.dataset.mode === newMode);
+    });
+    if (newMode === "chat") {
+      scenarioTitle.textContent = "选择场景直接对话";
+      aiChatSection.style.display = "block";
+      outputSection.style.display = "none";
+      if (!aiChatDisplay.innerHTML.trim()) {
+        aiChatDisplay.innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.875rem;">👆 选择上方场景或输入自定义需求，开始与 AI 对话</div>';
+      }
+    } else {
+      scenarioTitle.textContent = "常用场景";
+      aiChatSection.style.display = "none";
+    }
+  });
+
+  // ---------- AI Direct Chat ----------
+  var aiChatSection = document.getElementById("aiChatSection");
+  var aiChatDisplay = document.getElementById("aiChatDisplay");
+  var aiFollowUp = document.getElementById("aiFollowUp");
+  var aiSendBtn = document.getElementById("aiSendBtn");
+  var generateDirectBtn = document.getElementById("generateDirect");
+  var conversationHistory = [];
+
+  function appendChatMsg(role, content) {
+    var msg = document.createElement("div");
+    msg.className = "ai-chat-msg " + (role === "user" ? "msg-user" : "msg-assistant");
+    var label = document.createElement("div");
+    label.className = "msg-label";
+    label.textContent = role === "user" ? "我" : "AI 助手";
+    var body = document.createElement("div");
+    body.className = "msg-content";
+    body.textContent = content;
+    msg.appendChild(label);
+    msg.appendChild(body);
+    aiChatDisplay.appendChild(msg);
+    aiChatDisplay.scrollTop = aiChatDisplay.scrollHeight;
+    return body;
+  }
+
+  function startDirectChat() {
+    var promptText = outputText.textContent;
+    if (!promptText) { showToast("请先生成提示词"); return; }
+    startChatWithPrompt(promptText);
+  }
+
+  function startChatWithPrompt(promptText) {
+    aiChatSection.style.display = "block";
+    conversationHistory = [
+      { role: "system", content: "你是一位专业的学习规划师。请根据学生的学习进度和需求，制定具体、可执行的学习计划。回复使用中文，使用 Markdown 格式，包含时间安排、任务清单和达标标准。" },
+      { role: "user", content: promptText }
+    ];
+    aiChatDisplay.innerHTML = "";
+    appendChatMsg("user", promptText);
+    aiChatSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    callAI();
+  }
+
+  function startChatWithGenerator(generator) {
+    var prompt = typeof generator === "function" ? generator() : generator;
+    startChatWithPrompt(prompt);
+  }
+
+  function callAI() {
+    var bubble = appendChatMsg("assistant", "");
+    var bubbleEl = bubble.parentElement;
+    bubbleEl.classList.add("typing");
+    bubble.textContent = "正在思考...";
+    aiSendBtn.disabled = true;
+    aiSendBtn.textContent = "AI 思考中...";
+
+    fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: conversationHistory, model: "deepseek-v4-flash", stream: true })
+    }).then(function(response) {
+      if (!response.ok) {
+        return response.json().then(function(err) {
+          throw new Error(err.error || ("HTTP " + response.status));
+        });
+      }
+      var reader = response.body.getReader();
+      var decoder = new TextDecoder();
+      var fullText = "";
+
+      function readChunk() {
+        reader.read().then(function(result) {
+          if (result.done) {
+            bubbleEl.classList.remove("typing");
+            if (fullText) {
+              conversationHistory.push({ role: "assistant", content: fullText });
+            }
+            aiSendBtn.disabled = false;
+            aiSendBtn.textContent = "发送追问";
+            aiFollowUp.focus();
+            return;
+          }
+          var chunk = decoder.decode(result.value, { stream: true });
+          var lines = chunk.split("\n");
+          for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line.startsWith("data: ") && line !== "data: [DONE]") {
+              try {
+                var parsed = JSON.parse(line.slice(6));
+                if (parsed.error) {
+                  bubbleEl.classList.remove("typing");
+                  bubbleEl.classList.add("error");
+                  bubble.textContent = "❌ " + parsed.error;
+                  aiSendBtn.disabled = false;
+                  aiSendBtn.textContent = "发送追问";
+                  return;
+                }
+                var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta;
+                if (delta && delta.reasoning_content) {
+                  if (!fullText) {
+                    bubble.textContent = "💭 思考中...\n\n";
+                    bubbleEl.classList.remove("typing");
+                  }
+                }
+                if (delta && delta.content) {
+                  if (bubble.textContent.indexOf("💭 思考中") === 0) {
+                    bubble.textContent = "";
+                  }
+                  fullText += delta.content;
+                  bubble.textContent = fullText;
+                }
+              } catch (e) { /* partial chunk, skip */ }
+            }
+          }
+          if (fullText) { bubbleEl.classList.remove("typing"); }
+          readChunk();
+        });
+      }
+      readChunk();
+    }).catch(function(err) {
+      bubbleEl.classList.remove("typing");
+      bubbleEl.classList.add("error");
+      var msg = err.message || "";
+      if (msg.indexOf("Insufficient Balance") !== -1) {
+        bubble.textContent = "❌ DeepSeek 账户余额不足\n\n请访问 platform.deepseek.com 充值（¥10 即可使用数月），充值后重试。";
+      } else if (msg.indexOf("401") !== -1 || msg.toLowerCase().indexOf("invalid api key") !== -1) {
+        bubble.textContent = "❌ API Key 无效\n\n请检查 .env 文件中的 DEEPSEEK_API_KEY 是否正确。";
+      } else if (msg.indexOf("Failed to fetch") !== -1 || msg.indexOf("NetworkError") !== -1) {
+        bubble.textContent = "❌ 无法连接服务器\n\n请确认 dev_server.py 正在运行（python dev_server.py）。";
+      } else {
+        bubble.textContent = "❌ " + msg + "\n\n请确认 dev_server.py 正在运行。";
+      }
+      aiSendBtn.disabled = false;
+      aiSendBtn.textContent = "发送追问";
+    });
+  }
+
+  function sendFollowUp() {
+    var text = aiFollowUp.value.trim();
+    if (!text) return;
+    conversationHistory.push({ role: "user", content: text });
+    appendChatMsg("user", text);
+    aiFollowUp.value = "";
+    callAI();
+  }
+
+  generateDirectBtn.addEventListener("click", startDirectChat);
+  chatCustomBtn.addEventListener("click", function() {
+    var request = customRequest.value.trim();
+    if (!request) { showToast("请先输入需求"); customRequest.focus(); return; }
+    var prompt = generateCustomPrompt();
+    if (prompt) startChatWithPrompt(prompt);
+  });
+  aiSendBtn.addEventListener("click", sendFollowUp);
+  aiFollowUp.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendFollowUp(); }
+  });
+
+  // ---------- Init ----------
+  renderModeBadge();
+  renderRoleReference();
+  loadSelfStudyData().then(function() {
+    renderContext();
+    renderScenarios();
+  });
+})();

@@ -1,0 +1,908 @@
+// ============================================================
+// job-skill-tree 页面 JS
+// 抽离自 job-skill-tree.html
+// ============================================================
+
+(function(){
+  var STAGES=[
+    {id:1,name:"AI工程基础",weeks:"第1-2周",kp:"4个入门",project:"AI对话API服务"},
+    {id:2,name:"RAG系统",weeks:"第3-5周",kp:"5个入门",project:"知识库问答机器人"},
+    {id:3,name:"LangChain+Agent",weeks:"第6-8周",kp:"5个入门",project:"学习计划Agent"},
+    {id:4,name:"全栈项目+部署",weeks:"第9-10周",kp:"3个入门+实战",project:"AI错题分析平台"},
+    {id:5,name:"面试理论补充",weeks:"碎片时间",kp:"8个精进",project:"面试突击用"}
+  ];
+
+  var KP=[
+    // ===== Stage 1: AI工程基础 =====
+    {id:1,s:1,t:"Python工程化",tag:"工程基础",level:"入门",
+     project:"AI对话API服务",
+     resume:"熟练使用Python虚拟环境与包管理，能独立搭建规范化项目结构",
+     c:"Python工程化是将脚本转变为可维护项目的过程。核心：虚拟环境隔离(venv)、依赖管理(pip/requirements.txt)、项目结构规范(src/tests/docs)、环境变量管理(.env)、代码格式化(black/ruff)。",
+     code:"# 创建虚拟环境\npython -m venv venv\nvenv\\Scripts\\activate  # Windows\nsource venv/bin/activate  # Mac/Linux\n\n# 安装依赖\npip install fastapi uvicorn openai chromadb langchain python-dotenv\npip freeze > requirements.txt\n\n# 项目结构\n# my_ai_app/\n# ├── app/\n# │   ├── main.py          # FastAPI入口\n# │   ├── routers/         # 路由\n# │   ├── services/        # 业务逻辑\n# │   └── config.py        # 配置\n# ├── tests/\n# ├── requirements.txt\n# └── .env                 # API Key",
+     e:"创建一个Python项目，包含虚拟环境、requirements.txt、.env文件和基本目录结构，用FastAPI写一个返回JSON的hello接口。",
+     ec:"# 1. 创建项目\nmkdir my_ai_app && cd my_ai_app\npython -m venv venv\nsource venv/bin/activate\n\n# 2. 安装依赖\npip install fastapi uvicorn python-dotenv\npip freeze > requirements.txt\n\n# 3. .env文件\nAPI_KEY=sk-xxxxx\nMODEL=deepseek-chat\n\n# 4. app/main.py\nfrom fastapi import FastAPI\nfrom dotenv import load_dotenv\nload_dotenv()\napp = FastAPI()\n\n@app.get('/hello')\ndef hello():\n    return {'msg': 'Hello, AI!'}\n\n# 5. 运行: uvicorn app.main:app --reload",
+     a:"在实际AI项目中，工程化是基础。部署RAG服务需要用venv隔离依赖、用.env管理API Key、用requirements.txt锁定版本。面试时提到这些细节能体现工程素养。",
+     guide:{
+       prereq:[
+        {type:"learn",title:"终端与命令行基础",mustLearn:true,estTime:"10min",
+         concept:"终端（Terminal/命令提示符）是你用文字命令操控电脑的工具，不是鼠标点按钮。开发者每天都用终端运行代码、安装工具、管理文件。学会它你才能执行 python 命令、pip install 等操作。",
+         steps:["打开终端：按 Win+R → 输入 cmd → 回车，会弹出一个黑色窗口","验证Python：输入 <code>python --version</code> → 回车，应显示 Python 3.9.x","验证pip：输入 <code>pip --version</code> → 回车，应显示 pip 版本号","切换目录：输入 <code>cd 文件夹路径</code> 可以进入指定文件夹（如 <code>cd Desktop</code> 进入桌面）","列出文件：输入 <code>dir</code> 可以查看当前文件夹里有哪些文件"]},
+        {type:"learn",title:"创建和运行Python文件",mustLearn:true,estTime:"10min",
+         concept:"Python代码写在 .py 文件里（比如 hello.py），然后在终端用 python hello.py 运行它。这是最基本的开发流程：写代码→保存→终端运行→看结果。",
+         steps:["在桌面上新建一个文本文件，重命名为 hello.py（注意扩展名是 .py 不是 .txt）","用记事本或VS Code打开它，输入 <code>print('Hello, World!')</code> 然后保存","打开终端，用 <code>cd Desktop</code> 切到桌面","运行 <code>python hello.py</code> → 终端应输出 Hello, World!","如果报错 'python' 不是内部命令：说明Python没加入PATH，重新安装时勾选 Add to PATH"]},
+        {type:"learn",title:"pip包管理概念",mustLearn:true,estTime:"5min",
+         concept:"pip 是Python的包管理工具，类似于手机的应用商店。你用 pip install 包名 来安装第三方库（如FastAPI、openai），安装后就能在代码中 import 使用。pip freeze 可以列出所有已安装的包。",
+         steps:["安装一个包：终端输入 <code>pip install requests</code> → 回车，等待安装完成","验证安装：输入 <code>python -c \"import requests; print('OK')\"</code> → 应输出 OK","查看已安装：输入 <code>pip list</code> → 会列出所有已安装的包和版本","卸载包（了解）：<code>pip uninstall requests</code> → 输入 y 确认卸载"]},
+        {type:"env",title:"Python 3.9+ 已安装",mustLearn:false,check:"终端运行 python --version 显示 3.9 以上版本"},
+        {type:"env",title:"VS Code 或 PyCharm 已安装",mustLearn:false,check:"能打开并编辑 .py 文件的编辑器"}
+       ],
+       tutorial:[
+         {why:"虚拟环境隔离项目依赖，避免不同项目的包版本冲突。比如项目A需要FastAPI 0.100，项目B需要0.80，没有虚拟环境会互相覆盖",cmd:"python -m venv venv",meaning:"python=Python解释器, -m=运行模块, venv=虚拟环境模块, 最后的venv=目录名（可自定义，但约定俗成叫venv）",error:"如果报错 python not found：检查PATH是否包含Python安装路径；如果报错 No module named venv：需安装 pip install virtualenv 后用 python -m virtualenv venv"},
+         {why:"激活虚拟环境后，pip安装的包只影响当前项目，不影响系统全局环境",cmd:"venv\\Scripts\\activate",meaning:"Windows激活命令，venv是上一步创建的目录名；Mac/Linux用 source venv/bin/activate",error:"如果PowerShell报执行策略错误：运行 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned；如果报找不到路径：确认在项目根目录下执行（venv文件夹所在目录）"},
+         {why:"安装项目需要的第三方库。fastapi=Web框架，uvicorn=ASGI服务器（运行FastAPI用），python-dotenv=读取.env环境变量文件",cmd:"pip install fastapi uvicorn python-dotenv",meaning:"pip=包管理工具, install=安装, 后面跟包名列表（空格分隔多个包）",error:"如果报 pip not found：检查Python安装时是否勾选了Add to PATH；如果网络超时：换源安装 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple fastapi uvicorn python-dotenv"},
+         {why:"锁定当前项目的所有依赖版本，方便其他人或部署时安装完全相同的环境。这是工程化的基本要求",cmd:"pip freeze > requirements.txt",meaning:"pip freeze=列出所有已安装包及版本, >=重定向到文件，生成requirements.txt",error:"如果文件为空：确认虚拟环境已激活（终端前缀有(venv)），且上一步pip install成功；如果包含太多包：这是正常的，每个依赖可能有自己的子依赖"},
+         {why:".env文件存放API Key等敏感信息，不能提交到Git（.gitignore中排除）。这样代码和数据分离，更安全",cmd:"echo API_KEY=sk-xxxxx > .env",meaning:"echo=输出文本, >=重定向到文件。实际使用时把sk-xxxxx换成真实的API Key",error:"如果文件编码错误：用VS Code打开.env，确保编码为UTF-8无BOM；如果Python读不到：确认python-dotenv已安装且代码中调用了load_dotenv()"}
+       ],
+       steps:["python -m venv venv","venv\\Scripts\\activate","pip install fastapi uvicorn python-dotenv","pip freeze > requirements.txt","echo API_KEY=sk-xxxxx > .env"],
+       pyKp:["09 模块与包","08 异常处理"],pyDemo:1,aiDemo:null,
+       practice:{mimic:"复制KP的code示例中项目结构部分，手动创建对应目录和文件。然后在终端依次执行虚拟环境创建、激活、安装依赖的命令，观察每步输出",modify:"将pip install的包列表中加入openai（LLM API库），重新执行安装，然后再次pip freeze > requirements.txt，对比文件变化——新增了openai及其子依赖",create:"从零创建一个新项目：1)mkdir my_project && cd my_project  2)创建虚拟环境  3)安装fastapi+uvicorn  4)创建requirements.txt  5)创建.env写入API_KEY  6)创建app/main.py写一个hello接口  7)运行uvicorn app.main:app --reload验证"},
+       completion:{criteria:[{type:"file",check:"venv/",desc:"venv目录已创建（虚拟环境）"},{type:"file",check:"requirements.txt",desc:"依赖清单文件存在"},{type:"file",check:".env",desc:"环境变量文件已创建"},{type:"output",check:"pip list | findstr fastapi",desc:"fastapi已安装"}],storageKey:"ai_kp_guide_progress"},
+       estTime:"1.5h",prereqKp:[]
+     }},
+
+    {id:2,s:1,t:"FastAPI接口开发",tag:"后端",level:"入门",
+     project:"AI对话API服务",
+     resume:"使用FastAPI构建RESTful API，支持路由、请求验证、中间件和流式响应",
+     c:"FastAPI是现代Python Web框架，特点：基于类型提示自动生成文档(Swagger)、原生支持async、性能接近Go/Node。核心概念：路由装饰器、Pydantic模型(请求/响应验证)、依赖注入、中间件(CORS/认证)、流式响应(SSE)。",
+     code:"from fastapi import FastAPI, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\nfrom typing import AsyncGenerator\n\napp = FastAPI(title='AI Chat API')\napp.add_middleware(CORSMiddleware, allow_origins=['*'])\n\nclass ChatRequest(BaseModel):\n    message: str\n    model: str = 'deepseek-chat'\n\nclass ChatResponse(BaseModel):\n    reply: str\n    usage: dict\n\n@app.post('/api/chat', response_model=ChatResponse)\nasync def chat(req: ChatRequest):\n    # 调用LLM\n    reply = await call_llm(req.message, req.model)\n    return ChatResponse(reply=reply, usage={'tokens': 100})\n\n@app.post('/api/chat/stream')\nasync def chat_stream(req: ChatRequest):\n    async def generate() -> AsyncGenerator[str, None]:\n        async for chunk in stream_llm(req.message):\n            yield f'data: {chunk}\\n\\n'\n    from fastapi.responses import StreamingResponse\n    return StreamingResponse(generate(), media_type='text/event-stream')",
+     e:"用FastAPI实现一个带CORS中间件的聊天API，POST /api/chat接收message返回reply，并实现一个流式接口 /api/chat/stream。",
+     ec:"# app/main.py\nfrom fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom fastapi.responses import StreamingResponse\nfrom pydantic import BaseModel\nimport asyncio\n\napp = FastAPI()\napp.add_middleware(CORSMiddleware, allow_origins=['*'])\n\nclass ChatRequest(BaseModel):\n    message: str\n\n@app.post('/api/chat')\nasync def chat(req: ChatRequest):\n    return {'reply': f'Echo: {req.message}'}\n\n@app.post('/api/chat/stream')\nasync def chat_stream(req: ChatRequest):\n    async def gen():\n        words = req.message.split()\n        for w in words:\n            await asyncio.sleep(0.1)\n            yield f'data: {w}\\n\\n'\n    return StreamingResponse(gen(), media_type='text/event-stream')\n\n# 测试: uvicorn app.main:app --reload",
+     a:"AI应用的标配后端框架。RAG系统的文档上传接口、问答接口、Agent的工具调用接口都可以用FastAPI实现。面试时展示Swagger文档和流式输出是加分项。",
+     guide:{
+       prereq:[
+        {type:"kp",title:"已完成 KP1 Python工程化",mustLearn:true,estTime:"—",check:"KP1 的完成验证全部勾选通过",kpId:1},
+        {type:"learn",title:"Python函数定义 def",mustLearn:true,estTime:"10min",
+         concept:"函数是一段可重复使用的代码块。用 def 函数名(参数): 定义，用 函数名() 调用。FastAPI的路由本质上就是函数，只是加了 @app.post() 装饰器修饰。",
+         steps:["创建 func.py，写 <code>def greet(name):</code>","下一行缩进4格写 <code>return 'Hello, ' + name</code>","调用：<code>print(greet('Alice'))</code>","终端运行 <code>python func.py</code> → 应输出 Hello, Alice","带默认值的参数：<code>def greet(name='Guest'):</code> → 不传参数时默认返回 Hello, Guest"]},
+        {type:"learn",title:"Python字典 dict",mustLearn:true,estTime:"8min",
+         concept:"字典是键值对集合，用花括号 {} 定义。FastAPI接口返回的JSON本质就是Python字典。dict在AI开发中无处不在：API响应、配置项、模型参数都是dict。",
+         steps:["创建 dict.py，写 <code>person = {'name': 'Alice', 'age': 25}</code>","访问：<code>print(person['name'])</code> → 输出 Alice","添加：<code>person['city'] = 'Beijing'</code>","遍历：<code>for k, v in person.items(): print(k, v)</code>","嵌套：<code>data = {'user': {'name': 'Bob'}, 'score': [90, 85]}</code> → <code>print(data['user']['name'])</code>"]},
+        {type:"learn",title:"Python类与 __init__",mustLearn:true,estTime:"12min",
+         concept:"类(class)是创建对象的模板。FastAPI用Pydantic的 BaseModel 类来定义请求/响应的数据结构。你不需要深入理解面向对象，但必须知道 class 怎么写、__init__ 是什么。",
+         steps:["创建 cls.py，写 <code>class Dog:</code>","下一行写 <code>def __init__(self, name):</code> → 这是构造函数，创建对象时自动调用","缩进写 <code>self.name = name</code> → 把传入的name存到对象上","创建对象：<code>d = Dog('Rex')</code>","访问属性：<code>print(d.name)</code> → 输出 Rex","FastAPI类比：<code>class ChatRequest(BaseModel): message: str</code> → 这就是继承BaseModel定义了一个数据类"]},
+        {type:"env",title:"fastapi 和 uvicorn 已安装",mustLearn:false,check:"终端运行 pip show fastapi 显示已安装"}
+       ],
+       tutorial:[
+         {why:"创建FastAPI应用入口。FastAPI用装饰器@app.get或@app.post定义路由——访问URL时执行对应函数",cmd:"echo from fastapi import FastAPI > app.py && echo app = FastAPI() >> app.py",meaning:"from fastapi import FastAPI=导入FastAPI类, app=FastAPI()=创建应用实例, 后续所有路由都注册到app上",error:"如果报错 No module named fastapi：确认虚拟环境已激活且pip install fastapi成功；如果用VS Code报红波浪线：选择Python解释器为venv中的python"},
+         {why:"定义第一个API接口。@app.get('/')表示当用户用GET方法访问根路径/时，执行下面的函数",cmd:'echo @app.get("/hello") >> app.py && echo def hello(): >> app.py && echo     return {"msg": "Hello!"} >> app.py',meaning:"@app.get('/hello')=路由装饰器, def hello()=处理函数, return返回Python字典（FastAPI自动转为JSON响应）",error:"如果运行后访问404：确认URL路径是/hello不是/；如果返回不是JSON：FastAPI自动将dict转为JSON，确认没有手动json.dumps"},
+         {why:"启动开发服务器。--reload参数让代码修改后自动重启，开发时非常方便",cmd:"uvicorn app:app --reload --port 8000",meaning:"uvicorn=ASGI服务器, app:app=文件名app.py中的app变量, --reload=热重载, --port=端口号",error:"如果报错 Address already in use：端口被占用，换 --port 8001；如果访问不了：确认防火墙允许，浏览器访问 http://127.0.0.1:8000/hello"},
+         {why:"FastAPI自动生成API文档，这是它的核心优势之一。不用手写文档，访问特定URL即可看到交互式文档",cmd:"浏览器打开 http://127.0.0.1:8000/docs",meaning:"/docs=Swagger UI文档, /redoc=ReDoc文档（另一种风格）。可以在线测试API接口",error:"如果页面空白：确认服务正在运行（终端没有报错）；如果接口没显示：确认路由函数已正确定义且服务已重启"},
+         {why:"Pydantic模型定义请求体结构，自动验证用户输入。比如要求message字段必须是字符串，传数字会报错提示",cmd:"echo from pydantic import BaseModel >> app.py && echo class ChatRequest(BaseModel): >> app.py && echo     message: str >> app.py",meaning:"BaseModel=Pydantic基类, class=定义类, message: str=message字段必须是字符串类型。FastAPI自动验证请求体",error:"如果POST请求报422：这是FastAPI的验证错误，请求体不符合ChatRequest定义。检查Content-Type: application/json和body格式"}
+       ],
+       steps:["from fastapi import FastAPI; app = FastAPI()","@app.get('/hello'); def hello(): return {'msg': 'Hello!'}","uvicorn app:app --reload --port 8000","浏览器访问 http://127.0.0.1:8000/docs","from pydantic import BaseModel; class ChatRequest(BaseModel): message: str"],
+       pyKp:["05 函数定义","06 列表/字典"],pyDemo:3,aiDemo:null,
+       practice:{mimic:"复制KP的code示例中的FastAPI基础代码到app.py，运行uvicorn app:app --reload，浏览器访问/docs查看自动文档，测试/hello接口",modify:"将hello接口的返回值从{'msg': 'Hello!'}改为{'msg': '你好，AI！', 'time': '2026-08-18'}，保存后浏览器刷新（--reload自动重启），观察返回变化",create:"用FastAPI写两个接口：1)GET /now 返回当前时间  2)POST /echo 接收JSON体{message: 'xxx'} 返回{reply: '你说的是: xxx'}。用/docs测试两个接口"},
+       completion:{criteria:[{type:"url",check:"http://127.0.0.1:8000/docs",desc:"Swagger文档可访问"},{type:"url",check:"http://127.0.0.1:8000/hello",desc:"hello接口返回JSON"},{type:"output",check:"uvicorn app:app --reload 启动无报错",desc:"服务可正常启动"}],storageKey:"ai_kp_guide_progress"},
+       estTime:"2h",prereqKp:[1]
+     }},
+
+    {id:3,s:1,t:"LLM API调用",tag:"LLM",level:"入门",
+     project:"AI对话API服务",
+     resume:"熟练调用OpenAI/DeepSeek API，支持流式输出、多模型切换、错误重试和Token计量",
+     c:"LLM API是大模型应用的入口。核心技能：API Key管理(.env环境变量)、同步/异步调用、流式输出(SSE)、多模型对比(OpenAI/DeepSeek/Claude)、错误处理(限流/超时/重试)、Token计量与成本控制。",
+     code:"import os\nfrom openai import OpenAI\nfrom dotenv import load_dotenv\nload_dotenv()\n\n# DeepSeek兼容OpenAI SDK\nclient = OpenAI(\n    api_key=os.getenv('DEEPSEEK_API_KEY'),\n    base_url='https://api.deepseek.com'\n)\n\n# 1. 基础调用\ndef chat(message, model='deepseek-chat'):\n    resp = client.chat.completions.create(\n        model=model,\n        messages=[{'role':'user','content':message}],\n        temperature=0.7,\n        max_tokens=1000\n    )\n    return resp.choices[0].message.content\n\n# 2. 流式输出\ndef chat_stream(message, model='deepseek-chat'):\n    stream = client.chat.completions.create(\n        model=model,\n        messages=[{'role':'user','content':message}],\n        stream=True\n    )\n    for chunk in stream:\n        delta = chunk.choices[0].delta.content\n        if delta:\n            yield delta\n\n# 3. 多轮对话\ndef multi_turn(messages, model='deepseek-chat'):\n    resp = client.chat.completions.create(\n        model=model,\n        messages=messages\n    )\n    return resp.choices[0].message.content\n\n# 使用\nprint(chat('什么是RAG?'))\nfor chunk in chat_stream('讲个笑话'):\n    print(chunk, end='', flush=True)",
+     e:"封装一个LLM客户端类，支持: 1)单轮对话 2)流式输出 3)多轮对话 4)自动统计Token用量 5)错误重试(最多3次)。",
+     ec:"import os, time\nfrom openai import OpenAI\n\nclass LLMClient:\n    def __init__(self, api_key=None, base_url=None, model='deepseek-chat'):\n        self.client = OpenAI(\n            api_key=api_key or os.getenv('DEEPSEEK_API_KEY'),\n            base_url=base_url or 'https://api.deepseek.com'\n        )\n        self.model = model\n        self.total_tokens = 0\n    \n    def chat(self, message, retry=3):\n        for i in range(retry):\n            try:\n                resp = self.client.chat.completions.create(\n                    model=self.model,\n                    messages=[{'role':'user','content':message}]\n                )\n                self.total_tokens += resp.usage.total_tokens\n                return resp.choices[0].message.content\n            except Exception as e:\n                if i == retry - 1:\n                    raise e\n                time.sleep(2 ** i)\n    \n    def stream(self, message):\n        stream = self.client.chat.completions.create(\n            model=self.model,\n            messages=[{'role':'user','content':message}],\n            stream=True\n        )\n        for chunk in stream:\n            delta = chunk.choices[0].delta.content\n            if delta:\n                yield delta",
+     a:"这是所有AI应用的基础。无论是RAG问答、Agent对话还是代码审查，底层都是LLM API调用。掌握流式输出和错误重试是生产级应用的基本要求。",
+     guide:{
+       prereq:[
+        {type:"kp",title:"已完成 KP1 Python工程化",mustLearn:true,estTime:"—",check:"KP1 的完成验证全部勾选通过",kpId:1},
+        {type:"kp",title:"已完成 KP2 FastAPI接口开发",mustLearn:true,estTime:"—",check:"KP2 的完成验证全部勾选通过",kpId:2},
+        {type:"learn",title:"Python模块导入 import",mustLearn:true,estTime:"8min",
+         concept:"import 是引入外部库或模块的关键字。import os 引入系统模块，from dotenv import load_dotenv 从dotenv包中只导入load_dotenv函数。调用LLM API时需要 import openai 来引入SDK。",
+         steps:["创建 imp.py","写 <code>import os</code> → 引入Python内置的系统模块","使用：<code>print(os.getcwd())</code> → 输出当前工作目录","写 <code>from datetime import datetime</code> → 从datetime模块导入datetime类","使用：<code>print(datetime.now())</code> → 输出当前时间","理解区别：import os 用 os.xxx 访问；from os import getcwd 直接用 getcwd() 访问"]},
+        {type:"learn",title:"Python异常处理 try/except",mustLearn:true,estTime:"10min",
+         concept:"调用API可能会失败（网络超时、密钥错误、限流等），用 try/except 包裹可能出错的代码，except 中处理错误（重试或提示用户）。这是AI服务稳定性的关键。",
+         steps:["创建 err.py","写正常代码：<code>num = int('abc')</code> → 这会报错 ValueError","用try包裹：<code>try:\\n    num = int('abc')\\nexcept ValueError as e:\\n    print('出错了:', e)</code>","终端运行 → 应输出 '出错了: invalid literal for int() with base 10: 'abc''","循环重试：<code>for i in range(3): try: ... except: print(f'第{i+1}次重试')</code> → 这是API重试的基础模式"]},
+        {type:"learn",title:"Python环境变量 os.getenv",mustLearn:true,estTime:"5min",
+         concept:"API Key不能硬编码在代码中（不安全），而是存在.env文件中，通过 os.getenv() 读取。.env文件格式：DEEPSEEK_API_KEY=sk-xxx，python-dotenv库负责加载它。",
+         steps:["在项目根目录创建 .env 文件","写入 <code>DEEPSEEK_API_KEY=sk-你的key</code>（等号两边不要空格）","创建 env_test.py，写 <code>from dotenv import load_dotenv</code>","<code>load_dotenv()</code> → 加载.env文件","<code>import os; print(os.getenv('DEEPSEEK_API_KEY'))</code> → 应输出你的key","注意：.env文件必须在.gitignore中，不能提交到Git"]},
+        {type:"env",title:"已有 DeepSeek API Key",mustLearn:false,check:"在 .env 文件中配置了 DEEPSEEK_API_KEY=sk-xxx"}
+       ],
+       tutorial:[
+         {why:"安装OpenAI SDK。DeepSeek API兼容OpenAI接口格式，所以用openai库就能调用DeepSeek——这是行业惯例，学会一个库就能调用多家模型",cmd:"pip install openai python-dotenv",meaning:"openai=OpenAI官方Python SDK（也兼容DeepSeek）, python-dotenv=读取.env环境变量",error:"如果报错 pip not found：确认虚拟环境已激活；如果安装很慢：用清华源 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple openai python-dotenv"},
+         {why:"创建LLM调用脚本。先从最简单的单轮对话开始——发送一个问题，接收一个回答",cmd:"echo from openai import OpenAI > llm_test.py && echo from dotenv import load_dotenv >> llm_test.py && echo load_dotenv() >> llm_test.py && echo import os >> llm_test.py",meaning:"from openai import OpenAI=导入SDK, from dotenv import load_dotenv=导入.env读取器, load_dotenv()=加载.env文件, import os=系统模块（读取环境变量用）",error:"如果报错 No module named dotenv：确认pip install python-dotenv（包名是python-dotenv，不是dotenv）"},
+         {why:"创建API客户端。DeepSeek使用和OpenAI相同的接口格式，只需改base_url和api_key。这就是为什么学了openai库就能调用DeepSeek",cmd:'echo client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com") >> llm_test.py',meaning:"OpenAI()=创建客户端, api_key=从.env读取密钥, base_url=DeepSeek的API地址（不用OpenAI默认地址）",error:"如果报错 AuthenticationError：检查.env文件中DEEPSEEK_API_KEY=sk-xxx格式正确（没有多余空格）；如果报连接超时：检查网络或使用代理"},
+         {why:"调用LLM生成回答。messages列表中的role='user'表示用户消息，content是问题内容。temperature控制随机性（0=确定性，1=创造性）",cmd:'echo resp = client.chat.completions.create(model="deepseek-chat", messages=[{"role":"user","content":"什么是RAG?"}], temperature=0.7, max_tokens=1000) >> llm_test.py',meaning:"client.chat.completions.create=调用对话接口, model=模型名, messages=对话历史列表, temperature=0.7(适中), max_tokens=最多生成1000token",error:"如果报错 model not found：确认模型名是deepseek-chat（不是gpt-3.5-turbo）；如果报 rate limit：API调用太频繁，等几秒重试"},
+         {why:"提取LLM返回的回答。API返回的是嵌套对象，需要通过choices[0].message.content逐层取出文本",cmd:"echo print(resp.choices[0].message.content) >> llm_test.py && python llm_test.py",meaning:"resp=完整响应对象, choices=候选回答列表(通常只有1个), [0]=取第一个, message=消息对象, content=文本内容",error:"如果输出为空：可能content是None，检查resp.usage.total_tokens是否>0确认API正常返回；如果报IndexError：choices为空，检查API返回的错误信息"}
+       ],
+       steps:["pip install openai python-dotenv","from openai import OpenAI; from dotenv import load_dotenv; load_dotenv(); import os","client = OpenAI(api_key=os.getenv('DEEPSEEK_API_KEY'), base_url='https://api.deepseek.com')","resp = client.chat.completions.create(model='deepseek-chat', messages=[{'role':'user','content':'什么是RAG?'}])","print(resp.choices[0].message.content)"],
+       pyKp:["05 函数定义","08 异常处理"],pyDemo:3,aiDemo:null,
+       practice:{mimic:"复制KP的code示例中基础调用部分到llm_test.py，替换.env中的API Key为真实值，运行 python llm_test.py，观察LLM返回的回答",modify:"将temperature从0.7改为0.0（确定性输出），运行两次相同的程序，对比输出是否完全一致；再改为1.0（创造性），对比输出变化",create:"封装一个chat函数 def chat(question, model='deepseek-chat'): ，接收问题返回回答。调用这个函数问3个不同的问题，打印每个回答和Token用量"},
+       completion:{criteria:[{type:"file",check:"llm_test.py",desc:"LLM调用脚本已创建"},{type:"output",check:"python llm_test.py 输出非空文本",desc:"LLM正常返回回答"},{type:"output",check:"resp.usage.total_tokens > 0",desc:"Token计量正常"}],storageKey:"ai_kp_guide_progress"},
+       estTime:"1.5h",prereqKp:[1,2]
+     }},
+
+    {id:4,s:1,t:"Prompt工程实践",tag:"LLM",level:"入门",
+     project:"AI对话API服务",
+     resume:"掌握Prompt工程核心技巧(角色设定/Few-shot/CoT/结构化输出)，能设计高质量Prompt引导LLM输出",
+     c:"Prompt工程是设计输入文本引导LLM输出期望结果的技术。四大核心技巧：1)角色设定(给LLM一个身份) 2)Few-shot示例(用例子教LLM) 3)Chain-of-Thought思维链(引导分步推理) 4)结构化输出(要求JSON/表格等格式)。",
+     code:"# 1. 角色设定\nprompt_role = '你是一位资深Python工程师，擅长代码审查。'\n\n# 2. Few-shot 示例\nprompt_fewshot = '''任务: 将句子分类为正面/负面/中性\n\n示例:\n输入: 这电影太精彩了 -> 正面\n输入: 服务态度很差 -> 负面\n输入: 今天星期三 -> 中性\n\n输入: 价格还算合理 ->'''\n\n# 3. Chain-of-Thought\nprompt_cot = '''问题: 商店打8折后再打9折,相当于打几折?\n请一步步思考:\n1. 原价是1\n2. 打8折后: 1 * 0.8 = 0.8\n3. 再打9折: 0.8 * 0.9 = 0.72\n\n问题: 先涨10%再打9折,相当于原价的多少?'''\n\n# 4. 结构化输出\nprompt_json = '''分析以下文本情感,以JSON输出:\n文本: 这个产品很好用\n\n输出格式:\n{\"sentiment\": \"正面\", \"score\": 0.9, \"keywords\": [\"好用\"]}'''\n\n# 实际使用\nfrom openai import OpenAI\nclient = OpenAI(api_key='sk-xxx', base_url='https://api.deepseek.com')\nresp = client.chat.completions.create(\n    model='deepseek-chat',\n    messages=[{'role':'system','content':prompt_role},\n              {'role':'user','content':prompt_json}]\n)\nprint(resp.choices[0].message.content)",
+     e:"设计一个Prompt，让LLM将自然语言转换为SQL查询。要求: 1)设定角色 2)提供表结构 3)给出2个Few-shot示例 4)要求结构化输出。",
+     ec:"prompt = '''你是一位SQL专家。请将自然语言转换为SQL查询。\n\n数据库表:\n- students(id, name, age, grade)\n- scores(id, student_id, subject, score)\n\n示例:\n问: 查询年龄大于18岁的学生\n答: SELECT name FROM students WHERE age > 18\n\n问: 查询数学成绩前3名\n答: SELECT s.name, sc.score FROM students s JOIN scores sc ON s.id = sc.student_id WHERE sc.subject = '数学' ORDER BY sc.score DESC LIMIT 3\n\n问: 统计每个班级的平均分\n答:'''  \n\n# 关键要素: 角色设定 + 表结构 + Few-shot + 留空让模型补全",
+     a:"Prompt工程是使用LLM最重要的技能。RAG系统中检索到的上下文如何组装成Prompt、Agent的指令如何设计，都依赖Prompt工程能力。",
+     guide:{
+       prereq:[
+        {type:"kp",title:"已完成 KP3 LLM API调用",mustLearn:true,estTime:"—",check:"KP3 的完成验证全部勾选通过",kpId:3},
+        {type:"learn",title:"Python三引号字符串",mustLearn:true,estTime:"5min",
+         concept:"三引号 ''' 或 \"\"\" 可以写多行字符串，在Prompt工程中用来写包含换行的复杂提示词。单引号 ' 只能写一行，三引号可以写任意行。",
+         steps:["创建 str.py","单行：<code>s1 = 'hello'</code> → 一行字符串","多行：<code>s2 = '''第一行\\n第二行\\n第三行'''</code> → 三引号可跨行","验证：<code>print(s2)</code> → 输出三行","Prompt实战：<code>prompt = '''你是一位Python专家\\n请分析以下代码：\\nprint(1)'''</code> → 这就是多行Prompt的写法"]},
+        {type:"learn",title:"Python字符串拼接与格式化",mustLearn:true,estTime:"8min",
+         concept:"字符串可以用 + 拼接，也可以用 f'...' 格式化（在字符串中嵌入变量）。Prompt中经常需要动态插入用户输入或检索结果，必须掌握字符串格式化。",
+         steps:["拼接：<code>s = '你好' + '世界'</code> → 字符串+字符串","f-string：<code>name='Alice'; s = f'你好,{name}'</code> → 变量嵌入","多变量：<code>age=25; s = f'{name}今年{age}岁'</code>","Prompt应用：<code>question = '什么是RAG?'; prompt = f'请详细解释：{question}'</code>","列表转字符串：<code>words = ['a','b','c']; s = '\\n'.join(words)</code> → 用换行连接列表项"]},
+        {type:"learn",title:"Python字典与JSON",mustLearn:true,estTime:"8min",
+         concept:"Prompt工程经常要求LLM输出JSON格式。Python字典和JSON长得很像但有关键区别：字典是Python对象，JSON是文本格式。用 json.dumps(dict) 把字典转JSON字符串，json.loads(json_str) 反过来。",
+         steps:["创建 json_test.py","定义字典：<code>result = {'sentiment': '正面', 'score': 0.9}</code>","转JSON字符串：<code>import json; s = json.dumps(result, ensure_ascii=False)</code>","打印：<code>print(s)</code> → 输出 {\"sentiment\": \"正面\", \"score\": 0.9}","反解析：<code>d = json.loads(s)</code> → JSON字符串转回字典","Prompt应用：要求LLM输出JSON，然后用json.loads解析结果"]},
+        {type:"env",title:"终端可运行 python 命令",mustLearn:false,check:"终端运行 python --version 正常显示版本号"}
+       ],
+       tutorial:[
+         {why:"角色设定是Prompt工程的第一步。给LLM一个身份，它会以这个身份的专业水平和视角来回答。不设定角色时LLM回答比较泛，设定后更聚焦",cmd:"echo prompt = '你是一位资深Python工程师，擅长代码审查。请审查以下代码的安全隐患。' > prompt_test.py",meaning:"prompt=变量名存储提示词, '你是一位...'=角色设定, 后半句=具体任务描述",error:"这个步骤不会报错，它只是定义一个字符串变量。报错会出现在下一步调用API时"},
+         {why:"Few-shot示例是用例子教LLM你期望的输出格式。比单纯描述更有效——LLM从例子中学习模式，比从规则中学习更准确",cmd:"echo few_shot = '任务: 将句子分类为正面/负面/中性' >> prompt_test.py",meaning:"few_shot=变量名, 任务描述=告诉LLM要做什么, 后面会跟示例",error:"如果三引号嵌套出错：Python中三引号可以定义多行字符串，注意不要在字符串内部出现相同的引号"},
+         {why:"思维链(CoT)引导LLM分步推理。对于数学/逻辑问题，直接给答案容易出错，引导它一步步思考准确率大幅提升",cmd:"echo cot_prompt = '问题: 商店打8折后再打9折,相当于打几折? 请一步步思考' >> prompt_test.py",meaning:"CoT=Chain of Thought, 关键是写'请一步步思考'或'1. 2. 3.'引导分步",error:"这个步骤只是定义字符串变量，不会报错"},
+         {why:"结构化输出要求LLM返回JSON等格式，方便程序解析。比如要求返回JSON，程序可以直接json.loads解析",cmd:"echo json_prompt = '分析文本情感,以JSON输出: {sentiment: 正面, score: 0.9}' >> prompt_test.py",meaning:"JSON输出=要求LLM返回JSON格式, 给出格式示例让LLM模仿",error:"如果LLM返回的JSON无法解析：在prompt中强调'只输出JSON，不要其他文字'；如果LLM不遵循格式：用DeepSeek的response_format参数强制JSON"},
+         {why:"将四种技巧组合使用。实际应用中，一个好Prompt通常同时包含角色设定+Few-shot+CoT+结构化输出，而不是单独使用",cmd:"python prompt_test.py",meaning:"运行脚本测试不同Prompt的效果。可以对比有/没有角色设定、有/没有Few-shot时LLM回答的质量差异",error:"如果报错 NameError：确认所有变量都已定义；如果LLM回答质量差：尝试调整temperature（0.3更稳定）或在prompt中增加更多示例"}
+       ],
+       steps:["prompt = '你是一位资深Python工程师，擅长代码审查。'","few_shot = '任务: 将句子分类...示例: 输入: 太精彩了 -> 正面...'","cot_prompt = '问题: ...请一步步思考: 1. ... 2. ...'","json_prompt = '分析文本情感,以JSON输出: {sentiment: ...}'","组合使用: system=prompt_role + user=json_prompt + 调用API"],
+       pyKp:["02 字符串操作"],pyDemo:1,aiDemo:null,
+       practice:{mimic:"复制KP的code示例中4种Prompt到prompt_test.py，用KP3的LLM调用函数分别测试每种Prompt，观察LLM输出的差异（角色设定vs无角色、Few-shot vs 无示例）",modify:"修改Few-shot示例中的分类标签（正面/负面/中性 → 喜爱/厌恶/平淡），运行后观察LLM是否按新标签输出。再修改CoT问题为'先涨10%再打9折相当于原价的多少'，观察LLM分步推理过程",create:"设计一个自然语言转SQL的Prompt，要求：1)设定角色'你是SQL专家'  2)提供students和scores两表结构  3)给2个Few-shot示例  4)要求输出SQL语句。测试问题：'统计每个班级的平均分'"},
+       completion:{criteria:[{type:"file",check:"prompt_test.py",desc:"Prompt测试脚本已创建"},{type:"output",check:"4种Prompt均能获得LLM回答",desc:"LLM正常响应"},{type:"output",check:"JSON格式输出可被json.loads解析",desc:"结构化输出有效"}],storageKey:"ai_kp_guide_progress"},
+       estTime:"1h",prereqKp:[3]
+     }},
+
+    // ===== Stage 2: RAG系统 =====
+    {id:5,s:2,t:"文本向量化",tag:"RAG",level:"入门",
+     project:"知识库问答机器人",
+     resume:"理解Embedding原理，能使用OpenAI/本地模型将文本转为向量",
+     c:"文本向量化(Embedding)是将文本转换为数值向量的过程，使计算机能计算语义相似度。核心概念：向量维度(768/1536/3072)、相似度计算(余弦相似度)、Embedding模型选型(OpenAI text-embedding-3-small / 本地 bge-m3)、向量的意义(语义空间中的位置)。",
+     code:"from openai import OpenAI\nimport numpy as np\n\nclient = OpenAI(api_key='sk-xxx', base_url='https://api.deepseek.com')\n\n# 1. 生成Embedding\ndef embed(texts, model='deepseek-chat'):\n    # DeepSeek/OpenAI Embedding\n    resp = client.embeddings.create(\n        model='text-embedding-3-small',\n        input=texts\n    )\n    return [d.embedding for d in resp.data]\n\n# 2. 计算余弦相似度\ndef cosine_sim(a, b):\n    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))\n\n# 3. 语义搜索\ndef semantic_search(query, documents, top_k=3):\n    query_vec = embed([query])[0]\n    doc_vecs = embed(documents)\n    scores = [(cosine_sim(query_vec, dv), doc) for dv, doc in zip(doc_vecs, documents)]\n    scores.sort(reverse=True)\n    return scores[:top_k]\n\n# 使用\ndocs = ['Python是编程语言', 'JavaScript用于前端', '机器学习需要数据']\nresults = semantic_search('什么是AI的基础', docs)\nfor score, doc in results:\n    print(f'{score:.3f} | {doc}')",
+     e:"给定5段文本，用Embedding计算两两之间的余弦相似度，找出与查询'如何训练模型'最相关的文本。",
+     ec:"import numpy as np\nfrom openai import OpenAI\nclient = OpenAI(api_key='sk-xxx')\n\ndef embed(text):\n    resp = client.embeddings.create(model='text-embedding-3-small', input=text)\n    return resp.data[0].embedding\n\ndef cosine_sim(a, b):\n    a, b = np.array(a), np.array(b)\n    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))\n\ndocs = [\n    '线性回归需要训练数据和标签',\n    'Python是一种解释型语言',\n    '模型训练通过梯度下降优化参数',\n    'FastAPI用于构建Web服务',\n    '深度学习使用神经网络'\n]\nquery = '如何训练模型'\nq_vec = embed(query)\nfor doc in docs:\n    d_vec = embed(doc)\n    sim = cosine_sim(q_vec, d_vec)\n    print(f'{sim:.3f} | {doc}')\n# 最相关的应该是'模型训练通过梯度下降优化参数'",
+     a:"Embedding是RAG系统的基石。文档向量化后存入向量数据库，用户提问时将问题也向量化，通过相似度搜索找到最相关的文档片段。"},
+
+    {id:6,s:2,t:"向量数据库",tag:"RAG",level:"入门",
+     project:"知识库问答机器人",
+     resume:"使用Chroma向量数据库存储和检索文档向量，支持CRUD和相似度搜索",
+     c:"向量数据库是专门存储和检索向量的数据库。核心操作：插入向量(带元数据)、相似度搜索(Top-K)、过滤(按元数据)、更新/删除。常用方案：Chroma(轻量本地)、Milvus(生产级)、Pinecone(云服务)、pgvector(PostgreSQL扩展)。",
+     code:"import chromadb\n\n# 1. 创建客户端(本地持久化)\nclient = chromadb.PersistentClient(path='./vector_db')\n\n# 2. 创建集合(类似数据库表)\ncollection = client.get_or_create_collection(\n    name='knowledge_base',\n    metadata={'description': '自考笔记'}\n)\n\n# 3. 插入文档(自动向量化)\ncollection.add(\n    documents=['线性回归是最简单的ML算法', 'RAG结合检索和生成'],\n    metadatas=[{'subject': 'ML', 'page': 1}, {'subject': 'LLM', 'page': 5}],\n    ids=['doc_1', 'doc_2']\n)\n\n# 4. 相似度搜索\nresults = collection.query(\n    query_texts=['什么是回归?'],\n    n_results=3,\n    where={'subject': 'ML'}  # 可选: 元数据过滤\n)\nfor doc, dist in zip(results['documents'][0], results['distances'][0]):\n    print(f'{dist:.3f} | {doc}')\n\n# 5. 更新\ncollection.update(\n    ids=['doc_1'],\n    documents=['线性回归是监督学习算法(已更新)']\n)\n\n# 6. 删除\ncollection.delete(ids=['doc_2'])",
+     e:"用Chroma创建一个笔记集合，插入5条自考相关文档(带科目元数据)，然后查询'数据结构的核心概念'并过滤指定科目。",
+     ec:"import chromadb\nclient = chromadb.PersistentClient(path='./my_notes_db')\ncollection = client.get_or_create_collection(name='exam_notes')\n\ncollection.add(\n    documents=[\n        '线性表是n个数据元素的有限序列',\n        '二叉树每个节点最多有两个子节点',\n        '图的遍历有DFS和BFS两种方式',\n        '排序算法包括快排、归并、堆排',\n        'CPU由运算器和控制器组成'\n    ],\n    metadatas=[\n        {'subject': 'data_structure'},\n        {'subject': 'data_structure'},\n        {'subject': 'data_structure'},\n        {'subject': 'data_structure'},\n        {'subject': 'computer_architecture'}\n    ],\n    ids=['n1','n2','n3','n4','n5']\n)\n\nresults = collection.query(\n    query_texts=['数据结构的核心概念'],\n    n_results=3,\n    where={'subject': 'data_structure'}\n)\nfor doc, dist in zip(results['documents'][0], results['distances'][0]):\n    print(f'{dist:.3f} | {doc}')",
+     a:"向量数据库是RAG系统的存储层。选择Chroma因为轻量、本地运行、无需额外服务，适合学习和中小项目。生产环境可迁移到Milvus。"},
+
+    {id:7,s:2,t:"文档切分与检索策略",tag:"RAG",level:"入门",
+     project:"知识库问答机器人",
+     resume:"掌握文档切分策略(固定/语义/递归)和检索优化技巧，提升RAG召回准确率",
+     c:"文档切分是RAG效果的关键。切分策略：固定长度切分(简单但可能截断语义)、按段落切分(保持语义但长度不一)、递归切分(先按段落再按长度)、语义切分(用Embedding判断语义边界)。关键参数：chunk_size(块大小)、overlap(重叠防止截断)。",
+     code:"from langchain.text_splitter import RecursiveCharacterTextSplitter\n\n# 原始文档\nlong_text = '''线性回归是最简单的机器学习算法之一。\n它通过最小化损失函数来拟合一条直线。\n公式: y = wx + b，其中w是权重，b是偏置。\n梯度下降法用于优化参数w和b。\n学习率是梯度下降的关键超参数。\n过大的学习率会导致震荡，过小则收敛缓慢。'''\n\n# 1. 递归切分(推荐)\nsplitter = RecursiveCharacterTextSplitter(\n    chunk_size=80,        # 每块最大字符数\n    chunk_overlap=20,     # 块间重叠\n    separators=['\\n\\n', '\\n', '。', '']  # 切分优先级\n)\nchunks = splitter.split_text(long_text)\nfor i, chunk in enumerate(chunks):\n    print(f'--- Chunk {i+1} ({len(chunk)} chars) ---')\n    print(chunk)\n\n# 2. 文档加载(PDF/Markdown)\nfrom langchain.document_loaders import TextLoader, PyPDFLoader\n\n# 加载文本\nloader = TextLoader('notes.md')\ndocs = loader.load()\n\n# 加载PDF\n# loader = PyPDFLoader('textbook.pdf')\n# docs = loader.load()\n\n# 切分后存入向量库\nchunks = splitter.split_documents(docs)",
+     e:"给定一段300字的技术文档，用RecursiveCharacterTextSplitter切分(chunk_size=100, overlap=30)，输出每块的内容和字符数。",
+     ec:"from langchain.text_splitter import RecursiveCharacterTextSplitter\n\ntext = '''RAG(检索增强生成)是一种结合检索和生成的技术。\n它首先从知识库中检索相关文档片段。\n然后将检索到的片段作为上下文输入给LLM。\nLLM基于上下文生成更准确的回答。\nRAG的优势是不需要重新训练模型。\n只需更新知识库即可获得新知识。\nRAG的挑战在于检索质量和Prompt设计。\n如果检索不到相关文档，回答质量会下降。\n切分策略和Embedding模型的选择至关重要。'''\n\nsplitter = RecursiveCharacterTextSplitter(\n    chunk_size=100,\n    chunk_overlap=30,\n    separators=['\\n', '。', '']\n)\nchunks = splitter.split_text(text)\nfor i, c in enumerate(chunks):\n    print(f'Chunk {i+1} ({len(c)} chars): {c[:50]}...')\n\n# 输出示例:\n# Chunk 1 (85 chars): RAG(检索增强生成)...输入给LLM。\n# Chunk 2 (88 chars): LLM基于上下文...获得新知识。\n# Chunk 3 (75 chars): RAG的挑战...至关重要。",
+     a:"切分质量直接决定RAG效果。切分太大→检索不精准，切分太小→语义不完整。实践中chunk_size=200-500、overlap=50-100是常用配置。"},
+
+    {id:8,s:2,t:"RAG Pipeline构建",tag:"RAG",level:"入门",
+     project:"知识库问答机器人",
+     resume:"能独立构建完整RAG Pipeline(文档加载→切分→向量化→检索→Prompt组装→LLM生成)",
+     c:"RAG Pipeline是检索增强生成的完整流程：1)文档加载(PDF/MD/网页) 2)文档切分 3)向量化存储 4)用户提问→向量化→相似度检索 5)组装上下文+问题的Prompt 6)LLM生成回答 7)引用来源标注。",
+     code:"import chromadb\nfrom openai import OpenAI\nfrom langchain.text_splitter import RecursiveCharacterTextSplitter\n\nclient = OpenAI(api_key='sk-xxx', base_url='https://api.deepseek.com')\n\n# === 1. 索引阶段(离线一次性) ===\ndef build_index(documents):\n    db = chromadb.PersistentClient(path='./rag_db')\n    coll = db.get_or_create_collection('docs')\n    \n    splitter = RecursiveCharacterTextSplitter(\n        chunk_size=300, chunk_overlap=50\n    )\n    chunks = splitter.split_texts(documents)\n    \n    coll.add(\n        documents=chunks,\n        ids=[f'chunk_{i}' for i in range(len(chunks))]\n    )\n    return coll\n\n# === 2. 检索+生成阶段(在线每次查询) ===\ndef rag_query(question, coll, top_k=3):\n    # 检索\n    results = coll.query(query_texts=[question], n_results=top_k)\n    context = '\\n'.join(results['documents'][0])\n    sources = results['ids'][0]\n    \n    # 组装Prompt\n    prompt = f'''请基于以下资料回答问题。\n\n资料:\n{context}\n\n问题: {question}\n\n要求:\n1. 只基于资料回答，不要编造\n2. 如果资料不足以回答，说明\n3. 标注引用来源'''\n    \n    # LLM生成\n    resp = client.chat.completions.create(\n        model='deepseek-chat',\n        messages=[{'role':'user','content':prompt}],\n        temperature=0.3  # RAG用低温度减少幻觉\n    )\n    answer = resp.choices[0].message.content\n    return {'answer': answer, 'sources': sources}\n\n# 使用\ndocs = ['线性回归是最简单的ML算法...', 'RAG结合检索和生成...']\ncoll = build_index(docs)\nresult = rag_query('什么是线性回归?', coll)\nprint(result['answer'])\nprint('来源:', result['sources'])",
+     e:"构建一个完整的RAG Pipeline: 输入3段技术文档，用户提问后检索相关段落，用LLM生成回答并标注来源。",
+     ec:"# 见上方代码，核心步骤:\n# 1. build_index: 文档→切分→存入Chroma\n# 2. rag_query: 问题→检索→组装Prompt→LLM生成\n\n# 测试\ndocs = [\n    'Python的GIL是全局解释器锁，限制多线程并行。',\n    'FastAPI基于Starlette和Pydantic，支持async。',\n    '向量数据库通过余弦相似度检索最近邻。'\n]\ncoll = build_index(docs)\nresult = rag_query('FastAPI的特点是什么?', coll)\nprint(result['answer'])\n# 应该检索到第2条文档并基于它回答\nprint('引用:', result['sources'])\n\n# 关键点:\n# - temperature=0.3 减少幻觉\n# - Prompt要求只基于资料回答\n# - 返回来源IDs供前端展示",
+     a:"这是RAG项目的核心代码。实际项目中需要加入：文档上传API、多轮对话记忆、回答后处理(高亮引用段落)、前端展示(流式输出+来源链接)。"},
+
+    {id:9,s:2,t:"RAG评估与优化",tag:"RAG",level:"入门",
+     project:"知识库问答机器人",
+     resume:"能评估RAG系统质量(召回率/准确率/幻觉率)，掌握常见优化手段",
+     c:"RAG系统需要量化评估才能持续优化。核心指标：1)召回率(检索到的相关文档占比) 2)准确率(回答是否正确) 3)幻觉率(LLM编造了多少内容) 4)引用准确率(标注的来源是否正确)。优化手段：调整chunk_size、换更好的Embedding模型、加入重排序(reranker)、混合检索(关键词+语义)。",
+     code:"# RAG评估工具\n\ndef evaluate_rag(questions, ground_truths, rag_func):\n    results = []\n    for q, truth in zip(questions, ground_truths):\n        # 获取RAG回答\n        rag_result = rag_func(q)\n        answer = rag_result['answer']\n        sources = rag_result['sources']\n        \n        # 1. 简单关键词匹配(实际项目用LLM评估)\n        relevant = any(kw in answer.lower() for kw in truth['keywords'])\n        \n        # 2. 引用检查\n        has_citation = len(sources) > 0\n        \n        # 3. 幻觉检测(简单版)\n        hallucination = not relevant and len(answer) > 50\n        \n        results.append({\n            'question': q,\n            'relevant': relevant,\n            'has_citation': has_citation,\n            'hallucination': hallucination\n        })\n    \n    # 汇总\n    n = len(results)\n    print(f'准确率: {sum(r[\"relevant\"] for r in results)/n:.1%}')\n    print(f'引用率: {sum(r[\"has_citation\"] for r in results)/n:.1%}')\n    print(f'幻觉率: {sum(r[\"hallucination\"] for r in results)/n:.1%}')\n    return results\n\n# 优化策略\n# 1. 调整chunk_size: 200→300→500，对比召回率\n# 2. 换Embedding模型: text-embedding-3-small → bge-m3\n# 3. 加reranker: 用Cross-Encoder重排检索结果\n# 4. 混合检索: BM25(关键词) + 向量(语义)",
+     e:"设计一个RAG评估方案: 准备5个测试问题和标准答案，用关键词匹配计算准确率和幻觉率。",
+     ec:"# 测试集\ntest_cases = [\n    {'q': '什么是线性回归?', 'keywords': ['回归', '线性', '预测', 'y=wx+b']},\n    {'q': 'RAG是什么?', 'keywords': ['检索', '生成', '增强', '知识库']},\n    {'q': '梯度下降的原理?', 'keywords': ['梯度', '下降', '学习率', '损失']},\n    {'q': '什么是过拟合?', 'keywords': ['过拟合', '训练', '泛化', '正则']},\n    {'q': '余弦相似度的公式?', 'keywords': ['余弦', '点积', '范数', 'cos']}\n]\n\n# 评估\nquestions = [tc['q'] for tc in test_cases]\ntruths = [{'keywords': tc['keywords']} for tc in test_cases]\nresults = evaluate_rag(questions, truths, rag_query)\n\n# 优化建议:\n# 1. 准确率<60% → 检查chunk_size或换Embedding模型\n# 2. 幻觉率>20% → 降低temperature或加强Prompt约束\n# 3. 引用率<100% → 检查检索逻辑",
+     a:"RAG评估是面试必问。能说出评估指标(召回率/准确率/幻觉率)和优化手段(chunk_size调整/reranker/混合检索)能体现工程经验。"},
+
+    // ===== Stage 3: LangChain + Agent =====
+    {id:10,s:3,t:"LangChain框架",tag:"Agent",level:"入门",
+     project:"学习计划Agent",
+     resume:"使用LangChain编排AI应用(Chain/Memory/Prompt Template/Output Parser)",
+     c:"LangChain是AI应用开发框架，提供组件化构建方式。核心概念：Chain(链式调用)、Prompt Template(提示词模板)、Memory(对话记忆)、Output Parser(输出解析)、LLM wrapper(统一LLM接口)。用LangChain可以快速组装复杂的AI工作流。",
+     code:"from langchain_openai import ChatOpenAI\nfrom langchain_core.prompts import ChatPromptTemplate\nfrom langchain_core.output_parsers import StrOutputParser, JsonOutputParser\nfrom langchain.memory import ConversationBufferMemory\n\n# 1. 初始化LLM\nllm = ChatOpenAI(\n    model='deepseek-chat',\n    api_key='sk-xxx',\n    base_url='https://api.deepseek.com',\n    temperature=0.7\n)\n\n# 2. Prompt模板\nprompt = ChatPromptTemplate.from_messages([\n    ('system', '你是一位{role}，擅长{skill}。'),\n    ('human', '{question}')\n])\n\n# 3. 构建Chain (LCEL语法)\nchain = prompt | llm | StrOutputParser()\n\n# 4. 调用\nresult = chain.invoke({\n    'role': 'Python工程师',\n    'skill': '代码审查',\n    'question': '这段代码有什么问题: def add(a,b): return a+b'\n})\nprint(result)\n\n# 5. 带记忆的对话\nfrom langchain.chains import ConversationChain\nmemory = ConversationBufferMemory()\nconv = ConversationChain(llm=llm, memory=memory)\nconv.predict(input='我叫小明')\nconv.predict(input='我叫什么?')  # 记住'小明'\n\n# 6. JSON结构化输出\njson_parser = JsonOutputParser()\njson_chain = prompt | llm | json_parser",
+     e:"用LangChain构建一个翻译Chain: 输入中文+目标语言，输出翻译结果。要求使用Prompt Template和Output Parser。",
+     ec:"from langchain_openai import ChatOpenAI\nfrom langchain_core.prompts import ChatPromptTemplate\nfrom langchain_core.output_parsers import StrOutputParser\n\nllm = ChatOpenAI(\n    model='deepseek-chat',\n    api_key='sk-xxx',\n    base_url='https://api.deepseek.com'\n)\n\nprompt = ChatPromptTemplate.from_messages([\n    ('system', '你是专业翻译。将用户输入翻译为{language}。只输出翻译结果。'),\n    ('human', '{text}')\n])\n\nchain = prompt | llm | StrOutputParser()\n\nresult = chain.invoke({\n    'language': 'English',\n    'text': '人工智能正在改变世界'\n})\nprint(result)\n# 输出: Artificial intelligence is changing the world.",
+     a:"LangChain是AI应用开发的标配框架。掌握LCEL(LangChain Expression Language)语法、Chain组合、Memory管理是Agent开发的基础。"},
+
+    {id:11,s:3,t:"Function Calling / Tool Use",tag:"Agent",level:"入门",
+     project:"学习计划Agent",
+     resume:"实现LLM Function Calling，让AI能调用外部工具(API/数据库/计算器)",
+     c:"Function Calling让LLM能调用外部函数。流程：1)定义工具函数(JSON Schema描述) 2)LLM决定调用哪个函数 3)执行函数获取结果 4)将结果返回LLM继续推理。这是Agent的核心能力——通过工具调用，LLM可以访问外部数据、执行计算、操作文件。",
+     code:"from openai import OpenAI\nimport json\n\nclient = OpenAI(api_key='sk-xxx', base_url='https://api.deepseek.com')\n\n# 1. 定义工具函数\ndef get_weather(city):\n    \"\"\"模拟天气API\"\"\"\n    weather_db = {'北京': '晴天 25度', '上海': '多云 28度'}\n    return weather_db.get(city, '未知城市')\n\ndef calculate(expression):\n    \"\"\"安全计算器\"\"\"\n    try:\n        return str(eval(expression, {'__builtins__': {}}, {}))\n    except:\n        return '计算错误'\n\n# 2. 定义工具Schema\ntools = [\n    {\n        'type': 'function',\n        'function': {\n            'name': 'get_weather',\n            'description': '获取指定城市的天气',\n            'parameters': {\n                'type': 'object',\n                'properties': {\n                    'city': {'type': 'string', 'description': '城市名'}\n                },\n                'required': ['city']\n            }\n        }\n    },\n    {\n        'type': 'function',\n        'function': {\n            'name': 'calculate',\n            'description': '数学计算',\n            'parameters': {\n                'type': 'object',\n                'properties': {\n                    'expression': {'type': 'string', 'description': '数学表达式'}\n                },\n                'required': ['expression']\n            }\n        }\n    }\n]\n\n# 3. Agent循环\nmessages = [{'role': 'user', 'content': '北京天气怎么样?然后算一下 25 * 4'}]\n\nfor _ in range(5):  # 最多5轮\n    resp = client.chat.completions.create(\n        model='deepseek-chat',\n        messages=messages,\n        tools=tools\n    )\n    msg = resp.choices[0].message\n    messages.append(msg)\n    \n    if not msg.tool_calls:\n        print(msg.content)\n        break\n    \n    for tc in msg.tool_calls:\n        func = {'get_weather': get_weather, 'calculate': calculate}[tc.function.name]\n        args = json.loads(tc.function.arguments)\n        result = func(**args)\n        messages.append({'role': 'tool', 'tool_call_id': tc.id, 'content': result})\n        print(f'[工具] {tc.function.name}({args}) = {result}')",
+     e:"定义一个搜索知识库的工具函数，让LLM能通过Function Calling查询向量数据库并回答问题。",
+     ec:"import chromadb, json\nfrom openai import OpenAI\nclient = OpenAI(api_key='sk-xxx', base_url='https://api.deepseek.com')\ndb = chromadb.PersistentClient(path='./rag_db')\ncoll = db.get_or_create_collection('docs')\n\ndef search_kb(query):\n    results = coll.query(query_texts=[query], n_results=3)\n    return json.dumps(results['documents'][0], ensure_ascii=False)\n\ntools = [{\n    'type': 'function',\n    'function': {\n        'name': 'search_kb',\n        'description': '搜索知识库获取相关信息',\n        'parameters': {\n            'type': 'object',\n            'properties': {'query': {'type': 'string'}},\n            'required': ['query']\n        }\n    }\n}]\n\nmessages = [{'role':'user','content':'线性回归是什么?'}]\nfor _ in range(3):\n    resp = client.chat.completions.create(model='deepseek-chat', messages=messages, tools=tools)\n    msg = resp.choices[0].message\n    messages.append(msg)\n    if not msg.tool_calls:\n        print(msg.content); break\n    for tc in msg.tool_calls:\n        args = json.loads(tc.function.arguments)\n        result = search_kb(**args)\n        messages.append({'role':'tool','tool_call_id':tc.id,'content':result})",
+     a:"Function Calling是Agent的基础。Agent = LLM + Function Calling + 循环。掌握工具定义、参数解析、多轮调用是Agent开发的核心能力。"},
+
+    {id:12,s:3,t:"Agent架构(ReAct)",tag:"Agent",level:"入门",
+     project:"学习计划Agent",
+     resume:"理解ReAct Agent架构(推理→行动→观察循环)，能设计工具选择逻辑",
+     c:"ReAct(Reasoning+Acting)是Agent的主流架构。循环流程：Thought(思考该做什么)→Action(选择工具并调用)→Observation(观察结果)→Thought(基于结果继续思考)→...直到得出最终答案。与简单Function Calling的区别：ReAct支持多步推理，能根据中间结果调整策略。",
+     code:"from langchain.agents import create_react_agent, AgentExecutor\nfrom langchain_openai import ChatOpenAI\nfrom langchain.tools import Tool\nfrom langchain import hub\n\n# 1. 定义工具\ndef search_tool(query):\n    \"\"\"搜索知识库\"\"\"\n    return f'找到关于{query}的信息: ...'\n\ndef calc_tool(expression):\n    \"\"\"数学计算\"\"\"\n    try:\n        return str(eval(expression))\n    except:\n        return '计算错误'\n\ntools = [\n    Tool(name='Search', func=search_tool, description='搜索知识库获取信息'),\n    Tool(name='Calculator', func=calc_tool, description='数学计算工具')\n]\n\n# 2. 创建ReAct Agent\nllm = ChatOpenAI(model='deepseek-chat', api_key='sk-xxx',\n                base_url='https://api.deepseek.com', temperature=0)\n\nprompt = hub.pull('hwchase17/react')  # 标准ReAct prompt\nagent = create_react_agent(llm, tools, prompt)\nexecutor = AgentExecutor(agent=agent, tools=tools, verbose=True)\n\n# 3. 运行\nresult = executor.invoke({\n    'input': '搜索RAG的定义，然后计算如果每天学2小时，10周总共学多少小时?'\n})\nprint(result['output'])\n\n# ReAct过程:\n# Thought: 我需要先搜索RAG的定义\n# Action: Search[RAG定义]\n# Observation: 找到关于RAG的信息...\n# Thought: 现在计算学习时间: 2*7*10=140\n# Action: Calculator[2*7*10]\n# Observation: 140\n# Thought: 得出答案\n# Final Answer: RAG是...10周共学习140小时",
+     e:"设计一个学习计划Agent的ReAct流程: 输入学习目标，Agent搜索知识库确定范围，计算所需时间，生成每日计划。",
+     ec:"# Agent流程设计:\n# Thought: 用户想学RAG，我需要确定RAG的知识范围\n# Action: Search[RAG学习范围]\n# Observation: RAG包括向量化、向量数据库、文档切分、检索、生成\n# Thought: 5个知识点，每个2小时，共10小时\n# Action: Calculator[5*2]\n# Observation: 10\n# Thought: 10小时分5天，每天2小时\n# Final Answer: RAG学习计划:\n#   第1天: 向量化和Embedding (2h)\n#   第2天: 向量数据库Chroma (2h)\n#   第3天: 文档切分策略 (2h)\n#   第4天: RAG Pipeline构建 (2h)\n#   第5天: RAG评估与优化 (2h)\n\n# 关键: Agent自主决定调用顺序和参数\n# 不需要人工编排，LLM根据情况选择工具",
+     a:"ReAct是面试热点。能解释Thought-Action-Observation循环、说明Agent与普通LLM调用的区别(自主决策vs固定流程)、举出实际应用场景，是Agent岗位的基本要求。"},
+
+    {id:13,s:3,t:"Agent记忆与多轮对话",tag:"Agent",level:"入门",
+     project:"学习计划Agent",
+     resume:"实现Agent多轮对话记忆(短期Buffer + 长期Summary)，支持上下文连续推理",
+     c:"Agent记忆决定对话质量。三种记忆策略：1)Buffer Memory(存全部对话，简单但Token消耗大) 2)Summary Memory(LLM总结历史，省Token但可能丢细节) 3)Vector Memory(向量化历史，按相关性检索)。实际应用中通常组合使用。",
+     code:"from langchain_openai import ChatOpenAI\nfrom langchain.memory import (\n    ConversationBufferMemory,\n    ConversationSummaryMemory,\n    ConversationBufferWindowMemory\n)\nfrom langchain.chains import ConversationChain\n\nllm = ChatOpenAI(model='deepseek-chat', api_key='sk-xxx',\n                base_url='https://api.deepseek.com')\n\n# 1. Buffer Memory(存全部)\nmem1 = ConversationBufferMemory()\nconv1 = ConversationChain(llm=llm, memory=mem1)\nconv1.predict(input='我在学RAG')\nconv1.predict(input='它有哪些步骤?')  # 记住上下文\n\n# 2. Window Memory(只存最近N轮)\nmem2 = ConversationBufferWindowMemory(k=3)  # 只记3轮\nconv2 = ConversationChain(llm=llm, memory=mem2)\n\n# 3. Summary Memory(LLM总结历史)\nmem3 = ConversationSummaryMemory(llm=llm)\nconv3 = ConversationChain(llm=llm, memory=mem3)\n# 每轮对话后LLM自动总结历史\n\n# 4. 自定义记忆(用于Agent)\nfrom langchain.agents import AgentExecutor\n\nclass AgentMemory:\n    def __init__(self, max_messages=20):\n        self.messages = []\n        self.max = max_messages\n    \n    def add(self, role, content):\n        self.messages.append({'role': role, 'content': content})\n        if len(self.messages) > self.max:\n            # 保留system prompt + 最近N条\n            self.messages = self.messages[-self.max:]\n    \n    def get(self):\n        return self.messages.copy()",
+     e:"实现一个带Summary Memory的对话Agent，能记住用户的学习进度并在后续对话中引用。",
+     ec:"from langchain_openai import ChatOpenAI\nfrom langchain.memory import ConversationSummaryMemory\nfrom langchain.chains import ConversationChain\n\nllm = ChatOpenAI(model='deepseek-chat', api_key='sk-xxx',\n                base_url='https://api.deepseek.com')\nmemory = ConversationSummaryMemory(llm=llm)\nconv = ConversationChain(llm=llm, memory=memory)\n\n# 模拟对话\nconv.predict(input='我在学RAG，已经掌握了向量化')\nconv.predict(input='接下来该学什么?')\nconv.predict(input='向量数据库要多久?')\n\n# 检查记忆摘要\nprint(memory.buffer)\n# LLM会总结: 用户正在学RAG，已掌握向量化，\n# 讨论了下一步学习向量数据库\n\n# 自定义记忆的关键:\n# 1. 短期: BufferMemory 存最近对话\n# 2. 长期: SummaryMemory 总结进度\n# 3. 检索: VectorMemory 按需召回\n# 组合使用效果最好",
+     a:"记忆管理是Agent产品的核心挑战。无限存对话→Token爆炸，只存最近→丢失关键信息。面试时能讨论记忆策略的权衡是加分项。"},
+
+    {id:14,s:3,t:"多Agent协作",tag:"Agent",level:"入门",
+     project:"学习计划Agent",
+     resume:"理解多Agent协作模式(分工/层级/竞争)，能设计简单的多Agent工作流",
+     c:"多Agent协作是复杂任务的解决方案。模式：1)层级式(Manager分配任务给Worker) 2)流水线式(Agent1→Agent2→Agent3) 3)讨论式(多Agent讨论后投票)。常用框架：LangGraph(状态图)、CrewAI(角色扮演)、AutoGen(对话式)。",
+     code:"from langchain_openai import ChatOpenAI\nfrom langchain_core.prompts import ChatPromptTemplate\nfrom langchain_core.output_parsers import StrOutputParser\n\nllm = ChatOpenAI(model='deepseek-chat', api_key='sk-xxx',\n                base_url='https://api.deepseek.com')\n\n# Agent 1: 规划师(分解任务)\nplanner_prompt = ChatPromptTemplate.from_messages([\n    ('system', '你是学习规划师。将学习目标分解为3-5个知识点。输出JSON列表。'),\n    ('human', '{goal}')\n])\nplanner = planner_prompt | llm | StrOutputParser()\n\n# Agent 2: 内容专家(为每个知识点生成内容)\nexpert_prompt = ChatPromptTemplate.from_messages([\n    ('system', '你是AI技术专家。为每个知识点生成2小时学习内容大纲。'),\n    ('human', '{topics}')\n])\nexpert = expert_prompt | llm | StrOutputParser()\n\n# Agent 3: 评估师(检查计划合理性)\nreviewer_prompt = ChatPromptTemplate.from_messages([\n    ('system', '你是学习评估师。检查学习计划是否合理，给出改进建议。'),\n    ('human', '{plan}')\n])\nreviewer = reviewer_prompt | llm | StrOutputParser()\n\n# 流水线执行\ngoal = '2周掌握RAG系统开发'\nstep1 = planner.invoke({'goal': goal})\nprint('规划:', step1)\nstep2 = expert.invoke({'topics': step1})\nprint('内容:', step2)\nstep3 = reviewer.invoke({'plan': step2})\nprint('评估:', step3)\n\n# LangGraph方式(更正式的多Agent)\n# from langgraph.graph import StateGraph, END\n# workflow = StateGraph(state_schema)\n# workflow.add_node('planner', planner_node)\n# workflow.add_node('expert', expert_node)\n# workflow.add_node('reviewer', reviewer_node)\n# workflow.add_edge('planner', 'expert')\n# workflow.add_edge('expert', 'reviewer')\n# workflow.add_edge('reviewer', END)",
+     e:"设计一个2-Agent协作: Agent1(出题)生成一道RAG相关面试题，Agent2(答题)尝试回答，Agent1再评估答案。",
+     ec:"from langchain_openai import ChatOpenAI\nfrom langchain_core.prompts import ChatPromptTemplate\nfrom langchain_core.output_parsers import StrOutputParser\n\nllm = ChatOpenAI(model='deepseek-chat', api_key='sk-xxx',\n                base_url='https://api.deepseek.com')\n\n# Agent 1: 出题官\nquestioner = ChatPromptTemplate.from_messages([\n    ('system', '你是AI面试官，出一道RAG相关面试题。'),\n    ('human', '请出题')\n]) | llm | StrOutputParser()\n\n# Agent 2: 答题者\nanswerer = ChatPromptTemplate.from_messages([\n    ('system', '你是候选人，回答面试题。'),\n    ('human', '{question}')\n]) | llm | StrOutputParser()\n\n# Agent 1: 评估\nevaluator = ChatPromptTemplate.from_messages([\n    ('system', '你是面试官，评估答案并打分(1-10)。'),\n    ('human', '题目:{question}\\n答案:{answer}')\n]) | llm | StrOutputParser()\n\n# 执行\nq = questioner.invoke({})\nprint(f'面试题: {q}')\na = answerer.invoke({'question': q})\nprint(f'回答: {a}')\ne = evaluator.invoke({'question': q, 'answer': a})\nprint(f'评估: {e}')",
+     a:"多Agent是前沿方向。面试时能讨论Agent协作模式(层级/流水线/讨论)、框架选型(LangGraph/CrewAI)、适用场景，能体现对AI应用架构的深度理解。"},
+
+    // ===== Stage 4: 全栈项目 + 部署 =====
+    {id:15,s:4,t:"前端+AI集成",tag:"全栈",level:"入门",
+     project:"AI错题分析平台",
+     resume:"将AI能力集成到前端应用(流式对话/文件上传/实时渲染/状态管理)",
+     c:"前端+AI集成的核心场景：1)流式对话(SSE/WebSocket接收LLM流式输出) 2)文件上传(上传PDF/图片到后端处理) 3)Markdown渲染(渲染LLM输出的Markdown) 4)状态管理(对话历史/加载状态/错误处理)。前端能力是你的优势，这里重点是如何与AI后端对接。",
+     code:"// React + AI 流式对话示例\nimport { useState, useRef } from 'react'\n\nfunction AIChat() {\n  const [messages, setMessages] = useState([])\n  const [input, setInput] = useState('')\n  const [streaming, setStreaming] = useState(false)\n  const abortRef = useRef(null)\n\n  async function sendMessage() {\n    if (!input.trim() || streaming) return\n    \n    const userMsg = { role: 'user', content: input }\n    const aiMsg = { role: 'ai', content: '' }\n    setMessages(prev => [...prev, userMsg, aiMsg])\n    setInput('')\n    setStreaming(true)\n    \n    // 流式接收\n    const resp = await fetch('/api/chat/stream', {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({ message: input })\n    })\n    \n    const reader = resp.body.getReader()\n    const decoder = new TextDecoder()\n    \n    while (true) {\n      const { done, value } = await reader.read()\n      if (done) break\n      const text = decoder.decode(value)\n      // 解析SSE\n      const lines = text.split('\\n')\n      for (const line of lines) {\n        if (line.startsWith('data: ')) {\n          const chunk = line.slice(6)\n          setMessages(prev => {\n            const copy = [...prev]\n            copy[copy.length - 1].content += chunk\n            return copy\n          })\n        }\n      }\n    }\n    setStreaming(false)\n  }\n\n  return (\n    <div>\n      {messages.map((m, i) => (\n        <div key={i} className={m.role}>\n          {m.content || '...'}\n        </div>\n      ))}\n      <input value={input} onChange={e => setInput(e.target.value)}\n             onKeyDown={e => e.key === 'Enter' && sendMessage()} />\n      <button onClick={sendMessage} disabled={streaming}>\n        {streaming ? '回答中...' : '发送'}\n      </button>\n    </div>\n  )\n}",
+     e:"用你熟悉的前端框架(Vue/React)实现一个AI对话组件，支持: 1)流式输出 2)Markdown渲染 3)加载状态 4)错误处理。",
+     ec:"// Vue 3 版本\n<template>\n  <div class='chat'>\n    <div v-for='(m, i) in messages' :key='i' :class='m.role'>\n      <div v-html='renderMarkdown(m.content)'></div>\n    </div>\n    <input v-model='input' @keydown.enter='send' :disabled='streaming' />\n    <button @click='send' :disabled='streaming'>\n      {{ streaming ? '回答中...' : '发送' }}\n    </button>\n  </div>\n</template>\n\n<script setup>\nimport { ref } from 'vue'\nimport { marked } from 'marked'\n\nconst messages = ref([])\nconst input = ref('')\nconst streaming = ref(false)\n\nfunction renderMarkdown(text) {\n  return marked(text)\n}\n\nasync function send() {\n  if (!input.value.trim() || streaming.value) return\n  messages.value.push(\n    { role: 'user', content: input.value },\n    { role: 'ai', content: '' }\n  )\n  const msg = input.value\n  input.value = ''\n  streaming.value = true\n  \n  const resp = await fetch('/api/chat/stream', {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify({ message: msg })\n  })\n  const reader = resp.body.getReader()\n  const decoder = new TextDecoder()\n  while (true) {\n    const { done, value } = await reader.read()\n    if (done) break\n    const text = decoder.decode(value)\n    const chunks = text.match(/data: (.+)/g) || []\n    for (const chunk of chunks) {\n      const data = chunk.replace('data: ', '')\n      messages.value[messages.value.length - 1].content += data\n    }\n  }\n  streaming.value = false\n}\n<\/script>",
+     a:"前端+AI集成是你的核心竞争力。大多数AI工程师不擅长前端，你能独立完成前后端开发是巨大优势。简历上突出'端到端开发'能力。"},
+
+    {id:16,s:4,t:"Docker部署",tag:"运维",level:"入门",
+     project:"AI错题分析平台",
+     resume:"使用Docker容器化AI应用，支持一键部署和环境隔离",
+     c:"Docker是应用部署的标配。核心概念：镜像(Image,只读模板)、容器(Container,运行实例)、Dockerfile(构建脚本)、docker-compose(多容器编排)。AI应用部署需要：1)Python环境+依赖 2)前端构建产物 3)Nginx反代 4)环境变量管理。",
+     code:"# Dockerfile (后端)\nFROM python:3.11-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nEXPOSE 8000\nCMD [\"uvicorn\", \"app.main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]\n\n# docker-compose.yml (前后端+向量库)\nversion: '3.8'\nservices:\n  backend:\n    build: ./backend\n    ports:\n      - '8000:8000'\n    environment:\n      - DEEPSEEK_API_KEY=${API_KEY}\n    volumes:\n      - ./data:/app/data  # 持久化向量库\n  \n  frontend:\n    build: ./frontend\n    ports:\n      - '3000:80'\n    depends_on:\n      - backend\n  \n  nginx:\n    image: nginx:alpine\n    ports:\n      - '80:80'\n    volumes:\n      - ./nginx.conf:/etc/nginx/conf.d/default.conf\n    depends_on:\n      - frontend\n      - backend\n\n# 构建和运行\n# docker-compose up --build\n# 或后台运行: docker-compose up -d --build",
+     e:"为你的AI对话API服务编写Dockerfile和docker-compose.yml，包含后端(FastAPI)和前端(Nginx)两个服务。",
+     ec:"# backend/Dockerfile\nFROM python:3.11-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nEXPOSE 8000\nCMD [\"uvicorn\", \"app.main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]\n\n# frontend/Dockerfile\nFROM node:18-alpine as build\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nRUN npm run build\n\nFROM nginx:alpine\nCOPY --from=build /app/dist /usr/share/nginx/html\nCOPY nginx.conf /etc/nginx/conf.d/default.conf\nEXPOSE 80\n\n# docker-compose.yml\nversion: '3.8'\nservices:\n  backend:\n    build: ./backend\n    ports: ['8000:8000']\n    env_file: .env\n    volumes: ['./vector_db:/app/vector_db']\n  \n  frontend:\n    build: ./frontend\n    ports: ['3000:80']\n    depends_on: [backend]\n\n# .env\nDEEPSEEK_API_KEY=sk-xxxxx\n\n# 运行: docker-compose up --build -d",
+     a:"Docker部署是工程化能力的体现。面试时提到'用Docker Compose编排前后端+向量库'能展示全栈工程能力。"},
+
+    {id:17,s:4,t:"全栈项目整合",tag:"实战",level:"入门",
+     project:"AI错题分析平台",
+     resume:"端到端开发AI错题分析平台，集成RAG+Agent+前端，React+FastAPI+Docker",
+     c:"将前三个阶段的能力整合为一个完整产品。AI错题分析平台架构：前端(React/Vue: 上传错题→展示讲解→练习推荐) + 后端(FastAPI: OCR识别→RAG检索相关知识点→Agent生成讲解→推荐练习) + 存储(Chroma向量库: 知识点索引) + 部署(Docker Compose一键启动)。",
+     code:"# 项目结构\n# ai-error-analysis/\n# ├── backend/\n# │   ├── app/\n# │   │   ├── main.py           # FastAPI入口\n# │   │   ├── routers/\n# │   │   │   ├── upload.py     # 图片上传+OCR\n# │   │   │   ├── analysis.py   # 错题分析(RAG+Agent)\n# │   │   │   └── practice.py   # 练习题推荐\n# │   │   ├── services/\n# │   │   │   ├── ocr.py        # OCR服务\n# │   │   │   ├── rag.py        # RAG检索\n# │   │   │   └── agent.py      # Agent讲解\n# │   │   └── config.py\n# │   ├── requirements.txt\n# │   └── Dockerfile\n# ├── frontend/\n# │   ├── src/\n# │   │   ├── components/\n# │   │   │   ├── Upload.vue    # 错题上传\n# │   │   │   ├── Analysis.vue  # 讲解展示\n# │   │   │   └── Practice.vue  # 练习推荐\n# │   │   └── App.vue\n# │   ├── Dockerfile\n# │   └── nginx.conf\n# ├── docker-compose.yml\n# └── .env\n\n# backend/app/routers/analysis.py\nfrom fastapi import APIRouter, UploadFile\nfrom ..services.rag import rag_search\nfrom ..services.agent import explain_error\n\nrouter = APIRouter(prefix='/api/analysis')\n\n@router.post('/analyze')\nasync def analyze_error(file: UploadFile):\n    # 1. OCR识别题目\n    question_text = await ocr_service.recognize(file)\n    # 2. RAG检索相关知识点\n    context = rag_search(question_text)\n    # 3. Agent生成讲解\n    explanation = await explain_error(question_text, context)\n    # 4. 推荐练习\n    practice = await recommend_practice(question_text)\n    return {\n        'question': question_text,\n        'explanation': explanation,\n        'practice': practice\n    }",
+     e:"规划AI错题分析平台的MVP(最小可用产品): 列出核心功能(3个)、技术选型、开发顺序、预计工时。",
+     ec:"# MVP规划\n\n## 核心功能(3个)\n1. 错题上传+OCR识别 (1天)\n   - 前端: 图片上传组件\n   - 后端: 调用OCR API识别文字\n\n2. AI讲解生成 (2天)\n   - RAG检索相关知识点\n   - Agent生成分步讲解\n   - 流式输出到前端\n\n3. 练习推荐 (1天)\n   - 基于错题类型推荐同类题\n   - 从知识库检索相似题目\n\n## 技术选型\n- 前端: Vue3 + Vite (你的强项)\n- 后端: FastAPI + Python\n- AI: DeepSeek API + Chroma + LangChain\n- OCR: 百度OCR / Tesseract\n- 部署: Docker Compose\n\n## 开发顺序\nDay 1: 后端骨架 + OCR接口\nDay 2-3: RAG + Agent讲解\nDay 4: 前端UI\nDay 5: 联调 + Docker部署\n\n## 工时: 约5-7天(每天3-4小时)",
+     a:"这是简历的核心项目。面试时能展示完整产品(可演示)、讲解架构设计(前后端+AI)、讨论技术选型理由，远比零散的Demo有说服力。"},
+
+    // ===== Stage 5: 面试理论补充 =====
+    {id:18,s:5,t:"AI/ML/DL基本概念",tag:"理论",level:"精进",
+     c:"AI > ML > DL 是包含关系。AI是让机器模拟人类智能的总称；ML是从数据中学习规律的方法(监督/无监督/强化)；DL是用多层神经网络学习的方法(CNN/RNN/Transformer)。",
+     code:"# AI: 规则引擎、专家系统\n# ML: 线性回归、决策树、SVM、K-Means\n# DL: CNN、RNN、Transformer、GPT\n\nfrom sklearn.linear_model import LinearRegression  # ML\nimport torch.nn as nn  # DL\nclass SimpleNN(nn.Module):  # 深度学习\n    def __init__(self):\n        super().__init__()\n        self.fc = nn.Linear(10, 1)",
+     e:"用一句话描述AI、ML、DL的关系，并各举一个例子。",
+     ec:"AI是让机器具备智能的总称(如棋类AI)；ML是从数据中学习的方法(如垃圾邮件分类)；DL是用神经网络学习的方法(如人脸识别)。",
+     a:"面试常考。能清晰区分三者关系、举例说明、解释GPT属于DL的Transformer架构。"},
+
+    {id:19,s:5,t:"ML基础(回归/分类/聚类/降维)",tag:"理论",level:"精进",
+     c:"ML四大任务：回归(预测连续值，如房价)、分类(预测类别，如垃圾邮件)、聚类(无标签分组，如客户分群)、降维(减少特征数，如PCA)。常用算法：线性回归、逻辑回归、决策树、K-Means、SVM。",
+     code:"from sklearn.linear_model import LinearRegression, LogisticRegression\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.cluster import KMeans\nfrom sklearn.decomposition import PCA\n\n# 回归: 预测房价\nreg = LinearRegression().fit(X, y_price)\n# 分类: 垃圾邮件\nclf = LogisticRegression().fit(X, y_spam)\n# 聚类: 客户分群\nkm = KMeans(n_clusters=3).fit(X)\n# 降维: 100维→10维\npca = PCA(n_components=10).fit(X)",
+     e:"判断以下任务类型: 1)预测股价 2)识别猫狗 3)用户分群 4)1000维数据压缩",
+     ec:"1)回归(连续值) 2)分类(离散类别) 3)聚类(无标签) 4)降维(减少维度)",
+     a:"面试基础。能说出每种任务的代表算法、适用场景、评估指标(回归用MSE，分类用F1，聚类用轮廓系数)。"},
+
+    {id:20,s:5,t:"神经网络与反向传播",tag:"理论",level:"精进",
+     c:"神经网络由神经元(线性变换+激活函数)组成多层网络。正向传播: 输入→隐藏层→输出。反向传播: 计算损失→梯度反向传播→更新权重。激活函数: ReLU(f(x)=max(0,x))、Sigmoid、Tanh。",
+     code:"import torch\nimport torch.nn as nn\n\n# 简单神经网络\nclass Net(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.fc1 = nn.Linear(784, 128)  # 输入→隐藏\n        self.relu = nn.ReLU()            # 激活\n        self.fc2 = nn.Linear(128, 10)    # 隐藏→输出\n    \n    def forward(self, x):\n        x = self.relu(self.fc1(x))\n        return self.fc2(x)\n\n# 训练循环\nmodel = Net()\noptimizer = torch.optim.Adam(model.parameters(), lr=0.001)\ncriterion = nn.CrossEntropyLoss()\nfor epoch in range(10):\n    pred = model(X_batch)\n    loss = criterion(pred, y_batch)\n    optimizer.zero_grad()\n    loss.backward()   # 反向传播\n    optimizer.step()  # 更新权重",
+     e:"解释正向传播和反向传播的区别，为什么需要激活函数?",
+     ec:"正向传播: 输入数据经过网络计算得到输出。反向传播: 根据损失函数计算梯度，从输出层反向传播到输入层，更新权重。\n激活函数引入非线性，没有激活函数多层网络等价于单层(线性组合的线性组合还是线性)。",
+     a:"面试深度题。能解释梯度消失/爆炸、为什么用ReLU替代Sigmoid、Batch Normalization的作用。"},
+
+    {id:21,s:5,t:"CNN/RNN/Transformer架构",tag:"理论",level:"精进",
+     c:"三大神经网络架构：CNN(卷积网络，擅长图像，核心是卷积核提取局部特征)、RNN/LSTM(循环网络，擅长序列，核心是隐藏状态传递)、Transformer(注意力机制，擅长NLP，核心是Self-Attention，GPT/BERT的基础)。",
+     code:"# CNN (图像)\ncnn = nn.Sequential(\n    nn.Conv2d(3, 16, 3),  # 卷积\n    nn.ReLU(), nn.MaxPool2d(2),\n    nn.Flatten(), nn.Linear(16*13*13, 10)\n)\n\n# RNN (序列)\nrnn = nn.LSTM(input_size=10, hidden_size=20, batch_first=True)\n\n# Transformer (NLP)\nencoder = nn.TransformerEncoderLayer(\n    d_model=512, nhead=8, batch_first=True\n)",
+     e:"比较CNN、RNN、Transformer各自的优势和适用场景。",
+     ec:"CNN: 擅长图像(局部特征提取)，用于人脸识别/医学影像。\nRNN: 擅长序列(时序依赖)，用于语音识别/机器翻译(已被Transformer替代)。\nTransformer: 擅长NLP(全局注意力)，GPT/BERT的基础，当前主流。",
+     a:"面试必问。能解释Self-Attention(Q/K/V)、为什么Transformer比RNN好(并行计算/长距离依赖)、GPT用Decoder-only架构。"},
+
+    {id:22,s:5,t:"注意力机制",tag:"理论",level:"精进",
+     c:"注意力机制让模型关注输入中最重要的部分。Self-Attention: Q(查询)、K(键)、V(值)，计算Q和K的相似度得到权重，加权求和V。Multi-Head Attention: 多组Q/K/V并行计算，捕获不同维度的关注点。",
+     code:"import torch\nimport torch.nn.functional as F\n\ndef attention(Q, K, V):\n    # Q, K, V: (batch, seq, dim)\n    scores = torch.matmul(Q, K.transpose(-2, -1))  # Q*K^T\n    weights = F.softmax(scores / (K.size(-1) ** 0.5), dim=-1)\n    output = torch.matmul(weights, V)  # 加权求和\n    return output, weights\n\n# Multi-Head\nclass MultiHeadAttention(nn.Module):\n    def __init__(self, d_model, n_heads):\n        super().__init__()\n        self.n_heads = n_heads\n        self.w_q = nn.Linear(d_model, d_model)\n        self.w_k = nn.Linear(d_model, d_model)\n        self.w_v = nn.Linear(d_model, d_model)\n    \n    def forward(self, x):\n        Q = self.w_q(x).view(x.size(0), -1, self.n_heads, x.size(-1)//self.n_heads)\n        # ... 分头计算attention后合并",
+     e:"解释Self-Attention中Q、K、V的含义和计算过程。",
+     ec:"Q(Query): 当前词要查询的信息。K(Key): 每个词的索引(用于匹配)。V(Value): 每个词的内容。\n过程: 1)Q*K^T计算相似度 2)softmax归一化 3)加权求和V。\n效果: 每个词都能关注句子中所有其他词。",
+     a:"Transformer的核心。面试能推导Attention公式、解释为什么除以根号d(防止softmax进入饱和区)、Multi-Head的作用(不同子空间关注不同模式)。"},
+
+    {id:23,s:5,t:"预训练与微调",tag:"理论",level:"精进",
+     c:"大模型训练两阶段：1)预训练(海量无标注文本，自监督学习预测下一个词) 2)微调(有标注数据，监督学习)。RLHF(人类反馈强化学习)是第三阶段，用人类偏好优化输出。LoRA(低秩适配)是高效微调方法，只训练少量参数。",
+     code:"# LoRA微调原理(概念)\n# 原始权重 W (d x d)\n# LoRA: W + delta_W = W + B*A\n# A: (r x d), B: (d x r), r << d\n# 只训练A和B，参数量从d*d降到2*r*d\n\n# 使用PEFT库\nfrom peft import LoraConfig, get_peft_model\nimport torch.nn as nn\n\nmodel = AutoModelForCausalLM.from_pretrained('meta-llama/Llama-2-7b')\nlora_config = LoraConfig(\n    r=8,  # 低秩维度\n    lora_alpha=32,\n    target_modules=['q_proj', 'v_proj'],  # 只微调注意力层\n    lora_dropout=0.1\n)\nmodel = get_peft_model(model, lora_config)\n# 可训练参数大幅减少\nmodel.print_trainable_parameters()",
+     e:"解释预训练、微调、RLHF三个阶段的目标和区别。",
+     ec:"预训练: 海量无标注文本，目标预测下一个词，学到语言规律。微调: 有标注数据(问答对)，目标学会遵循指令。RLHF: 人类评分数据，目标对齐人类偏好(安全/有用/诚实)。",
+     a:"面试热点。能解释LoRA原理(低秩分解)、为什么高效(只训练0.1%参数)、与Full Fine-tuning的权衡。"},
+
+    {id:24,s:5,t:"模型评估指标",tag:"理论",level:"精进",
+     c:"分类指标: Accuracy(准确率)、Precision(精确率)、Recall(召回率)、F1(P和R的调和平均)。回归指标: MSE(均方误差)、MAE(平均绝对误差)、R2(拟合度)。RAG评估: 召回率(检索到相关文档占比)、准确率(回答正确率)、幻觉率(编造内容比例)。",
+     code:"from sklearn.metrics import (\n    accuracy_score, precision_score,\n    recall_score, f1_score,\n    mean_squared_error, r2_score\n)\n\n# 分类指标\ny_true = [1, 0, 1, 1, 0]\ny_pred = [1, 0, 0, 1, 1]\nprint(f'Accuracy: {accuracy_score(y_true, y_pred):.2f}')\nprint(f'Precision: {precision_score(y_true, y_pred):.2f}')\nprint(f'Recall: {recall_score(y_true, y_pred):.2f}')\nprint(f'F1: {f1_score(y_true, y_pred):.2f}')\n\n# 回归指标\nprint(f'MSE: {mean_squared_error(y_true, y_pred):.2f}')\nprint(f'R2: {r2_score(y_true, y_pred):.2f}')",
+     e:"给定TP=80, FP=20, FN=10, TN=90，计算Accuracy、Precision、Recall、F1。",
+     ec:"Accuracy = (TP+TN)/(TP+FP+FN+TN) = (80+90)/200 = 0.85\nPrecision = TP/(TP+FP) = 80/100 = 0.80\nRecall = TP/(TP+FN) = 80/90 = 0.89\nF1 = 2*P*R/(P+R) = 2*0.80*0.89/(0.80+0.89) = 0.84",
+     a:"面试基础。能解释Precision和Recall的权衡(高P低R=保守，低P高R=激进)、为什么F1是调和平均而非算术平均。"},
+
+    {id:25,s:5,t:"AI伦理与安全",tag:"理论",level:"精进",
+     c:"AI伦理核心问题：1)偏见(训练数据导致模型歧视特定群体) 2)幻觉(模型编造不存在的事实) 3)隐私(训练数据泄露) 4)安全(恶意Prompt注入) 5)版权(生成内容的知识产权)。缓解手段：RLHF对齐、RAG减少幻觉、数据脱敏、Prompt过滤、输出审查。",
+     code:"# 幻觉检测\ndef check_hallucination(answer, sources):\n    \"\"\"检查回答是否基于检索到的来源\"\"\"\n    answer_words = set(answer.split())\n    source_words = set(' '.join(sources).split())\n    overlap = answer_words & source_words\n    coverage = len(overlap) / max(len(answer_words), 1)\n    if coverage < 0.3:\n        return {'hallucination': True, 'coverage': coverage}\n    return {'hallucination': False, 'coverage': coverage}\n\n# Prompt注入防护\ndef sanitize_prompt(user_input):\n    \"\"\"过滤恶意Prompt\"\"\"\n    dangerous = ['ignore previous', 'system:', 'new instructions']\n    for d in dangerous:\n        if d in user_input.lower():\n            return '[已过滤潜在恶意输入]'\n    return user_input",
+     e:"列举3种AI安全风险及对应的缓解措施。",
+     ec:"1)幻觉 → 用RAG基于事实回答 + 低temperature\n2)偏见 → 数据平衡 + 分组评估(fairness metrics)\n3)Prompt注入 → 输入过滤 + 分离系统指令和用户输入",
+     a:"面试加分项。能讨论AI伦理说明你有工程责任感。重点掌握幻觉检测、偏见评估、Prompt注入防护。"}
+  ];
+
+  var STORAGE_KEY='job_kp_detail_v1';
+  var currentStage=1;
+  var searchQuery='';
+
+  function loadProgress(){
+    try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{}}catch(e){return{}}
+  }
+  function saveProgress(data){
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(e){}
+  }
+  var progress=loadProgress();
+
+  function renderStageTabs(){
+    var html='';
+    STAGES.forEach(function(s){
+      var total=kpCount(s.id);
+      var done=kpDone(s.id);
+      var cls=s.id===currentStage?'active':'';
+      html+='<div class="stage-tab '+cls+'" onclick="selectStage('+s.id+')">'+
+        s.name+' <span class="stage-count">'+done+'/'+total+'</span></div>';
+    });
+    document.getElementById('stageTabs').innerHTML=html;
+  }
+
+  function kpCount(stage){
+    return KP.filter(function(k){return k.s===stage}).length;
+  }
+  function kpDone(stage){
+    return KP.filter(function(k){return k.s===stage&&progress[k.id]}).length;
+  }
+
+  function renderKpList(){
+    var html='';
+    KP.filter(function(k){return k.s===currentStage}).forEach(function(k){
+      if(searchQuery&&k.t.toLowerCase().indexOf(searchQuery)<0&&k.tag.toLowerCase().indexOf(searchQuery)<0)return;
+      var isOpen=false;
+      var isDone=progress[k.id];
+      var doneCls=isDone?'done':'';
+      var levelCls=k.level==='入门'?'entry':'advanced';
+      html+='<div class="kp-card '+doneCls+'" id="kp-'+k.id+'">';
+      html+='<div class="kp-header" onclick="toggleKp('+k.id+')">';
+      html+='<div class="kp-num">'+k.id+'</div>';
+      html+='<div class="kp-title">'+k.t+'</div>';
+      html+='<span class="kp-level '+levelCls+'">'+k.level+'</span>';
+      html+='<span class="kp-tag">'+k.tag+'</span>';
+      html+='<input type="checkbox" class="kp-check" '+(isDone?'checked':'')+' onclick="event.stopPropagation();toggleDone('+k.id+')" />';
+      html+='</div>';
+      html+='<div class="kp-body">';
+
+      // 概念
+      html+='<div class="kp-layer"><h3>📖 概念</h3><p>'+k.c+'</p></div>';if(k.guide){html+=renderKpGuide(k);}
+
+      // 代码
+      if(k.code){
+        html+='<div class="kp-layer"><h3>💻 代码示例</h3>';
+        html+='<div class="kp-code-block">';
+        html+='<button class="kp-copy-btn" onclick="copyCode(this)">复制</button>';
+        html+='<pre class="kp-code">'+escHtml(k.code)+'</pre>';
+        html+='</div></div>';
+      }
+
+      // 练习
+      if(k.e){
+        html+='<div class="kp-layer"><h3>✏️ 手写练习</h3><p>'+k.e+'</p>';
+        if(k.ec){
+          html+='<button class="kp-answer-toggle" onclick="toggleAnswer(this)">'+
+            '查看参考答案 <span class="arrow">▼</span></button>';
+          html+='<div class="kp-answer-wrap">';
+          html+='<div class="kp-code-block">';
+          html+='<button class="kp-copy-btn" onclick="copyCode(this)">复制</button>';
+          html+='<pre class="kp-code">'+escHtml(k.ec)+'</pre>';
+          html+='</div></div>';
+        }
+        html+='</div>';
+      }
+
+      // AI场景
+      if(k.a){
+        html+='<div class="kp-layer"><h3>🤖 项目场景</h3><p>'+k.a+'</p></div>';
+      }
+
+      // 项目产出+简历(入门级)
+      if(k.level==='入门'&&k.project){
+        html+='<div class="kp-project">';
+        html+='<h3>🎯 项目产出: '+k.project+'</h3>';
+        html+='<div class="resume-line">'+k.resume+'</div>';
+        html+='</div>';
+      }
+
+      // 精进级提示
+      if(k.level==='精进'){
+        html+='<div class="kp-note">📌 面试突击用，概念理解即可，不需要深入实现</div>';
+      }
+
+      html+='</div></div>';
+    });
+    document.getElementById('kpList').innerHTML=html||'<p style="text-align:center;color:var(--muted);padding:2rem">未找到匹配的知识点</p>';
+  }
+
+  function escHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  window.selectStage=function(s){
+    currentStage=s;
+    renderStageTabs();
+    renderKpList();
+  };
+
+  window.toggleKp=function(id){
+    var card=document.getElementById('kp-'+id);
+    card.classList.toggle('open');
+  };
+
+  window.toggleDone=function(id){
+    if(progress[id]){delete progress[id]}else{progress[id]=true}
+    saveProgress(progress);
+    var card=document.getElementById('kp-'+id);
+    if(card){card.classList.toggle('done',!!progress[id])}
+    renderStageTabs();
+    updateProgress();
+  };
+
+  window.toggleAnswer=function(btn){
+    btn.classList.toggle('open');
+    var wrap=btn.nextElementSibling;
+    if(wrap){wrap.classList.toggle('zk-show')}
+    btn.innerHTML=btn.classList.contains('open')?
+      '收起参考答案 <span class="arrow">▼</span>':
+      '查看参考答案 <span class="arrow">▼</span>';
+  };
+
+  window.copyCode=function(btn){
+    var pre=btn.parentElement.querySelector('pre');
+    if(!pre)return;
+    var text=pre.textContent;
+    function ok(){
+      btn.textContent='已复制';btn.classList.add('copied');
+      setTimeout(function(){btn.textContent='复制';btn.classList.remove('copied')},1500);
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok).catch(function(){fallbackCopy(text);ok()});
+    }else{fallbackCopy(text);ok()}
+  };
+
+  function fallbackCopy(text){
+    var ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy')}catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  function updateProgress(){
+    var entryTotal=KP.filter(function(k){return k.level==='入门'}).length;
+    var entryDone=KP.filter(function(k){return k.level==='入门'&&progress[k.id]}).length;
+    var pct=Math.round(entryDone/entryTotal*100);
+    document.getElementById('progressFill').style.width=pct+'%';
+    document.getElementById('progressText').textContent=entryDone+'/'+entryTotal;
+  }
+
+  document.getElementById('searchInput').addEventListener('input',function(e){
+    searchQuery=e.target.value.toLowerCase().trim();
+    renderKpList();
+  });
+
+  renderStageTabs();
+  renderKpList();
+  updateProgress();
+
+  // ═══════════════════════════════════════════════════════════
+  // AI 周任务数据 + 今日任务版块 + 教学指引
+  // ═══════════════════════════════════════════════════════════
+
+  // 注意：以下AI周任务数据需与学习驾驶舱WEEK_DATA中的AI任务保持同步
+  // 格式不同故未提取共享文件：WEEK_DATA用goals数组(含所有科目)，此处用tasks数组(含stage+kpIds)
+  var AI_WEEKLY_TASKS=[
+    {week:1,dates:'8/18 — 8/24',tasks:[
+      {text:'岗位Stage1：Python工程化(venv/pip/项目结构) + FastAPI接口开发',stage:1,kpIds:[1,2]},
+      {text:'岗位Stage1：LLM API调用(流式输出/错误重试) + Prompt工程(角色/Few-shot/CoT)',stage:1,kpIds:[3,4]}
+    ]},
+    {week:2,dates:'8/25 — 8/31',tasks:[
+      {text:'岗位Stage2：文本向量化(Embedding) + 向量数据库(Chroma CRUD)',stage:2,kpIds:[5,6]}
+    ]},
+    {week:3,dates:'9/1 — 9/7',tasks:[
+      {text:'岗位Stage2：RAG评估优化(召回率/幻觉检测) + 项目1：AI对话API服务',stage:2,kpIds:[8,9]}
+    ]},
+    {week:4,dates:'9/8 — 9/14',tasks:[
+      {text:'岗位Stage3：LangChain框架(Chain/Memory) + Function Calling',stage:3,kpIds:[10,11]}
+    ]},
+    {week:5,dates:'9/15 — 9/21',tasks:[
+      {text:'岗位Stage3：Agent架构(ReAct) + 项目2：知识库问答机器人',stage:3,kpIds:[12,13]},
+      {text:'项目3启动：AI错题分析平台（需求分析+架构设计）',stage:4,kpIds:[17]}
+    ]},
+    {week:6,dates:'9/22 — 9/28',tasks:[
+      {text:'岗位Stage4：Docker部署 + 项目3完善（整合RAG+Agent）',stage:4,kpIds:[15,16,17]}
+    ]},
+    {week:7,dates:'9/29 — 10/5',tasks:[
+      {text:'岗位项目完善 + GitHub commit + 简历项目整理',stage:4,kpIds:[]}
+    ]},
+    {week:8,dates:'10/6 — 10/12',tasks:[
+      {text:'面试理论突击(Stage5)：ML/DL概念 + Transformer + 注意力机制',stage:5,kpIds:[18,19,20,21]}
+    ]},
+    {week:9,dates:'10/13 — 10/19',tasks:[
+      {text:'简历定稿 + 面试模拟 + 岗位投递准备',stage:5,kpIds:[]}
+    ]},
+    {week:10,dates:'10/20 — 10/24',tasks:[
+      {text:'面试准备收尾 + 项目Demo演练',stage:5,kpIds:[]}
+    ]}
+  ];
+
+  function getCurrentWeek(){
+    var now=new Date();
+    var m=now.getMonth()+1,d=now.getDate();
+    for(var i=0;i<AI_WEEKLY_TASKS.length;i++){
+      var w=AI_WEEKLY_TASKS[i];
+      var parts=w.dates.split(' — ');
+      var s=parts[0].split('/'),e=parts[1].split('/');
+      var sM=parseInt(s[0]),sD=parseInt(s[1]),eM=parseInt(e[0]),eD=parseInt(e[1]);
+      if(m===sM&&d>=sD||m===eM&&d<=eD||(m>sM&&m<eM)){
+        return w;
+      }
+    }
+    return null;
+  }
+
+  function renderTodayPanel(){
+    var week=getCurrentWeek();
+    var panel=document.getElementById('todayPanel');
+    var tasksEl=document.getElementById('todayTasks');
+    var guideEl=document.getElementById('todayGuide');
+    if(!week||!week.tasks||week.tasks.length===0){
+      panel.style.display='none';
+      return;
+    }
+    panel.style.display='flex';
+    var html='<h3>📌 今日AI任务（'+week.dates+'）</h3>';
+    var allKps=[];
+    week.tasks.forEach(function(t){
+      t.kpIds.forEach(function(id){allKps.push(id);});
+    });
+    if(allKps.length===0){
+      html+='<div class="today-empty">本周无具体知识点任务<br>去阶段Tab看看吧 🎯</div>';
+    }else{
+      week.tasks.forEach(function(t,i){
+        var kps=t.kpIds.map(function(id){var k=KP.find(function(x){return x.id===id});return k?k.t:'';}).filter(Boolean);
+        html+='<div class="today-task-item'+(i===0?' active':'')+'" data-task-idx="'+i+'">';
+        html+='<div class="tt-stage">Stage '+t.stage+'</div>';
+        html+='<div class="tt-title">'+kps.join(' + ')+'</div>';
+        var totalTime=t.kpIds.reduce(function(sum,id){var k=KP.find(function(x){return x.id===id});return sum+(k&&k.guide?parseFloat(k.guide.estTime)||0:0);},0);
+        html+='<div class="tt-time">预估 '+totalTime+'h</div>';
+        html+='</div>';
+      });
+    }
+    tasksEl.innerHTML=html;
+    if(allKps.length>0) renderTodayGuide(week.tasks[0]);
+    // bind click
+    var items=tasksEl.querySelectorAll('.today-task-item');
+    items.forEach(function(item){
+      item.addEventListener('click',function(){
+        items.forEach(function(x){x.classList.remove('zk-active');});
+        this.classList.add('zk-active');
+        var idx=parseInt(this.getAttribute('data-task-idx'));
+        renderTodayGuide(week.tasks[idx]);
+      });
+    });
+  }
+
+  function renderTodayGuide(task){
+    var el=document.getElementById('todayGuide');
+    if(!task||!task.kpIds||task.kpIds.length===0){
+      el.innerHTML='<h3>📚 教学指引</h3><p class="ai-guide-hint">本周无具体知识点教学指引</p>';
+      return;
+    }
+    var html='<h3>📚 教学指引</h3>';
+    task.kpIds.forEach(function(id){
+      var k=KP.find(function(x){return x.id===id});
+      if(!k||!k.guide){return;}
+      var g=k.guide;
+      html+='<div class="guide-kp-wrap" data-kp="'+id+'">';
+      html+='<h4>🎯 KP'+k.id+': '+k.t+'</h4>';
+
+      // 前置学习（新版结构化关卡）
+      var mustLearnCount=0,mustLearnDone=0;
+      var progress=getGuideProgress(id);
+      if(g.prereq&&g.prereq.length){
+        html+='<div class="guide-section"><h4>📝 前置学习</h4><div class="prereq-list">';
+        g.prereq.forEach(function(p,idx){
+          if(typeof p==='string'){
+            html+='<div class="prereq-item"><div class="prereq-head"><input type="checkbox" data-kp="'+id+'" data-pidx="'+idx+'"> <span class="prereq-title">'+p+'</span></div></div>';
+          }else{
+            var isMust=p.mustLearn!==false;
+            var pCheck=progress.prereq&&progress.prereq[idx]?'checked':'';
+            if(isMust){mustLearnCount++;if(pCheck)mustLearnDone++;}
+            var doneCls=(isMust&&pCheck)?' must-learn done':(isMust?' must-learn':'');
+            html+='<div class="prereq-item'+doneCls+'">';
+            html+='<div class="prereq-head">';
+            html+='<input type="checkbox" data-kp="'+id+'" data-pidx="'+idx+'" '+(isMust?'':'')+' '+pCheck+'>';
+            html+='<span class="prereq-title">'+p.title+'</span>';
+            if(p.estTime) html+='<span class="prereq-time">'+p.estTime+'</span>';
+            if(p.check) html+='<span class="prereq-time">'+p.check+'</span>';
+            if(p.type==='learn') html+='<button class="prereq-expand">展开 ▼</button>';
+            html+='</div>';
+            if(p.type==='learn'){
+              html+='<div class="prereq-content">';
+              if(p.concept) html+='<div class="prereq-concept">'+p.concept+'</div>';
+              if(p.steps&&p.steps.length){
+                html+='<ol class="prereq-steps">';
+                p.steps.forEach(function(s){html+='<li>'+s+'</li>';});
+                html+='</ol>';
+              }
+              html+='</div>';
+            }
+            html+='</div>';
+          }
+        });
+        html+='</div></div>';
+      }
+
+      // tutorial 锁定判断
+      var locked=mustLearnCount>0&&mustLearnDone<mustLearnCount;
+      if(locked){
+        html+='<div class="guide-lock-msg" data-kp="'+id+'">🔒 请先完成上方前置学习（勾选全部必须项），教程步骤将自动解锁</div>';
+      }
+
+      // 教程步骤 + 渐进练习（锁定态控制）
+      html+='<div class="guide-tutorial-area" data-kp="'+id+'"'+(locked?' style="opacity:0.45;pointer-events:none;user-select:none"':'')+'>';
+      if(g.tutorial&&g.tutorial.length){
+        html+='<div class="guide-section"><h4>📖 教程步骤</h4>';
+        g.tutorial.forEach(function(step,i){
+          html+='<div class="guide-step">';
+          html+='<div class="gs-why"><b>步骤'+(i+1)+':</b> '+step.why+'</div>';
+          html+='<div class="gs-cmd">'+step.cmd+'</div>';
+          html+='<div class="gs-meaning">💡 '+step.meaning+'</div>';
+          if(step.error) html+='<div class="gs-error">⚠️ '+step.error+'</div>';
+          html+='</div>';
+        });
+        html+='</div>';
+      }
+      if(g.practice){
+        html+='<div class="guide-section"><h4>🎯 渐进练习</h4><div class="guide-practice">';
+        html+='<div class="gp-step"><span class="gp-label">1.模仿:</span> '+g.practice.mimic+'</div>';
+        html+='<div class="gp-step"><span class="gp-label">2.修改:</span> '+g.practice.modify+'</div>';
+        html+='<div class="gp-step"><span class="gp-label">3.独立:</span> '+g.practice.create+'</div>';
+        html+='</div></div>';
+      }
+      html+='</div>';
+
+      // 完成验证
+      if(g.completion&&g.completion.criteria){
+        var prog2=getGuideProgress(id);
+        html+='<div class="guide-section"><h4>✅ 完成验证</h4><div class="guide-completion" id="gc-'+id+'">';
+        g.completion.criteria.forEach(function(c,i){
+          var checked=prog2.criteria&&prog2.criteria[i]?'checked':'';
+          html+='<div class="gc-item"><input type="checkbox" class="gc-check" data-kp="'+id+'" data-idx="'+i+'" '+checked+'> <span>'+c.desc+'</span></div>';
+        });
+        var allDone=prog2.completed;
+        html+='<button class="gc-verify" data-kp="'+id+'" '+(allDone?'disabled style="opacity:0.5"':'')+'>'+(allDone?'✅ 已完成':'验证完成')+'</button>';
+        html+='</div></div>';
+      }
+
+      // 跳转
+      html+='<div class="guide-jump">';
+      if(g.pyKp&&g.pyKp.length){
+        html+='<a onclick="navigateToModule(\'python\',\'python-knowledge-tree.html\')">📖 Python基础: '+g.pyKp.join(', ')+'</a>';
+      }
+      if(g.pyDemo){
+        html+='<a onclick="navigateToModule(\'python\',\'python-demos.html\')">💻 Python Demo '+g.pyDemo+'</a>';
+      }
+      if(g.aiDemo){
+        html+='<a onclick="navigateToModule(\'ai-learning\',\'ai-demos.html\')">🤖 AI Demo '+g.aiDemo+'</a>';
+      }
+      html+='</div>';
+
+      // 预估时间
+      html+='<div style="font-size:0.72rem;color:var(--muted);margin-top:0.4rem">⏱ 预估 '+g.estTime+'</div>';
+
+      html+='</div>';
+    });
+    el.innerHTML=html;
+
+    // bind prereq checkboxes
+    el.querySelectorAll('.prereq-item input[type=checkbox]').forEach(function(cb){
+      cb.addEventListener('change',function(){
+        var kpId=this.getAttribute('data-kp');
+        var pidx=parseInt(this.getAttribute('data-pidx'));
+        updatePrereqProgress(kpId,pidx,this.checked);
+        var item=this.closest('.prereq-item');
+        if(item&&item.classList.contains('must-learn')){
+          if(this.checked) item.classList.add('done');
+          else item.classList.remove('done');
+        }
+        updateTutorialLock(kpId);
+      });
+    });
+
+    // bind prereq expand buttons
+    el.querySelectorAll('.prereq-expand').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var content=this.closest('.prereq-item').querySelector('.prereq-content');
+        if(content){
+          if(content.classList.contains('zk-show')){
+            content.classList.remove('zk-show');
+            this.textContent='展开 ▼';
+          }else{
+            content.classList.add('zk-show');
+            this.textContent='收起 ▲';
+          }
+        }
+      });
+    });
+
+    // bind completion checkboxes
+    el.querySelectorAll('.gc-check').forEach(function(cb){
+      cb.addEventListener('change',function(){
+        var kpId=parseInt(this.getAttribute('data-kp'));
+        var idx=parseInt(this.getAttribute('data-idx'));
+        updateGuideProgress(kpId,idx,this.checked);
+      });
+    });
+    // bind verify button
+    el.querySelectorAll('.gc-verify').forEach(function(btn){
+      if(btn.disabled) return;
+      btn.addEventListener('click',function(){
+        var kpId=parseInt(this.getAttribute('data-kp'));
+        verifyGuide(kpId);
+      });
+    });
+  }
+
+  function updatePrereqProgress(kpId,pidx,checked){
+    try{
+      var raw=localStorage.getItem('ai_kp_guide_progress');
+      var data=raw?JSON.parse(raw):{};
+      if(!data[kpId]) data[kpId]={completed:false,criteria:[]};
+      if(!data[kpId].prereq) data[kpId].prereq=[];
+      data[kpId].prereq[pidx]=checked;
+      localStorage.setItem('ai_kp_guide_progress',JSON.stringify(data));
+    }catch(e){}
+  }
+
+  function updateTutorialLock(kpId){
+    var wrap=document.querySelector('.guide-kp-wrap[data-kp="'+kpId+'"]');
+    if(!wrap) return;
+    var mustBoxes=wrap.querySelectorAll('.prereq-item.must-learn input[type=checkbox]');
+    var allDone=true;
+    mustBoxes.forEach(function(cb){if(!cb.checked){allDone=false;}});
+    var lockMsg=wrap.querySelector('.guide-lock-msg');
+    var tutArea=wrap.querySelector('.guide-tutorial-area');
+    if(allDone){
+      if(lockMsg) lockMsg.classList.add('unlocked');
+      if(tutArea){tutArea.style.opacity='1';tutArea.style.pointerEvents='auto';tutArea.style.userSelect='auto';}
+    }else{
+      if(lockMsg) lockMsg.classList.remove('unlocked');
+      if(tutArea){tutArea.style.opacity='0.45';tutArea.style.pointerEvents='none';tutArea.style.userSelect='none';}
+    }
+  }
+
+  function getGuideProgress(kpId){
+    try{
+      var raw=localStorage.getItem('ai_kp_guide_progress');
+      var data=raw?JSON.parse(raw):{};
+      return data[kpId]||{completed:false,criteria:[],prereq:[]};
+    }catch(e){return{completed:false,criteria:[],prereq:[]};}
+  }
+
+  function updateGuideProgress(kpId,idx,checked){
+    try{
+      var raw=localStorage.getItem('ai_kp_guide_progress');
+      var data=raw?JSON.parse(raw):{};
+      if(!data[kpId]) data[kpId]={completed:false,criteria:[]};
+      if(!data[kpId].criteria) data[kpId].criteria=[];
+      data[kpId].criteria[idx]=checked;
+      localStorage.setItem('ai_kp_guide_progress',JSON.stringify(data));
+    }catch(e){}
+  }
+
+  function verifyGuide(kpId){
+    var k=KP.find(function(x){return x.id===kpId});
+    if(!k||!k.guide||!k.guide.completion) return;
+    var progress=getGuideProgress(kpId);
+    var criteria=k.guide.completion.criteria;
+    var allChecked=true;
+    for(var i=0;i<criteria.length;i++){
+      if(!progress.criteria||!progress.criteria[i]){allChecked=false;break;}
+    }
+    if(allChecked){
+      try{
+        var raw=localStorage.getItem('ai_kp_guide_progress');
+        var data=raw?JSON.parse(raw):{};
+        data[kpId]=data[kpId]||{};
+        data[kpId].completed=true;
+        data[kpId].completedAt=new Date().toISOString();
+        localStorage.setItem('ai_kp_guide_progress',JSON.stringify(data));
+      }catch(e){}
+      var btn=document.querySelector('.gc-verify[data-kp="'+kpId+'"]');
+      if(btn){btn.textContent='✅ 已完成';btn.disabled=true;btn.style.opacity='0.5';}
+    }else{
+      alert('请先完成所有验证项（勾选全部checkbox）');
+    }
+  }
+
+  function navigateToModule(module,page){
+    try{
+      window.parent.postMessage({action:'navigate',module:module,page:page},'*');
+    }catch(e){
+      console.log('navigate failed:',e);
+    }
+  }
+
+  // 渲染知识点卡片中的guide层
+  function renderKpGuide(k){
+    if(!k.guide) return '';
+    var g=k.guide;
+    var html='<div class="kp-guide-layer">';
+    html+='<h3 style="cursor:pointer" onclick="this.nextElementSibling.classList.toggle(\'show\')">📚 学习指引（点击展开/收起）</h3>';
+    html+='<div class="kp-guide-content">';
+    // 环境准备
+    if(g.prereq&&g.prereq.length){
+      html+='<div><b>📝 环境准备:</b> '+g.prereq.join(' | ')+'</div>';
+    }
+    // 快速步骤
+    if(g.steps&&g.steps.length){
+      html+='<div style="margin-top:0.4rem"><b>⚡ 快速步骤:</b><pre style="font-size:0.72rem;background:var(--code-bg);color:#4ade80;padding:0.4rem;border-radius:4px;overflow-x:auto;margin:0.3rem 0">'+g.steps.join('\n')+'</pre></div>';
+    }
+    // 渐进练习
+    if(g.practice){
+      html+='<div style="margin-top:0.4rem"><b>🎯 练习:</b> ';
+      html+='<span style="font-size:0.75rem">①模仿 ②修改 ③独立</span></div>';
+    }
+    // 关联
+    html+='<div style="margin-top:0.4rem;font-size:0.75rem">';
+    if(g.pyKp&&g.pyKp.length) html+='<span style="color:var(--accent2)">📖 Python: '+g.pyKp.join(', ')+'</span> ';
+    if(g.pyDemo) html+='<span style="color:var(--orange)">💻 Demo'+g.pyDemo+'</span> ';
+    html+='<span style="color:var(--muted)">⏱ '+g.estTime+'</span>';
+    html+='</div>';
+    html+='</div></div>';
+    return html;
+  }
+
+  // 跨iframe高亮：从Python/Demo页面跳转过来后定位到具体KP
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.action !== 'highlightKp') return;
+    var kpId = e.data.kpId;
+    if (!kpId) return;
+    var kp = KP.find(function(k) { return k.id === kpId; });
+    if (!kp) return;
+    // 切换到该KP所在的Stage
+    if (currentStage !== kp.s) {
+      selectStage(kp.s);
+    }
+    // 展开该KP卡片并滚动定位
+    setTimeout(function() {
+      var card = document.getElementById('kp-' + kpId);
+      if (card) {
+        card.classList.add('open');
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 临时高亮闪烁
+        card.style.transition = 'box-shadow 0.3s ease';
+        card.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.4)';
+        setTimeout(function() { card.style.boxShadow = ''; }, 2000);
+      }
+    }, 100);
+  });
+
+  // 初始化
+  renderTodayPanel();
+
+})();

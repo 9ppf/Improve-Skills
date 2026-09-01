@@ -1,0 +1,313 @@
+// ============================================================
+// 英语（二）-词汇系统 页面 JS
+// 抽离自 英语（二）-词汇系统.html
+// ============================================================
+
+(function(){
+  var STORAGE_KEY='en_vocab_progress';
+  var WORDS=[
+    {w:'abandon',p:'/əˈbændən/',m:'v.放弃，抛弃',lv:'core'},
+    {w:'absolute',p:'/ˈæbsəluːt/',m:'a.绝对的，完全的',lv:'core'},
+    {w:'academic',p:'/ˌækəˈdemɪk/',m:'a.学术的，学院的',lv:'core'},
+    {w:'accept',p:'/əkˈsept/',m:'v.接受，同意',lv:'core'},
+    {w:'access',p:'/ˈækses/',m:'n.通道，入口 v.访问',lv:'core'},
+    {w:'account',p:'/əˈkaʊnt/',m:'n.账户，说明 v.解释',lv:'core'},
+    {w:'achieve',p:'/əˈtʃiːv/',m:'v.实现，达到',lv:'core'},
+    {w:'adjust',p:'/əˈdʒʌst/',m:'v.调整，适应',lv:'core'},
+    {w:'advance',p:'/ədˈvɑːns/',m:'v.前进 n.进步',lv:'core'},
+    {w:'advantage',p:'/ədˈvɑːntɪdʒ/',m:'n.优势，有利条件',lv:'core'},
+    {w:'affect',p:'/əˈfekt/',m:'v.影响，感动',lv:'core'},
+    {w:'approach',p:'/əˈprəʊtʃ/',m:'n.方法 v.接近',lv:'core'},
+    {w:'appropriate',p:'/əˈprəʊpriət/',m:'a.适当的，合适的',lv:'key'},
+    {w:'benefit',p:'/ˈbenɪfɪt/',m:'n.利益 v.受益',lv:'core'},
+    {w:'capable',p:'/ˈkeɪpəbl/',m:'a.有能力的，能干的',lv:'core'},
+    {w:'challenge',p:'/ˈtʃælɪndʒ/',m:'n.挑战 v.向...挑战',lv:'core'},
+    {w:'circumstance',p:'/ˈsɜːkəmstəns/',m:'n.情况，环境',lv:'key'},
+    {w:'communicate',p:'/kəˈmjuːnɪkeɪt/',m:'v.交流，沟通',lv:'core'},
+    {w:'compare',p:'/kəmˈpeə/',m:'v.比较，对照',lv:'core'},
+    {w:'compete',p:'/kəmˈpiːt/',m:'v.竞争，比赛',lv:'core'},
+    {w:'conclude',p:'/kənˈkluːd/',m:'v.得出结论，结束',lv:'core'},
+    {w:'condition',p:'/kənˈdɪʃn/',m:'n.条件，状况',lv:'core'},
+    {w:'consider',p:'/kənˈsɪdə/',m:'v.考虑，认为',lv:'core'},
+    {w:'constant',p:'/ˈkɒnstənt/',m:'a.不断的 n.常数',lv:'key'},
+    {w:'contribute',p:'/kənˈtrɪbjuːt/',m:'v.贡献，捐助',lv:'core'},
+    {w:'convince',p:'/kənˈvɪns/',m:'v.说服，使确信',lv:'key'},
+    {w:'create',p:'/kriˈeɪt/',m:'v.创造，创作',lv:'core'},
+    {w:'decide',p:'/dɪˈsaɪd/',m:'v.决定，决心',lv:'core'},
+    {w:'develop',p:'/dɪˈveləp/',m:'v.发展，开发',lv:'core'},
+    {w:'discover',p:'/dɪˈskʌvə/',m:'v.发现，发觉',lv:'core'},
+    {w:'economy',p:'/ɪˈkɒnəmi/',m:'n.经济，节约',lv:'core'},
+    {w:'effective',p:'/ɪˈfektɪv/',m:'a.有效的，起作用的',lv:'core'},
+    {w:'environment',p:'/ɪnˈvaɪrənmənt/',m:'n.环境，周围',lv:'core'},
+    {w:'establish',p:'/ɪˈstæblɪʃ/',m:'v.建立，创立',lv:'key'},
+    {w:'evidence',p:'/ˈevɪdəns/',m:'n.证据，证明',lv:'core'},
+    {w:'examine',p:'/ɪɡˈzæmɪn/',m:'v.检查，考试',lv:'core'},
+    {w:'exist',p:'/ɪɡˈzɪst/',m:'v.存在，生存',lv:'core'},
+    {w:'experience',p:'/ɪkˈspɪəriəns/',m:'n.经验 v.经历',lv:'core'},
+    {w:'explain',p:'/ɪkˈspleɪn/',m:'v.解释，说明',lv:'core'},
+    {w:'explore',p:'/ɪkˈsplɔː/',m:'v.探索，探究',lv:'key'},
+    {w:'factor',p:'/ˈfæktə/',m:'n.因素，要素',lv:'core'},
+    {w:'familiar',p:'/fəˈmɪliə/',m:'a.熟悉的，常见的',lv:'core'},
+    {w:'figure',p:'/ˈfɪɡə/',m:'n.数字，人物 v.认为',lv:'core'},
+    {w:'finance',p:'/ˈfaɪnæns/',m:'n.财政，金融',lv:'key'},
+    {w:'furthermore',p:'/ˌfɜːðəˈmɔː/',m:'ad.此外，而且',lv:'key'},
+    {w:'general',p:'/ˈdʒenrəl/',m:'a.一般的 n.将军',lv:'core'},
+    {w:'generate',p:'/ˈdʒenəreɪt/',m:'v.产生，生成',lv:'key'},
+    {w:'guarantee',p:'/ˌɡærənˈtiː/',m:'n.保证 v.担保',lv:'key'},
+    {w:'handle',p:'/ˈhændl/',m:'v.处理 n.把手',lv:'core'},
+    {w:'identify',p:'/aɪˈdentɪfaɪ/',m:'v.识别，确认',lv:'core'},
+    {w:'imagine',p:'/ɪˈmædʒɪn/',m:'v.想象，设想',lv:'core'},
+    {w:'improve',p:'/ɪmˈpruːv/',m:'v.改善，提高',lv:'core'},
+    {w:'include',p:'/ɪnˈkluːd/',m:'v.包括，包含',lv:'core'},
+    {w:'increase',p:'/ɪnˈkriːs/',m:'v.增加 n.增长',lv:'core'},
+    {w:'indicate',p:'/ˈɪndɪkeɪt/',m:'v.表明，指示',lv:'key'},
+    {w:'influence',p:'/ˈɪnfluəns/',m:'n.影响 v.影响',lv:'core'},
+    {w:'instance',p:'/ˈɪnstəns/',m:'n.实例，例子',lv:'core'},
+    {w:'involve',p:'/ɪnˈvɒlv/',m:'v.包含，参与',lv:'core'},
+    {w:'journal',p:'/ˈdʒɜːnl/',m:'n.日记，期刊',lv:'key'},
+    {w:'maintain',p:'/meɪnˈteɪn/',m:'v.维持，保养',lv:'key'},
+    {w:'manage',p:'/ˈmænɪdʒ/',m:'v.管理，设法',lv:'core'},
+    {w:'matter',p:'/ˈmætə/',m:'n.事情 v.要紧',lv:'core'},
+    {w:'necessary',p:'/ˈnesəseri/',m:'a.必要的，必需的',lv:'core'},
+    {w:'obtain',p:'/əbˈteɪn/',m:'v.获得，得到',lv:'key'},
+    {w:'obvious',p:'/ˈɒbviəs/',m:'a.明显的',lv:'core'},
+    {w:'opportunity',p:'/ˌɒpəˈtjuːnəti/',m:'n.机会，时机',lv:'core'},
+    {w:'particular',p:'/pəˈtɪkjələ/',m:'a.特定的 ad.特别',lv:'key'},
+    {w:'perform',p:'/pəˈfɔːm/',m:'v.执行，表演',lv:'core'},
+    {w:'possible',p:'/ˈpɒsəbl/',m:'a.可能的',lv:'core'},
+    {w:'practice',p:'/ˈpræktɪs/',m:'n.实践 v.练习',lv:'core'},
+    {w:'prevent',p:'/prɪˈvent/',m:'v.预防，阻止',lv:'core'},
+    {w:'process',p:'/ˈprəʊses/',m:'n.过程 v.处理',lv:'core'},
+    {w:'produce',p:'/prəˈdjuːs/',m:'v.生产，产生',lv:'core'},
+    {w:'provide',p:'/prəˈvaɪd/',m:'v.提供，供给',lv:'core'},
+    {w:'publish',p:'/ˈpʌblɪʃ/',m:'v.出版，发表',lv:'key'},
+    {w:'realize',p:'/ˈrɪəlaɪz/',m:'v.意识到，实现',lv:'core'},
+    {w:'recognize',p:'/ˈrekəɡnaɪz/',m:'v.认出，承认',lv:'core'},
+    {w:'reduce',p:'/rɪˈdjuːs/',m:'v.减少，降低',lv:'core'},
+    {w:'reflect',p:'/rɪˈflekt/',m:'v.反映，反射',lv:'key'},
+    {w:'regard',p:'/rɪˈɡɑːd/',m:'v.认为 n.关心',lv:'core'},
+    {w:'relationship',p:'/rɪˈleɪʃnʃɪp/',m:'n.关系，联系',lv:'core'},
+    {w:'release',p:'/rɪˈliːs/',m:'v.释放 n.发布',lv:'key'},
+    {w:'rely',p:'/rɪˈlaɪ/',m:'v.依赖，依靠',lv:'key'},
+    {w:'require',p:'/rɪˈkwaɪə/',m:'v.需要，要求',lv:'core'},
+    {w:'research',p:'/rɪˈsɜːtʃ/',m:'n.研究 v.调查',lv:'core'},
+    {w:'resource',p:'/rɪˈsɔːs/',m:'n.资源',lv:'core'},
+    {w:'respond',p:'/rɪˈspɒnd/',m:'v.回答，响应',lv:'key'},
+    {w:'result',p:'/rɪˈzʌlt/',m:'n.结果 v.导致',lv:'core'},
+    {w:'reveal',p:'/rɪˈviːl/',m:'v.揭示，透露',lv:'key'},
+    {w:'satisfy',p:'/ˈsætɪsfaɪ/',m:'v.满足，使满意',lv:'key'},
+    {w:'scientific',p:'/ˌsaɪənˈtɪfɪk/',m:'a.科学的',lv:'key'},
+    {w:'select',p:'/sɪˈlekt/',m:'v.选择，挑选',lv:'core'},
+    {w:'similar',p:'/ˈsɪmələ/',m:'a.相似的，类似的',lv:'core'},
+    {w:'solution',p:'/səˈluːʃn/',m:'n.解决方案',lv:'core'},
+    {w:'specific',p:'/spəˈsɪfɪk/',m:'a.特定的，明确的',lv:'key'},
+    {w:'strategy',p:'/ˈstrætədʒi/',m:'n.策略，战略',lv:'key'},
+    {w:'suggest',p:'/səˈdʒest/',m:'v.建议，暗示',lv:'core'},
+    {w:'support',p:'/səˈpɔːt/',m:'v.支持 n.支撑',lv:'core'},
+    {w:'survey',p:'/ˈsɜːveɪ/',m:'n.调查 v.审视',lv:'key'},
+    {w:'survive',p:'/səˈvaɪv/',m:'v.幸存，存活',lv:'key'},
+    {w:'technique',p:'/tekˈniːk/',m:'n.技术，技巧',lv:'key'},
+    {w:'tendency',p:'/ˈtendənsi/',m:'n.趋势，倾向',lv:'key'},
+    {w:'theory',p:'/ˈθɪəri/',m:'n.理论，学说',lv:'core'},
+    {w:'various',p:'/ˈveəriəs/',m:'a.各种各样的',lv:'core'},
+    {w:'achievement',p:'/əˈtʃiːvmənt/',m:'n.成就，成绩',lv:'ext'},
+    {w:'additional',p:'/əˈdɪʃənl/',m:'a.额外的，附加的',lv:'ext'},
+    {w:'application',p:'/ˌæplɪˈkeɪʃn/',m:'n.申请，应用',lv:'ext'},
+    {w:'assessment',p:'/əˈsesmənt/',m:'n.评估，评价',lv:'ext'},
+    {w:'assumption',p:'/əˈsʌmpʃn/',m:'n.假设，假定',lv:'ext'},
+    {w:'awareness',p:'/əˈweənəs/',m:'n.意识，认识',lv:'ext'},
+    {w:'foundation',p:'/faʊnˈdeɪʃn/',m:'n.基础，基金会',lv:'ext'},
+    {w:'generation',p:'/ˌdʒenəˈreɪʃn/',m:'n.一代人，产生',lv:'ext'},
+    {w:'interaction',p:'/ˌɪntərˈækʃn/',m:'n.互动，交互',lv:'ext'},
+    {w:'investment',p:'/ɪnˈvestmənt/',m:'n.投资',lv:'ext'},
+    {w:'limitation',p:'/ˌlɪmɪˈteɪʃn/',m:'n.限制，局限',lv:'ext'},
+    {w:'observation',p:'/ˌɒbzəˈveɪʃn/',m:'n.观察，观测',lv:'ext'},
+    {w:'participation',p:'/pɑːˌtɪsɪˈpeɪʃn/',m:'n.参与，参加',lv:'ext'},
+    {w:'responsibility',p:'/rɪˌspɒnsəˈbɪləti/',m:'n.责任，职责',lv:'ext'},
+    {w:'significant',p:'/sɪɡˈnɪfɪkənt/',m:'a.重要的，有意义的',lv:'ext'},
+    {w:'technology',p:'/tekˈnɒlədʒi/',m:'n.技术',lv:'ext'},
+    {w:'traditional',p:'/trəˈdɪʃənl/',m:'a.传统的',lv:'ext'},
+    {w:'transformation',p:'/ˌtrænsfəˈmeɪʃn/',m:'n.转变，变革',lv:'ext'}
+  ];
+
+  var progress={};
+  try{progress=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){progress={}}
+  function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(progress))}catch(e){}}
+
+  var studyQueue=[];
+  var currentCard=null;
+  var cardFlipped=false;
+
+  function sm2(word,rating){
+    var p=progress[word]||{level:0,nextReview:0,reviews:0};
+    p.reviews++;
+    if(rating<2){p.level=Math.max(0,p.level-1)}
+    else if(rating<4){p.level=p.level}
+    else{p.level=Math.min(5,p.level+1)}
+    var intervals=[0,1,2,4,7,15,30];
+    var days=intervals[Math.min(p.level,intervals.length-1)];
+    p.nextReview=Date.now()+days*86400000;
+    progress[word]=p;
+    saveProgress();
+  }
+
+  function buildQueue(){
+    var now=Date.now();
+    studyQueue=WORDS.filter(function(w){
+      var p=progress[w.w];
+      if(!p)return true;
+      return p.nextReview<=now;
+    });
+    if(studyQueue.length===0){
+      studyQueue=WORDS.filter(function(w){return!progress[w.w]});
+    }
+  }
+
+  function showNextCard(){
+    buildQueue();
+    if(studyQueue.length===0){
+      document.getElementById('fcWord').textContent='今日复习完成！';
+      document.getElementById('fcPhonetic').textContent='';
+      document.getElementById('fcMeaning').textContent='所有单词已复习完毕，明天再来吧';
+      document.getElementById('fcMeaning').style.display='block';
+      document.getElementById('fcHint').textContent='';
+      document.getElementById('fcLevel').textContent='✓';
+      document.getElementById('rateBtns').style.display='none';
+      return;
+    }
+    currentCard=studyQueue[Math.floor(Math.random()*studyQueue.length)];
+    cardFlipped=false;
+    var p=progress[currentCard.w];
+    var lvText=currentCard.lv==='core'?'核心':currentCard.lv==='key'?'重点':'拓展';
+    var lvNum=p?'L'+p.level:'新词';
+    document.getElementById('fcLevel').textContent=lvText+' · '+lvNum;
+    document.getElementById('fcWord').textContent=currentCard.w;
+    document.getElementById('fcPhonetic').textContent=currentCard.p;
+    document.getElementById('fcMeaning').style.display='none';
+    document.getElementById('fcMeaning').textContent=currentCard.m;
+    document.getElementById('fcHint').textContent='点击卡片查看释义';
+    document.getElementById('rateBtns').style.display='none';
+  }
+
+  window.flipCard=function(){
+    if(!currentCard)return;
+    cardFlipped=!cardFlipped;
+    if(cardFlipped){
+      document.getElementById('fcMeaning').style.display='block';
+      document.getElementById('fcHint').textContent='';
+      document.getElementById('rateBtns').style.display='flex';
+    }else{
+      document.getElementById('fcMeaning').style.display='none';
+      document.getElementById('fcHint').textContent='点击卡片查看释义';
+      document.getElementById('rateBtns').style.display='none';
+    }
+  };
+
+  window.rateCard=function(rating){
+    if(!currentCard)return;
+    sm2(currentCard.w,rating);
+    updateStats();
+    showNextCard();
+  };
+
+  // 测验模式
+  var quizCurrent=null;
+  var quizMode='cn2en';
+  function startQuiz(){
+    nextQuiz();
+  }
+  window.nextQuiz=function(){
+    var pool=WORDS.filter(function(w){return true});
+    quizCurrent=pool[Math.floor(Math.random()*pool.length)];
+    var modes=['cn2en','en2cn'];
+    quizMode=modes[Math.floor(Math.random()*modes.length)];
+    var opts=[];
+    if(quizMode==='cn2en'){
+      document.getElementById('quizQText').innerHTML=quizCurrent.m+'<span class="q-type">[中→英 选择题]</span>';
+      opts=[quizCurrent.w];
+      while(opts.length<4){
+        var r=pool[Math.floor(Math.random()*pool.length)].w;
+        if(opts.indexOf(r)<0)opts.push(r);
+      }
+    }else{
+      document.getElementById('quizQText').innerHTML=quizCurrent.w+' <span class="q-type">[英→中 选择题]</span>';
+      opts=[quizCurrent.m];
+      while(opts.length<4){
+        var r2=pool[Math.floor(Math.random()*pool.length)].m;
+        if(opts.indexOf(r2)<0)opts.push(r2);
+      }
+    }
+    opts.sort(function(){return Math.random()-0.5});
+    var html='';
+    opts.forEach(function(o,i){
+      html+='<div class="quiz-opt" onclick="checkQuizOpt(this,'+(o===quizCurrent.w||o===quizCurrent.m?'true':'false')+')">'+o+'</div>';
+    });
+    document.getElementById('quizOpts').innerHTML=html;
+    document.getElementById('quizInput').style.display='none';
+    document.getElementById('quizFb').className='quiz-feedback';
+    document.getElementById('quizFb').style.display='none';
+  };
+  window.checkQuizOpt=function(el,isCorrect){
+    document.querySelectorAll('.quiz-opt').forEach(function(o){o.style.pointerEvents='none'});
+    if(isCorrect){
+      el.classList.add('correct');
+      document.getElementById('quizFb').innerHTML='✅ 正确！';
+      document.getElementById('quizFb').className='quiz-feedback correct show';
+    }else{
+      el.classList.add('wrong');
+      document.querySelectorAll('.quiz-opt').forEach(function(o){
+        if(o.textContent===quizCurrent.w||o.textContent===quizCurrent.m)o.classList.add('correct');
+      });
+      document.getElementById('quizFb').innerHTML='❌ 正确答案：'+(quizMode==='cn2en'?quizCurrent.w:quizCurrent.m);
+      document.getElementById('quizFb').className='quiz-feedback wrong show';
+    }
+  };
+
+  // 词表
+  window.renderWordlist=function(){
+    var search=document.getElementById('wlSearch').value.toLowerCase();
+    var html='';
+    WORDS.forEach(function(w){
+      if(search&&w.w.toLowerCase().indexOf(search)<0&&w.m.indexOf(search)<0)return;
+      var p=progress[w.w];
+      var status=p?'<span class="st-learning">L'+p.level+'</span>':'<span class="st-new">新词</span>';
+      if(p&&p.level>=4)status='<span class="st-known">已掌握</span>';
+      var lvClass=w.lv==='core'?'lv-core':w.lv==='key'?'lv-key':'lv-ext';
+      var lvText=w.lv==='core'?'核心':w.lv==='key'?'重点':'拓展';
+      html+='<tr><td>'+w.w+'</td><td>'+w.p+'</td><td>'+w.m+'</td><td><span class="wordlist-level '+lvClass+'">'+lvText+'</span></td><td>'+status+'</td></tr>';
+    });
+    document.getElementById('wlBody').innerHTML=html||'<tr><td colspan="5" style="text-align:center;color:var(--muted)">未找到匹配单词</td></tr>';
+  };
+
+  window.vocabShowMode=function(mode){
+    document.querySelectorAll('.vocab-btn').forEach(function(b){b.classList.remove('active')});
+    event.target.classList.add('active');
+    document.getElementById('modeStudy').style.display=mode==='study'?'block':'none';
+    document.getElementById('modeQuiz').style.display=mode==='quiz'?'block':'none';
+    document.getElementById('modeList').style.display=mode==='list'?'block':'none';
+    if(mode==='study')showNextCard();
+    if(mode==='quiz')startQuiz();
+    if(mode==='list')renderWordlist();
+  };
+
+  function updateStats(){
+    var total=WORDS.length;
+    var known=0,learning=0,today=0;
+    var now=Date.now();
+    WORDS.forEach(function(w){
+      var p=progress[w.w];
+      if(!p){today++;return}
+      if(p.level>=4)known++;
+      else{learning++;if(p.nextReview<=now)today++}
+    });
+    document.getElementById('statTotal').textContent=total;
+    document.getElementById('statKnown').textContent=known;
+    document.getElementById('statKnownBar').style.width=Math.round(known/total*100)+'%';
+    document.getElementById('statLearning').textContent=learning;
+    document.getElementById('statToday').textContent=today;
+  }
+
+  updateStats();
+  showNextCard();
+  renderWordlist();
+})();

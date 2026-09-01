@@ -1,0 +1,1169 @@
+// ============================================================
+// today-flow 页面 JS
+// 抽离自 today-flow.html
+// ============================================================
+
+var API_BASE = '';
+if (location.protocol === 'file:') API_BASE = 'http://localhost:8000';
+function apiUrl(p) { return API_BASE + p; }
+function fetchJson(p) { return fetch(apiUrl(p)); }
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+function pickRandom(arr, n) {
+  var pool = arr.slice();
+  var result = [];
+  while (pool.length > 0 && result.length < n) {
+    var idx = Math.floor(Math.random() * pool.length);
+    result.push(pool.splice(idx, 1)[0]);
+  }
+  return result;
+}
+
+var CARD_MAP = {
+  '系统原理': '/data/knowledge-framework-13015.json',
+  '离散数学': '/data/knowledge-framework-02324.json',
+  '数据结构': '/data/knowledge-framework-13003.json'
+};
+var SUBJECT_CODE = { '系统原理': '13015', '离散数学': '02324', '数据结构': '13003' };
+var CODE_SUBJECT = { '13015': '系统原理', '02324': '离散数学', '13003': '数据结构' };
+var cardCache = {};
+var todayData = null;
+var currentTaskIdx = 0;
+var aiOnline = false;
+var aiHistory = [];
+var examDate = new Date('2026-10-24');
+var taskStartTime = null;
+var timeoutWarned = {};
+var timeoutTimer = null;
+
+// 增强7: 番茄钟状态
+var pomoTimer = null;
+var pomoSeconds = 25 * 60;
+var pomoState = 'idle'; // idle | running | paused | done
+var POMO_FOCUS = 25 * 60;
+var POMO_BREAK = 5 * 60;
+var pomoIsBreak = false;
+
+// ===== Agent Loop State =====
+var masteryState = {};      // {13015: {mastery: {1: 0, 2: 1}, kp: {1-1: true}}, ...}
+var learningGuide = {};      // {系统原理: {第1章: {topics: [...]}}, ...}
+var currentWeekLabel = '';   // for writeTaskDone fix
+var aiTaskList = null;        // AI-reordered task list (null = use original)
+
+function checkAI() {
+  fetch(apiUrl('/api/mastery'), { method: 'GET' })
+    .then(function() {
+      if (!aiOnline) {
+        aiOnline = true;
+        document.getElementById('aiStatus').classList.remove('offline');
+        document.getElementById('aiSendBtn').disabled = false;
+        document.getElementById('offlineNotice').classList.add('zk-hidden');
+      }
+    })
+    .catch(function() {
+      aiOnline = false;
+      document.getElementById('aiStatus').classList.add('offline');
+      document.getElementById('aiSendBtn').disabled = true;
+      document.getElementById('offlineNotice').classList.remove('zk-hidden');
+    });
+}
+
+// ===== ① 感知：加载掌握状态 =====
+function loadMasteryState() {
+  var codes = ['13015', '02324', '13003'];
+  var promises = codes.map(function(code) {
+    return fetch(apiUrl('/api/mastery?subject=' + code))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && data.mastery) masteryState[code] = data;
+      })
+      .catch(function() {});
+  });
+  return Promise.all(promises);
+}
+
+function loadLearningGuide() {
+  fetchJson('/data/learning-guide.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) { learningGuide = data || {}; })
+    .catch(function() {});
+}
+
+function getMasterySummary() {
+  var lines = [];
+  for (var code in masteryState) {
+    var subj = CODE_SUBJECT[code] || code;
+    var ms = masteryState[code].mastery || {};
+    var parts = [];
+    for (var ch in ms) {
+      var level = ms[ch];
+      var label = level === 2 ? '已掌握' : level === 1 ? '不熟练' : '不会';
+      parts.push('第' + ch + '章:' + label);
+    }
+    if (parts.length) lines.push(subj + ' — ' + parts.join('、'));
+  }
+  return lines.length ? lines.join('\n') : '暂无掌握状态数据';
+}
+
+// 增强6: 本地弱点优先排序（AI 离线时降级使用）
+function localSortByMastery(tasks) {
+  if (!tasks || tasks.length <= 1) return tasks;
+  return tasks.slice().sort(function(a, b) {
+    var aM = getChapterMastery(a.subject, a.chapter);
+    var bM = getChapterMastery(b.subject, b.chapter);
+    if (aM !== bM) return aM - bM;
+    return 0;
+  });
+}
+
+// ===== ② 推理：AI 根据掌握状态重新排列任务 =====
+function aiGenerateAgentTasks(originalTasks) {
+  if (!aiOnline || !originalTasks || !originalTasks.length) return;
+  var masterySummary = getMasterySummary();
+  var taskList = originalTasks.map(function(t, i) {
+    return (i + 1) + '. ' + (t.subject || t.tag || '') + ' ' + (t.chapter || '') + ' ' + (t.topic || '');
+  }).join('\n');
+
+  var prompt = '你是用户的AI学习私教。根据以下掌握状态，重新排列今日任务顺序，优先安排掌握度最低的科目和章节。\n\n';
+  prompt += '【掌握状态】\n' + masterySummary + '\n\n';
+  prompt += '【原定今日任务】\n' + taskList + '\n\n';
+  prompt += '【规则】\n';
+  prompt += '1. 优先安排"不会"的章节，其次"不熟练"，最后"已掌握"\n';
+  prompt += '2. 同等掌握度时，保持原顺序\n';
+  prompt += '3. 每个任务后面用一句话说明为什么优先安排\n\n';
+  prompt += '请输出JSON数组，每个元素包含：index（原任务序号，从1开始）、reason（优先原因）。只输出JSON，不要其他文字。';
+
+  fetch(apiUrl('/api/chat'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], model: 'deepseek-v4-flash', stream: false, max_tokens: 600 })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var text = '';
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      text = data.choices[0].message.content || '';
+    }
+    // parse JSON from response
+    var match = text.match(/\[[\s\S]*\]/);
+    if (!match) return;
+    try {
+      var reorder = JSON.parse(match[0]);
+      var taskMap = {};
+      reorder.forEach(function(item) { taskMap[item.index] = item; });
+      // reorder tasks
+      var reordered = [];
+      var used = {};
+      // first: AI-reordered order
+      for (var i = 0; i < reorder.length; i++) {
+        var idx = reorder[i].index - 1;
+        if (idx >= 0 && idx < originalTasks.length && !used[idx]) {
+          var t = originalTasks[idx];
+          t._aiReason = reorder[i].reason || '';
+          reordered.push(t);
+          used[idx] = true;
+        }
+      }
+      // append any missed tasks
+      for (var i = 0; i < originalTasks.length; i++) {
+        if (!used[i]) reordered.push(originalTasks[i]);
+      }
+      aiTaskList = reordered;
+      // re-render if todayData already set
+      if (todayData) {
+        todayData.tasks = reordered;
+        currentTaskIdx = 0;
+        renderTask();
+        renderOverview();
+        aiAddMsg('ai', '🧠 已根据掌握状态重新排列今日任务，优先攻克薄弱点。');
+      }
+    } catch(e) {}
+  })
+  .catch(function() {});
+}
+
+// ===== ④ 反馈：更新掌握状态 =====
+function updateMastery(subjectName, chapter, level) {
+  var code = SUBJECT_CODE[subjectName];
+  if (!code) return;
+  if (!masteryState[code]) masteryState[code] = { mastery: {}, kp: {} };
+  var chNum = (chapter || '').replace(/第|章|\s/g, '');
+  if (chNum) masteryState[code].mastery[chNum] = level;
+  fetch(apiUrl('/api/mastery'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subject: code, data: masteryState[code] })
+  }).catch(function() {});
+}
+
+function getTopicPriority(subjectName, chapter, question) {
+  var guide = learningGuide[subjectName];
+  if (!guide) return null;
+  for (var chKey in guide) {
+    if (chKey.indexOf(chapter) >= 0 || chapter.indexOf(chKey) >= 0) {
+      var topics = guide[chKey].topics || [];
+      for (var i = 0; i < topics.length; i++) {
+        if (topics[i].question && question && topics[i].question.indexOf(question.slice(0, 6)) >= 0) {
+          return { priority: topics[i].priority, type: topics[i].type, howToLearn: topics[i].howToLearn };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// 知识框架 JSON 转换为卡片数组（从知识框架统一加载，不再依赖 recite-cards）
+function transformKfToCards(data) {
+  var cards = [];
+  if (!data || !data.chapters) return cards;
+  data.chapters.forEach(function(ch) {
+    var chName = ch.name || ch.title || ('第' + (ch.id || '?') + '章');
+    var sections = ch.sections || [];
+    for (var si = 0; si < sections.length; si++) {
+      var s = sections[si];
+      if (s.type === '核心概念') {
+        var concepts = s.coreConcepts || s.items || [];
+        concepts.forEach(function(c) {
+          var term = c.term || '';
+          if (!term) return;
+          var defParts = [];
+          if (c.summary) defParts.push(c.summary);
+          if (c.points && c.points.length) {
+            c.points.forEach(function(p) { defParts.push('• ' + p); });
+          }
+          cards.push({
+            term: term,
+            chapter: chName,
+            question: '什么是' + term + '？',
+            def: defParts.join('\n'),
+            ex: c.ex || '',
+            exam: c.exam || '',
+            hint: c.hint || '',
+            cardType: c.cardType || 'memory'
+          });
+        });
+      } else if (s.type === '必会公式') {
+        var formulas = s.items || s.points || [];
+        formulas.forEach(function(f) {
+          var formulaText = typeof f === 'string' ? f : (f.term || f.point || '');
+          if (!formulaText) return;
+          var colonIdx = formulaText.indexOf('：');
+          var title = colonIdx > 0 ? formulaText.substring(0, colonIdx) : formulaText.substring(0, 10);
+          var content = colonIdx > 0 ? formulaText.substring(colonIdx + 1) : formulaText;
+          cards.push({
+            term: title,
+            chapter: chName,
+            question: title + '的公式是什么？',
+            def: content,
+            ex: '',
+            exam: '',
+            hint: '',
+            cardType: 'calculation'
+          });
+        });
+      }
+    }
+  });
+  return cards;
+}
+
+function loadCards(subject) {
+  var path = CARD_MAP[subject];
+  if (!path) return Promise.resolve([]);
+  if (cardCache[path]) return Promise.resolve(cardCache[path]);
+  return fetchJson(path).then(function(r) { return r.json(); }).then(function(data) {
+    var cards = transformKfToCards(data);
+    cardCache[path] = cards;
+    return cards;
+  }).catch(function() { return []; });
+}
+
+function loadTodayPlan() {
+  fetchJson('/data/study-plan.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var weeks = data.weeks || [];
+      var today = new Date();
+      var todayStr = (today.getMonth() + 1) + '/' + today.getDate();
+      var currentWeek = null;
+      for (var i = 0; i < weeks.length; i++) {
+        if (weeks[i].isCurrent) { currentWeek = weeks[i]; break; }
+        if (weeks[i].dates && weeks[i].dates.indexOf(todayStr) >= 0) { currentWeek = weeks[i]; break; }
+      }
+      if (!currentWeek) currentWeek = weeks[0];
+      if (!currentWeek) { showEmpty(); return; }
+      currentWeekLabel = currentWeek.week || '';
+
+      var todayPlan = null;
+      var dp = currentWeek.dailyPlans || data.dailyPlans || [];
+      for (var i = 0; i < dp.length; i++) {
+        if (dp[i].days) {
+          for (var j = 0; j < dp[i].days.length; j++) {
+            if (dp[i].days[j].date === todayStr) { todayPlan = dp[i].days[j]; break; }
+          }
+        }
+        if (todayPlan) break;
+      }
+      if (!todayPlan) {
+        try {
+          var saved = JSON.parse(localStorage.getItem('ai_daily_plan') || '{}');
+          if (saved && saved.days) {
+            for (var i = 0; i < saved.days.length; i++) {
+              if (saved.days[i].date === todayStr) { todayPlan = saved.days[i]; break; }
+            }
+            if (!todayPlan && saved.days.length > 0) todayPlan = saved.days[0];
+          }
+        } catch(e) {}
+      }
+      if (!todayPlan) todayPlan = generateFromGoals(currentWeek);
+
+      // Restore done states from localStorage
+      try {
+        var savedPlan = JSON.parse(localStorage.getItem('tf_today_data') || '{}');
+        if (savedPlan && savedPlan.date === todayStr && savedPlan.tasks) {
+          for (var i = 0; i < todayPlan.tasks.length; i++) {
+            var t = todayPlan.tasks[i];
+            var s = savedPlan.tasks.find(function(x) {
+              return x.subject === t.subject && x.chapter === t.chapter && x.topic === t.topic;
+            });
+            if (s) t.done = s.done;
+          }
+        }
+      } catch(e) {}
+
+      // Step4: 昨日完成检测 + 自动重排
+      var yesterdayPlan = checkYesterday(data, today);
+      var missedTasks = [];
+      if (yesterdayPlan && yesterdayPlan.tasks) {
+        missedTasks = yesterdayPlan.tasks.filter(function(t) { return !t.done; });
+      }
+
+      // Step4: 周日自测
+      var isSunday = today.getDay() === 0;
+
+      todayData = todayPlan;
+      todayData.date = todayStr;
+
+      // Prepend missed tasks as review
+      if (missedTasks.length > 0 && !todayData._reviewChecked) {
+        var reviewTasks = missedTasks.map(function(t) {
+          return {
+            tag: 'review',
+            subject: t.subject || '',
+            chapter: t.chapter || '',
+            topic: '📥 补学：' + (t.topic || ''),
+            hours: 0.5,
+            done: false,
+            _isReview: true
+          };
+        });
+        todayData.tasks = reviewTasks.concat(todayData.tasks);
+        todayData._reviewChecked = true;
+      }
+
+      // Sunday quiz: replace practice tasks with quiz
+      if (isSunday && !todayData._sundayQuizAdded) {
+        todayData._sundayQuizAdded = true;
+        var quizTask = {
+          tag: 'review',
+          subject: '自测',
+          chapter: '周日迷你测试',
+          topic: '每科30分钟迷你测试（从题库生成）',
+          hours: 1.5,
+          done: false,
+          _isQuiz: true
+        };
+        // Insert quiz after the first 3 tasks
+        todayData.tasks.splice(3, 0, quizTask);
+      }
+
+      renderTask();
+      renderOverview();
+      updateCountdown();
+      startTimeoutCheck();
+      if (aiOnline) {
+        aiGreeting(missedTasks.length, isSunday);
+        // ② 推理：AI 根据掌握状态重新排列任务
+        aiGenerateAgentTasks(todayData.tasks);
+      } else {
+        // 增强6: AI 离线时本地按掌握状态弱点优先排序
+        var sorted = localSortByMastery(todayData.tasks);
+        var hasMasteryData = sorted.some(function(t) { return getChapterMastery(t.subject, t.chapter) >= 0; });
+        if (hasMasteryData) {
+          todayData.tasks = sorted;
+          currentTaskIdx = 0;
+          renderTask();
+          renderOverview();
+          aiAddMsg('system', '🧠 已按掌握状态弱点优先排列任务（离线模式）');
+        }
+      }
+    })
+    .catch(function(e) { showEmpty(); });
+}
+
+function generateFromGoals(week) {
+  var tasks = [];
+  (week.goals || []).forEach(function(g) {
+    tasks.push({ tag: g.tag, subject: g.subject, chapter: g.chapter || '', topic: g.topic || '', hours: 1, done: false });
+  });
+  return { date: '', weekday: '', tasks: tasks };
+}
+
+// Step4: Check yesterday's completion
+function checkYesterday(data, today) {
+  var yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  var yStr = (yesterday.getMonth() + 1) + '/' + yesterday.getDate();
+
+  // Try to get yesterday's saved data from localStorage
+  try {
+    var saved = JSON.parse(localStorage.getItem('tf_today_data_' + yStr) || 'null');
+    if (saved && saved.tasks) return saved;
+  } catch(e) {}
+
+  // Try from study-plan.json
+  var dp = data.dailyPlans || [];
+  for (var i = 0; i < dp.length; i++) {
+    if (dp[i].days) {
+      for (var j = 0; j < dp[i].days.length; j++) {
+        if (dp[i].days[j].date === yStr) return dp[i].days[j];
+      }
+    }
+  }
+  return null;
+}
+
+// Step4: Timeout check - remind user if task takes too long
+function startTimeoutCheck() {
+  if (timeoutTimer) clearInterval(timeoutTimer);
+  taskStartTime = Date.now();
+  var currentKey = currentTaskIdx;
+  timeoutWarned[currentKey] = false;
+
+  timeoutTimer = setInterval(function() {
+    if (!todayData || !todayData.tasks || !todayData.tasks[currentTaskIdx]) return;
+    var t = todayData.tasks[currentTaskIdx];
+    if (t.done) return;
+
+    var elapsed = (Date.now() - taskStartTime) / 1000 / 60; // minutes
+    var estimated = (t.hours || 1) * 60 * 1.5; // 1.5x estimated time in minutes
+
+    if (elapsed >= estimated && !timeoutWarned[currentKey]) {
+      timeoutWarned[currentKey] = true;
+      if (aiOnline) {
+        var prompt = '用户学习' + (t.subject || '') + ' ' + (t.chapter || '') + ' ' + (t.topic || '') + '已超时（预计' + (t.hours || 1) + '小时，已用' + Math.round(elapsed) + '分钟）。请用一句话提醒用户，可以建议休息或拆分任务。30字以内。';
+        aiCall(prompt, function(resp) {
+          aiAddMsg('system', '⏰ 超时提醒');
+          aiAddMsg('ai', resp);
+        });
+      } else {
+        aiAddMsg('system', '⏰ 此任务已超时，建议休息或拆分');
+      }
+    }
+  }, 60000); // Check every minute
+}
+
+// 增强7: 番茄钟计时
+function togglePomodoro() {
+  var btn = document.getElementById('pomoBtn');
+  var timeEl = document.getElementById('pomoTime');
+  var labelEl = document.getElementById('pomoLabel');
+  if (!btn || !timeEl) return;
+
+  if (pomoState === 'idle' || pomoState === 'paused') {
+    pomoState = 'running';
+    btn.textContent = '暂停';
+    btn.className = 'tf-pomodoro-btn pause';
+    timeEl.className = 'tf-pomodoro-time running';
+    if (pomoTimer) clearInterval(pomoTimer);
+    pomoTimer = setInterval(function() {
+      pomoSeconds--;
+      updatePomoDisplay();
+      if (pomoSeconds <= 0) pomoComplete();
+    }, 1000);
+  } else if (pomoState === 'running') {
+    pomoState = 'paused';
+    btn.textContent = '继续';
+    btn.className = 'tf-pomodoro-btn';
+    timeEl.className = 'tf-pomodoro-time';
+    if (pomoTimer) clearInterval(pomoTimer);
+  }
+}
+
+function updatePomoDisplay() {
+  var timeEl = document.getElementById('pomoTime');
+  if (!timeEl) return;
+  var m = Math.floor(pomoSeconds / 60);
+  var s = pomoSeconds % 60;
+  timeEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function pomoComplete() {
+  if (pomoTimer) clearInterval(pomoTimer);
+  pomoState = 'done';
+  var btn = document.getElementById('pomoBtn');
+  var timeEl = document.getElementById('pomoTime');
+  var labelEl = document.getElementById('pomoLabel');
+  if (btn) { btn.textContent = '完成'; btn.className = 'tf-pomodoro-btn done'; }
+  if (timeEl) { timeEl.textContent = '00:00'; timeEl.className = 'tf-pomodoro-time done'; }
+
+  if (!pomoIsBreak) {
+    if (labelEl) labelEl.textContent = '专注完成！休息5分钟';
+    if (navigator.notification) navigator.notification('番茄钟完成，休息一下！');
+    if (aiOnline) {
+      aiAddMsg('system', '🍅 25分钟专注完成！');
+      aiCall('用户完成了一个25分钟番茄钟。请用一句话鼓励用户休息，预告休息后继续。20字以内。', function(resp) {
+        aiAddMsg('ai', resp);
+      });
+    } else {
+      aiAddMsg('system', '🍅 25分钟专注完成，休息5分钟！');
+    }
+    pomoIsBreak = true;
+    pomoSeconds = POMO_BREAK;
+    pomoState = 'idle';
+    if (btn) { btn.textContent = '开始休息'; btn.className = 'tf-pomodoro-btn'; }
+    if (timeEl) timeEl.className = 'tf-pomodoro-time';
+    updatePomoDisplay();
+  } else {
+    if (labelEl) labelEl.textContent = '休息结束，继续专注25分钟';
+    if (aiOnline) aiAddMsg('ai', '☕ 休息结束，继续加油！');
+    pomoIsBreak = false;
+    pomoSeconds = POMO_FOCUS;
+    pomoState = 'idle';
+    if (btn) { btn.textContent = '开始计时'; btn.className = 'tf-pomodoro-btn'; }
+    if (timeEl) timeEl.className = 'tf-pomodoro-time';
+    updatePomoDisplay();
+  }
+}
+
+function resetPomodoro() {
+  if (pomoTimer) clearInterval(pomoTimer);
+  pomoState = 'idle';
+  pomoIsBreak = false;
+  pomoSeconds = POMO_FOCUS;
+  var btn = document.getElementById('pomoBtn');
+  var timeEl = document.getElementById('pomoTime');
+  var labelEl = document.getElementById('pomoLabel');
+  if (btn) { btn.textContent = '开始计时'; btn.className = 'tf-pomodoro-btn'; }
+  if (timeEl) { timeEl.textContent = '25:00'; timeEl.className = 'tf-pomodoro-time'; }
+  if (labelEl) labelEl.textContent = '25分钟专注 · 完成后休息5分钟';
+}
+
+// Step4: Render Sunday quiz
+function renderSundayQuiz() {
+  var area = document.getElementById('taskArea');
+  var html = '<div class="tf-task-card">';
+  html += '<div class="tf-task-header">';
+  html += '<span class="tf-subject-tag review">📝 自测</span>';
+  html += '<span class="tf-chapter">周日迷你测试</span>';
+  html += '</div>';
+  html += '<div class="tf-task-title">每科30分钟迷你测试</div>';
+  html += '<div class="tf-task-meta"><span>⏱ 1.5h</span><span>📋 自测模式</span></div>';
+  html += '<div class="tf-kp-section">';
+  html += '<div class="tf-kp-section-title">📝 测试说明</div>';
+  html += '<div class="tf-task-desc">';
+  html += '周日自测模式：从题库抽取每科5道题，限时30分钟/科。<br>';
+  html += '点击下方按钮开始测试，完成后AI帮你批改分析薄弱点。';
+  html += '</div>';
+  html += '</div>';
+  html += '<div class="tf-kp-section" id="quizContainer"></div>';
+  html += '<div class="tf-actions">';
+  html += '<button class="tf-btn tf-btn-primary zk-btn-primary" onclick="startSundayQuiz()">📝 开始自测</button>';
+  html += '</div>';
+  html += '</div>';
+  area.innerHTML = html;
+}
+
+function startSundayQuiz() {
+  var container = document.getElementById('quizContainer');
+  if (!container) return;
+  container.innerHTML = '<div class="tf-hint-text">正在从题库加载...</div>';
+
+  // Load quiz bank from localStorage or API
+  var subjects = ['系统原理', '离散数学', '数据结构'];
+  var allQuestions = [];
+  var loaded = 0;
+
+  subjects.forEach(function(subj) {
+    var key = 'recite-quiz-bank-' + (subj === '系统原理' ? '13015' : subj === '离散数学' ? '02324' : '13003');
+    try {
+      var bank = JSON.parse(localStorage.getItem(key) || '[]');
+      var shuffled = bank.sort(function() { return Math.random() - 0.5; });
+      allQuestions = allQuestions.concat(shuffled.slice(0, 3).map(function(q) {
+        q._subject = subj;
+        return q;
+      }));
+    } catch(e) {}
+    loaded++;
+    if (loaded === subjects.length) renderQuizQuestions(allQuestions);
+  });
+
+  // Also try API
+  subjects.forEach(function(subj, idx) {
+    var code = subj === '系统原理' ? '13015' : subj === '离散数学' ? '02324' : '13003';
+    fetch(apiUrl('/api/quiz-bank?subject=' + code))
+      .then(function(r) { return r.json(); })
+      .then(function(bank) {
+        if (Array.isArray(bank) && bank.length > 0) {
+          var shuffled = bank.sort(function() { return Math.random() - 0.5; });
+          allQuestions = allQuestions.concat(shuffled.slice(0, 3).map(function(q) {
+            q._subject = subj;
+            return q;
+          }));
+        }
+        renderQuizQuestions(allQuestions);
+      })
+      .catch(function() {});
+  });
+}
+
+function renderQuizQuestions(questions) {
+  var container = document.getElementById('quizContainer');
+  if (!container || !questions.length) {
+    if (container) container.innerHTML = '<div class="tf-hint-text">题库为空，请先在背诵卡测验模式中生成题目</div>';
+    return;
+  }
+  var html = '';
+  questions.forEach(function(q, i) {
+    html += '<div class="tf-practice-q">';
+    html += '<div class="tf-practice-q-title">[' + escapeHtml(q._subject || '') + '] Q' + (i+1) + ': ' + escapeHtml(q.question || q.title || '') + '</div>';
+    html += '<textarea class="tf-practice-input" id="quiz_' + i + '" placeholder="输入答案..." rows="2"></textarea>';
+    html += '<div class="tf-practice-actions">';
+    html += '<button class="tf-practice-btn show" onclick="showQuizAnswer(' + i + ', \'' + escapeHtml((q.answer || q.def || '')).replace(/'/g, "\\'").replace(/\n/g, '\\n') + '\')">看答案</button>';
+    html += '</div>';
+    html += '<div class="tf-practice-feedback" id="qf_' + i + '"></div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function showQuizAnswer(idx, answer) {
+  var fb = document.getElementById('qf_' + idx);
+  if (fb) {
+    fb.className = 'tf-practice-feedback show correct';
+    fb.textContent = '📌 参考答案：' + answer;
+  }
+}
+
+function renderTask() {
+  var area = document.getElementById('taskArea');
+  if (!todayData || !todayData.tasks || !todayData.tasks.length) { showEmpty(); return; }
+  for (var i = 0; i < todayData.tasks.length; i++) {
+    if (!todayData.tasks[i].done) { currentTaskIdx = i; break; }
+    if (i === todayData.tasks.length - 1) { currentTaskIdx = 0; }
+  }
+  var t = todayData.tasks[currentTaskIdx];
+
+  // Step4: Start timeout timer for this task
+  startTimeoutCheck();
+  resetPomodoro();
+
+  // Step4: Sunday quiz task
+  if (t._isQuiz) {
+    renderSundayQuiz();
+    if (aiOnline) aiTaskContext(t, 0);
+    return;
+  }
+  var tagClass = t.tag || 'core';
+  var subject = t.subject || t.tag || '';
+  var chapter = t.chapter || '';
+  var cardPath = CARD_MAP[subject];
+
+  var html = '<div class="tf-task-card">';
+  html += '<div class="tf-task-header">';
+  html += '<span class="tf-subject-tag ' + tagClass + '">' + escapeHtml(subject) + '</span>';
+  if (chapter) html += '<span class="tf-chapter">' + escapeHtml(chapter) + '</span>';
+  html += '</div>';
+  html += '<div class="tf-task-title">' + escapeHtml(t.topic || '') + '</div>';
+  // ③ 行动：显示AI推荐理由
+  if (t._aiReason) {
+    html += '<div class="tf-ai-recommend">🧠 AI推荐：' + escapeHtml(t._aiReason) + '</div>';
+  }
+  html += '<div class="tf-task-meta">';
+  html += '<span>⏱ ' + (t.hours || 1) + 'h</span>';
+  html += '<span>📋 任务 ' + (currentTaskIdx + 1) + '/' + todayData.tasks.length + '</span>';
+  html += '</div>';
+
+  // 增强7: 番茄钟
+  html += '<div class="tf-pomodoro">';
+  html += '<span class="tf-pomodoro-time" id="pomoTime">25:00</span>';
+  html += '<button class="tf-pomodoro-btn zk-btn-primary" id="pomoBtn" onclick="togglePomodoro()">开始计时</button>';
+  html += '<span class="tf-pomodoro-label" id="pomoLabel">25分钟专注 · 完成后休息5分钟</span>';
+  html += '</div>';
+
+  // Knowledge cards section
+  if (cardPath) {
+    html += '<div class="tf-kp-section">';
+    html += '<div class="tf-kp-section-title">📖 知识点卡片</div>';
+    html += '<div id="kpCards"><div class="tf-hint-block">加载中...</div></div>';
+    html += '</div>';
+    // Practice section
+    html += '<div class="tf-kp-section">';
+    html += '<div class="tf-kp-section-title">✏️ 快速练习</div>';
+    html += '<div id="practiceArea"><div class="tf-hint-block">加载中...</div></div>';
+    html += '</div>';
+  } else {
+    html += '<div class="tf-kp-section">';
+    html += '<div class="tf-kp-section-title">📝 任务说明</div>';
+    html += '<div class="tf-task-desc-ink">' + escapeHtml(t.topic || '完成此任务') + '</div>';
+    html += '</div>';
+  }
+
+  html += '<div class="tf-actions">';
+  html += '<button class="tf-btn tf-btn-secondary zk-btn-outline" onclick="prevTask()">← 上一个</button>';
+  html += '<button class="tf-btn tf-btn-primary zk-btn-primary" onclick="completeTask()">✅ 完成此任务 →</button>';
+  html += '</div>';
+  html += '</div>';
+
+  area.innerHTML = html;
+
+  // Load cards async
+  if (cardPath) {
+    loadCards(subject).then(function(cards) {
+      var ch = chapter.replace('第', '').replace('章', '');
+      var matched = cards.filter(function(c) {
+        return c.chapter && c.chapter.indexOf(chapter) >= 0;
+      });
+      renderKpCards(pickRandom(matched, 5), subject, chapter);
+      renderPractice(pickRandom(matched, 2), subject, chapter);
+      if (aiOnline) aiTaskContext(t, matched.length);
+    });
+  } else {
+    if (aiOnline) aiTaskContext(t, 0);
+  }
+}
+
+function renderKpCards(cards, subject, chapter) {
+  var el = document.getElementById('kpCards');
+  if (!el) return;
+  if (!cards || !cards.length) { el.innerHTML = '<div class="tf-hint-text">本章暂无知识点卡片</div>'; return; }
+  var html = '';
+  cards.forEach(function(c, i) {
+    // ③ 行动：从learning-guide获取优先级标注
+    var pri = getTopicPriority(subject, chapter, c.question);
+    var priBadge = '';
+    if (pri) {
+      var priClass = pri.priority === '重点' ? 'key' : pri.priority === '一般' ? 'normal' : 'survey';
+      priBadge = '<span class="tf-pri-badge ' + priClass + '">' + pri.priority + ' · ' + pri.type + '</span>';
+    }
+    html += '<div class="tf-kp-card">';
+    html += '<div class="tf-kp-q" onclick="toggleKp(this)">';
+    html += '<span>' + escapeHtml(c.question) + priBadge + '</span>';
+    html += '</div>';
+    html += '<div class="tf-kp-answer">';
+    if (c.def) html += '<div class="tf-kp-block"><span class="tf-kp-label def">定义</span><br>' + escapeHtml(c.def) + '</div>';
+    if (c.ex) html += '<div class="tf-kp-block"><span class="tf-kp-label ex">举例</span><br>' + escapeHtml(c.ex) + '</div>';
+    if (c.exam) html += '<div class="tf-kp-block"><span class="tf-kp-label exam">考点</span><br>' + escapeHtml(c.exam) + '</div>';
+    html += '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function toggleKp(el) {
+  el.classList.toggle('open');
+  var ans = el.nextElementSibling;
+  if (ans) ans.classList.toggle('show');
+}
+
+function renderPractice(cards, subject, chapter) {
+  var el = document.getElementById('practiceArea');
+  if (!el) return;
+  if (!cards || !cards.length) { el.innerHTML = '<div class="tf-hint-text">本章暂无练习题</div>'; return; }
+  // 以任务索引为key保存练习答案，切换任务后恢复
+  var practiceKey = 'tpa_' + currentTaskIdx;
+  var saved = {};
+  try { saved = JSON.parse(sessionStorage.getItem(practiceKey) || '{}'); } catch(e) {}
+  var html = '';
+  cards.forEach(function(c, i) {
+    var key = String(i);
+    var savedAns = saved[key] || {};
+    html += '<div class="tf-practice-q">';
+    html += '<div class="tf-practice-q-title">Q' + (i+1) + ': ' + escapeHtml(c.question) + '</div>';
+    html += '<textarea class="tf-practice-input" id="pa_' + i + '" placeholder="输入你的答案..." rows="2" oninput="savePracticeState(' + i + ')">' + escapeHtml(savedAns.input || '') + '</textarea>';
+    html += '<div class="tf-practice-actions">';
+    html += '<button class="tf-practice-btn check" onclick="checkPractice(' + i + ',\'' + escapeHtml(c.def || '').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r') + '\')">提交</button>';
+    html += '<button class="tf-practice-btn show" onclick="showPractice(' + i + ',\'' + escapeHtml((c.def || '') + ' | ' + (c.ex || '')).replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r') + '\')">看答案</button>';
+    html += '</div>';
+    html += '<div class="tf-practice-feedback" id="pf_' + i + '"></div>';
+    // ④ 反馈：掌握状态标记按钮
+    html += '<div class="tf-mastery-feedback zk-hidden" id="mf_' + i + '">';
+    html += '<span class="tf-mastery-hint">这个知识点你掌握了吗？</span><br>';
+    html += '<button class="tf-practice-btn tf-mastery-btn mastered" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',2,' + i + ')">✅ 已掌握</button>';
+    html += '<button class="tf-practice-btn tf-mastery-btn unsure" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',1,' + i + ')">🤔 不熟练</button>';
+    html += '<button class="tf-practice-btn tf-mastery-btn unknown" onclick="markMastery(\'' + escapeHtml(subject) + '\',\'' + escapeHtml(chapter) + '\',0,' + i + ')">❌ 不会</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+  // 恢复已保存的反馈和掌握状态
+  Object.keys(saved).forEach(function(key) {
+    var s = saved[key];
+    if (s.feedback) {
+      var fb = document.getElementById('pf_' + key);
+      if (fb) { fb.className = s.feedbackClass || 'tf-practice-feedback show correct'; fb.textContent = s.feedback; }
+    }
+    if (s.masteryShown) {
+      var mf = document.getElementById('mf_' + key);
+      if (mf) mf.classList.remove('zk-hidden');
+    }
+  });
+}
+
+// 保存练习答案到 sessionStorage（切换任务不丢失）
+function savePracticeState(idx) {
+  var practiceKey = 'tpa_' + currentTaskIdx;
+  var saved = {};
+  try { saved = JSON.parse(sessionStorage.getItem(practiceKey) || '{}'); } catch(e) {}
+  var input = document.getElementById('pa_' + idx);
+  var fb = document.getElementById('pf_' + idx);
+  var mf = document.getElementById('mf_' + idx);
+  var key = String(idx);
+  saved[key] = {
+    input: input ? input.value : '',
+    feedback: fb ? fb.textContent : '',
+    feedbackClass: fb ? fb.className : '',
+    masteryShown: mf ? !mf.classList.contains('zk-hidden') : false
+  };
+  sessionStorage.setItem(practiceKey, JSON.stringify(saved));
+}
+
+function markMastery(subject, chapter, level, practiceIdx) {
+  updateMastery(subject, chapter, level);
+  var labels = ['不会', '不熟练', '已掌握'];
+  var fb = document.getElementById('mf_' + practiceIdx);
+  if (fb) {
+    fb.innerHTML = '<span class="tf-mastery-recorded">✅ 已记录：' + labels[level] + '，下次将' + (level < 2 ? '优先' : '降低') + '推送此知识点</span>';
+  }
+  if (aiOnline) {
+    aiAddMsg('ai', '📊 已更新掌握状态：' + (CODE_SUBJECT[SUBJECT_CODE[subject]] || subject) + ' ' + chapter + ' → ' + labels[level] + (level < 2 ? '，后续会优先安排复习' : ''));
+  }
+}
+
+function checkPractice(idx, answer) {
+  var input = document.getElementById('pa_' + idx);
+  var fb = document.getElementById('pf_' + idx);
+  if (!input || !fb) return;
+  var userAns = input.value.trim();
+  if (!userAns) { fb.className = 'tf-practice-feedback show wrong'; fb.textContent = '请先输入答案'; return; }
+  var keywords = answer.split(/[，。、；]/).filter(function(s) { return s.length > 2; }).slice(0, 3);
+  var hits = keywords.filter(function(k) { return userAns.indexOf(k) >= 0; });
+  if (hits.length >= 1) {
+    fb.className = 'tf-practice-feedback show correct';
+    fb.textContent = '✅ 回答包含关键点：' + hits.join('、') + '。完整参考答案可点击"看答案"。';
+  } else {
+    fb.className = 'tf-practice-feedback show wrong';
+    fb.textContent = '⚠️ 回答可能遗漏关键点，建议点击"看答案"对照。';
+  }
+  // ④ 反馈：显示掌握状态按钮
+  var mf = document.getElementById('mf_' + idx);
+  if (mf) mf.classList.remove('zk-hidden');
+  savePracticeState(idx);
+}
+
+function showPractice(idx, answer) {
+  var fb = document.getElementById('pf_' + idx);
+  if (fb) {
+    fb.className = 'tf-practice-feedback show correct';
+    fb.textContent = '📌 参考答案：' + answer;
+  }
+  var mf = document.getElementById('mf_' + idx);
+  if (mf) mf.classList.remove('zk-hidden');
+  savePracticeState(idx);
+}
+
+function renderOverview() {
+  if (!todayData || !todayData.tasks) return;
+  var list = document.getElementById('overviewList');
+  var html = '';
+  var doneCount = 0;
+  todayData.tasks.forEach(function(t, i) {
+    var cls = t.done ? 'done' : (i === currentTaskIdx ? 'current' : 'pending');
+    var icon = t.done ? '✓' : (i === currentTaskIdx ? '→' : '○');
+    html += '<div class="tf-overview-item ' + cls + '" onclick="jumpTo(' + i + ')">';
+    html += icon + ' ' + escapeHtml(t.subject || t.tag || '') + ' ' + escapeHtml(t.chapter || '');
+    html += '</div>';
+    if (t.done) doneCount++;
+  });
+  list.innerHTML = html;
+  document.getElementById('overview').classList.remove('zk-hidden');
+  var pct = Math.round(doneCount / todayData.tasks.length * 100);
+  document.getElementById('progressFill').style.setProperty('--fill-pct', pct + '%');
+  document.getElementById('progressText').textContent = doneCount + '/' + todayData.tasks.length;
+}
+
+function completeTask() {
+  if (!todayData || !todayData.tasks) return;
+  var t = todayData.tasks[currentTaskIdx];
+  t.done = true;
+  saveTodayData();
+  writeTaskDone(t, true);
+  // ④ 反馈：完成任务时自动更新掌握状态为"不熟练"（用户可后续调整）
+  if (t.subject && SUBJECT_CODE[t.subject]) {
+    updateMastery(t.subject, t.chapter, 1);
+  }
+  // Bug3 fix: 通知父窗口（工作台）计划已更新，驾驶舱可实时刷新
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ action: 'plan-updated', week: currentWeekLabel, subject: t.subject, chapter: t.chapter, done: true }, '*');
+  }
+  var next = currentTaskIdx + 1;
+  if (next < todayData.tasks.length) {
+    currentTaskIdx = next;
+    renderTask();
+    renderOverview();
+    if (aiOnline) aiOnComplete(todayData.tasks[currentTaskIdx - 1], todayData.tasks[currentTaskIdx]);
+  } else {
+    var area = document.getElementById('taskArea');
+    area.innerHTML = '<div class="tf-empty"><h2>🎉 今日全部完成！</h2><p>好好休息，明天继续</p></div>';
+    renderOverview();
+    if (aiOnline) aiAllDone();
+  }
+}
+
+function prevTask() {
+  if (currentTaskIdx > 0) { currentTaskIdx--; renderTask(); renderOverview(); }
+}
+
+function jumpTo(idx) {
+  currentTaskIdx = idx;
+  renderTask();
+  renderOverview();
+}
+
+function saveTodayData() {
+  try {
+    localStorage.setItem('tf_today_data', JSON.stringify(todayData));
+    // Step4: Also save by date for yesterday check
+    if (todayData.date) {
+      localStorage.setItem('tf_today_data_' + todayData.date, JSON.stringify(todayData));
+    }
+  } catch(e) {}
+}
+
+function writeTaskDone(task, done) {
+  fetch(apiUrl('/api/update-plan'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ week: currentWeekLabel, subject: task.subject, chapter: task.chapter, done: done })
+  }).catch(function() {});
+}
+
+function updateCountdown() {
+  var now = new Date();
+  var days = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+  document.getElementById('countdown').textContent = '距考试 ' + days + ' 天';
+}
+
+function showEmpty() {
+  document.getElementById('taskArea').innerHTML = '<div class="tf-empty"><h2>暂无今日计划</h2><p>请先在学习驾驶舱生成计划</p></div>';
+}
+
+// ---- AI Functions ----
+function getChapterMastery(subjectName, chapter) {
+  var code = SUBJECT_CODE[subjectName];
+  if (!code || !masteryState[code]) return -1;
+  var chNum = (chapter || '').replace(/第|章|\s/g, '');
+  var level = (masteryState[code].mastery || {})[chNum];
+  return typeof level === 'number' ? level : -1;
+}
+
+function aiGreeting(missedCount, isSunday) {
+  if (!todayData) return;
+  var done = todayData.tasks.filter(function(t) { return t.done; }).length;
+  var total = todayData.tasks.length;
+  var firstTask = todayData.tasks.find(function(t) { return !t.done; }) || todayData.tasks[0];
+  var context = '当前时间：' + new Date().toLocaleString('zh-CN') + '\n';
+  context += '今日任务：' + total + '个，已完成' + done + '个\n';
+  context += '第一个未完成任务：' + (firstTask.subject || '') + ' ' + (firstTask.chapter || '') + ' ' + (firstTask.topic || '') + '\n';
+  context += '距考试：' + Math.ceil((examDate - new Date()) / (1000*60*60*24)) + '天';
+  var masterySummary = getMasterySummary();
+  if (masterySummary !== '暂无掌握状态数据') context += '\n【掌握状态】\n' + masterySummary;
+  if (missedCount > 0) context += '\n昨日有' + missedCount + '个任务未完成，已插入今日开头作为补学';
+  if (isSunday) context += '\n今天是周日，有迷你自测任务';
+
+  var prompt = '你是用户的AI学习私教。请根据以下信息生成一句简短的开场白（2-3句话），鼓励用户开始今天的学习，提到第一个任务的内容。';
+  if (missedCount > 0) prompt += '提醒用户昨日有' + missedCount + '个任务未完成，已安排补学。';
+  if (masterySummary !== '暂无掌握状态数据') prompt += '如果存在"不会"的科目章节，提醒用户优先攻克。';
+  prompt += '语气亲切但简洁。\n\n' + context;
+  aiCall(prompt, function(resp) {
+    aiAddMsg('ai', resp);
+  });
+}
+
+function aiTaskContext(task, cardCount) {
+  var msg = '📍 当前任务：' + (task.subject || '') + ' ' + (task.chapter || '') + '\n';
+  msg += '知识点：' + (task.topic || '') + '\n';
+  msg += '预计时长：' + (task.hours || 1) + '小时';
+  if (cardCount > 0) msg += '\n本章有' + cardCount + '张知识卡片可供学习';
+  var masteryLevel = getChapterMastery(task.subject, task.chapter);
+  if (masteryLevel >= 0) {
+    var masteryLabel = masteryLevel === 2 ? '已掌握' : masteryLevel === 1 ? '不熟练' : '不会';
+    msg += '\n当前掌握程度：' + masteryLabel;
+  }
+  aiAddMsg('system', msg);
+
+  var prompt = '用户正在学习：' + (task.subject || '') + ' ' + (task.chapter || '') + '，知识点：' + (task.topic || '') + '。';
+  if (masteryLevel === 0) prompt += '该章节用户标注为"不会"，请重点讲解基础概念。';
+  else if (masteryLevel === 1) prompt += '该章节用户标注为"不熟练"，建议针对性练习薄弱环节。';
+  else if (masteryLevel === 2) prompt += '该章节用户已掌握，建议快速过一遍即可。';
+  prompt += '请用一句话给出学习建议（如重点注意什么、怎么学最快）。50字以内。';
+  aiCall(prompt, function(resp) {
+    aiAddMsg('ai', '💡 ' + resp);
+  });
+}
+
+function aiOnComplete(doneTask, nextTask) {
+  var prompt = '用户刚完成了：' + (doneTask.subject || '') + ' ' + (doneTask.chapter || '') + '。';
+  prompt += '下一个任务是：' + (nextTask.subject || '') + ' ' + (nextTask.chapter || '') + ' ' + (nextTask.topic || '') + '。';
+  var nextMastery = getChapterMastery(nextTask.subject, nextTask.chapter);
+  if (nextMastery === 0) prompt += '下个任务对应的章节用户掌握程度为"不会"，提醒重点学习。';
+  prompt += '请用一句话鼓励用户并预告下个任务。30字以内。';
+  aiCall(prompt, function(resp) {
+    aiAddMsg('ai', resp);
+  });
+}
+
+function aiAllDone() {
+  aiAddMsg('ai', '🎉 今日全部任务完成！收获满满，好好休息，明天继续加油！');
+}
+
+function aiSend() {
+  var input = document.getElementById('aiInput');
+  var text = input.value.trim();
+  if (!text || !aiOnline) return;
+  aiAddMsg('user', text);
+  input.value = '';
+  var currentTask = todayData ? todayData.tasks[currentTaskIdx] : null;
+  var context = '';
+  if (currentTask) {
+    context = '【当前学习上下文】\n科目：' + (currentTask.subject || '') + '\n章节：' + (currentTask.chapter || '') + '\n知识点：' + (currentTask.topic || '') + '\n';
+    var ml = getChapterMastery(currentTask.subject, currentTask.chapter);
+    if (ml >= 0) context += '掌握程度：' + (ml === 2 ? '已掌握' : ml === 1 ? '不熟练' : '不会') + '\n';
+    context += '\n';
+  }
+  var masterySummary = getMasterySummary();
+  if (masterySummary !== '暂无掌握状态数据') context += '【掌握状态】\n' + masterySummary + '\n\n';
+  aiHistory.push({ role: 'user', content: text });
+  var messages = [{ role: 'system', content: '你是用户的AI学习私教，解答学习问题，语气简洁亲切。' + context }];
+  aiHistory.forEach(function(m) { messages.push(m); });
+  aiCallDirect(messages, function(resp) {
+    aiAddMsg('ai', resp);
+    aiHistory.push({ role: 'assistant', content: resp });
+    if (aiHistory.length > 20) aiHistory = aiHistory.slice(-20);
+  });
+}
+
+function aiCall(prompt, callback) {
+  var loadingEl = aiAddMsg('loading', 'AI 思考中...');
+  fetch(apiUrl('/api/chat'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], model: 'deepseek-v4-flash', stream: false, max_tokens: 300 })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    loadingEl.remove();
+    var text = '';
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      text = data.choices[0].message.content || '';
+    } else if (data.response) {
+      text = data.response;
+    } else if (data.content) {
+      text = data.content;
+    } else if (data.error) {
+      text = '⚠️ ' + data.error;
+    }
+    if (!text) text = '（无回复）';
+    callback(text);
+  })
+  .catch(function(e) {
+    loadingEl.remove();
+    aiAddMsg('ai', '⚠️ 请求失败：' + (e.message || '网络错误'));
+  });
+}
+
+function aiCallDirect(messages, callback) {
+  var loadingEl = aiAddMsg('loading', 'AI 思考中...');
+  fetch(apiUrl('/api/chat'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: messages, model: 'deepseek-v4-flash', stream: false, max_tokens: 800 })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    loadingEl.remove();
+    var text = '';
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      text = data.choices[0].message.content || '';
+    } else if (data.response) {
+      text = data.response;
+    } else if (data.content) {
+      text = data.content;
+    } else if (data.error) {
+      text = '⚠️ ' + data.error;
+    }
+    if (!text) text = '（无回复）';
+    callback(text);
+  })
+  .catch(function(e) {
+    loadingEl.remove();
+    aiAddMsg('ai', '⚠️ 请求失败：' + (e.message || '网络错误'));
+  });
+}
+
+function aiAddMsg(type, text) {
+  var container = document.getElementById('aiMessages');
+  var div = document.createElement('div');
+  div.className = 'tf-ai-msg ' + type;
+  div.textContent = text;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+// Init — Agent Loop 启动
+checkAI();
+loadLearningGuide();
+loadMasteryState().then(function() {
+  loadTodayPlan();
+});
+setInterval(checkAI, 30000);
+
+// ============================================================
+// 移动端 AI 私教面板抽屉开关
+// ============================================================
+
+function toggleAIPanel() {
+  var panel = document.getElementById('aiPanel');
+  var overlay = document.getElementById('aiOverlay');
+  var isOpen = panel.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('show', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
+function closeAIPanel() {
+  var panel = document.getElementById('aiPanel');
+  var overlay = document.getElementById('aiOverlay');
+  if (panel) panel.classList.remove('open');
+  if (overlay) overlay.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// ESC 键关闭
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var panel = document.getElementById('aiPanel');
+    if (panel && panel.classList.contains('open')) {
+      closeAIPanel();
+    }
+  }
+});
+
+// 全局暴露（供 onclick 调用）
+window.toggleAIPanel = toggleAIPanel;
+window.closeAIPanel = closeAIPanel;

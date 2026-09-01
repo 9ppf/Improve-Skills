@@ -1,26 +1,97 @@
 @import "variables";
 
-/* 移动端适配 */
+/* ============================================================
+   移动端适配（抽屉式侧边栏）
+   断点：768px，小于该宽度启用抽屉模式
+   ============================================================ */
+
 @media (max-width: 768px) {
+
+  /* ---------- 顶部栏 ---------- */
   .menu-toggle { display: block; }
 
+  /* ---------- 遮罩层 ---------- */
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 89;
+  }
+  .sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* ---------- 侧边栏 ---------- */
   .sidebar {
     position: fixed;
     left: 0;
-    top: 54px;
+    top: 0;
     bottom: 0;
+    width: 80%;
+    min-width: 240px;
+    max-width: 320px;
     z-index: 90;
     transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    box-shadow: var(--shadow);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     padding-top: 0;
+    /* iOS 安全区适配 */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
-  .sidebar.open { transform: translateX(0); }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.15);
+  }
 
-  .main { padding: 70px 16px 20px; }
+  /* 移动端关闭按钮 */
+  .sidebar-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: calc(10px + env(safe-area-inset-top));
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 10;
+    color: $muted;
+  }
+  .sidebar-close-btn:active {
+    background: rgba(0, 0, 0, 0.1);
+  }
 
-  .plan-card { padding: 18px; }
+  /* ---------- 主内容区 ---------- */
+  .main {
+    padding: 56px 0 20px;
+    /* iOS 底部安全区 */
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+
+  /* ---------- 顶部栏安全区 ---------- */
+  .topbar {
+    padding-top: env(safe-area-inset-top);
+    height: calc(54px + env(safe-area-inset-top));
+  }
+
+  /* ---------- 卡片 ---------- */
+  .plan-card { padding: 16px; margin: 0 8px; }
 
   .plan-header {
     flex-direction: column;
@@ -32,15 +103,33 @@
     padding: 8px 6px;
   }
 
+  /* ---------- 题型表格 ---------- */
   .qt-table .col-strategy {
     min-width: 160px;
     max-width: 220px;
   }
 
+  /* ---------- 阅读模块 ---------- */
   .reading-essay { padding: 1.5rem 1rem 1.25rem; }
   .reading-essay::before {
     left: 12px;
     font-size: 0.68rem;
   }
   .reading-essay-title { font-size: 1rem; }
+
+  /* ---------- 番茄钟悬浮按钮 ---------- */
+  .pomo-float {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    right: 20px;
+  }
+}
+
+/* ---------- 极小屏适配（< 375px） ---------- */
+@media (max-width: 375px) {
+  .plan-card { padding: 14px; }
+
+  .btn {
+    font-size: 0.68rem;
+    padding: 6px 4px;
+  }
 }

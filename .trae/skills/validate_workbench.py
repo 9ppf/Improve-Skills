@@ -384,12 +384,18 @@ def check_tab_integrity_global() -> list[str]:
 
 
 def check_reading_content(html: str) -> list[str]:
-    """Verify every reading JSON data file is present in the workbench."""
+    """Verify every reading data file is present and referenced correctly.
+
+    Reading data is loaded on-demand from external .js files under
+    Workbench/data/reading/ instead of being inlined in the HTML.
+    """
     errors = []
     source_files = sorted(
         (p for p in READING_DATA_DIR.glob('2*.json') if p.stem.isdigit()),
         reverse=True,
     )
+    workbench_dir = WORKBENCH.parent
+    reading_data_dir = workbench_dir / 'data' / 'reading'
 
     for source_path in source_files:
         year = int(source_path.stem)
@@ -397,28 +403,76 @@ def check_reading_content(html: str) -> list[str]:
         expected_sections = len(data.get('sections', []))
         expected_essays = sum(len(s.get('essays', [])) for s in data.get('sections', []))
 
-        if f'var readingData{year} = ' not in html:
-            errors.append(f'{year}: readingData{year} constant not found in workbench')
+        # 检查外部数据文件是否存在
+        data_file = reading_data_dir / f'{year}.js'
+        if not data_file.exists():
+            errors.append(f'{year}: data/reading/{year}.js not found')
             continue
 
-        print(f'  [ok] {year}: {expected_sections} sections, {expected_essays} essays')
+        # 检查数据文件内容是否正确
+        data_content = data_file.read_text(encoding='utf-8')
+        if f'var readingData{year} = ' not in data_content:
+            errors.append(f'{year}: var readingData{year} not found in data/reading/{year}.js')
+            continue
+
+        # 检查 workspaces 中是否有 dataUrl 引用
+        expected_data_url = f"dataUrl: 'data/reading/{year}.js'"
+        if expected_data_url not in html:
+            errors.append(f'{year}: dataUrl reference not found in workspaces')
+            continue
+
+        print(f'  [ok] {year}: {expected_sections} sections, {expected_essays} essays (on-demand)')
 
     return errors
 
 
 def check_workspace_integrity(html: str) -> list[str]:
-    """Verify that the reading workspace and helper functions exist."""
+    """Verify that the reading workspace and helper functions exist.
+
+    Reading helper functions are now loaded from external js/shared/reading.js
+    instead of being inlined. We check the script reference and also verify
+    the actual file contains the expected functions.
+    """
     errors = []
-    required = {
+
+    # 检查 reading.js 外部引用
+    if 'reading.js' not in html:
+        errors.append('Missing reading.js script reference')
+
+    # 检查 reading.js 文件是否包含必要的函数
+    workbench_dir = WORKBENCH.parent
+    reading_js_path = workbench_dir.parent / 'js' / 'shared' / 'reading.js'
+    if reading_js_path.exists():
+        reading_js = reading_js_path.read_text(encoding='utf-8')
+        required_funcs = {
+            'function isReadingItem': 'isReadingItem helper',
+            'function renderReadingContent': 'renderReadingContent helper',
+            'function toggleReadingSection': 'toggleReadingSection helper',
+            'function ensureReadingData': 'ensureReadingData helper',
+        }
+        for marker, name in required_funcs.items():
+            if marker not in reading_js:
+                errors.append(f'Missing {name} in reading.js: {marker}')
+    else:
+        errors.append(f'reading.js not found at {reading_js_path}')
+
+    # 检查工作台结构
+    required_html = {
         "id: 'read'": 'reading workspace',
-        "function isReadingItem": 'isReadingItem helper',
-        "function renderReadingContent": 'renderReadingContent helper',
-        "function toggleReadingSection": 'toggleReadingSection helper',
-        "key: 'content', label: '内容'": 'reading content tab',
     }
-    for marker, name in required.items():
+    for marker, name in required_html.items():
         if marker not in html:
             errors.append(f'Missing {name}: {marker}')
+
+    # 检查 workbench.js 中的内容 Tab 定义
+    workbench_js_path = workbench_dir.parent / 'js' / '主工作台' / 'workbench.js'
+    if workbench_js_path.exists():
+        wb_js = workbench_js_path.read_text(encoding='utf-8')
+        if "key: 'content', label: '内容'" not in wb_js:
+            errors.append("Missing reading content tab in workbench.js: key: 'content', label: '内容'")
+    else:
+        errors.append(f'workbench.js not found at {workbench_js_path}')
+
     return errors
 
 

@@ -1,6 +1,47 @@
 # 更新日志
 
-本文件记录 `E:\TraeWorkToDo` 项目的版本变更历史。版本号采用语义化版本规范（MAJOR.MINOR.PATCH）。
+本文件记录 `E:\self-improvement\Improve-Skills` 项目的版本变更历史。版本号采用语义化版本规范（MAJOR.MINOR.PATCH）。
+
+---
+
+## v2.36.0
+
+**发布时间**：2026-09-01（北京时间）
+
+### 移动端响应式 + 拍照跨设备同步 + Render 部署配置
+
+**核心变更**：工作台主侧边栏和今日学习流 AI 面板实现移动端抽屉式交互；练习测验拍照答案支持局域网跨设备同步；新增 Render 云部署配置。
+
+| 文件 | 更新内容 |
+|---|---|
+| `templates/workbench.html` | 新增侧边栏遮罩层 `sidebar-overlay` 和关闭按钮 `sidebar-close-btn` |
+| `styles/_responsive.scss` | 移动端侧边栏抽屉化（80% 宽度、280ms 动画、遮罩层、iOS 安全区适配）；`.main` 移动端左右 padding 归零；上边距从 70px 减至 56px |
+| `styles/_layout.scss` | 桌面端默认隐藏遮罩层和关闭按钮 |
+| `styles/今日学习/今日学习流.css` | AI 面板移动端抽屉化（右侧滑入、浮动开关按钮、遮罩层、ESC 关闭）；box-shadow 移至 `.open` 状态避免关闭时阴影溢出 |
+| `js/今日学习/today-flow.js` | 新增 `toggleAIPanel()`/`closeAIPanel()` 函数、ESC 监听、全局函数暴露 |
+| `js/主工作台/workbench.js` | 增强 `toggleSidebar()`/`closeSidebar()`、ESC 关闭、菜单选择自动关闭、12 个函数暴露到 `window` |
+| `dev_server.py` | 新增 `POST /api/quiz-photo` 上传照片、`GET /api/quiz-photos` 拉取照片接口；支持 `PORT` 环境变量；新增 `--no-watch` 生产模式标志 |
+| `js/自考学习/练习测验.js` | 新增照片跨设备同步（`uploadPhotoToServer`/`flushPendingPhotos`/`syncPhotosFromServer`）；localStorage 待同步队列兜底；`capture="environment"` 手机直开摄像头；同步链路集成到 `syncNow()` 和页面初始化 |
+| `render.yaml` | 新增：Render 基础设施配置（Web Service + 持久磁盘 + 环境变量） |
+| `docs/Render部署指南.md` | 新增：完整部署步骤、存储方案对比、常见问题 |
+| `docs/照片跨设备同步实施方案.md` | 新增：技术架构、代码改动清单、安全防护说明（多人使用 P0/P1/P2 优先级）、存储容量评估、离线降级策略 |
+
+**影响范围**：主工作台移动端布局、今日学习流移动端 AI 面板、练习测验拍照功能、服务端 API。
+
+---
+
+## v2.35.0
+
+**发布时间**：2026-08-31（北京时间）
+
+### 练习测验筛选持久化 + 拍照上传
+
+**核心变更**：练习测验页面新增筛选状态持久化（localStorage）；计算题/证明题新增拍照上传替代键盘输入。
+
+| 文件 | 更新内容 |
+|---|---|
+| `js/自考学习/练习测验.js` | 新增筛选状态持久化、拍照上传（compressImage/uploadQuizPhoto/renderQuizPhoto）、照片存 localStorage |
+| `styles/自考学习/练习测验.css` | 新增 `.quiz-photo` 系列样式 |
 
 ---
 

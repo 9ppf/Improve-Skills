@@ -1,0 +1,411 @@
+// ============================================================
+// ai-knowledge-tree 页面 JS
+// 抽离自 ai-knowledge-tree.html
+// ============================================================
+
+(function () {
+  var STAGES = [
+    { id: 1, name: "基础概念", weeks: "第1-2周", kp: "8个知识点" },
+    { id: 2, name: "机器学习", weeks: "第3-5周", kp: "8个知识点" },
+    { id: 3, name: "深度学习与NLP", weeks: "第6-8周", kp: "7个知识点" },
+    { id: 4, name: "LLM与应用", weeks: "第9-10周", kp: "6个知识点" }
+  ];
+
+  var KP = [
+    // ===== Stage 1: 基础概念 =====
+    { id: 1, s: 1, t: "什么是人工智能", tag: "概述",
+      c: "人工智能(AI)是让机器模拟人类智能的技术。AI > 机器学习(ML) > 深度学习(DL)是包含关系：AI是最广的概念，ML是AI的子集（从数据中学习规律），DL是ML的子集（用神经网络学习）。",
+      code: "# AI/ML/DL 关系示例\n# AI: 规则引擎、专家系统都属于AI\n# ML: 线性回归、决策树、SVM\n# DL: CNN、RNN、Transformer\n\nfrom sklearn.linear_model import LinearRegression  # ML\nimport torch.nn as nn  # DL\n\nclass SimpleNN(nn.Module):  # 深度学习模型\n    def __init__(self):\n        super().__init__()\n        self.fc = nn.Linear(10, 1)",
+      e: "用一句话描述 AI、ML、DL 的关系，并各举一个例子。",
+      ec: "AI是让机器具备智能的总称（如棋类AI）；\nML是从数据中自动学习规律的方法（如垃圾邮件分类）；\nDL是用多层神经网络学习的方法（如人脸识别）。\n\n# 关键：ML和DL都是AI的子集，DL是ML的子集",
+      a: "ChatGPT 是 DL 的典型应用——用 Transformer 神经网络从海量文本中学习语言规律。而传统的推荐算法（如协同过滤）属于 ML，不涉及神经网络。" },
+
+    { id: 2, s: 1, t: "机器学习基本概念", tag: "分类",
+      c: "机器学习按学习方式分三类：监督学习（有标签，如分类/回归）、无监督学习（无标签，如聚类/降维）、强化学习（通过奖励试错学习）。训练集用于学习，测试集用于评估泛化能力。",
+      code: "from sklearn.model_selection import train_test_split\nfrom sklearn.datasets import load_iris\n\nX, y = load_iris(return_X_y=True)\n# 80%训练，20%测试\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\nprint(f'训练集: {len(X_train)}, 测试集: {len(X_test)}')",
+      e: "判断以下任务属于监督/无监督/强化学习：1)识别猫狗图片 2)客户分群 3)AlphaGo下棋 4)房价预测",
+      ec: "1) 识别猫狗图片 → 监督学习（有标签：猫/狗）\n2) 客户分群 → 无监督学习（无预定义标签）\n3) AlphaGo下棋 → 强化学习（通过胜负奖励学习）\n4) 房价预测 → 监督学习（有标签：价格）\n\n# 关键区别：是否有标签、是否通过奖励学习",
+      a: "GPT 的预训练是无监督学习（预测下一个词），指令微调是监督学习（有标准答案），RLHF 是强化学习（人类反馈作为奖励）。一个系统可以混合多种学习方式。" },
+
+    { id: 3, s: 1, t: "数据与特征工程", tag: "数据",
+      c: "数据是ML的燃料。特征工程是将原始数据转化为模型可用的特征：数值归一化（让不同量级的特征可比）、类别编码（One-Hot/Label Encoding）、特征选择（去掉无关特征）。Garbage in, garbage out——数据质量决定模型上限。",
+      code: "from sklearn.preprocessing import StandardScaler, OneHotEncoder\nimport numpy as np\n\n# 数值特征归一化\nages = np.array([[25], [30], [35], [40]])\nscaler = StandardScaler()\nages_scaled = scaler.fit_transform(ages)\nprint('归一化后:', ages_scaled.flatten())\n\n# 类别特征 One-Hot 编码\ncities = [['北京'], ['上海'], ['北京'], ['广州']]\nencoder = OneHotEncoder(sparse_output=False)\ncities_encoded = encoder.fit_transform(cities)\nprint('编码后:\\n', cities_encoded)",
+      e: "给定身高(cm)和体重(kg)两个特征，为什么需要归一化？写出 StandardScaler 的公式。",
+      ec: "身高范围约150-190，体重范围约40-100。\n不归一化时，身高的数值更大，模型会过度依赖身高。\n\nStandardScaler 公式: z = (x - μ) / σ\n  μ = 均值, σ = 标准差\n  归一化后均值为0，标准差为1\n\nfrom sklearn.preprocessing import StandardScaler\nscaler = StandardScaler()\nX_scaled = scaler.fit_transform(X)",
+      a: "在 RAG（检索增强生成）中，文本被转化为向量（embedding），这就是特征工程在 NLP 中的体现。好的 embedding 能让语义相近的文本在向量空间中距离更近。" },
+
+    { id: 4, s: 1, t: "模型评估指标", tag: "评估",
+      c: "分类模型评估：准确率(整体正确率)、精确率(预测为正的正确比例)、召回率(实际为正的被正确预测比例)、F1(精确率和召回率的调和平均)。混淆矩阵是基础工具。回归模型评估：MSE、MAE、R²。",
+      code: "from sklearn.metrics import (\n    accuracy_score, precision_score, recall_score, f1_score,\n    confusion_matrix, classification_report\n)\n\ny_true = [1, 0, 1, 1, 0, 1, 0, 0]\ny_pred = [1, 0, 1, 0, 0, 1, 1, 0]\n\nprint(f'准确率: {accuracy_score(y_true, y_pred):.2f}')\nprint(f'精确率: {precision_score(y_true, y_pred):.2f}')\nprint(f'召回率: {recall_score(y_true, y_pred):.2f}')\nprint(f'F1:    {f1_score(y_true, y_pred):.2f}')\nprint('混淆矩阵:\\n', confusion_matrix(y_true, y_pred))",
+      e: "医疗诊断场景中，应该更关注精确率还是召回率？为什么？",
+      ec: "应该更关注召回率。\n\n原因：医疗诊断中漏诊（假阴性）的代价远大于误诊（假阳性）。\n- 漏诊：病人有病但没查出，延误治疗，可能危及生命\n- 误诊：没病但查出有病，进一步检查即可排除\n\n召回率 = TP / (TP + FN)，关注的是「实际为正的有多少被正确预测」\n\n# 调整阈值降低可以提高召回率\nmodel.set_params(threshold=0.3)  # 降低判断阈值",
+      a: "LLM 评估也用类似指标：BLEU（翻译质量）、ROUGE（摘要质量）、人类偏好评分。RLHF 中人类反馈就是对 LLM 输出质量的评估。" },
+
+    { id: 5, s: 1, t: "过拟合与正则化", tag: "核心",
+      c: "过拟合：模型在训练集表现好但测试集差，相当于死记硬背。欠拟合：训练集就表现差，没学到规律。正则化(L1/L2)通过惩罚大权重防止过拟合：L1产生稀疏权重(特征选择)，L2限制权重大小。",
+      code: "from sklearn.linear_model import Ridge, Lasso  # L2, L1\nimport numpy as np\n\nnp.random.seed(42)\nX = np.random.rand(100, 10)\ny = X[:, 0] * 3 + np.random.randn(100) * 0.1\n\n# L2正则化 (Ridge)\nridge = Ridge(alpha=1.0).fit(X, y)\nprint('Ridge权重:', ridge.coef_[:3])\n\n# L1正则化 (Lasso) - 会产生稀疏权重\nlasso = Lasso(alpha=0.1).fit(X, y)\nprint('Lasso权重:', lasso.coef_[:3])\nprint('Lasso非零权重数:', np.sum(lasso.coef_ != 0))",
+      e: "用一句话解释 L1 和 L2 正则化的区别，并说明各自适用场景。",
+      ec: "L1正则化(Lasso)会对绝对值大的权重施加惩罚，使不重要的权重变为0，适合特征选择；\nL2正则化(Ridge)惩罚权重的平方，使所有权重变小但不为0，适合防止过拟合。\n\n# 适用场景\n# L1: 特征多但只有少数有用时（特征选择）\n# L2: 所有特征都有用时（防过拟合）\n# ElasticNet: L1+L2 组合",
+      a: "大模型的 LoRA 微调就是一种正则化策略：冻结原始权重，只训练低秩矩阵，用极少参数实现微调，本质上是在约束参数空间防止过拟合。" },
+
+    { id: 6, s: 1, t: "梯度下降", tag: "优化",
+      c: "梯度下降是机器学习最核心的优化算法：沿着损失函数下降最快的方向（负梯度）更新参数。学习率(α)决定步长：太大可能跳过最优解，太小收敛太慢。SGD(随机)、Batch、Mini-batch 是三种变体。",
+      code: "import numpy as np\n\n# 用梯度下降拟合 y = 2x + 1\nX = np.array([1, 2, 3, 4, 5], dtype=float)\ny = np.array([3, 5, 7, 9, 11], dtype=float)  # y = 2x + 1\n\nw, b = 0.0, 0.0  # 初始化参数\nlr = 0.01  # 学习率\n\nfor epoch in range(100):\n    # 前向计算\n    y_pred = w * X + b\n    loss = np.mean((y_pred - y) ** 2)  # MSE\n    \n    # 计算梯度\n    dw = 2 * np.mean((y_pred - y) * X)\n    db = 2 * np.mean(y_pred - y)\n    \n    # 更新参数\n    w -= lr * dw\n    b -= lr * db\n\nprint(f'w={w:.4f}, b={b:.4f}, loss={loss:.6f}')\n# 输出: w=2.0000, b=1.0000",
+      e: "手写梯度下降的参数更新公式，并解释学习率过大/过小会发生什么。",
+      ec: "参数更新公式:\n  θ = θ - α * ∂J/∂θ\n  α = 学习率, J = 损失函数\n\n学习率过大:\n  - 步长太大，跳过最优解\n  - 损失函数震荡甚至发散\n  - 表现: loss 忽大忽小或越来越大\n\n学习率过小:\n  - 步长太小，收敛极慢\n  - 可能陷入局部最优\n  - 表现: loss 下降非常缓慢\n\n# 实践中常用学习率调度: 先大后小\n# scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=0.95)",
+      a: "深度学习的 Adam 优化器就是梯度下降的进阶版：自适应调整每个参数的学习率，结合动量加速收敛。GPT 等大模型预训练都用 AdamW 优化器。" },
+
+    { id: 7, s: 1, t: "损失函数", tag: "核心",
+      c: "损失函数衡量预测值与真实值的差距。回归用MSE(均方误差)、MAE(平均绝对误差)；分类用交叉熵(Cross-Entropy)。损失函数是梯度下降的目标——最小化损失就是让模型预测更准。",
+      code: "import numpy as np\n\n# MSE: 回归任务\ny_true_reg = np.array([3.0, 5.0, 7.0])\ny_pred_reg = np.array([2.5, 5.1, 6.8])\nmse = np.mean((y_true_reg - y_pred_reg) ** 2)\nprint(f'MSE: {mse:.4f}')\n\n# 交叉熵: 分类任务\ndef cross_entropy(y_true, y_pred):\n    return -np.sum(y_true * np.log(y_pred + 1e-8))\n\n# 三分类: 正确类别是第2类\ny_true = np.array([0, 1, 0])\ny_pred_good = np.array([0.1, 0.8, 0.1])  # 预测正确\ny_pred_bad = np.array([0.6, 0.2, 0.2])   # 预测错误\nprint(f'好预测的损失: {cross_entropy(y_true, y_pred_good):.4f}')\nprint(f'差预测的损失: {cross_entropy(y_true, y_pred_bad):.4f}')",
+      e: "为什么分类任务用交叉熵而不是 MSE？写出二分类交叉熵公式。",
+      ec: "分类任务用交叉熵而非MSE的原因:\n1. 交叉熵的梯度与softmax配合时梯度线性,收敛更快\n2. MSE在分类任务中梯度可能消失(当预测接近0或1时)\n3. 交叉熵直接衡量概率分布的差异,更符合分类本质\n\n二分类交叉熵公式:\n  L = -[y·log(p) + (1-y)·log(1-p)]\n  y = 真实标签(0或1)\n  p = 预测为正类的概率\n\n# PyTorch实现\nimport torch.nn as nn\ncriterion = nn.BCELoss()  # 二分类交叉熵\nloss = criterion(predictions, labels)",
+      a: "GPT 预训练的损失函数就是交叉熵：给定前文，预测下一个词的概率分布，用交叉熵衡量预测分布与真实分布的差距。损失越小，模型语言能力越强。" },
+
+    { id: 8, s: 1, t: "AI 伦理与安全", tag: "素养",
+      c: "AI伦理核心问题：偏见(训练数据中的偏差被放大)、隐私(用户数据被用于训练)、可解释性(黑盒模型难以解释决策)、对齐(确保AI目标与人类一致)。负责任AI需要从数据、模型、部署全链路考虑。",
+      code: "# 检测模型偏见示例\nfrom sklearn.metrics import classification_report\nimport numpy as np\n\n# 模拟: 男性数据多,女性数据少\ngroups = ['男']*80 + ['女']*20\ny_true = [1]*40 + [0]*40 + [1]*10 + [0]*10\ny_pred = [1]*38 + [0]*42 + [1]*5 + [0]*15  # 女性召回率更低\n\n# 分组评估\nfor g in ['男', '女']:\n    mask = [i for i, x in enumerate(groups) if x == g]\n    print(f'{g}性组: {classification_report(\n        [y_true[i] for i in mask],\n        [y_pred[i] for i in mask],\n        output_dict=True\n    )[\"1\"][\"recall\"]:.2f} 召回率')",
+      e: "举例说明AI偏见是如何产生的，并提出一个减少偏见的方案。",
+      ec: "AI偏见产生的原因:\n1. 训练数据不平衡: 如简历筛选模型主要用男性数据训练\n2. 历史数据包含社会偏见: 如贷款模型学习了过去的歧视性放贷模式\n3. 标注者偏见: 不同标注者对同一数据有不同判断\n\n减少偏见的方案:\n1. 数据层面: 平衡不同群体的数据量,确保代表性\n2. 模型层面: 添加公平性约束,如demographic parity\n3. 评估层面: 分组评估各群体指标,设置公平性阈值\n4. 制度层面: 建立AI伦理审查流程\n\n# 工具: Fairlearn, AIF360 用于检测和缓解偏见",
+      a: "RLHF（人类反馈强化学习）就是对齐的一种实践：通过人类对模型输出的偏好排序，训练奖励模型，引导LLM生成更安全、更有帮助、更无偏见的内容。ChatGPT 的安全性主要来自这一步。" },
+
+    // ===== Stage 2: 机器学习入门 =====
+    { id: 9, s: 2, t: "线性回归", tag: "回归",
+      c: "线性回归用一条直线拟合数据：y = wx + b。通过最小化MSE（残差平方和）求解参数。最小二乘法是解析解，梯度下降是迭代解。简单但理解它是理解更复杂模型的基础。",
+      code: "from sklearn.linear_model import LinearRegression\nimport numpy as np\n\n# 房价预测: 面积 -> 价格\nX = np.array([[50], [60], [70], [80], [90], [100]])\ny = np.array([100, 120, 140, 160, 180, 200])  # 万元\n\nmodel = LinearRegression()\nmodel.fit(X, y)\n\nprint(f'斜率w: {model.coef_[0]:.2f}')\nprint(f'截距b: {model.intercept_:.2f}')\nprint(f'预测110平米: {model.predict([[110]])[0]:.1f}万')\n\n# R² 拟合优度\nprint(f'R²: {model.score(X, y):.4f}')",
+      e: "手写最小二乘法求解一元线性回归的公式，并解释 R² 的含义。",
+      ec: "最小二乘法公式:\n  w = Σ((x-x̄)(y-ȳ)) / Σ((x-x̄)²)\n  b = ȳ - w·x̄\n  x̄, ȳ = x, y 的均值\n\nR² (决定系数) 含义:\n  R² = 1 - SS_res / SS_tot\n  SS_res = 残差平方和 = Σ(y - ŷ)²\n  SS_tot = 总平方和 = Σ(y - ȳ)²\n  \n  R² 范围 [0, 1]\n  R²=1: 完美拟合\n  R²=0: 模型等同于直接用均值预测\n  R²<0: 模型比均值还差\n\nimport numpy as np\nx = np.array([50,60,70,80,90,100])\ny = np.array([100,120,140,160,180,200])\nw = np.sum((x-x.mean())*(y-y.mean())) / np.sum((x-x.mean())**2)\nb = y.mean() - w * x.mean()\nprint(f'w={w:.2f}, b={b:.2f}')",
+      a: "GPT 最后的输出层本质就是一个线性变换：hidden_state × W = logits，再经过 softmax 得到词概率分布。线性回归是理解神经网络输出层的基础。" },
+
+    { id: 10, s: 2, t: "逻辑回归", tag: "分类",
+      c: "逻辑回归用于二分类：用 Sigmoid 函数将线性输出压缩到 (0,1) 区间表示概率。决策边界是线性的。虽然叫回归，但其实是分类算法。多分类用 Softmax 推广。",
+      code: "from sklearn.linear_model import LogisticRegression\nfrom sklearn.datasets import make_classification\n\n# 生成二分类数据\nX, y = make_classification(n_samples=200, n_features=2,\n    n_redundant=0, random_state=42)\n\nmodel = LogisticRegression()\nmodel.fit(X, y)\n\nprint(f'权重: {model.coef_[0]}')\nprint(f'截距: {model.intercept_[0]}')\nprint(f'准确率: {model.score(X, y):.2f}')\n\n# Sigmoid 函数\nimport numpy as np\ndef sigmoid(z):\n    return 1 / (1 + np.exp(-z))\n\nprint(f'sigmoid(0) = {sigmoid(0)}')  # 0.5\nprint(f'sigmoid(2) = {sigmoid(2):.4f}')  # ~0.88",
+      e: "写出 Sigmoid 函数公式，并解释为什么逻辑回归的输出可以解释为概率。",
+      ec: "Sigmoid 函数:\n  σ(z) = 1 / (1 + e^(-z))\n  z = wx + b\n\n为什么可以解释为概率:\n1. 输出范围 (0,1),满足概率的定义\n2. 单调递增: z越大,概率越大\n3. 对数几率线性: log(p/(1-p)) = wx + b\n   即对数几率是特征的线性组合\n4. 与最大似然估计一致: 最小化交叉熵等价于最大化似然\n\n# 决策边界: p=0.5 时 z=0, 即 wx+b=0 是分界线\n# 可以通过调整阈值改变精确率/召回率权衡",
+      a: "GPT 生成文本时，最后一步就是 Softmax（Sigmoid 的多分类推广）：将 logits 转换为词表中每个词的概率。温度参数调节 Softmax 的平滑程度，影响生成多样性。" },
+
+    { id: 11, s: 2, t: "决策树", tag: "模型",
+      c: "决策树通过一系列规则（if-else）对数据进行分裂。选择分裂特征的标准：信息增益(ID3)、信息增益率(C4.5)、基尼系数(CART)。优点是可解释性强，缺点是容易过拟合。",
+      code: "from sklearn.tree import DecisionTreeClassifier, export_text\nfrom sklearn.datasets import load_iris\n\niris = load_iris()\nX, y = iris.data, iris.target\n\n# 限制深度防止过拟合\ntree = DecisionTreeClassifier(max_depth=3, random_state=42)\ntree.fit(X, y)\n\nprint(f'准确率: {tree.score(X, y):.2f}')\nprint(f'特征重要性: {dict(zip(iris.feature_names, tree.feature_importances_))}')\nprint('决策规则:')\nprint(export_text(tree, feature_names=iris.feature_names))",
+      e: "解释信息增益的含义，并说明为什么需要剪枝。",
+      ec: "信息增益:\n  IG(S, A) = H(S) - H(S|A)\n  H(S) = 分裂前的熵\n  H(S|A) = 按特征A分裂后的加权熵\n  \n  熵 H = -Σ p_i * log2(p_i)\n  熵越大,不确定性越高\n  信息增益 = 分裂后不确定性减少的程度\n  选择信息增益最大的特征作为分裂节点\n\n为什么需要剪枝:\n1. 不限制深度时,决策树会为每个样本创建一条规则\n2. 这导致训练集准确率100%但测试集很差(过拟合)\n3. 剪枝方式:\n   - 预剪枝: max_depth, min_samples_split, min_samples_leaf\n   - 后剪枝: 先 fully grow 再自底向上合并\n\n# 实践中常用 max_depth=3~8",
+      a: "决策树是理解 Transformer 中注意力机制的基础——注意力权重本质上是一种软性的特征选择，而决策树是硬性的。XGBoost（梯度提升树）在表格数据上至今仍是强基线。" },
+
+    { id: 12, s: 2, t: "随机森林", tag: "集成",
+      c: "随机森林=多棵决策树+Bagging(有放回抽样)+随机特征选择。通过集成多个弱学习器降低方差，提高泛化。核心思想：集体智慧优于个体。是表格数据的强基线模型。",
+      code: "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import make_classification\nfrom sklearn.model_selection import cross_val_score\n\nX, y = make_classification(n_samples=500, n_features=10,\n    n_informative=5, random_state=42)\n\nrf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)\n\n# 5折交叉验证\nscores = cross_val_score(rf, X, y, cv=5)\nprint(f'5折CV准确率: {scores.mean():.3f} ± {scores.std():.3f}')\n\nrf.fit(X, y)\nprint(f'特征重要性: {rf.feature_importances_}')\n# 通常前5个特征重要性最高(因为n_informative=5)",
+      e: "解释 Bagging 为什么能降低方差，并说明随机森林与单棵决策树的区别。",
+      ec: "Bagging 降低方差的原理:\n1. 每棵树在不同的bootstrap样本上训练(有放回抽样)\n2. 每棵树的预测有差异(高方差)\n3. 多棵树投票/平均后,个体差异相互抵消\n4. 数学: 若各树独立, n棵树平均后方差=σ²/n\n   虽然树之间不完全独立,但仍显著降低方差\n\n随机森林 vs 单棵决策树:\n| 特性        | 决策树 | 随机森林 |\n|------------|--------|----------|\n| 过拟合风险  | 高     | 低       |\n| 可解释性    | 强     | 弱       |\n| 特征选择    | 确定性 | 随机     |\n| 预测速度    | 快     | 慢(n棵树) |\n| 准确率      | 一般   | 高       |\n\n# 随机森林的随机性来源:\n# 1. 数据随机(bootstrap) 2. 特征随机(max_features)",
+      a: "LLM 的 MoE（混合专家）架构与随机森林思想相似：多个专家网络各擅长短，路由器根据输入选择激活哪些专家。GPT-4 据传使用了 MoE 架构。" },
+
+    { id: 13, s: 2, t: "K-Means 聚类", tag: "无监督",
+      c: "K-Means是无监督聚类算法：指定K个簇，迭代地将每个点分配到最近的簇中心，再更新簇中心。关键问题：如何选K？常用肘部法则(Elbow Method)或轮廓系数(Silhouette)。",
+      code: "from sklearn.cluster import KMeans\nfrom sklearn.metrics import silhouette_score\nimport numpy as np\n\n# 生成3簇数据\nnp.random.seed(42)\nX = np.vstack([\n    np.random.randn(50, 2) + [2, 2],\n    np.random.randn(50, 2) + [-2, -2],\n    np.random.randn(50, 2) + [2, -2]\n])\n\n# 用轮廓系数选K\nfor k in range(2, 7):\n    km = KMeans(n_clusters=k, random_state=42, n_init=10)\n    labels = km.fit_predict(X)\n    score = silhouette_score(X, labels)\n    print(f'K={k}: 轮廓系数={score:.3f}')\n\n# K=3 轮廓系数最高\nkm = KMeans(n_clusters=3, random_state=42, n_init=10)\nlabels = km.fit_predict(X)\nprint(f'簇中心:\\n{km.cluster_centers_}')",
+      e: "手写 K-Means 算法的核心步骤（伪代码），并解释肘部法则的原理。",
+      ec: "K-Means 核心步骤:\n\n1. 随机初始化 K 个簇中心\n2. 分配: 每个样本分到最近的簇中心\n   for x in X:\n       x.cluster = argmin(||x - c_j||) for j in 1..K\n3. 更新: 簇中心 = 该簇所有样本的均值\n   for j in 1..K:\n       c_j = mean(X[x.cluster == j])\n4. 重复2-3直到簇中心不再变化(收敛)\n\n肘部法则原理:\n  - 横轴: K值, 纵轴: SSE(簇内平方和)\n  - SSE = Σ ||x - c_{cluster(x)}||²\n  - K增大时SSE单调递减(更多簇=更紧凑)\n  - 但K超过真实簇数后,SSE下降变缓\n  - 拐点(肘部)对应的K就是最佳值\n\n  SSE\n   |\\_\n   |  \\_\n   |    \\___  ← 肘部, K=3\n   |_________\n       1 2 3 4 5  K",
+      a: "K-Means 在 RAG 中用于向量聚类：将大量文档向量聚类后，检索时只需在相关簇内搜索，大幅提升检索效率。向量数据库的 IVF 索引就是基于这个思想。" },
+
+    { id: 14, s: 2, t: "朴素贝叶斯", tag: "概率",
+      c: "朴素贝叶斯基于贝叶斯定理，假设特征之间条件独立（朴素）。尽管假设很强，但在文本分类中表现意外地好。常用于垃圾邮件过滤、情感分析等NLP任务。",
+      code: "from sklearn.naive_bayes import MultinomialNB\nfrom sklearn.feature_extraction.text import CountVectorizer\n\n# 垃圾邮件分类\ntexts = [\n    '免费领取大奖快来', '限时优惠点击链接',\n    '明天开会记得参加', '周末一起去爬山',\n    '中奖了赶紧领取', '项目报告已发送',\n    '点击领取免费礼品', '今晚一起吃饭吗'\n]\nlabels = [1, 1, 0, 0, 1, 0, 1, 0]  # 1=垃圾, 0=正常\n\nvec = CountVectorizer()\nX = vec.fit_transform(texts)\n\nnb = MultinomialNB()\nnb.fit(X, labels)\n\ntest = vec.transform(['免费大奖快来领取', '明天会议改时间'])\npredictions = nb.predict(test)\nprint(f'预测: {predictions}')  # [1, 0]",
+      e: "写出朴素贝叶斯分类器的核心公式，并解释为什么特征独立假设是朴素的。",
+      ec: "朴素贝叶斯核心公式:\n  P(y|X) = P(X|y) * P(y) / P(X)\n  \n  朴素假设: 特征条件独立\n  P(X|y) = P(x1|y) * P(x2|y) * ... * P(xn|y)\n  \n  预测: y = argmax P(y|X) = argmax P(X|y) * P(y)\n  \n  对文本分类:\n  P(垃圾|\"免费大奖\") = P(\"免费\"|垃圾) * P(\"大奖\"|垃圾) * P(垃圾)\n\n为什么是朴素的:\n  现实中特征之间通常不独立\n  如\"免费\"和\"领取\"经常一起出现\n  但朴素贝叶斯假设它们独立计算\n  \n  为什么仍然有效:\n  1. 分类只需要排序,不需要精确概率\n  2. 独立假设的偏差对不同类别可能一致\n  3. 文本特征(词)之间的依赖相对较弱\n\n# 拉普拉斯平滑防止零概率\nP(x|y) = (count(x,y) + 1) / (count(y) + |V|)",
+      a: "朴素贝叶斯是理解 LLM 概率模型的基础：GPT 本质上是在建模 P(下一个词 | 前文)，虽然不假设独立，但贝叶斯思想贯穿其中。" },
+
+    { id: 15, s: 2, t: "支持向量机", tag: "模型",
+      c: "SVM寻找最大间隔超平面分开不同类别。核技巧(Kernel Trick)将数据映射到高维空间使非线性可分。在小样本高维数据上表现好，但大数据集训练慢。",
+      code: "from sklearn.svm import SVC\nfrom sklearn.datasets import make_circles\nimport numpy as np\n\n# 生成非线性可分的环形数据\nX, y = make_circles(n_samples=200, noise=0.05, random_state=42)\n\n# 线性SVM (效果差)\nsvm_linear = SVC(kernel='linear')\nsvm_linear.fit(X, y)\nprint(f'线性核准确率: {svm_linear.score(X, y):.2f}')\n\n# RBF核 (效果好,映射到高维)\nsvm_rbf = SVC(kernel='rbf', C=1.0, gamma='scale')\nsvm_rbf.fit(X, y)\nprint(f'RBF核准确率: {svm_rbf.score(X, y):.2f}')\n\n# C参数: 惩罚系数, 越大越不允许误分类\n# gamma: RBF核的影响范围, 越大越局部",
+      e: "解释核技巧的作用，并比较 RBF 核和线性核的适用场景。",
+      ec: "核技巧的作用:\n  不直接计算高维映射 φ(x), 而是通过核函数 K(x,z) = φ(x)·φ(z)\n  隐式地在高维空间中计算内积\n  避免了高维映射的计算开销\n\n  原始空间: 数据线性不可分\n  高维空间: 映射后线性可分\n  核函数: 隐式完成映射,无需知道φ的具体形式\n\nRBF核 vs 线性核:\n| 特性        | 线性核           | RBF核              |\n|------------|------------------|-------------------|\n| 决策边界    | 线性             | 非线性             |\n| 计算速度    | 快               | 较慢              |\n| 参数        | C                | C, gamma          |\n| 适用样本    | 大量线性可分数据 | 小中量非线性数据   |\n| 过拟合风险  | 低               | 较高(gamma大时)   |\n\n# RBF核: K(x,z) = exp(-gamma * ||x-z||²)\n# gamma大: 每个点影响范围小,容易过拟合\n# gamma小: 每个点影响范围大,可能欠拟合",
+      a: "SVM 的最大间隔思想与深度学习中的 margin loss 有相通之处。Attention 机制中的缩放点积也可以看作一种核函数——衡量 query 和 key 的相似度。" },
+
+    { id: 16, s: 2, t: "特征工程实践", tag: "工程",
+      c: "特征工程是ML中最耗时的环节。核心操作：缺失值处理(填充/删除)、异常值检测(IQR/Z-score)、特征构造(交叉特征/多项式)、特征选择(方差阈值/互信息/递归消除)。Pipeline将预处理和模型串联，避免数据泄露。",
+      code: "from sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler, PolynomialFeatures\nfrom sklearn.feature_selection import SelectKBest, f_classif\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=300, n_features=20,\n    n_informative=5, random_state=42)\n\n# 构建Pipeline: 预处理 + 特征选择 + 模型\npipe = Pipeline([\n    ('poly', PolynomialFeatures(degree=2, include_bias=False)),\n    ('scaler', StandardScaler()),\n    ('select', SelectKBest(f_classif, k=10)),\n    ('clf', LogisticRegression(max_iter=1000))\n])\n\nscores = cross_val_score(pipe, X, y, cv=5)\nprint(f'Pipeline CV准确率: {scores.mean():.3f} ± {scores.std():.3f}')\n\n# Pipeline防止数据泄露:\n# 特征选择在每折训练集上单独进行",
+      e: "解释什么是数据泄露，以及 Pipeline 如何防止数据泄露。",
+      ec: "数据泄露(Data Leakage):\n  在交叉验证时,如果对全部数据先做预处理(如归一化/特征选择),\n  再划分训练/测试集,测试集的信息会泄露到预处理中。\n  \n  错误做法:\n  X_scaled = StandardScaler().fit_transform(X)  # 用了全部数据\n  X_train, X_test = train_test_split(X_scaled)   # 已经泄露\n  model.fit(X_train)\n  model.score(X_test)  # 分数虚高\n  \n  正确做法(Pipeline):\n  pipe = Pipeline([\n      ('scaler', StandardScaler()),  # 每折只fit训练集\n      ('model', LogisticRegression())\n  ])\n  cross_val_score(pipe, X, y)  # 预处理在每折内独立进行\n  \n  Pipeline防止泄露的原理:\n  - cross_val_score 会在每折内单独 fit pipeline\n  - scaler 只看到训练集数据\n  - 特征选择只基于训练集\n  - 测试集是完全未见的\n\n# 规则: 所有用到数据的步骤都应在CV内部",
+      a: "在 RAG 系统中，文档的分块(chunking)策略、embedding 模型的选择都是特征工程在 NLP 中的体现。好的 chunk 策略直接决定检索质量。" },
+
+    // ===== Stage 3: 深度学习与NLP =====
+    { id: 17, s: 3, t: "神经网络基础", tag: "深度学习",
+      c: "神经网络由神经元(感知机)组成。每个神经元：加权求和+激活函数。多层堆叠形成深度网络。激活函数引入非线性：ReLU(f(x)=max(0,x))最常用，Sigmoid用于输出概率，Tanh用于隐藏层。",
+      code: "import torch\nimport torch.nn as nn\n\n# 一个简单的三层神经网络\nclass SimpleNet(nn.Module):\n    def __init__(self, input_size=10, hidden=32, output=2):\n        super().__init__()\n        self.fc1 = nn.Linear(input_size, hidden)   # 输入层→隐藏层\n        self.relu = nn.ReLU()                        # 激活函数\n        self.fc2 = nn.Linear(hidden, output)         # 隐藏层→输出层\n    \n    def forward(self, x):\n        x = self.fc1(x)      # 线性变换\n        x = self.relu(x)     # 非线性激活\n        x = self.fc2(x)      # 输出层\n        return x\n\nnet = SimpleNet()\nprint(net)\n# 参数量\nprint(f'总参数: {sum(p.numel() for p in net.parameters())}')\n\n# 前向传播\nx = torch.randn(5, 10)  # 5个样本,每个10维\nout = net(x)\nprint(f'输出形状: {out.shape}')  # [5, 2]",
+      e: "解释为什么需要激活函数，如果没有激活函数会发生什么？",
+      ec: "为什么需要激活函数:\n  没有激活函数时,多层线性变换等价于一层:\n  h = W1·x + b1\n  y = W2·h + b2 = W2·(W1·x + b1) + b2 = (W2·W1)·x + (W2·b1 + b2)\n  = W'·x + b'\n  \n  无论多少层,没有激活函数就等价于单层线性回归\n  无法学习非线性关系\n  \n  常见激活函数:\n  ReLU:  f(x) = max(0, x)     # 最常用,计算快,缓解梯度消失\n  Sigmoid: f(x) = 1/(1+e^-x)  # 输出层,二分类\n  Tanh:  f(x) = (e^x-e^-x)/(e^x+e^-x)  # 隐藏层\n  GELU:  f(x) = x·Φ(x)       # Transformer中使用\n  \n  ReLU优点:\n  1. 计算简单(只需比较)\n  2. 正区间梯度恒为1,缓解梯度消失\n  3. 产生稀疏激活(负数变0)\n  \n  ReLU缺点: 神经元死亡(输入恒为负时梯度为0)",
+      a: "GPT/Transformer 使用 GELU 激活函数（ReLU 的平滑变体）。GELU 的设计灵感来自高斯分布，比 ReLU 更平滑，在深层网络中表现更好。" },
+
+    { id: 18, s: 3, t: "反向传播", tag: "核心",
+      c: "反向传播是训练神经网络的核心算法：通过链式法则从输出层向输入层逐层计算梯度。前向传播计算输出和损失，反向传播计算梯度，优化器更新参数。PyTorch的autograd自动完成这个过程。",
+      code: "import torch\nimport torch.nn as nn\nimport torch.optim as optim\n\n# 简单训练循环\nclass Net(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.fc1 = nn.Linear(10, 32)\n        self.fc2 = nn.Linear(32, 1)\n    def forward(self, x):\n        return self.fc2(torch.relu(self.fc1(x)))\n\nnet = Net()\noptimizer = optim.Adam(net.parameters(), lr=0.01)\ncriterion = nn.MSELoss()\n\n# 模拟数据\nX = torch.randn(100, 10)\ny = torch.randn(100, 1)\n\n# 训练循环\nfor epoch in range(50):\n    optimizer.zero_grad()       # 1. 清零梯度\n    pred = net(X)               # 2. 前向传播\n    loss = criterion(pred, y)   # 3. 计算损失\n    loss.backward()             # 4. 反向传播(自动计算梯度)\n    optimizer.step()            # 5. 更新参数\n    \n    if epoch % 10 == 0:\n        print(f'Epoch {epoch}: loss={loss.item():.4f}')",
+      e: "手写反向传播的计算步骤（伪代码），解释 zero_grad 为什么必要。",
+      ec: "反向传播步骤:\n\n# 前向传播\nz1 = W1·x + b1          # 第一层线性\na1 = relu(z1)           # 激活\nz2 = W2·a1 + b2         # 第二层线性\nL = MSE(z2, y)          # 计算损失\n\n# 反向传播 (链式法则)\ndL/dz2 = 2*(z2-y)/N     # 损失对z2的梯度\ndL/dW2 = a1.T · dL/dz2  # 损失对W2的梯度\ndL/da1 = dL/dz2 · W2.T  # 损失对a1的梯度\ndL/dz1 = dL/da1 * (z1>0)# relu的导数: 正数为1,负数为0\ndL/dW1 = x.T · dL/dz1   # 损失对W1的梯度\n\n# 参数更新\nW1 -= lr * dL/dW1\nW2 -= lr * dL/dW2\n\n为什么需要 zero_grad:\n  PyTorch默认梯度是累积的(不是覆盖)\n  如果不清零,当前batch的梯度会加上上一batch的梯度\n  导致梯度方向错误\n  \n  错误(不zero_grad):\n  epoch1: grad = g1\n  epoch2: grad = g1 + g2  ← 错误!\n  \n  正确:\n  optimizer.zero_grad()  # grad = 0\n  loss.backward()        # grad = g1\n  optimizer.step()       # W -= lr * g1\n  \n  optimizer.zero_grad()  # grad = 0\n  loss.backward()        # grad = g2\n  optimizer.step()       # W -= lr * g2",
+      a: "GPT 预训练就是大规模的反向传播：前向计算每个词的预测概率，反向传播更新数千亿参数。ZeRO 优化器、梯度检查点等技术都是为了在有限显存下完成反向传播。" },
+
+    { id: 19, s: 3, t: "CNN 卷积网络", tag: "视觉",
+      c: "CNN通过卷积核提取局部特征（边缘→纹理→形状→物体）。核心组件：卷积层(特征提取)、池化层(降维)、全连接层(分类)。参数共享使CNN比全连接网络高效得多。广泛用于图像识别、目标检测。",
+      code: "import torch\nimport torch.nn as nn\n\n# 简单CNN: MNIST手写数字识别\nclass SimpleCNN(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)   # 1→16通道\n        self.pool = nn.MaxPool2d(2, 2)   # 28x28→14x14\n        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)  # 16→32通道\n        self.fc = nn.Linear(32 * 7 * 7, 10)  # 32通道×7×7→10类\n    \n    def forward(self, x):\n        x = self.pool(torch.relu(self.conv1(x)))  # [B,16,14,14]\n        x = self.pool(torch.relu(self.conv2(x)))  # [B,32,7,7]\n        x = x.view(x.size(0), -1)                 # 展平\n        return self.fc(x)\n\ncnn = SimpleCNN()\nx = torch.randn(4, 1, 28, 28)  # 4张28x28灰度图\nout = cnn(x)\nprint(f'输入: {x.shape} → 输出: {out.shape}')  # [4,10]\nprint(f'参数量: {sum(p.numel() for p in cnn.parameters())}')",
+      e: "解释卷积核的作用，并计算一个 3×3 卷积核在 5×5 输入上的输出尺寸（stride=1, padding=0）。",
+      ec: "卷积核的作用:\n  卷积核是一个小的权重矩阵(如3×3)\n  在输入上滑动,做逐元素乘法再求和\n  每个卷积核提取一种局部特征\n  \n  浅层卷积核: 边缘、线条\n  深层卷积核: 纹理、形状、物体部件\n  \n  多通道: 每个卷积核与输入所有通道做卷积\n  conv1: 1→16通道 = 16个不同的3×3卷积核\n  \n  输出尺寸计算:\n  output = (input - kernel + 2*padding) / stride + 1\n  \n  5×5输入, 3×3卷积, stride=1, padding=0:\n  output = (5 - 3 + 0) / 1 + 1 = 3\n  输出尺寸: 3×3\n  \n  卷积过程示意(5×5 → 3×3):\n  输入:          卷积核:    输出:\n  1 2 3 4 5     1 0 1     ★ ☆ ☆\n  6 7 8 9 0  ×  0 1 0  =  ☆ ☆ ☆\n  1 2 3 4 5     1 0 1     ☆ ☆ ☆\n  6 7 8 9 0               \n  1 2 3 4 5               \n  \n  ★ = 1*1+2*0+3*1+6*0+7*1+8*0+1*1+2*0+3*1\n     = 1+3+7+1+3 = 15",
+      a: "虽然 Transformer 在 NLP 中占主导，但 CNN 仍在视觉领域广泛使用。ViT（Vision Transformer）将图像分块后用 Attention，本质是 CNN 思想的变体。ConvNeXt 证明纯 CNN 也能达到 Transformer 性能。" },
+
+    { id: 20, s: 3, t: "RNN 与 LSTM", tag: "序列",
+      c: "RNN处理序列数据：当前时刻的输出依赖前一时刻的隐藏状态。LSTM(Long Short-Term Memory)解决了RNN的梯度消失问题，通过门控机制(遗忘门/输入门/输出门)控制信息流。曾是NLP的主流模型，现已被Transformer取代。",
+      code: "import torch\nimport torch.nn as nn\n\n# LSTM 文本分类\nclass TextClassifier(nn.Module):\n    def __init__(self, vocab_size=10000, embed_dim=128, hidden=256, num_classes=3):\n        super().__init__()\n        self.embedding = nn.Embedding(vocab_size, embed_dim)\n        self.lstm = nn.LSTM(embed_dim, hidden, batch_first=True)\n        self.fc = nn.Linear(hidden, num_classes)\n    \n    def forward(self, x):\n        # x: [batch, seq_len] 整数索引\n        emb = self.embedding(x)          # [batch, seq, embed]\n        out, (h, c) = self.lstm(emb)     # h: [1, batch, hidden]\n        return self.fc(h[-1])             # 用最后时刻隐藏状态分类\n\nmodel = TextClassifier()\n# 模拟一批句子 (batch=4, seq_len=20)\nx = torch.randint(0, 10000, (4, 20))\nout = model(x)\nprint(f'输入: {x.shape} → 输出: {out.shape}')  # [4,3]\n\n# LSTM 参数量\nprint(f'LSTM参数: {sum(p.numel() for p in model.lstm.parameters())}')",
+      e: "解释 LSTM 的三个门的作用，以及为什么 LSTM 能解决梯度消失。",
+      ec: "LSTM 三个门:\n\n1. 遗忘门(forget gate): 决定从细胞状态中丢弃什么\n   f = σ(Wf·[ht-1, xt] + bf)  # 输出0~1\n   f=0: 完全遗忘, f=1: 完全保留\n\n2. 输入门(input gate): 决定存入什么新信息\n   i = σ(Wi·[ht-1, xt] + bi)  # 输入门\n   g = tanh(Wg·[ht-1, xt] + bg)  # 候选值\n   C = f*Ct-1 + i*g  # 更新细胞状态\n\n3. 输出门(output gate): 决定输出什么\n   o = σ(Wo·[ht-1, xt] + bo)\n   h = o * tanh(C)  # 最终输出\n\n为什么能解决梯度消失:\n  RNN: h_t = tanh(W·h_{t-1} + U·x_t)\n  梯度链: ∂L/∂h_t = ∂L/∂h_{t+1} * W * (1-h_t²)\n  (1-h_t²) < 1, 连乘导致梯度指数衰减\n  \n  LSTM: C_t = f_t * C_{t-1} + i_t * g_t\n  梯度链: ∂C_t/∂C_{t-1} = f_t\n  f_t 接近1时, 梯度可以无损传播\n  \n  关键: 细胞状态C的更新是加法而非乘法\n  梯度有「高速公路」直达远处,不经过激活函数\n\n# 虽然LSTM解决了梯度消失,但训练仍很慢\n# Transformer用attention替代RNN,可并行计算",
+      a: "LSTM 的门控思想在 Transformer 中演变成了 Attention 机制：不再是逐步传递信息，而是一步到位地关注所有位置。GPT 完全抛弃了 RNN/LSTM，纯用 Attention。" },
+
+    { id: 21, s: 3, t: "词向量", tag: "NLP",
+      c: "词向量(Word Embedding)将词语映射为稠密向量，使语义相近的词在向量空间中距离相近。Word2Vec(CBOW/Skip-gram)是经典方法。词向量是NLP深度学习的基础——把离散文本变成连续向量。",
+      code: "import torch\nimport torch.nn as nn\n\n# Embedding 层\nvocab_size = 10000\nembed_dim = 128\nembedding = nn.Embedding(vocab_size, embed_dim)\n\n# 词索引 → 词向量\nword_ids = torch.LongTensor([1, 5, 100, 9999])  # 4个词的索引\nvectors = embedding(word_ids)\nprint(f'词索引: {word_ids.shape} → 词向量: {vectors.shape}')  # [4] → [4,128]\n\n# 余弦相似度\ndef cosine_sim(a, b):\n    return torch.dot(a, b) / (a.norm() * b.norm())\n\n# 训练前随机初始化,语义不相关\nsim = cosine_sim(vectors[0], vectors[1])\nprint(f'随机初始化的相似度: {sim:.4f}')  # ~0\n\n# 训练后(如Word2Vec)语义相近的词相似度高\n# sim(国王, 王后) ≈ 0.85\n# sim(苹果, 香蕉) ≈ 0.72\n# sim(苹果, 电脑) ≈ 0.35",
+      e: "解释 Word2Vec 的 Skip-gram 原理，并写出余弦相似度公式。",
+      ec: "Skip-gram 原理:\n  用中心词预测上下文词\n  \n  句子: \"我 喜欢 学习 Python 编程\"\n  窗口=2时:\n  中心词=\"学习\", 预测上下文=[\"喜欢\", \"Python\"]\n  \n  训练目标: 最大化 P(上下文|中心词)\n  P(w_c|w_t) = exp(v_w_c · v_w_t) / Σ exp(v_w · v_w_t)\n  \n  通过大量训练,语义相近的词向量会靠近\n  \n  著名例子: vec(国王) - vec(男) + vec(女) ≈ vec(王后)\n  这说明词向量捕获了语义关系\n\n余弦相似度:\n  cos(a, b) = (a · b) / (||a|| × ||b||)\n  \n  = Σ(a_i × b_i) / (sqrt(Σa_i²) × sqrt(Σb_i²))\n  \n  范围: [-1, 1]\n  1: 方向完全相同(语义最相似)\n  0: 正交(语义无关)\n  -1: 方向相反\n  \n  优点: 不受向量长度影响,只看方向\n\nimport numpy as np\ndef cosine_sim(a, b):\n    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))",
+      a: "GPT 的输入层就是 Embedding 层，但不再是静态的 Word2Vec——每个词的 embedding 会根据上下文动态变化（通过 Self-Attention）。这就是 Contextual Embedding，是 BERT/GPT 相比 Word2Vec 的核心突破。" },
+
+    { id: 22, s: 3, t: "Attention 机制", tag: "核心",
+      c: "Attention让模型动态关注输入的不同部分。Self-Attention:Q(Query查询)、K(Key键)、V(Value值)，计算query与所有key的相似度作为权重，加权求和value。Multi-Head Attention并行多个注意力头，捕获不同维度的关系。",
+      code: "import torch\nimport torch.nn.functional as F\n\n# Scaled Dot-Product Attention\ndef attention(Q, K, V):\n    d_k = Q.size(-1)\n    # 1. 计算相似度: Q·K^T / sqrt(d_k)\n    scores = torch.matmul(Q, K.transpose(-2, -1)) / (d_k ** 0.5)\n    # 2. Softmax 归一化\n    weights = F.softmax(scores, dim=-1)\n    # 3. 加权求和\n    output = torch.matmul(weights, V)\n    return output, weights\n\n# 模拟: 3个词, 每个词8维\nQ = torch.randn(1, 3, 8)\nK = torch.randn(1, 3, 8)\nV = torch.randn(1, 3, 8)\n\nout, weights = attention(Q, K, V)\nprint(f'输入: {Q.shape} → 输出: {out.shape}')\nprint(f'注意力权重:\\n{weights[0]}')\n# weights每行和为1, 表示该词对其他词的关注度",
+      e: "写出 Scaled Dot-Product Attention 的公式，解释为什么要除以 √d_k。",
+      ec: "Scaled Dot-Product Attention 公式:\n  Attention(Q, K, V) = softmax(Q·K^T / √d_k) · V\n  \n  步骤:\n  1. Q·K^T: 计算query与每个key的点积(相似度)\n  2. /√d_k: 缩放(防止点积过大)\n  3. softmax: 归一化为概率分布(和为1)\n  4. ·V: 用注意力权重加权求和value\n\n为什么要除以√d_k:\n  当d_k较大时, Q·K^T的值会很大\n  (因为点积是d_k个乘积之和)\n  \n  点积的方差 ≈ d_k (假设Q,K各元素独立标准正态)\n  \n  softmax对大值敏感:\n  [1, 2, 3] → softmax → [0.09, 0.24, 0.67]  # 还算均匀\n  [10, 20, 30] → softmax → [0, 0, 1.0]       # 几乎one-hot\n  \n  除以√d_k使方差回到1, 避免softmax饱和\n  饱和时梯度接近0, 训练停滞\n\n# Multi-Head Attention\n# 将Q,K,V分成h组, 各自做attention, 再拼接\n# multi_head = Concat(head_1, ..., head_h) · W_O\n# 每个 head_i = Attention(Q·W_Q_i, K·W_K_i, V·W_V_i)",
+      a: "Attention 是 Transformer 的核心，也是 GPT/BERT 的基础。GPT 用 Causal Self-Attention（只能看到前面的词），BERT 用 Bidirectional Self-Attention（能看到前后所有词）。理解 Attention 就理解了 LLM 的心脏。" },
+
+    { id: 23, s: 3, t: "Transformer", tag: "架构",
+      c: "Transformer=Self-Attention+FeedForward+残差连接+层归一化。抛弃RNN的序列依赖，完全并行计算。位置编码(Positional Encoding)补充位置信息。Encoder用于理解(BERT)，Decoder用于生成(GPT)。",
+      code: "import torch\nimport torch.nn as nn\n\nclass TransformerBlock(nn.Module):\n    def __init__(self, d_model=512, n_heads=8, d_ff=2048):\n        super().__init__()\n        # Multi-Head Attention\n        self.attn = nn.MultiheadAttention(d_model, n_heads, batch_first=True)\n        # Feed Forward\n        self.ff = nn.Sequential(\n            nn.Linear(d_model, d_ff),\n            nn.GELU(),\n            nn.Linear(d_ff, d_model)\n        )\n        # Layer Norm + Residual\n        self.ln1 = nn.LayerNorm(d_model)\n        self.ln2 = nn.LayerNorm(d_model)\n    \n    def forward(self, x, mask=None):\n        # Self-Attention + Residual + LayerNorm\n        attn_out, _ = self.attn(x, x, x, attn_mask=mask)\n        x = self.ln1(x + attn_out)\n        # FFN + Residual + LayerNorm\n        ff_out = self.ff(x)\n        x = self.ln2(x + ff_out)\n        return x\n\nblock = TransformerBlock()\nx = torch.randn(2, 10, 512)  # batch=2, seq=10, dim=512\nout = block(x)\nprint(f'输入: {x.shape} → 输出: {out.shape}')\nprint(f'参数量: {sum(p.numel() for p in block.parameters())}')",
+      e: "解释残差连接和层归一化的作用，为什么 Transformer 需要位置编码？",
+      ec: "残差连接(Residual Connection):\n  x' = x + Sublayer(x)  # 而非 x' = Sublayer(x)\n  \n  作用:\n  1. 梯度高速公路: 反向传播时梯度可以直接流过x\n  2. 缓解深层网络退化(深层不比浅层差)\n  3. 使上百层的Transformer可训练\n\n层归一化(LayerNorm):\n  对每个样本的特征维度做归一化\n  LN(x) = (x - mean) / std * gamma + beta\n  \n  作用:\n  1. 稳定训练, 减少内部协变量偏移\n  2. 不同位置/长度序列的统一处理\n  3. 比BatchNorm更适合NLP(变长序列)\n\n为什么需要位置编码:\n  Self-Attention本身没有顺序概念\n  [A,B,C]和[C,B,A]的attention结果相同\n  但语言顺序很重要: \"狗咬人\" ≠ \"人咬狗\"\n  \n  位置编码给每个位置一个独特的向量\n  PE(pos, 2i) = sin(pos / 10000^(2i/d))\n  PE(pos, 2i+1) = cos(pos / 10000^(2i/d))\n  \n  加到词向量上: input = word_emb + pos_emb\n  \n  GPT使用可学习的位置编码(nn.Embedding)\n  RoPE(旋转位置编码)是更新的方案\n\n# Transformer结构:\n# GPT = [TransformerBlock] × N_layers\n# GPT-2 small: 12层, 768维, 12头\n# GPT-3: 96层, 12288维, 96头",
+      a: "GPT 就是多层 Decoder-only Transformer 的堆叠：GPT-2 small 有 12 层 Transformer Block，GPT-3 有 96 层。每增加层数和维度，模型能力就增强——这就是 scaling law 的体现。" },
+
+    // ===== Stage 4: LLM 与应用 =====
+    { id: 24, s: 4, t: "大语言模型原理", tag: "LLM",
+      c: "大语言模型(LLM)通过预训练+微调两阶段获得语言能力。预训练：海量文本预测下一个词(自回归)。微调：指令学习+RLHF对齐人类偏好。规模效应(Scaling Law)：模型越大、数据越多、算力越强，能力越强且涌现新能力。",
+      code: "# 简化的自回归生成过程\nimport torch\nimport torch.nn as nn\n\nclass TinyGPT(nn.Module):\n    def __init__(self, vocab_size=1000, d_model=256, n_heads=4, n_layers=4):\n        super().__init__()\n        self.token_emb = nn.Embedding(vocab_size, d_model)\n        self.pos_emb = nn.Embedding(512, d_model)  # max_seq=512\n        self.blocks = nn.ModuleList([\n            nn.TransformerEncoderLayer(d_model, n_heads,\n                d_model*4, batch_first=True, activation='gelu')\n            for _ in range(n_layers)\n        ])\n        self.lm_head = nn.Linear(d_model, vocab_size)  # 输出层\n    \n    def forward(self, x):\n        B, T = x.shape\n        pos = torch.arange(T).unsqueeze(0)\n        h = self.token_emb(x) + self.pos_emb(pos)\n        for block in self.blocks:\n            h = block(h)\n        return self.lm_head(h)  # [B, T, vocab_size]\n\nmodel = TinyGPT()\nx = torch.randint(0, 1000, (2, 20))  # 2句话,各20词\nlogits = model(x)\nprint(f'输入: {x.shape} → logits: {logits.shape}')\nprint(f'参数量: {sum(p.numel() for p in model.parameters()):,}')\n\n# 生成: 取最后一步logits → softmax → 采样下一个词\nnext_logits = logits[:, -1, :]  # [B, vocab_size]\nprobs = torch.softmax(next_logits, dim=-1)\nnext_token = torch.multinomial(probs, 1)  # 采样\nprint(f'下一个词: {next_token}')",
+      e: "解释什么是涌现能力(Emergent Ability)，并说明自回归生成的过程。",
+      ec: "涌现能力(Emergent Ability):\n  当模型规模超过某个阈值后, 突然出现小模型没有的能力\n  \n  典型涌现能力:\n  - 少样本学习(few-shot): 给几个例子就能学会新任务\n  - 思维链推理(Chain-of-Thought): 分步推理复杂问题\n  - 指令遵循: 理解并执行复杂指令\n  - 代码生成: 编写功能性代码\n  \n  规模维度: 参数量、数据量、计算量\n  GPT-3(175B)出现few-shot, GPT-2(1.5B)没有\n  \n  争议: 也有人认为这是评估指标的非线性导致的错觉\n\n自回归生成过程:\n  1. 输入prompt: [BOS, 我, 喜欢]\n  2. 模型前向: 得到每个位置的logits\n  3. 取最后位置: logits[-1] → softmax → 概率分布\n  4. 采样下一个词: P(下一个词|我,喜欢)\n     - Greedy: 选概率最大的词\n     - Top-k: 从概率最高的k个中采样\n     - Top-p: 从累积概率达p的最小集合中采样\n  5. 拼接: [BOS, 我, 喜欢, Python]\n  6. 重复2-5, 直到遇到EOS或达到最大长度\n\n  关键: 每次生成只看前面的词(因果掩码)\n  P(句子) = P(w1) * P(w2|w1) * P(w3|w1,w2) * ...\n  这就是自回归(Autoregressive)的含义",
+      a: "GPT-4、Claude、DeepSeek 等现代 LLM 都遵循这个框架：大规模预训练 + 指令微调 + RLHF。区别在于模型架构细节（MoE、GQA等）、数据质量和训练策略。" },
+
+    { id: 25, s: 4, t: "Prompt 工程", tag: "实践",
+      c: "Prompt工程是通过设计输入文本来引导LLM输出期望结果的技术。核心技巧：角色设定、Few-shot示例、Chain-of-Thought思维链、结构化输出。好的Prompt能显著提升LLM表现，不需要修改模型。",
+      code: "# Prompt 工程实践示例\n\n# 1. 角色设定\nprompt_role = \"\"\"你是一位资深Python工程师,擅长代码审查。\n请审查以下代码,从安全性、性能、可读性三个维度给出建议。\n\n代码:\n```python\ndef get_user(user_id):\n    return db.query(f\"SELECT * FROM users WHERE id = {user_id}\")\n```\n\"\"\"\n\n# 2. Few-shot 示例\nprompt_fewshot = \"\"\"任务: 将句子分类为正面/负面/中性\n\n示例:\n输入: 这部电影太精彩了 → 输出: 正面\n输入: 服务态度很差 → 输出: 负面\n输入: 今天星期三 → 输出: 中性\n\n输入: 价格还算合理 → 输出:\n\"\"\"\n\n# 3. Chain-of-Thought\nprompt_cot = \"\"\"问题: 一个商店打8折后再打9折,相当于打几折?\n\n请一步步思考:\n1. 原价是1\n2. 打8折后: 1 × 0.8 = 0.8\n3. 再打9折: 0.8 × 0.9 = 0.72\n4. 所以相当于打7.2折\n\n问题: 如果先涨10%再打9折,相当于原价的多少?\n\"\"\"\n\n# 4. 结构化输出\nprompt_json = \"\"\"请分析以下文本的情感,以JSON格式输出:\n文本: \"这个产品非常好用,推荐购买!\"\n\n输出格式:\n{\"sentiment\": \"正面/负面/中性\", \"score\": 0-1, \"keywords\": []}\n\"\"\"\n\nprint(\"Prompt工程核心: 明确任务 + 提供示例 + 引导推理 + 规定格式\")",
+      e: "设计一个 Prompt，让 LLM 将自然语言描述转换为 SQL 查询语句，要求包含 Few-shot 示例。",
+      ec: "Prompt 设计:\n\n你是一位SQL专家。请将自然语言转换为SQL查询。\n\n数据库表:\n- students(id, name, age, grade, class)\n- scores(id, student_id, subject, score, exam_date)\n\n示例:\n问: 查询所有年龄大于18岁的学生姓名\n答: SELECT name FROM students WHERE age > 18\n\n问: 查询数学成绩前3名的学生\n答: SELECT s.name, sc.score \n    FROM students s \n    JOIN scores sc ON s.id = sc.student_id \n    WHERE sc.subject = '数学' \n    ORDER BY sc.score DESC \n    LIMIT 3\n\n问: 统计每个班级的平均分\n答: \n\n关键要素:\n1. 角色设定: SQL专家\n2. 表结构: 提供schema信息\n3. Few-shot: 2-3个示例覆盖不同查询模式\n4. 留空: 最后一个问题留空让模型补全\n\n# 实践建议\n# - 温度设低(0-0.3)减少随机性\n# - 用 system prompt 固定角色和规则\n# - 对复杂查询,要求先生成执行计划\n# - 验证: 执行SQL检查结果是否合理",
+      a: "Prompt 工程是使用 LLM 最重要的技能。OpenAI 的 GPT-4、Anthropic 的 Claude 都对 prompt 格式有偏好。好的 prompt = 清晰角色 + 具体任务 + 充分上下文 + 输出格式约束。" },
+
+    { id: 26, s: 4, t: "RAG 检索增强", tag: "应用",
+      c: "RAG(Retrieval-Augmented Generation)将外部知识检索与LLM生成结合：先从知识库检索相关文档，再将检索结果作为上下文喂给LLM生成回答。解决LLM知识过时、幻觉、领域知识不足的问题，是企业AI应用的主流方案。",
+      code: "import numpy as np\n\n# 简化版 RAG 流程\n\n# 1. 知识库(已向量化)\nknowledge_base = [\n    {\"text\": \"Python的GIL是全局解释器锁\", \"vector\": [0.1, 0.3, 0.5]},\n    {\"text\": \"列表推导式比for循环快\", \"vector\": [0.2, 0.1, 0.4]},\n    {\"text\": \"装饰器是修改函数行为的语法糖\", \"vector\": [0.3, 0.5, 0.1]},\n]\n\n# 2. 检索: 计算query与文档的相似度\ndef retrieve(query_vec, kb, top_k=2):\n    scores = []\n    for doc in kb:\n        sim = np.dot(query_vec, doc[\"vector\"]) / (\n            np.linalg.norm(query_vec) * np.linalg.norm(doc[\"vector\"]))\n        scores.append((doc[\"text\"], sim))\n    scores.sort(key=lambda x: -x[1])\n    return scores[:top_k]\n\n# 3. 生成: 将检索结果拼入prompt\nquery = [0.25, 0.15, 0.42]  # \"Python列表性能\"\nretrieved = retrieve(query, knowledge_base)\n\nprompt = f\"\"\"根据以下参考资料回答问题。\n\n参考资料:\n{chr(10).join([f'- {r[0]}' for r in retrieved])}\n\n问题: Python列表性能如何优化?\n\"\"\"\nprint(prompt)\n# LLM 基于检索到的资料生成准确回答",
+      e: "画出 RAG 系统的完整流程图（文字版），并说明为什么 RAG 比直接微调模型更适合知识更新。",
+      ec: "RAG 完整流程:\n\n=== 离线索引阶段 ===\n文档 → 分块(chunking) → Embedding → 存入向量数据库\n\n=== 在线查询阶段 ===\n用户问题 → Embedding → 向量检索(top-k) → 重排序(rerank)\n    → 拼接prompt → LLM生成 → 回答\n\n详细步骤:\n1. 文档处理: PDF/HTML → 纯文本 → 分块(512 tokens)\n2. 向量化: 用embedding模型将文本转为向量\n3. 存储: 向量存入FAISS/Milvus/Chroma\n4. 检索: query向量化 → 余弦相似度 → top-k文档\n5. 重排序: 用cross-encoder重新排序(可选)\n6. 生成: 将top-k文档作为context拼入prompt\n7. 引用: 标注回答来源(可追溯)\n\n为什么RAG比微调更适合知识更新:\n\n| 维度      | RAG              | 微调             |\n|----------|------------------|-----------------|\n| 知识更新  | 更新数据库即可    | 需要重新训练     |\n| 成本      | 低(只存向量)      | 高(需GPU训练)   |\n| 时效性    | 实时              | 训练周期长       |\n| 可追溯    | 可标注来源        | 黑盒             |\n| 幻觉      | 低(有据可查)      | 较高             |\n| 灵活性    | 可换不同LLM       | 绑定特定模型     |\n\n# RAG适用: 知识频繁更新、需要引用来源、领域文档量大\n# 微调适用: 改变模型风格/格式、领域语言模式特殊",
+      a: "RAG 是目前最实用的 LLM 应用模式。LangChain、LlamaIndex 等框架都围绕 RAG 构建。你的工作台中的 AI 资讯周报如果加上 RAG，就能让用户问答式地查询历史资讯。" },
+
+    { id: 27, s: 4, t: "AI Agent", tag: "前沿",
+      c: "AI Agent是能自主规划+执行任务的智能体。核心循环：感知(理解任务)→规划(分解步骤)→行动(调用工具)→观察(获取结果)→循环。ReAct框架将推理(Reasoning)和行动(Acting)交织进行。工具调用(Tool Use)是Agent的关键能力。",
+      code: "# 简化版 Agent 循环 (ReAct模式)\n\n# 定义工具\ntools = {\n    \"search\": lambda q: f\"搜索结果: 关于'{q}'的相关信息...\",\n    \"calculate\": lambda expr: str(eval(expr)),\n    \"write_file\": lambda name, content: f\"已写入 {name}\",\n}\n\n# Agent 循环\ndef agent_loop(task, max_steps=5):\n    messages = [{\"role\": \"user\", \"content\": task}]\n    \n    for step in range(max_steps):\n        # 1. LLM 推理: 决定下一步行动\n        thought = f\"思考: 需要分析任务 '{task}'\"\n        action = \"search\"  # LLM决定调用的工具\n        action_input = \"Python GIL\"\n        \n        print(f\"[Step {step+1}]\")\n        print(f\"  思考: {thought}\")\n        print(f\"  行动: {action}({action_input})\")\n        \n        # 2. 执行工具\n        if action in tools:\n            observation = tools[action](action_input)\n            print(f\"  观察: {observation}\")\n            \n            # 3. 判断是否完成\n            if \"完成\" in observation or step == max_steps - 1:\n                return f\"最终回答: 任务完成\"\n            \n            messages.append({\"role\": \"tool\", \"content\": observation})\n    \n    return \"达到最大步数\"\n\nresult = agent_loop(\"查询Python GIL并写总结\")\nprint(result)\n\n# ReAct = Reasoning + Acting 交替进行\n# Thought → Action → Observation → Thought → ...",
+      e: "写出 ReAct 框架的循环流程，并解释 Agent 与普通 LLM 对话的区别。",
+      ec: "ReAct 循环流程:\n\n循环开始:\n  1. Thought(思考): 分析当前状态,决定下一步\n     \"我需要先搜索相关信息\"\n  \n  2. Action(行动): 调用工具\n     search(\"Python GIL 原理\")\n  \n  3. Observation(观察): 获取工具返回结果\n     \"GIL是全局解释器锁,同一时刻只有一个线程...\"\n  \n  4. Thought(思考): 基于观察结果继续推理\n     \"现在我知道了GIL的概念,需要写一个总结\"\n  \n  5. Action(行动): 调用另一个工具\n     write_file(\"GIL总结.md\", content)\n  \n  6. Observation(观察): \"文件已写入\"\n  \n  7. Thought: \"任务完成\"\n  → 结束\n\nAgent vs 普通LLM对话:\n\n| 维度      | 普通对话           | Agent              |\n|----------|-------------------|--------------------|\n| 交互模式  | 单轮问答           | 多轮自主循环        |\n| 工具使用  | 不能              | 可调用搜索/计算/文件 |\n| 任务分解  | 用户手动分解       | 自动规划步骤        |\n| 结果验证  | 无                | 可观察并调整        |\n| 自主性    | 被动回答           | 主动执行            |\n| 复杂任务  | 能力有限           | 可完成多步任务      |\n\n# Agent 关键能力:\n# 1. Tool Use: 调用外部工具(API/搜索/代码执行)\n# 2. Planning: 将大任务分解为子任务\n# 3. Memory: 短期(对话历史)+长期(向量数据库)\n# 4. Reflection: 从失败中学习并调整策略\n\n# 代表性Agent框架: LangChain Agent, AutoGPT, BabyAGI",
+      a: "OpenAI 的 Function Calling、Anthropic 的 Tool Use 都是为 Agent 设计的。你的工作台 AI 学习规划师就是一个简单 Agent——读取进度、生成计划、写入课程表。未来可以扩展为自动追踪学习进度、推荐复习内容。" },
+
+    { id: 28, s: 4, t: "模型微调", tag: "训练",
+      c: "微调(Fine-tuning)在预训练模型基础上用特定数据继续训练，使其适应特定任务。全量微调成本高，LoRA(Low-Rank Adaptation)只训练少量低秩矩阵参数，用<1%参数达到接近全量微调效果，是当前主流方案。",
+      code: "# LoRA 微调示例 (使用 peft 库)\n\n# 概念演示: LoRA 原理\nimport torch\nimport torch.nn as nn\n\n# 原始权重 W (d×d), 不更新\nd = 512\nW = nn.Linear(d, d, bias=False)\nW.weight.requires_grad = False  # 冻结\n\n# LoRA: W' = W + B·A, 只训练 B(d×r) 和 A(r×d)\nr = 8  # 秩, 通常4-32\n\nA = nn.Linear(d, r, bias=False)  # 降维 d→r\nB = nn.Linear(r, d, bias=False)  # 升维 r→d\n\n# 初始化: A用正态, B用零(训练开始时LoRA=0)\nA.weight.data.normal_(0, 0.01)\nB.weight.data.zero_()\n\n# 前向传播\nclass LoRALayer(nn.Module):\n    def __init__(self, d, r):\n        super().__init__()\n        self.W = nn.Linear(d, d, bias=False)\n        self.W.weight.requires_grad = False\n        self.A = nn.Linear(d, r, bias=False)\n        self.B = nn.Linear(r, d, bias=False)\n    \n    def forward(self, x):\n        return self.W(x) + self.B(self.A(x))  # 原始 + LoRA\n\nlora = LoRALayer(512, 8)\nx = torch.randn(4, 512)\nout = lora(x)\n\n# 参数对比\nfrozen = sum(p.numel() for p in lora.W.parameters())\ntrainable = sum(p.numel() for p in lora.A.parameters()) + sum(p.numel() for p in lora.B.parameters())\nprint(f'冻结参数: {frozen:,}')\nprint(f'LoRA可训练参数: {trainable:,}')\nprint(f'占比: {trainable/frozen*100:.1f}%')  # ~3.1%",
+      e: "解释 LoRA 的数学原理，并说明为什么 B 初始化为零。",
+      ec: "LoRA 数学原理:\n\n  原始: h = W·x,  W ∈ R^(d×d)\n  \n  LoRA: h = (W + ΔW)·x\n  其中 ΔW = B·A\n  B ∈ R^(d×r), A ∈ R^(r×d)\n  r << d (如 r=8, d=512)\n  \n  参数量对比:\n  全量微调: d² = 512² = 262,144\n  LoRA: 2·d·r = 2×512×8 = 8,192\n  压缩比: 32倍, 只需3.1%参数\n  \n  为什么有效:\n  论文假设模型权重是低秩的\n  ΔW = B·A 是秩为r的低秩矩阵\n  足以表达任务适配所需的权重变化\n\n为什么B初始化为零:\n  训练开始时: ΔW = B·A = 0·A = 0\n  所以 h = (W + 0)·x = W·x\n  \n  保证训练开始时模型行为与预训练完全相同\n  避免随机初始化的B·A破坏预训练权重\n  \n  然后通过梯度下降逐步学习B\n  A用正态初始化保证B·A有非零梯度\n  \n  训练过程:\n  Step 0: ΔW = 0, 行为 = 预训练模型\n  Step N: ΔW = B·A ≠ 0, 逐渐适配新任务\n\n# LoRA变体:\n# QLoRA: 4bit量化 + LoRA, 更省显存\n# DoRA: 分解为方向和幅度\n# MoLoRA: 多个LoRA混合",
+      a: "LoRA 是当前微调开源模型（Llama、DeepSeek）的主流方案。QLoRA 让消费级 GPU 也能微调 7B 模型。你的工作台如果接入本地 LLM，可以用 LoRA 微调一个专门生成学习计划的模型。" },
+
+    { id: 29, s: 4, t: "AI 应用开发", tag: "工程",
+      c: "AI应用开发核心：API调用(调用LLM接口)、流式输出(SSE流式返回)、上下文管理(对话历史+token限制)、多模态(文本+图片+音频)、错误处理(重试/降级)。从单次API调用到生产级系统，工程化是关键。",
+      code: "# AI 应用开发: 调用 DeepSeek API\nimport requests\nimport json\n\n# 1. 基础调用\ndef chat(messages, model=\"deepseek-chat\", stream=False):\n    url = \"https://api.deepseek.com/v1/chat/completions\"\n    headers = {\n        \"Authorization\": f\"Bearer {API_KEY}\",\n        \"Content-Type\": \"application/json\"\n    }\n    data = {\n        \"model\": model,\n        \"messages\": messages,\n        \"stream\": stream,\n        \"temperature\": 0.7,\n        \"max_tokens\": 2000\n    }\n    response = requests.post(url, headers=headers, json=data)\n    return response.json()\n\n# 2. 流式输出\ndef chat_stream(messages):\n    url = \"https://api.deepseek.com/v1/chat/completions\"\n    headers = {\"Authorization\": f\"Bearer {API_KEY}\"}\n    data = {\"model\": \"deepseek-chat\", \"messages\": messages, \"stream\": True}\n    \n    response = requests.post(url, headers=headers, json=data, stream=True)\n    for line in response.iter_lines():\n        if line:\n            chunk = json.loads(line[6:])  # 去掉 'data: '\n            content = chunk[\"choices\"][0][\"delta\"].get(\"content\", \"\")\n            print(content, end=\"\", flush=True)  # 逐字输出\n\n# 3. 上下文管理\nclass Conversation:\n    def __init__(self, system_prompt, max_history=20):\n        self.system = {\"role\": \"system\", \"content\": system_prompt}\n        self.history = []\n        self.max = max_history\n    \n    def chat(self, user_input):\n        self.history.append({\"role\": \"user\", \"content\": user_input})\n        messages = [self.system] + self.history[-self.max:]\n        \n        response = chat(messages)\n        reply = response[\"choices\"][0][\"message\"][\"content\"]\n        \n        self.history.append({\"role\": \"assistant\", \"content\": reply})\n        return reply\n\n# 使用\nconv = Conversation(\"你是Python学习助手\")\nprint(conv.chat(\"什么是装饰器?\"))",
+      e: "设计一个带错误处理和重试机制的 API 调用函数，处理超时、限流、服务器错误三种情况。",
+      ec: "带错误处理的 API 调用:\n\nimport requests\nimport time\nfrom functools import wraps\n\ndef retry(max_retries=3, backoff=1.5):\n    \"\"\"重试装饰器\"\"\"\n    def decorator(func):\n        @wraps(func)\n        def wrapper(*args, **kwargs):\n            last_error = None\n            for attempt in range(max_retries):\n                try:\n                    return func(*args, **kwargs)\n                except requests.Timeout:\n                    print(f\"超时,重试 {attempt+1}/{max_retries}\")\n                    last_error = \"请求超时\"\n                except requests.ConnectionError:\n                    print(f\"连接失败,重试 {attempt+1}/{max_retries}\")\n                    last_error = \"网络连接错误\"\n                except requests.HTTPError as e:\n                    status = e.response.status_code\n                    if status == 429:\n                        # 限流: 指数退避\n                        wait = backoff ** (attempt + 1)\n                        print(f\"限流,等待{wait}秒...\")\n                        time.sleep(wait)\n                        last_error = \"API限流\"\n                    elif 500 <= status < 600:\n                        # 服务器错误: 重试\n                        print(f\"服务器{status}错误,重试\")\n                        last_error = f\"服务器错误{status}\"\n                    else:\n                        # 4xx错误: 不重试\n                        raise  # 如401认证失败\n                time.sleep(backoff ** attempt)\n            raise Exception(f\"重试{max_retries}次后仍失败: {last_error}\")\n        return wrapper\n    return decorator\n\n@retry(max_retries=3, backoff=1.5)\ndef safe_chat(messages, timeout=30):\n    response = requests.post(\n        \"https://api.deepseek.com/v1/chat/completions\",\n        headers={\"Authorization\": f\"Bearer {API_KEY}\"},\n        json={\"model\": \"deepseek-chat\", \"messages\": messages},\n        timeout=timeout  # 超时时间\n    )\n    response.raise_for_status()  # 检查HTTP状态码\n    return response.json()\n\n# 降级策略\ntry:\n    result = safe_chat(messages)\nexcept Exception:\n    # API不可用时降级为本地模板\n    result = {\"fallback\": \"AI服务暂时不可用,使用本地回复\"}",
+      a: "你的工作台已经实现了这套架构：dev_server.py 作为代理调用 AI API，处理流式输出和错误降级。这就是 AI 应用开发的实战——从 API 调用到生产级系统的每一步工程化。" }
+  ];
+
+  var DEMO_MAP = {
+    1:  { demo: "数据可视化与评估工具", use: "展示AI/ML概念分类、数据集划分流程" },
+    2:  { demo: "数据可视化与评估工具", use: "训练集/测试集划分、模型评估指标计算" },
+    3:  { demo: "数据可视化与评估工具", use: "特征工程：归一化、编码、Pipeline构建" },
+    4:  { demo: "数据可视化与评估工具", use: "评估指标可视化：混淆矩阵、PR曲线" },
+    5:  { demo: "数据可视化与评估工具", use: "正则化效果对比、过拟合可视化" },
+    6:  { demo: "数据可视化与评估工具", use: "梯度下降过程可视化、学习率对比" },
+    7:  { demo: "数据可视化与评估工具", use: "损失函数计算与对比" },
+    8:  { demo: "数据可视化与评估工具", use: "模型偏见检测、分组评估" },
+    9:  { demo: "MNIST 分类器", use: "线性回归拟合参数、R²评估" },
+    10: { demo: "MNIST 分类器", use: "Sigmoid分类、概率输出" },
+    11: { demo: "MNIST 分类器", use: "决策树分类规则、特征重要性" },
+    12: { demo: "MNIST 分类器", use: "随机森林集成分类、特征重要性" },
+    13: { demo: "MNIST 分类器", use: "K-Means无监督聚类可视化" },
+    14: { demo: "MNIST 分类器", use: "朴素贝叶斯文本分类" },
+    15: { demo: "MNIST 分类器", use: "SVM分类、核函数对比" },
+    16: { demo: "MNIST 分类器", use: "特征工程Pipeline、交叉验证" },
+    17: { demo: "语义搜索引擎", use: "神经网络前向传播、ReLU激活" },
+    18: { demo: "语义搜索引擎", use: "反向传播训练、参数更新" },
+    19: { demo: "语义搜索引擎", use: "CNN特征提取(可选图像输入)" },
+    20: { demo: "语义搜索引擎", use: "序列处理思路(LSTM对比)" },
+    21: { demo: "语义搜索引擎", use: "词向量Embedding、余弦相似度检索" },
+    22: { demo: "语义搜索引擎", use: "Attention计算相似度权重" },
+    23: { demo: "语义搜索引擎", use: "Transformer编码器生成上下文向量" },
+    24: { demo: "AI 知识助手", use: "LLM自回归生成、概率采样" },
+    25: { demo: "AI 知识助手", use: "Prompt工程设计、Few-shot示例" },
+    26: { demo: "AI 知识助手", use: "RAG检索增强、知识库构建" },
+    27: { demo: "AI 知识助手", use: "Agent工具调用、ReAct循环" },
+    28: { demo: "AI 知识助手", use: "LoRA微调适配学习场景" },
+    29: { demo: "AI 知识助手", use: "API调用、流式输出、上下文管理" }
+  };
+
+  var STORAGE_KEY = "ai_kp_detail_v1";
+  var currentStage = 1;
+  var searchQuery = "";
+  var doneEl = document.getElementById("kpDone");
+  var totalEl = document.getElementById("kpTotal");
+  var fillEl = document.getElementById("kpFill");
+  var stageTabsEl = document.getElementById("stageTabs");
+  var kpListEl = document.getElementById("kpList");
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+  }
+  function saveState(s) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
+  }
+
+  function hl(code) {
+    return code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function renderStageTabs() {
+    var state = loadState();
+    stageTabsEl.innerHTML = STAGES.map(function(st) {
+      var kps = KP.filter(function(k) { return k.s === st.id; });
+      var done = kps.filter(function(k) { return state[k.id]; }).length;
+      var cls = st.id === currentStage ? "active" : "";
+      return '<button class="stage-tab ' + cls + '" onclick="switchStage(' + st.id + ')">' +
+        st.name + '<span class="stage-count">' + done + '/' + kps.length + '</span></button>';
+    }).join("");
+  }
+
+  function renderKpList() {
+    var state = loadState();
+    var filtered = KP.filter(function(k) {
+      return k.s === currentStage &&
+        (!searchQuery || k.t.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0 || k.tag.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0);
+    });
+
+    if (filtered.length === 0) {
+      kpListEl.innerHTML = '<div class="kp-empty">没有匹配的知识点</div>';
+      return;
+    }
+
+    kpListEl.innerHTML = filtered.map(function(k) {
+      var done = state[k.id] ? "done" : "";
+      return '<div class="kp-card ' + done + '">' +
+        '<div class="kp-header" onclick="toggleCard(this)">' +
+          '<span class="kp-num">' + String(k.id).padStart(2, "0") + '</span>' +
+          '<span class="kp-title">' + k.t + '</span>' +
+          '<span class="kp-tag">' + k.tag + '</span>' +
+          '<input type="checkbox" class="kp-check" data-id="' + k.id + '" ' + (state[k.id] ? "checked" : "") + ' onclick="event.stopPropagation()">' +
+        '</div>' +
+        '<div class="kp-body">' +
+          '<div class="kp-layer"><h3>📖 概念解释</h3><p>' + k.c + '</p></div>' +
+          '<div class="kp-layer"><h3>💻 代码示例</h3><div class="kp-code-block"><button class="kp-copy-btn">复制</button><pre class="kp-code">' + hl(k.code) + '</pre></div></div>' +
+          '<div class="kp-layer exercise"><h3>✏️ 手写练习</h3><p>' + k.e + '</p>' +
+            '<button class="kp-answer-toggle"><span>查看参考答案</span><span class="kp-answer-icon">▼</span></button>' +
+            '<div class="kp-answer-wrap"><div class="kp-code-block"><button class="kp-copy-btn">复制</button><pre class="kp-code">' + hl(k.ec) + '</pre></div></div>' +
+          '</div>' +
+          '<div class="kp-layer ai"><h3>🤖 AI 场景</h3><p>' + k.a + '</p></div>' +
+          (DEMO_MAP[k.id] ? '<div class="kp-layer demo"><h3>🚀 Demo 应用</h3><span class="kp-demo-badge">' + DEMO_MAP[k.id].demo + '</span><p class="kp-demo-use">' + DEMO_MAP[k.id].use + '</p></div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join("");
+
+    kpListEl.querySelectorAll(".kp-check").forEach(function(cb) {
+      cb.addEventListener("change", function() {
+        var id = parseInt(this.getAttribute("data-id"));
+        var state = loadState();
+        if (this.checked) state[id] = true; else delete state[id];
+        saveState(state);
+        updateProgress();
+        renderStageTabs();
+        this.closest(".kp-card").classList.toggle("done", this.checked);
+      });
+    });
+
+    kpListEl.querySelectorAll(".kp-answer-toggle").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var wrap = this.nextElementSibling;
+        var label = this.querySelector("span:first-child");
+        if (wrap.classList.contains('zk-show')) {
+          wrap.classList.remove('zk-show');
+          this.classList.remove("open");
+          label.textContent = "查看参考答案";
+        } else {
+          wrap.classList.add('zk-show');
+          this.classList.add("open");
+          label.textContent = "收起参考答案";
+        }
+      });
+    });
+
+    kpListEl.querySelectorAll(".kp-copy-btn").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var code = this.nextElementSibling.textContent;
+        navigator.clipboard.writeText(code).then(function() {
+          btn.textContent = "已复制";
+          btn.classList.add("copied");
+          setTimeout(function() {
+            btn.textContent = "复制";
+            btn.classList.remove("copied");
+          }, 1500);
+        }).catch(function() {
+          var ta = document.createElement("textarea");
+          ta.value = code;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          btn.textContent = "已复制";
+          btn.classList.add("copied");
+          setTimeout(function() {
+            btn.textContent = "复制";
+            btn.classList.remove("copied");
+          }, 1500);
+        });
+      });
+    });
+  }
+
+  function updateProgress() {
+    var total = KP.length;
+    var state = loadState();
+    var done = KP.filter(function(k) { return state[k.id]; }).length;
+    doneEl.textContent = done;
+    totalEl.textContent = total;
+    fillEl.style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+
+    var summary = { total: total, done: done, stages: {} };
+    STAGES.forEach(function(st) {
+      var stageKps = KP.filter(function(k) { return k.s === st.id; });
+      var stageDone = stageKps.filter(function(k) { return state[k.id]; }).length;
+      summary.stages[st.id] = { total: stageKps.length, done: stageDone };
+    });
+    try { localStorage.setItem("ai_kp_progress", JSON.stringify(summary)); } catch(e) {}
+  }
+
+  window.switchStage = function(id) {
+    currentStage = id;
+    renderStageTabs();
+    renderKpList();
+  };
+
+  window.toggleCard = function(header) {
+    header.closest(".kp-card").classList.toggle("open");
+  };
+
+  window.filterKp = function() {
+    searchQuery = document.getElementById("kpSearch").value;
+    renderKpList();
+  };
+
+  renderStageTabs();
+  renderKpList();
+  updateProgress();
+})();

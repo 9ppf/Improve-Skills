@@ -279,7 +279,12 @@ align-items: center;
 gap: 6px;
 flex-shrink: 0;
 }
-.tf-ai-header h2 { font-size: 13px; font-weight: 600; }
+.tf-ai-header h2 { font-size: 13px; font-weight: 600; flex: 1; }
+
+/* 桌面端隐藏移动端抽屉元素 */
+.tf-ai-toggle { display: none; }
+.tf-ai-overlay { display: none; }
+.tf-ai-close-btn { display: none; }
 .tf-ai-status {
 width: 7px; height: 7px;
 border-radius: 50%;
@@ -408,3 +413,118 @@ color: var(--muted);
 .tf-mastery-btn.unsure { background: var(--orange-soft); color: var(--orange); margin-top: 4px; margin-left: 4px; }
 .tf-mastery-btn.unknown { background: var(--coral-soft); color: var(--pri-key); margin-top: 4px; margin-left: 4px; }
 .tf-mastery-recorded { font-size: 12px; color: var(--green); }
+
+/* ============================================================
+   移动端适配 — AI 私教面板抽屉化
+   断点：768px，小于该宽度 AI 面板变为右侧抽屉
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* ---------- 浮动开关按钮 ---------- */
+  .tf-ai-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 16px;
+    bottom: calc(80px + env(safe-area-inset-bottom));
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: var(--grad-135);
+    color: var(--surface);
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+  }
+  .tf-ai-toggle:active { transform: scale(0.9); }
+
+  /* ---------- 遮罩层 ---------- */
+  .tf-ai-overlay {
+    display: block;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 199;
+  }
+  .tf-ai-overlay.show { opacity: 1; visibility: visible; }
+
+  /* ---------- AI 面板抽屉化 ---------- */
+  .tf-ai-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 80%;
+    min-width: 260px;
+    max-width: 340px;
+    z-index: 200;
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: none;
+    /* iOS 安全区适配 */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .tf-ai-panel.open {
+    transform: translateX(0);
+    box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  /* ---------- 关闭按钮 ---------- */
+  .tf-ai-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+  .tf-ai-close-btn:active { background: rgba(0, 0, 0, 0.1); }
+
+  /* ---------- 顶部栏适配 ---------- */
+  .tf-topbar { padding: 8px 12px; gap: 8px; }
+  .tf-topbar h1 { font-size: 13px; }
+  .tf-progress-bar { max-width: 120px; }
+  .tf-countdown { font-size: 11px; }
+
+  /* ---------- 任务区 ---------- */
+  .tf-task-area { padding: 10px; }
+  .tf-task-card { padding: 14px; }
+  .tf-task-title { font-size: 16px; }
+
+  /* ---------- 概览区 ---------- */
+  .tf-overview { padding: 6px 10px; max-height: 100px; }
+
+  /* ---------- 番茄钟浮动按钮 ---------- */
+  .pomo-float {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: 16px;
+  }
+  /* AI 开关按钮在番茄钟上方 */
+  .tf-ai-toggle {
+    bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ---------- 极小屏（< 375px） ---------- */
+@media (max-width: 375px) {
+  .tf-ai-panel { width: 88%; min-width: 240px; }
+  .tf-task-title { font-size: 15px; }
+}

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>武汉理工自考 + AI 转型 · 完整学习路线图</title>
-  <script src="../../styles/shared/theme-sync.js"></script>
+  <script src="../../js/shared/theme-sync.js"></script>
 <link rel="stylesheet" href="../../styles/shared/base-vars.css">
   <link rel="stylesheet" href="../../styles/shared/base.css">
   <link rel="stylesheet" href="../../styles/shared/components.css">
@@ -271,26 +271,9 @@
     </section>
   </article>
 
-  <script>
-    // 滚动时更新导航栏激活状态
-    (function() {
-      const navLinks = document.querySelectorAll('.phase-nav a');
-      const sections = ['phase-a', 'phase-b', 'phase-c', 'phase-d', 'method', 'next'].map(id => document.getElementById(id));
+  
 
-      function onScroll() {
-        const scrollPos = window.scrollY + 120;
-        let activeIndex = -1;
-        sections.forEach((sec, i) => {
-          if (sec && sec.offsetTop <= scrollPos) activeIndex = i;
-        });
-        navLinks.forEach((link, i) => {
-          link.classList.toggle('active', i === activeIndex);
-        });
-      }
-
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    })();
-  </script>
+  <script src="../../js/shared/utils.js"></script>
+  <script src="../../js/能力提升/full-learning-roadmap.js"></script>
 </body>
 </html>

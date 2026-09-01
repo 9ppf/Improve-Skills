@@ -279,14 +279,21 @@ def backup_workbench() -> Path:
 def _build_theme_script(config: dict) -> str:
     """Build the inline JS that applies and toggles themes.
 
+    主题列表从 workbench.json 的 themes 配置读取，按 order 字段排序。
     主题颜色定义在 _root.scss 的 [data-theme="xxx"] CSS 规则中，
     本脚本只负责设置 data-theme 属性并循环切换，无需内联 token。
     """
     default_theme = config.get('activeTheme', 'light')
+    themes_cfg = config.get('themes', {})
+    # 按 order 字段排序，order 相同或缺失的按 key 字母顺序
+    theme_list = sorted(themes_cfg.items(), key=lambda kv: (kv[1].get('order', 99), kv[0]))
+    theme_order_json = json.dumps([k for k, _ in theme_list], ensure_ascii=False)
+    theme_icons_json = json.dumps({k: v.get('icon', '🎨') for k, v in theme_list}, ensure_ascii=False)
+
     return f'''<script>
 (function() {{
-  const THEME_ORDER = ['light', 'dark', 'warm', 'nature', 'rose'];
-  const THEME_ICONS = {{'light':'🌤️','dark':'🌙','warm':'☀️','nature':'🌿','rose':'🌹'}};
+  const THEME_ORDER = {theme_order_json};
+  const THEME_ICONS = {theme_icons_json};
   const DEFAULT_THEME = '{default_theme}';
 
   function applyWorkbenchTheme(name) {{
@@ -294,7 +301,7 @@ def _build_theme_script(config: dict) -> str:
     root.setAttribute('data-theme', name);
     try {{ localStorage.setItem('workbench-theme', name); }} catch (e) {{}}
     var btn = document.getElementById('theme-toggle');
-    if (btn) btn.textContent = THEME_ICONS[name] || '🌙';
+    if (btn) btn.textContent = THEME_ICONS[name] || '🎨';
     // 同步主题到所有 iframe 内的内容页面
     document.querySelectorAll('iframe').forEach(function(iframe) {{
       try {{
@@ -357,12 +364,13 @@ def _extract_year(name: str) -> Optional[int]:
     return int(m.group(1)) if m else None
 
 
-def _build_module_workspace(data: dict) -> tuple[str, str]:
+def _build_module_workspace(data: dict, reading_out_dir: Path | None = None) -> tuple[str, str]:
     """Build (constants_js, workspace_js) for any module.
 
-    For reading items, structured JSON data is injected as a JS object
-    constant. For all other items, fields are serialized directly so the
-    runtime can render them (e.g. via contentUrl iframe).
+    For reading items, structured JSON data is written to external .js files
+    (under reading_out_dir) for on-demand loading, instead of being inlined.
+    For all other items, fields are serialized directly so the runtime can
+    render them (e.g. via contentUrl iframe).
     """
     module_id = data.get('id', 'module')
     constants = []
@@ -378,7 +386,7 @@ def _build_module_workspace(data: dict) -> tuple[str, str]:
         for item in category.get('items', []):
             enriched = dict(item)
 
-            # reading 类型：注入 JSON 数据为 JS 对象常量
+            # reading 类型：数据写入外部 .js 文件，按需加载
             if enriched.get('type') == 'reading':
                 if 'readingData' in enriched and isinstance(enriched['readingData'], dict):
                     data_obj = enriched['readingData']
@@ -397,7 +405,19 @@ def _build_module_workspace(data: dict) -> tuple[str, str]:
                 const_name = f'readingData{year_match.group(1)}' if year_match else f'readingData{module_id}_{const_index}'
                 if not year_match:
                     const_index += 1
-                constants.append(f'    var {const_name} = {json.dumps(data_obj, ensure_ascii=False)};')
+
+                # 写入外部 JS 文件（按需加载）
+                if reading_out_dir is not None:
+                    reading_out_dir.mkdir(parents=True, exist_ok=True)
+                    year_str = year_match.group(1) if year_match else f'{module_id}_{const_index}'
+                    out_file = reading_out_dir / f'{year_str}.js'
+                    out_file.write_text(
+                        f'var {const_name} = {json.dumps(data_obj, ensure_ascii=False)};\n',
+                        encoding='utf-8'
+                    )
+                    # dataUrl 是相对于 Workbench 根目录的路径
+                    enriched['dataUrl'] = f'data/reading/{year_str}.js'
+
                 enriched['readingData'] = const_name
                 enriched['chapters'] = section_count
                 enriched.setdefault('done', 0)
@@ -656,12 +676,11 @@ def build() -> Path:
     template = TEMPLATE.read_text(encoding='utf-8')
 
     print('Rendering modules...')
-    reading_constants = ''
+    reading_out_dir = WORKBENCH.parent / 'data' / 'reading'
     workspace_objs = []
     for m in modules:
         mid = m.get('id')
-        constants, ws_js = _build_module_workspace(enriched_modules[mid])
-        reading_constants += constants
+        _constants, ws_js = _build_module_workspace(enriched_modules[mid], reading_out_dir=reading_out_dir)
         workspace_objs.append(ws_js)
     workspaces_array = ',\n'.join(workspace_objs)
 
@@ -672,13 +691,12 @@ def build() -> Path:
     styles_css = _compile_styles()
 
     print('Rendering workbench...')
-    reading_js_path = SHARED_DIR / 'reading.js'
+    reading_js_path = ROOT / 'js' / 'shared' / 'reading.js'
     reading_js = reading_js_path.read_text(encoding='utf-8') if reading_js_path.exists() else ''
     context = {
         'styles': styles_css,
         'theme_script': _build_theme_script(config),
         'reading_js': reading_js,
-        'reading_constants': reading_constants,
         'workspaces_array': workspaces_array,
     }
     html = _render_template(template, context)

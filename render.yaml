@@ -1,0 +1,51 @@
+# Render 基础设施配置 — 此刻便是春天工作台
+# 文档: https://render.com/docs/blueprint-spec
+# 使用方式: 在 Render 控制台 New → Blueprint → 连接 GitHub 仓库
+
+services:
+  # ====== Web Service: Python 应用服务器 ======
+  - type: web
+    name: improve-skills
+    runtime: python
+    region: singapore          # 新加坡节点，国内访问较快
+    plan: free                  # 免费层（750 小时/月）
+    branch: main                # 跟踪 main 分支
+
+    # 构建阶段：安装依赖 + 编译 SCSS → CSS + 生成 HTML
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python build.py
+
+    # 启动命令：--no-build 跳过构建（已在 buildCommand 完成），--no-watch 禁用文件监听
+    startCommand: python dev_server.py --no-build --no-watch
+
+    # 健康检查
+    healthCheckPath: /api/health
+    autoDeploy: true            # 推送代码自动部署
+
+    # 环境变量
+    envVars:
+      - key: DEEPSEEK_API_KEY
+        sync: false              # 在 Render 控制台手动填写，不写入代码
+      - key: PYTHON_VERSION
+        value: "3.11.7"
+
+    # ====== 持久存储卷：保存用户数据（JSON 文件 + 照片） ======
+    # Render 免费层不支持持久磁盘，以下配置需要 Starter 计划 ($7/月)
+    # 免费层替代方案：数据存到外部（如 Supabase / Cloudflare R2）
+    disk:
+      - name: improve-skills-data
+        mountPath: /opt/render/project/src/data
+        sizeGB: 1               # 1GB 足够存储数万条 JSON 记录 + 照片
+
+  # ====== PostgreSQL 数据库（可选，当前未使用） ======
+  # 当前项目使用 JSON 文件存储，不需要数据库。
+  # 如果未来需要迁移到数据库，取消注释以下配置：
+  #
+  # - type: postgresql
+  #   name: improve-skills-db
+  #   region: singapore
+  #   plan: free                 # 免费 90 天，之后自动删除
+  #   databaseName: improve_skills
+  #   user: improve_skills_user
+  #   ipAllowList:               # IP 白名单
+  #     - source: 0.0.0.0/0       # 允许所有 IP（仅开发用，生产环境需限制）
+  #       description: Allow all (development)
