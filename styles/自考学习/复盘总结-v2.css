@@ -1,0 +1,1009 @@
+/* ============================================================
+ * 复盘总结-v2.css — 数据驱动结构化复盘卡 v2.1
+ * 改进：合并错题、自由笔记、mastery共享、多章展开、复习调度、每章重置
+ * ============================================================ */
+
+/* ============ v2 章节卡片 ============ */
+.ss-review-card-v2 {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.ss-review-card-v2.ss-expanded {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px var(--bg-soft);
+}
+
+/* ============ v2 卡片头部 ============ */
+.ss-card-head-v2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.6rem 0;
+  flex-wrap: wrap;
+  transition: background 0.15s;
+}
+.ss-card-head-v2:hover {
+  background: var(--blue-soft);
+  border-radius: 8px;
+  margin: 0 -0.4rem;
+  padding: 0.6rem 0.4rem;
+}
+
+/* 收起状态统计 */
+.ss-card-stats {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.75rem;
+}
+.ss-card-stat {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ss-card-stat.ss-rate-good { background: var(--green-soft); color: var(--green); }
+.ss-card-stat.ss-rate-mid  { background: #fff3cd; color: #856404; }
+.ss-card-stat.ss-rate-bad  { background: var(--coral-soft); color: var(--coral); }
+.ss-card-stat.ss-stat-wrong { background: var(--coral-soft); color: var(--coral); }
+.ss-card-stat.ss-stat-empty { background: var(--rule); color: var(--muted); }
+
+/* 概念色点 — 5种颜色对应5个掌握等级 */
+.ss-card-dots {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  max-width: 140px;
+}
+.ss-concept-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.ss-dot-gray   { background: var(--rule); }      /* 待学习 */
+.ss-dot-yellow { background: #ffc107; }           /* 学习中 */
+.ss-dot-red    { background: #f44336; }            /* 不会 */
+.ss-dot-orange { background: #ff9800; }            /* 不熟 */
+.ss-dot-green  { background: var(--green); }       /* 掌握 */
+
+/* 展开/收起箭头 */
+.ss-card-expand {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ============ v2 卡片展开内容 ============ */
+.ss-card-body-v2 {
+  padding-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* 分区通用 */
+.ss-review-section {
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--rule);
+}
+.ss-section-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+/* ============ 本章数据区 ============ */
+.ss-quiz-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.78rem;
+  flex-wrap: wrap;
+}
+.ss-quiz-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--muted);
+}
+.ss-quiz-stat b { color: var(--ink); font-weight: 700; font-size: 0.9rem; }
+.ss-text-green { color: var(--green); }
+.ss-text-coral { color: var(--coral); }
+.ss-quiz-stat.ss-rate-good b { color: var(--green); }
+.ss-quiz-stat.ss-rate-bad b { color: var(--coral); }
+
+.ss-quiz-wrong-list {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.ss-quiz-wrong-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--coral-soft);
+  border-radius: 6px;
+  font-size: 0.76rem;
+}
+.ss-quiz-wrong-item.ss-solved {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+.ss-quiz-wrong-type { flex-shrink: 0; }
+.ss-quiz-wrong-text {
+  flex: 1;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ss-quiz-wrong-solve {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+  color: var(--muted);
+}
+.ss-quiz-wrong-solve:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+.ss-quiz-wrong-redo {
+  flex-shrink: 0;
+  font-size: 0.74rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.ss-quiz-wrong-redo:hover { text-decoration: underline; }
+.ss-quiz-wrong-more {
+  font-size: 0.74rem;
+  color: var(--muted);
+  text-align: center;
+  padding: 0.2rem;
+}
+.ss-quiz-no-wrong {
+  font-size: 0.8rem;
+  color: var(--green);
+  padding: 0.3rem 0;
+}
+
+/* ============ 复习调度区 ============ */
+.ss-schedule-box {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--blue-soft);
+  border-radius: 6px;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+.ss-schedule-box.ss-schedule-due {
+  background: var(--coral-soft);
+  color: var(--coral);
+}
+.ss-schedule-label {
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ss-schedule-text b { color: var(--ink); }
+.ss-schedule-due .ss-schedule-text b { color: var(--coral); }
+
+/* ============ 考核要求区 ============ */
+.ss-examreq-box {
+  background: var(--blue-soft);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+}
+.ss-examreq-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.ss-examreq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.ss-examreq-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.76rem;
+}
+.ss-examreq-topic {
+  font-weight: 600;
+  color: var(--ink);
+  min-width: 80px;
+}
+.ss-examreq-levels {
+  display: flex;
+  gap: 0.2rem;
+  flex-wrap: wrap;
+}
+.ss-examreq-level {
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.ss-level-识记 { background: #e3f2fd; color: #1976d2; }
+.ss-level-领会 { background: #f3e5f5; color: #7b1fa2; }
+.ss-level-简单应用 { background: #e8f5e9; color: #2e7d32; }
+.ss-level-综合应用 { background: #fff3e0; color: #e65100; }
+
+/* ============ 概念清单区 ============ */
+.ss-concept-box {
+  padding: 0.2rem 0;
+}
+.ss-concept-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.ss-concept-hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+.ss-concept-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.ss-concept-card {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.76rem;
+}
+.ss-concept-gray { border-left: 3px solid var(--rule); }
+.ss-concept-yellow { border-left: 3px solid #ffc107; }
+.ss-concept-red { border-left: 3px solid #f44336; }
+.ss-concept-orange { border-left: 3px solid #ff9800; }
+.ss-concept-green { border-left: 3px solid var(--green); }
+.ss-concept-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--surface);
+}
+.ss-concept-card-term {
+  font-weight: 600;
+  color: var(--ink);
+}
+.ss-concept-card-body {
+  padding: 0.4rem 0.6rem;
+}
+.ss-concept-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.3rem;
+  text-align: center;
+}
+.ss-metric {
+  padding: 0.35rem 0.2rem;
+  border-radius: 6px;
+  background: var(--surface);
+}
+.ss-metric-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-bottom: 0.15rem;
+}
+.ss-metric-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.ss-metric-none {
+  color: var(--muted);
+  opacity: 0.5;
+}
+.ss-cs-good { color: var(--green); }
+.ss-cs-mid { color: #e65100; }
+.ss-cs-bad { color: var(--coral); }
+.ss-concept-wrong {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--coral-soft);
+  border-radius: 6px;
+  font-size: 0.74rem;
+}
+.ss-concept-wrong-ok {
+  background: var(--green-soft);
+  color: var(--green);
+  justify-content: center;
+  font-weight: 600;
+}
+.ss-wrong-count {
+  color: var(--coral);
+  font-weight: 600;
+}
+.ss-wrong-goto {
+  font-size: 0.72rem;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  background: var(--coral);
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ss-wrong-goto:hover {
+  opacity: 0.85;
+}
+/* ============ 题库管理面板 ============ */
+.ss-bank-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 0.6rem;
+}
+.ss-bank-back {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.76rem;
+  cursor: pointer;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.ss-bank-back:hover {
+  background: var(--blue-soft);
+}
+.ss-bank-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+.ss-bank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.ss-bank-item {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--coral);
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+}
+.ss-bank-item-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.3rem;
+}
+.ss-bank-type {
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--blue-soft);
+  color: var(--muted);
+  font-weight: 600;
+}
+.ss-bank-status {
+  font-size: 0.68rem;
+  color: var(--coral);
+  font-weight: 600;
+}
+.ss-bank-q {
+  font-size: 0.78rem;
+  color: var(--ink);
+  line-height: 1.5;
+  margin-bottom: 0.3rem;
+}
+.ss-bank-ans {
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.72rem;
+  flex-wrap: wrap;
+}
+.ss-bank-ans-wrong {
+  color: var(--coral);
+}
+.ss-bank-ans-correct {
+  color: var(--green);
+  font-weight: 600;
+}
+.ss-bank-empty {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+/* ============ 题库管理（新） ============ */
+/* 筛选栏 — 与练习测验 .qf-bar 风格统一 */
+.ss-bank-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-soft);
+  border-radius: 8px;
+  margin-bottom: 0.4rem;
+}
+.ss-bank-toolbar::-webkit-scrollbar { height: 0; }
+.ss-bank-filter {
+  padding: 0.25rem 0.5rem;
+  border: 1.5px solid;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  outline: none;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.ss-bank-filter:hover { opacity: 0.85; }
+/* 章节筛选：蓝色系 */
+.ss-bank-filter.ss-bf-chapter {
+  border-color: var(--accent);
+  background: var(--blue-soft);
+  color: var(--accent);
+}
+/* 知识点筛选：蓝色系 */
+.ss-bank-filter.ss-bf-kp {
+  border-color: var(--accent);
+  background: var(--blue-soft);
+  color: var(--accent);
+}
+/* 题型筛选：紫色系 */
+.ss-bank-filter.ss-bf-type {
+  border-color: var(--accent2);
+  background: var(--purple-soft);
+  color: var(--accent2);
+}
+/* 状态筛选：绿色系 */
+.ss-bank-filter.ss-bf-status {
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green);
+}
+/* 搜索按钮 */
+.ss-bank-search-btn {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+.ss-bank-search-btn:hover { border-color: var(--accent); background: var(--blue-soft); }
+.ss-bank-search-btn.ss-active {
+  border-color: var(--accent);
+  background: var(--blue-soft);
+  color: var(--accent);
+}
+/* 搜索展开行 */
+.ss-bank-search-row {
+  display: none;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-soft);
+  border-radius: 8px;
+  margin-bottom: 0.4rem;
+  gap: 0.3rem;
+  align-items: center;
+}
+.ss-bank-search-row.ss-open { display: flex; }
+.ss-bank-search-input {
+  flex: 1;
+  padding: 0.3rem 0.6rem;
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  background: var(--surface);
+  color: var(--ink);
+  outline: none;
+}
+.ss-bank-search-input:focus { border-color: var(--accent); }
+.ss-bank-search-close {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+}
+.ss-bank-search-close:hover { color: var(--coral); }
+/* 统计行 */
+.ss-bank-stats {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+  padding: 0.25rem 0.5rem;
+}
+.ss-bank-stats b { color: var(--ink); font-weight: 700; }
+.ss-bank-stat-correct { color: var(--green); font-weight: 600; }
+.ss-bank-stat-wrong { color: var(--coral); font-weight: 600; }
+.ss-bank-stat-unanswered { color: var(--muted); }
+.ss-bank-qlist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+/* ============ 分组 ============ */
+.ss-bank-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.ss-bank-group {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ss-bank-group-weak {
+  border: 1px solid var(--coral-soft);
+  border-left: 4px solid var(--coral);
+}
+.ss-bank-group-done {
+  border: 1px solid var(--green-soft);
+  border-left: 4px solid var(--green);
+}
+.ss-bank-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.6rem;
+  background: var(--accent2-soft);
+  font-size: 0.76rem;
+}
+.ss-bank-group-weak .ss-bank-group-head {
+  background: var(--coral-soft);
+}
+.ss-bank-group-done .ss-bank-group-head {
+  background: var(--green-soft);
+}
+.ss-bank-group-name {
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+/* 题号导航chips */
+.ss-bank-group-chips {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: center;
+}
+.ss-q-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  font-size: 0.62rem;
+  cursor: pointer;
+  background: rgba(255,255,255,0.5);
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.ss-q-chip:hover {
+  background: var(--accent2-soft);
+  color: var(--accent2);
+}
+.ss-q-chip-solved {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+/* 题目卡片闪烁 */
+.ss-q-card-flash {
+  animation: ss-flash 1.2s ease;
+}
+@keyframes ss-flash {
+  0% { background: var(--accent2-soft); }
+  100% { background: transparent; }
+}
+.ss-bank-group-stat {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.ss-bank-group-done .ss-bank-group-stat {
+  color: var(--green);
+}
+.ss-bank-group-list {
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+/* ============ 全局题号导航 ============ */
+.ss-bank-qnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 0.4rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.ss-nav-btn {
+  min-width: 26px;
+  height: 26px;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.ss-nav-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.ss-nav-wrong { background: var(--coral-soft); color: var(--coral); border-color: var(--coral); }
+.ss-nav-solved { background: var(--green-soft); color: var(--green); border-color: var(--green); opacity: 0.6; }
+
+/* ============ 题目卡片 ============ */
+.ss-q-card {
+  padding: 0.4rem 0.2rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+.ss-q-card-wrong { border-left: none; }
+.ss-q-card-solved { opacity: 0.45; border-left: none; }
+.ss-q-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+  margin-bottom: 0.15rem;
+}
+.ss-q-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent2);
+  min-width: 1.2rem;
+  flex-shrink: 0;
+  padding-top: 0.05rem;
+}
+.ss-q-text {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.ss-q-type-inline {
+  font-size: 0.66rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+.ss-q-right {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  padding-top: 0.05rem;
+}
+.ss-q-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ss-q-solved { color: var(--green); }
+.ss-q-wrong { color: var(--coral); }
+.ss-q-correct { color: var(--green); }
+.ss-q-unanswered { color: var(--muted); }
+.ss-q-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-bottom: 0.3rem;
+  padding-left: 1.5rem;
+}
+.ss-q-option {
+  font-size: 0.74rem;
+  color: var(--ink);
+  padding: 0.1rem 0;
+}
+.ss-q-opt-correct {
+  color: var(--green);
+  font-weight: 700;
+}
+.ss-q-opt-wrong {
+  color: var(--coral);
+  font-weight: 700;
+  text-decoration: line-through;
+}
+/* 答案详情区 — 3行缩进 */
+.ss-q-reveal-btn, .ss-q-solve-btn {
+  padding: 0 0.3rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+}
+.ss-q-reveal-btn:hover { color: var(--accent2); }
+.ss-q-solve-btn { color: var(--green); }
+.ss-q-solve-btn:hover { background: var(--green-soft); }
+
+.ss-q-detail {
+  margin-top: 0.2rem;
+  padding: 0.2rem 0 0.1rem 1.5rem;
+  border-top: 1px dashed var(--rule);
+}
+.ss-q-dl {
+  font-size: 0.72rem;
+  line-height: 1.8;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+.ss-q-dl-label {
+  color: var(--muted);
+  flex-shrink: 0;
+  min-width: 3rem;
+}
+.ss-q-ans-c {
+  color: #34d399;
+  font-weight: 600;
+}
+.ss-q-ans-u {
+  color: var(--ink);
+  font-weight: 600;
+}
+.ss-q-ans-u.wrong {
+  color: var(--coral);
+}
+.ss-q-expl-inline {
+  color: var(--muted);
+  flex: 1;
+}
+.ss-q-wr-label {
+  color: #f87171;
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 3rem;
+}
+.ss-q-wr-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  background: transparent;
+  color: #f87171;
+}
+.ss-q-wr-input:focus {
+  outline: none;
+  border-color: #f87171;
+}
+.ss-q-wr-input::placeholder {
+  color: #fca5a5;
+}
+/* ============ 薄弱点总结 ============ */
+.ss-weak-summary {
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+.ss-weak-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.3rem;
+}
+.ss-weak-bar-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.ss-weak-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ss-weak-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.ss-weak-bar-fill.ss-cs-good { background: var(--green); }
+.ss-weak-bar-fill.ss-cs-mid { background: #ff9800; }
+.ss-weak-bar-fill.ss-cs-bad { background: var(--coral); }
+.ss-weak-bar-pct {
+  font-size: 0.82rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  min-width: 2.2rem;
+  text-align: right;
+}
+.ss-weak-bar-pct.ss-cs-good { color: var(--green); }
+.ss-weak-bar-pct.ss-cs-mid { color: #e65100; }
+.ss-weak-bar-pct.ss-cs-bad { color: var(--coral); }
+.ss-weak-bar-count {
+  font-size: 0.68rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.ss-weak-row {
+  margin-bottom: 0.2rem;
+  color: var(--ink);
+}
+.ss-weak-row b {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+.ss-weak-ok {
+  color: var(--green);
+  font-weight: 600;
+}
+.ss-weak-nopractice {
+  color: var(--muted);
+}
+.ss-weak-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  margin: 0 0.15rem;
+  border-radius: 4px;
+  background: var(--coral-soft);
+  color: var(--coral);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.ss-weak-nopractice .ss-weak-tag {
+  background: var(--blue-soft);
+  color: var(--muted);
+}
+/* ============ 自动改进计划 ============ */
+.ss-plan-auto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.ss-plan-item {
+  font-size: 0.74rem;
+  color: var(--ink);
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  background: var(--surface);
+  line-height: 1.4;
+}
+.ss-plan-ok {
+  color: var(--green);
+  background: var(--green-soft);
+}
+.ss-concept-state {
+  font-size: 0.7rem;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+/* 5种掌握状态颜色 */
+.ss-concept-gray .ss-concept-state   { background: var(--rule); color: var(--muted); }
+.ss-concept-yellow .ss-concept-state { background: #fff3cd; color: #856404; }
+.ss-concept-red .ss-concept-state    { background: #ffebee; color: #c62828; }
+.ss-concept-orange .ss-concept-state { background: #fff3e0; color: #e65100; }
+.ss-concept-green .ss-concept-state  { background: var(--green-soft); color: var(--green); }
+
+/* ============ 易错点提醒区 ============ */
+.ss-pitfall-box {
+  background: #fff5f5;
+  border-left: 3px solid var(--coral);
+  border-radius: 0 8px 8px 0;
+  padding: 0.4rem 0.7rem;
+}
+.ss-pitfall-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--coral);
+  margin-bottom: 0.3rem;
+}
+.ss-pitfall-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ss-pitfall-list li {
+  font-size: 0.74rem;
+  color: var(--ink);
+  padding: 0.15rem 0;
+  padding-left: 0.8rem;
+  position: relative;
+  line-height: 1.5;
+}
+.ss-pitfall-list li::before {
+  content: '⚠';
+  position: absolute;
+  left: 0;
+  font-size: 0.7rem;
+}
+
+/* ============ 错题反思区 ============ */
+.ss-reflection-hint {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+  line-height: 1.4;
+}
+.ss-reflection-textarea {
+  min-height: 80px !important;
+  border-left: 3px solid var(--coral) !important;
+  background: #fff5f5 !important;
+}
+
+/* ============ 自由笔记区 ============ */
+.ss-notes-textarea {
+  min-height: 70px !important;
+}
+
+/* ============ 改进计划区 ============ */
+.ss-plan-suggestion {
+  font-size: 0.76rem;
+  color: var(--accent);
+  padding: 0.3rem 0.6rem;
+  background: var(--blue-soft);
+  border-radius: 6px;
+  margin-bottom: 0.4rem;
+}
+.ss-plan-textarea {
+  min-height: 60px !important;
+}
+
+/* ============ 每章重置 ============ */
+.ss-chapter-reset-btn {
+  font-size: 0.72rem;
+  padding: 0.25rem 0.8rem;
+  border: 1px solid var(--coral-soft);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--coral);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.ss-chapter-reset-btn:hover {
+  opacity: 1;
+  background: var(--coral-soft);
+}

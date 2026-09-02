@@ -1,109 +1,53 @@
 {
-  "week": "第1周",
+  "week": "第2周",
   "days": [
     {
-      "date": "8/25",
+      "date": "9/1",
       "weekday": "周一",
       "tasks": [
         {
-          "tag": "key",
-          "subject": "数据结构",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": true
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": false
-        },
-        {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": false
-        },
-        {
-          "tag": "key",
-          "subject": "数据结构",
-          "chapter": "第1章",
-          "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-          "hours": 0.93,
-          "done": true
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第1章",
-          "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-          "hours": 0.93,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第1章",
-          "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-          "hours": 0.93,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "真值和机器数、补码、IEEE 754浮点数、大小端方式、标志位(ZF/SF/CF/OF)、浮点加减运算",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第2章",
-          "topic": "有效推理、推理的基本规则、常用的推理定律、归谬法、CP规则、用真值表法判断推理有效性、相容",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
-          "topic": "个体词、量词否定规则、约束变量和自由变量、前束范式、谓词逻辑的推理规则、论域、谓词公式的解释",
+          "topic": "CISC与RISC、IA-32通用寄存器、IA-32寻址方式、栈帧与过程调用、AT&T与Intel汇编格式、LEA指令",
+          "hours": 0.56,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第4章",
+          "topic": "集合的定义和表示方法、集合的基本运算、幂集、笛卡尔积、集合的基数",
+          "hours": 0.56,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
+          "topic": "二元关系、关系的五个基本性质、关系的闭包、等价关系、划分、偏序关系、函数",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第2章",
-          "topic": "线性表、顺序表、单链表、循环链表、顺序表和链表",
+          "chapter": "第4章",
+          "topic": "多维数组的存储方式、特殊矩阵压缩存储、广义表、串的模式匹配、KMP算法中next数组",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
-          "topic": "栈、队列、栈应用、双端队列",
+          "chapter": "第5章",
+          "topic": "树的基本术语、二叉树重要性质、满二叉树和完全二叉树、二叉树遍历方式、线索二叉树、堆、树/森林与二叉树转换、哈夫曼树和哈夫曼编码",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
           "topic": "课后练习 30min",
           "hours": 0.3,
@@ -112,7 +56,15 @@
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
+          "chapter": "第5章",
+          "topic": "课后练习 30min",
+          "hours": 0.3,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -120,7 +72,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -128,7 +80,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -144,8 +96,8 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP2",
-          "topic": "def函数/dict字典/class类",
+          "chapter": "KP3",
+          "topic": "import/try-except/os.getenv",
           "hours": 1,
           "done": false
         },
@@ -153,7 +105,7 @@
           "tag": "ai",
           "subject": "AI学习",
           "chapter": "",
-          "topic": "小甲鱼Python入门 第6-10集（文件/异常/模块/类）",
+          "topic": "小甲鱼Python入门 第11-15集（面向对象/装饰器/迭代器）",
           "hours": 1,
           "done": false
         },
@@ -176,108 +128,52 @@
       ]
     },
     {
-      "date": "8/26",
+      "date": "9/2",
       "weekday": "周二",
       "tasks": [
         {
-          "tag": "key",
-          "subject": "数据结构",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": true
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": false
-        },
-        {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": false
-        },
-        {
-          "tag": "key",
-          "subject": "数据结构",
-          "chapter": "第1章",
-          "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-          "hours": 0.93,
-          "done": true
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第1章",
-          "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-          "hours": 0.93,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第1章",
-          "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-          "hours": 0.93,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "真值和机器数、补码、IEEE 754浮点数、大小端方式、标志位(ZF/SF/CF/OF)、浮点加减运算",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第2章",
-          "topic": "有效推理、推理的基本规则、常用的推理定律、归谬法、CP规则、用真值表法判断推理有效性、相容",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
-          "topic": "个体词、量词否定规则、约束变量和自由变量、前束范式、谓词逻辑的推理规则、论域、谓词公式的解释",
+          "topic": "CISC与RISC、IA-32通用寄存器、IA-32寻址方式、栈帧与过程调用、AT&T与Intel汇编格式、LEA指令",
+          "hours": 0.56,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第4章",
+          "topic": "集合的定义和表示方法、集合的基本运算、幂集、笛卡尔积、集合的基数",
+          "hours": 0.56,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
+          "topic": "二元关系、关系的五个基本性质、关系的闭包、等价关系、划分、偏序关系、函数",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第2章",
-          "topic": "线性表、顺序表、单链表、循环链表、顺序表和链表",
+          "chapter": "第4章",
+          "topic": "多维数组的存储方式、特殊矩阵压缩存储、广义表、串的模式匹配、KMP算法中next数组",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
-          "topic": "栈、队列、栈应用、双端队列",
+          "chapter": "第5章",
+          "topic": "树的基本术语、二叉树重要性质、满二叉树和完全二叉树、二叉树遍历方式、线索二叉树、堆、树/森林与二叉树转换、哈夫曼树和哈夫曼编码",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
           "topic": "课后练习 30min",
           "hours": 0.3,
@@ -286,7 +182,15 @@
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
+          "chapter": "第5章",
+          "topic": "课后练习 30min",
+          "hours": 0.3,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -294,7 +198,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -302,7 +206,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -318,8 +222,8 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP2",
-          "topic": "def函数/dict字典/class类",
+          "chapter": "KP3",
+          "topic": "import/try-except/os.getenv",
           "hours": 1,
           "done": false
         },
@@ -327,7 +231,7 @@
           "tag": "ai",
           "subject": "AI学习",
           "chapter": "",
-          "topic": "小甲鱼Python入门 第6-10集（文件/异常/模块/类）",
+          "topic": "小甲鱼Python入门 第11-15集（面向对象/装饰器/迭代器）",
           "hours": 1,
           "done": false
         },
@@ -350,108 +254,52 @@
       ]
     },
     {
-      "date": "8/27",
+      "date": "9/3",
       "weekday": "周三",
       "tasks": [
         {
-          "tag": "key",
-          "subject": "数据结构",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": true
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": false
-        },
-        {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第1章",
-          "topic": "课后练习 30min",
-          "hours": 0.5,
-          "done": false
-        },
-        {
-          "tag": "key",
-          "subject": "数据结构",
-          "chapter": "第1章",
-          "topic": "数据、数据结构的三要素、逻辑结构与存储结构、抽象数据类型、算法的五个特性、时间复杂度和空间复杂度",
-          "hours": 0.93,
-          "done": true
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第1章",
-          "topic": "命题、命题变元、五种基本逻辑联结词、蕴含、命题公式、重言式、等值式、基本的等值式、德摩根律、蕴含等值式、等值演算、对偶式、范式",
-          "hours": 0.93,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第1章",
-          "topic": "冯·诺依曼结构、ISA指令集体系结构、系统层次结构、CPU时间与CPI、MIPS",
-          "hours": 0.93,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "真值和机器数、补码、IEEE 754浮点数、大小端方式、标志位(ZF/SF/CF/OF)、浮点加减运算",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第2章",
-          "topic": "有效推理、推理的基本规则、常用的推理定律、归谬法、CP规则、用真值表法判断推理有效性、相容",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
-          "topic": "个体词、量词否定规则、约束变量和自由变量、前束范式、谓词逻辑的推理规则、论域、谓词公式的解释",
+          "topic": "CISC与RISC、IA-32通用寄存器、IA-32寻址方式、栈帧与过程调用、AT&T与Intel汇编格式、LEA指令",
+          "hours": 0.56,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第4章",
+          "topic": "集合的定义和表示方法、集合的基本运算、幂集、笛卡尔积、集合的基数",
+          "hours": 0.56,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
+          "topic": "二元关系、关系的五个基本性质、关系的闭包、等价关系、划分、偏序关系、函数",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第2章",
-          "topic": "线性表、顺序表、单链表、循环链表、顺序表和链表",
+          "chapter": "第4章",
+          "topic": "多维数组的存储方式、特殊矩阵压缩存储、广义表、串的模式匹配、KMP算法中next数组",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
-          "topic": "栈、队列、栈应用、双端队列",
+          "chapter": "第5章",
+          "topic": "树的基本术语、二叉树重要性质、满二叉树和完全二叉树、二叉树遍历方式、线索二叉树、堆、树/森林与二叉树转换、哈夫曼树和哈夫曼编码",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
           "topic": "课后练习 30min",
           "hours": 0.3,
@@ -460,7 +308,15 @@
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
+          "chapter": "第5章",
+          "topic": "课后练习 30min",
+          "hours": 0.3,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -468,7 +324,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -476,7 +332,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -492,8 +348,8 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP2",
-          "topic": "def函数/dict字典/class类",
+          "chapter": "KP3",
+          "topic": "import/try-except/os.getenv",
           "hours": 1,
           "done": false
         },
@@ -501,7 +357,7 @@
           "tag": "ai",
           "subject": "AI学习",
           "chapter": "",
-          "topic": "小甲鱼Python入门 第6-10集（文件/异常/模块/类）",
+          "topic": "小甲鱼Python入门 第11-15集（面向对象/装饰器/迭代器）",
           "hours": 1,
           "done": false
         },
@@ -524,60 +380,52 @@
       ]
     },
     {
-      "date": "8/28",
+      "date": "9/4",
       "weekday": "周四",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "真值和机器数、补码、IEEE 754浮点数、大小端方式、标志位(ZF/SF/CF/OF)、浮点加减运算",
+          "chapter": "第3章",
+          "topic": "CISC与RISC、IA-32通用寄存器、IA-32寻址方式、栈帧与过程调用、AT&T与Intel汇编格式、LEA指令",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第2章",
-          "topic": "有效推理、推理的基本规则、常用的推理定律、归谬法、CP规则、用真值表法判断推理有效性、相容",
+          "chapter": "第4章",
+          "topic": "集合的定义和表示方法、集合的基本运算、幂集、笛卡尔积、集合的基数",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
-          "topic": "个体词、量词否定规则、约束变量和自由变量、前束范式、谓词逻辑的推理规则、论域、谓词公式的解释",
+          "chapter": "第5章",
+          "topic": "二元关系、关系的五个基本性质、关系的闭包、等价关系、划分、偏序关系、函数",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第2章",
-          "topic": "线性表、顺序表、单链表、循环链表、顺序表和链表",
+          "chapter": "第4章",
+          "topic": "多维数组的存储方式、特殊矩阵压缩存储、广义表、串的模式匹配、KMP算法中next数组",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
-          "topic": "栈、队列、栈应用、双端队列",
+          "chapter": "第5章",
+          "topic": "树的基本术语、二叉树重要性质、满二叉树和完全二叉树、二叉树遍历方式、线索二叉树、堆、树/森林与二叉树转换、哈夫曼树和哈夫曼编码",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
           "topic": "课后练习 30min",
           "hours": 0.3,
@@ -586,7 +434,15 @@
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
+          "chapter": "第5章",
+          "topic": "课后练习 30min",
+          "hours": 0.3,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -594,7 +450,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -602,7 +458,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -618,8 +474,8 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP2",
-          "topic": "def函数/dict字典/class类",
+          "chapter": "KP3",
+          "topic": "import/try-except/os.getenv",
           "hours": 1,
           "done": false
         },
@@ -627,7 +483,7 @@
           "tag": "ai",
           "subject": "AI学习",
           "chapter": "",
-          "topic": "小甲鱼Python入门 第6-10集（文件/异常/模块/类）",
+          "topic": "小甲鱼Python入门 第11-15集（面向对象/装饰器/迭代器）",
           "hours": 1,
           "done": false
         },
@@ -650,60 +506,52 @@
       ]
     },
     {
-      "date": "8/29",
+      "date": "9/5",
       "weekday": "周五",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "真值和机器数、补码、IEEE 754浮点数、大小端方式、标志位(ZF/SF/CF/OF)、浮点加减运算",
+          "chapter": "第3章",
+          "topic": "CISC与RISC、IA-32通用寄存器、IA-32寻址方式、栈帧与过程调用、AT&T与Intel汇编格式、LEA指令",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第2章",
-          "topic": "有效推理、推理的基本规则、常用的推理定律、归谬法、CP规则、用真值表法判断推理有效性、相容",
+          "chapter": "第4章",
+          "topic": "集合的定义和表示方法、集合的基本运算、幂集、笛卡尔积、集合的基数",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
-          "topic": "个体词、量词否定规则、约束变量和自由变量、前束范式、谓词逻辑的推理规则、论域、谓词公式的解释",
+          "chapter": "第5章",
+          "topic": "二元关系、关系的五个基本性质、关系的闭包、等价关系、划分、偏序关系、函数",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第2章",
-          "topic": "线性表、顺序表、单链表、循环链表、顺序表和链表",
+          "chapter": "第4章",
+          "topic": "多维数组的存储方式、特殊矩阵压缩存储、广义表、串的模式匹配、KMP算法中next数组",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
-          "topic": "栈、队列、栈应用、双端队列",
+          "chapter": "第5章",
+          "topic": "树的基本术语、二叉树重要性质、满二叉树和完全二叉树、二叉树遍历方式、线索二叉树、堆、树/森林与二叉树转换、哈夫曼树和哈夫曼编码",
           "hours": 0.56,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
           "topic": "课后练习 30min",
           "hours": 0.3,
@@ -712,7 +560,15 @@
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
+          "chapter": "第5章",
+          "topic": "课后练习 30min",
+          "hours": 0.3,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -720,7 +576,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -728,7 +584,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "课后练习 30min",
           "hours": 0.3,
           "done": false
@@ -744,8 +600,8 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP2",
-          "topic": "def函数/dict字典/class类",
+          "chapter": "KP3",
+          "topic": "import/try-except/os.getenv",
           "hours": 1,
           "done": false
         },
@@ -753,7 +609,7 @@
           "tag": "ai",
           "subject": "AI学习",
           "chapter": "",
-          "topic": "小甲鱼Python入门 第6-10集（文件/异常/模块/类）",
+          "topic": "小甲鱼Python入门 第11-15集（面向对象/装饰器/迭代器）",
           "hours": 1,
           "done": false
         },
@@ -776,46 +632,46 @@
       ]
     },
     {
-      "date": "8/30",
+      "date": "9/6",
       "weekday": "周六",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "真值和机器数、补码、IEEE 754浮点数、大小端方式、标志位(ZF/SF/CF/OF)、浮点加减运算",
+          "chapter": "第3章",
+          "topic": "CISC与RISC、IA-32通用寄存器、IA-32寻址方式、栈帧与过程调用、AT&T与Intel汇编格式、LEA指令",
           "hours": 0.5,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第2章",
-          "topic": "有效推理、推理的基本规则、常用的推理定律、归谬法、CP规则、用真值表法判断推理有效性、相容",
+          "chapter": "第4章",
+          "topic": "集合的定义和表示方法、集合的基本运算、幂集、笛卡尔积、集合的基数",
           "hours": 0.5,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
-          "topic": "个体词、量词否定规则、约束变量和自由变量、前束范式、谓词逻辑的推理规则、论域、谓词公式的解释",
+          "chapter": "第5章",
+          "topic": "二元关系、关系的五个基本性质、关系的闭包、等价关系、划分、偏序关系、函数",
           "hours": 0.5,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第2章",
-          "topic": "线性表、顺序表、单链表、循环链表、顺序表和链表",
+          "chapter": "第4章",
+          "topic": "多维数组的存储方式、特殊矩阵压缩存储、广义表、串的模式匹配、KMP算法中next数组",
           "hours": 0.5,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
-          "topic": "栈、队列、栈应用、双端队列",
+          "chapter": "第5章",
+          "topic": "树的基本术语、二叉树重要性质、满二叉树和完全二叉树、二叉树遍历方式、线索二叉树、堆、树/森林与二叉树转换、哈夫曼树和哈夫曼编码",
           "hours": 0.5,
           "done": false
         },
@@ -831,7 +687,7 @@
           "tag": "ai",
           "subject": "AI学习",
           "chapter": "",
-          "topic": "小甲鱼Python入门 第6-10集（文件/异常/模块/类）",
+          "topic": "小甲鱼Python入门 第11-15集（面向对象/装饰器/迭代器）",
           "hours": 1,
           "done": false
         },
@@ -854,20 +710,12 @@
       ]
     },
     {
-      "date": "8/31",
+      "date": "9/7",
       "weekday": "周日",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第2章",
-          "topic": "半休：间隔复习 + 错题重做",
-          "hours": 0.5,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
           "chapter": "第3章",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
@@ -876,7 +724,15 @@
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第3章",
+          "chapter": "第5章",
+          "topic": "半休：间隔复习 + 错题重做",
+          "hours": 0.5,
+          "done": false
+        },
+        {
+          "tag": "core2",
+          "subject": "离散数学",
+          "chapter": "第5章",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
           "done": false
@@ -884,7 +740,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
           "done": false
@@ -892,7 +748,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第3章",
+          "chapter": "第5章",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
           "done": false

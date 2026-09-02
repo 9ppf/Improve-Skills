@@ -1,1 +1,186 @@
-[]
+[
+  {
+    "questionId": "q-13003-001",
+    "chapter": "第1章 绪论",
+    "type": "choice",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "timestamp": 1788078353
+  },
+  {
+    "questionId": "q-13003-002",
+    "chapter": "第1章 绪论",
+    "type": "choice",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "timestamp": 1788164753
+  },
+  {
+    "questionId": "q-13003-003",
+    "chapter": "第1章 绪论",
+    "type": "choice",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "timestamp": 1788251153
+  },
+  {
+    "questionId": "q-13003-004",
+    "chapter": "第1章 绪论",
+    "type": "fill",
+    "userAnswer": "",
+    "isCorrect": true,
+    "timestamp": 1788319553
+  },
+  {
+    "questionId": "q-13003-005",
+    "chapter": "第1章 绪论",
+    "type": "shortAnswer",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "timestamp": 1788330353
+  },
+  {
+    "questionId": "q-13003-006",
+    "chapter": "第1章 绪论",
+    "type": "choice",
+    "userAnswer": "C",
+    "isCorrect": false,
+    "timestamp": 1788333953
+  },
+  {
+    "questionId": "q-13003-040",
+    "chapter": "第2章 线性表",
+    "type": "choice",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "timestamp": 1788251153
+  },
+  {
+    "questionId": "q-13003-041",
+    "chapter": "第2章 线性表",
+    "type": "fill",
+    "userAnswer": "",
+    "isCorrect": true,
+    "timestamp": 1788319553
+  },
+  {
+    "questionId": "q-13003-042",
+    "chapter": "第2章 线性表",
+    "type": "choice",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "timestamp": 1788330353
+  },
+  {
+    "questionId": "q-13003-043",
+    "chapter": "第2章 线性表",
+    "type": "shortAnswer",
+    "userAnswer": "B",
+    "isCorrect": false,
+    "timestamp": 1788333953
+  },
+  {
+    "questionId": "q-13003-044",
+    "chapter": "第2章 线性表",
+    "type": "choice",
+    "userAnswer": "B",
+    "isCorrect": false,
+    "timestamp": 1788335753
+  },
+  {
+    "questionId": "q-13003-061",
+    "chapter": "第3章 栈和队列",
+    "type": "choice",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "timestamp": 1788330353
+  },
+  {
+    "questionId": "q-13003-062",
+    "chapter": "第3章 栈和队列",
+    "type": "fill",
+    "userAnswer": "",
+    "isCorrect": true,
+    "timestamp": 1788333953
+  },
+  {
+    "questionId": "q-13003-063",
+    "chapter": "第3章 栈和队列",
+    "type": "choice",
+    "userAnswer": "C",
+    "isCorrect": false,
+    "timestamp": 1788335753
+  },
+  {
+    "questionId": "q-13003-064",
+    "chapter": "第3章 栈和队列",
+    "type": "shortAnswer",
+    "userAnswer": "C",
+    "isCorrect": false,
+    "timestamp": 1788336653
+  },
+  {
+    "questionId": "q-13003-172",
+    "chapter": "第4章 数组、广义表和串",
+    "type": "choice",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "timestamp": 1788164753
+  },
+  {
+    "questionId": "q-13003-173",
+    "chapter": "第4章 数组、广义表和串",
+    "type": "choice",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "timestamp": 1788251153
+  },
+  {
+    "questionId": "q-13003-174",
+    "chapter": "第4章 数组、广义表和串",
+    "type": "fill",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "timestamp": 1788319553
+  },
+  {
+    "questionId": "q-13003-175",
+    "chapter": "第4章 数组、广义表和串",
+    "type": "fill",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "timestamp": 1788330353
+  },
+  {
+    "questionId": "q-13003-176",
+    "chapter": "第4章 数组、广义表和串",
+    "type": "calculate",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "timestamp": 1788333953
+  },
+  {
+    "questionId": "q-13003-195",
+    "chapter": "第5章 树与二叉树",
+    "type": "choice",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "timestamp": 1788319553
+  },
+  {
+    "questionId": "q-13003-196",
+    "chapter": "第5章 树与二叉树",
+    "type": "choice",
+    "userAnswer": "D",
+    "isCorrect": false,
+    "timestamp": 1788330353
+  },
+  {
+    "questionId": "q-13003-197",
+    "chapter": "第5章 树与二叉树",
+    "type": "fill",
+    "userAnswer": "D",
+    "isCorrect": false,
+    "timestamp": 1788333953
+  }
+]

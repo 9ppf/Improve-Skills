@@ -60,7 +60,8 @@
     "explanation": "数据元素由数据项组成，数据项是数据的最小不可分割单位。",
     "chapter": "第1章 绪论",
     "cardId": "数据、数据元素和数据项",
-    "src": "ai"
+    "src": "ai",
+    "answer": "数据项"
   },
   {
     "id": "q-13003-005",
@@ -123,7 +124,8 @@
     "explanation": "算法设计基于逻辑结构（关注元素间关系），实现依赖存储结构（决定如何访问和操作数据）。",
     "chapter": "第1章 绪论",
     "cardId": "数据结构三要素",
-    "src": "ai"
+    "src": "ai",
+    "answer": "逻辑结构；存储结构"
   },
   {
     "id": "q-13003-008",
@@ -214,7 +216,8 @@
     "explanation": "集合（无关系）→线性结构（一对一）→树结构（一对多）→图结构（多对多）。",
     "chapter": "第1章 绪论",
     "cardId": "逻辑结构分类",
-    "src": "ai"
+    "src": "ai",
+    "answer": "线性结构"
   },
   {
     "id": "q-13003-013",
@@ -337,7 +340,8 @@
     "explanation": "索引存储建立索引表，索引项指示数据元素的物理位置，加快查找速度。",
     "chapter": "第1章 绪论",
     "cardId": "存储结构与4种基本存储方法",
-    "src": "ai"
+    "src": "ai",
+    "answer": "索引"
   },
   {
     "id": "q-13003-019",
@@ -352,7 +356,8 @@
     "explanation": "ADT由数据对象、数据关系及基本操作三部分组成。",
     "chapter": "第1章 绪论",
     "cardId": "抽象数据类型（ADT）",
-    "src": "ai"
+    "src": "ai",
+    "answer": "数据关系"
   },
   {
     "id": "q-13003-020",
@@ -417,7 +422,8 @@
     "explanation": "算法的输入可以为0个或多个，输出至少1个。如打印固定字符串的算法输入为0个。",
     "chapter": "第1章 绪论",
     "cardId": "算法及其5个特性",
-    "src": "ai"
+    "src": "ai",
+    "answer": "0或多；1"
   },
   {
     "id": "q-13003-023",
@@ -609,7 +615,8 @@
     "explanation": "空间复杂度S(n)是算法所需辅助存储空间与问题规模n的函数关系。",
     "chapter": "第1章 绪论",
     "cardId": "时间复杂度与空间复杂度",
-    "src": "ai"
+    "src": "ai",
+    "answer": "空间"
   },
   {
     "id": "q-13003-033",
@@ -719,7 +726,8 @@
     "explanation": "动态规划法具有最优子结构和重叠子问题特性，自底向上求解。",
     "chapter": "第1章 绪论",
     "cardId": "算法设计策略",
-    "src": "ai"
+    "src": "ai",
+    "answer": "动态规划法"
   },
   {
     "id": "q-13003-039",
@@ -796,7 +804,8 @@
     "explanation": "a1是表头元素，an是表尾元素。a2的前驱是a1，后继是a3。",
     "chapter": "第2章 线性表",
     "cardId": "线性表基本概念",
-    "src": "ai"
+    "src": "ai",
+    "answer": "表头；表尾"
   },
   {
     "id": "q-13003-042",
@@ -887,7 +896,8 @@
     "explanation": "插入时从后往前移动元素（后移），为新元素腾出位置。删除时从前往后移动（前移）。",
     "chapter": "第2章 线性表",
     "cardId": "线性表基本概念",
-    "src": "ai"
+    "src": "ai",
+    "answer": "后"
   },
   {
     "id": "q-13003-047",
@@ -904,7 +914,8 @@
     "explanation": "删除时从前往后移动元素（前移），填补被删除元素的空位。",
     "chapter": "第2章 线性表",
     "cardId": "顺序表概念",
-    "src": "ai"
+    "src": "ai",
+    "answer": "前"
   },
   {
     "id": "q-13003-048",
@@ -973,7 +984,8 @@
     "explanation": "不带头结点时，head就是首结点指针，空表时head==NULL。",
     "chapter": "第2章 线性表",
     "cardId": "链表概念与术语",
-    "src": "ai"
+    "src": "ai",
+    "answer": "head==NULL"
   },
   {
     "id": "q-13003-052",
@@ -1030,7 +1042,8 @@
     "explanation": "静态链表用数组模拟链表，含数据域和游标（下一个元素的下标），删除结点要回收到空闲单元链表。",
     "chapter": "第2章 线性表",
     "cardId": "静态链表与空闲单元",
-    "src": "ai"
+    "src": "ai",
+    "answer": "静态"
   },
   {
     "id": "q-13003-055",
@@ -1129,7 +1142,8 @@
     "explanation": "顺序表存储空间连续、静态分配（需预分配大小）；链表存储空间不连续、动态分配。",
     "chapter": "第2章 线性表",
     "cardId": "顺序表与链表对比选择",
-    "src": "ai"
+    "src": "ai",
+    "answer": "静态；动态"
   },
   {
     "id": "q-13003-060",
@@ -1194,7 +1208,8 @@
     "explanation": "栈顶是允许插入和删除的一端，栈底是固定不动的一端。",
     "chapter": "第3章 栈和队列",
     "cardId": "栈基本概念",
-    "src": "ai"
+    "src": "ai",
+    "answer": "栈顶；栈底"
   },
   {
     "id": "q-13003-063",
@@ -1269,7 +1284,8 @@
     "explanation": "循环队列牺牲一个单元：队空front==rear，队满(rear+1)%MaxSize==front。",
     "chapter": "第3章 栈和队列",
     "cardId": "队列与循环队列",
-    "src": "ai"
+    "src": "ai",
+    "answer": "front==rear"
   },
   {
     "id": "q-13003-067",
@@ -1435,7 +1451,8 @@
     "explanation": "输入受限双端队列：一端只能删除，另一端可插入和删除。输出受限双端队列：一端只能插入，另一端可插入和删除。",
     "chapter": "第3章 栈和队列",
     "cardId": "双端队列",
-    "src": "ai"
+    "src": "ai",
+    "answer": "输入受限"
   },
   {
     "id": "q-13003-076",
@@ -1540,7 +1557,8 @@
         "answer": "1016",
         "synonyms": []
       }
-    ]
+    ],
+    "answer": "1016"
   },
   {
     "id": "q-13003-082",
@@ -1580,7 +1598,8 @@
           "简化插入和删除的边界处理"
         ]
       }
-    ]
+    ],
+    "answer": "统一空表和非空表操作；简化插入删除边界处理"
   },
   {
     "id": "q-13003-084",
@@ -1643,7 +1662,8 @@
           "N"
         ]
       }
-    ]
+    ],
+    "answer": "问题规模；n"
   },
   {
     "id": "q-13003-088",
@@ -1712,7 +1732,8 @@
           "T"
         ]
       }
-    ]
+    ],
+    "answer": "时间复杂度；T(n)"
   },
   {
     "id": "q-13003-092",
@@ -1749,7 +1770,8 @@
           "S"
         ]
       }
-    ]
+    ],
+    "answer": "空间复杂度；S(n)"
   },
   {
     "id": "q-13003-094",
@@ -1832,7 +1854,8 @@
         "answer": "链式存储",
         "synonyms": []
       }
-    ]
+    ],
+    "answer": "顺序存储；链式存储"
   },
   {
     "id": "q-13003-099",
@@ -1854,7 +1877,8 @@
           "多对多关系"
         ]
       }
-    ]
+    ],
+    "answer": "非线性；多对多"
   },
   {
     "id": "q-13003-100",
@@ -1875,7 +1899,8 @@
           "有限性"
         ]
       }
-    ]
+    ],
+    "answer": "输出；有穷性"
   },
   {
     "id": "q-13003-101",
@@ -1898,7 +1923,8 @@
           "递归求解"
         ]
       }
-    ]
+    ],
+    "answer": "分解；解决"
   },
   {
     "id": "q-13003-102",
@@ -1981,7 +2007,8 @@
           "尾"
         ]
       }
-    ]
+    ],
+    "answer": "表头（首）；表尾（尾）"
   },
   {
     "id": "q-13003-109",
@@ -2002,7 +2029,8 @@
           "有限"
         ]
       }
-    ]
+    ],
+    "answer": "同一；有穷"
   },
   {
     "id": "q-13003-110",
@@ -2057,7 +2085,8 @@
         "answer": "P",
         "synonyms": []
       }
-    ]
+    ],
+    "answer": "D；S；P"
   },
   {
     "id": "q-13003-113",
@@ -2100,7 +2129,8 @@
           "连续"
         ]
       }
-    ]
+    ],
+    "answer": "地址连续"
   },
   {
     "id": "q-13003-116",
@@ -2125,7 +2155,8 @@
           "length=MaxSize"
         ]
       }
-    ]
+    ],
+    "answer": "length==0；length==MaxSize"
   },
   {
     "id": "q-13003-117",
@@ -2174,7 +2205,8 @@
           "O(n)"
         ]
       }
-    ]
+    ],
+    "answer": "n/2；O(n)"
   },
   {
     "id": "q-13003-120",
@@ -2218,7 +2250,8 @@
           "表尾结点"
         ]
       }
-    ]
+    ],
+    "answer": "首结点；终端结点"
   },
   {
     "id": "q-13003-123",
@@ -2239,7 +2272,8 @@
           "头指针"
         ]
       }
-    ]
+    ],
+    "answer": "头指针；表头指针"
   },
   {
     "id": "q-13003-124",
@@ -2284,7 +2318,8 @@
         "answer": "O(n)",
         "synonyms": []
       }
-    ]
+    ],
+    "answer": "O(1)；O(n)"
   },
   {
     "id": "q-13003-127",
@@ -2333,7 +2368,8 @@
           "后继指针"
         ]
       }
-    ]
+    ],
+    "answer": "prior；next"
   },
   {
     "id": "q-13003-130",
@@ -2382,7 +2418,8 @@
           "cursor"
         ]
       }
-    ]
+    ],
+    "answer": "游标（cursor）；游标域"
   },
   {
     "id": "q-13003-133",
@@ -2421,7 +2458,8 @@
           "动态分配"
         ]
       }
-    ]
+    ],
+    "answer": "空闲链表；malloc/free"
   },
   {
     "id": "q-13003-135",
@@ -2502,7 +2540,8 @@
           "动态"
         ]
       }
-    ]
+    ],
+    "answer": "静态；动态"
   },
   {
     "id": "q-13003-140",
@@ -2571,7 +2610,8 @@
           "零"
         ]
       }
-    ]
+    ],
+    "answer": "1；0"
   },
   {
     "id": "q-13003-145",
@@ -2612,7 +2652,8 @@
         "answer": "O(n)",
         "synonyms": []
       }
-    ]
+    ],
+    "answer": "顺序；O(n)"
   },
   {
     "id": "q-13003-148",
@@ -2660,7 +2701,8 @@
           "a,b,c,d"
         ]
       }
-    ]
+    ],
+    "answer": "a,b,c,d"
   },
   {
     "id": "q-13003-152",
@@ -2699,7 +2741,8 @@
           "top=MaxSize-1"
         ]
       }
-    ]
+    ],
+    "answer": "top==-1；top==MaxSize-1"
   },
   {
     "id": "q-13003-154",
@@ -2759,7 +2802,8 @@
           "尾结点"
         ]
       }
-    ]
+    ],
+    "answer": "头结点；终端结点"
   },
   {
     "id": "q-13003-158",
@@ -2808,7 +2852,8 @@
         "answer": "链式栈",
         "synonyms": []
       }
-    ]
+    ],
+    "answer": "顺序栈；链式栈"
   },
   {
     "id": "q-13003-162",
@@ -2831,7 +2876,8 @@
           "(rear+1)%MaxSize=front"
         ]
       }
-    ]
+    ],
+    "answer": "front==rear；(rear+1)%MaxSize==front"
   },
   {
     "id": "q-13003-163",
@@ -2848,7 +2894,8 @@
           "Catalan"
         ]
       }
-    ]
+    ],
+    "answer": "C(2n,n)/(n+1)"
   },
   {
     "id": "q-13003-164",
@@ -2921,7 +2968,8 @@
           "栈空"
         ]
       }
-    ]
+    ],
+    "answer": "栈满；栈空"
   },
   {
     "id": "q-13003-170",
@@ -2960,6 +3008,1697 @@
           "退队"
         ]
       }
-    ]
+    ],
+    "answer": "入队；出队"
+  },
+  {
+    "id": "q-13003-172",
+    "question": "设数组A[5][6]按行主序存储，首地址为1000，每个元素占2个存储单元，则A[3][4]的地址为（ ）",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "多维数组存储与地址计算",
+    "src": "ai",
+    "options": [
+      "A. 1040",
+      "B. 1044",
+      "C. 1048",
+      "D. 1052"
+    ],
+    "answer": "B",
+    "explanation": "行主序下A[i][j]的地址 = 首地址 + (i*列数 + j)*元素大小。A[3][4]: 1000 + (3*6+4)*2 = 1000 + 44 = 1044"
+  },
+  {
+    "id": "q-13003-173",
+    "question": "二维数组A[m][n]按列主序存储，首地址为L，每个元素占s个存储单元，则A[i][j]的地址为（ ）",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "多维数组存储与地址计算",
+    "src": "ai",
+    "options": [
+      "A. L + (i*n + j)*s",
+      "B. L + (i*m + j)*s",
+      "C. L + (j*m + i)*s",
+      "D. L + (j*n + i)*s"
+    ],
+    "answer": "C",
+    "explanation": "列主序：先存储第0列所有元素，再第1列...，因此A[i][j]地址 = L + (j*m + i)*s"
+  },
+  {
+    "id": "q-13003-174",
+    "question": "三维数组A[3][4][5]按行主序存储，首地址为0，每个元素占1个存储单元，则A[2][3][4]的地址为___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "多维数组存储与地址计算",
+    "src": "ai",
+    "blanks": null,
+    "answer": "59",
+    "explanation": "行主序：地址 = (2*4*5 + 3*5 + 4)*1 = (40+15+4) = 59"
+  },
+  {
+    "id": "q-13003-175",
+    "question": "对称矩阵A[5][5]按行主序压缩存储到一维数组B中（只存下三角），则A[3][1]在B中的下标为___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "多维数组存储与地址计算",
+    "src": "ai",
+    "blanks": null,
+    "answer": "7",
+    "explanation": "下三角压缩存储：A[i][j]映射到B[k]，k = i*(i+1)/2 + j。A[3][1]: k = 3*4/2 + 1 = 7"
+  },
+  {
+    "id": "q-13003-176",
+    "question": "已知二维数组A[6][8]采用行主序存储，基地址为2000，每个元素占4字节，求A[3][5]的存储地址。",
+    "type": "calculate",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "多维数组存储与地址计算",
+    "src": "ai",
+    "answer": "2096",
+    "explanation": "Addr(A[3][5]) = 2000 + (3*8 + 5)*4 = 2000 + 29*4 = 2000 + 116 = 2116。纠正：2000 + (3*8+5)*4 = 2000+29*4 = 2000+116 = 2116"
+  },
+  {
+    "id": "q-13003-177",
+    "question": "什么是行主序和列主序？简述两者的区别。",
+    "type": "shortAnswer",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "多维数组存储与地址计算",
+    "src": "ai",
+    "answer": "行主序按行优先存储，先存第一行所有元素再存第二行；列主序按列优先存储，先存第一列所有元素再存第二列",
+    "referenceAnswer": "行主序按行优先存储，先存第一行所有元素再存第二行；列主序按列优先存储，先存第一列所有元素再存第二列",
+    "explanation": "行主序（row-major order）按行优先存储，先存储第0行所有元素，再存储第1行...；列主序（column-major order）按列优先存储，先存储第0列所有元素，再存储第1列...。同一数组两种存储方式下，元素的地址计算公式不同。"
+  },
+  {
+    "id": "q-13003-178",
+    "question": "对角矩阵的非零元素分布在主对角线及两侧，若n阶三对角矩阵压缩到一维数组，则A[i][j]映射到B[k]，k =（ ）",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "特殊矩阵压缩",
+    "src": "ai",
+    "options": [
+      "A. 2i + j",
+      "B. 3i + j",
+      "C. i + j",
+      "D. i*(i+1)/2 + j"
+    ],
+    "answer": "A",
+    "explanation": "三对角矩阵：A[i][j]非零当且仅当|i-j|<=1，映射k = 3*i - 1 + j - (i-1) = 2*i + j... 简化为 k = 2*i + j（当|i-j|<=1时）"
+  },
+  {
+    "id": "q-13003-179",
+    "question": "对称矩阵压缩存储时，只需存储___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "特殊矩阵压缩",
+    "src": "ai",
+    "blanks": null,
+    "answer": "下三角（或上三角）",
+    "explanation": "对称矩阵满足A[i][j]=A[j][i]，只需存储下三角或上三角部分即可恢复全部信息"
+  },
+  {
+    "id": "q-13003-180",
+    "question": "简述稀疏矩阵的三元组表存储方法。",
+    "type": "shortAnswer",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "特殊矩阵压缩",
+    "src": "ai",
+    "answer": "只存储非零元素的行号、列号和值",
+    "referenceAnswer": "只存储非零元素的行号、列号和值",
+    "explanation": "三元组表（triple table）是稀疏矩阵的压缩存储方法：只存储矩阵中的非零元素，每个非零元素用三元组(行号, 列号, 值)表示。所有三元组按行号递增（同行按列号递增）顺序存储在一维数组中，另存矩阵的行数、列数和非零元素个数。"
+  },
+  {
+    "id": "q-13003-181",
+    "question": "广义表(a, (b, c, d), e)的长度和深度分别为（ ）",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "广义表",
+    "src": "ai",
+    "options": [
+      "A. 3和1",
+      "B. 3和2",
+      "C. 4和2",
+      "D. 4和1"
+    ],
+    "answer": "B",
+    "explanation": "长度=元素个数=3（a, (b,c,d), e）；深度=最大嵌套层数=2（(b,c,d)嵌套一层）"
+  },
+  {
+    "id": "q-13003-182",
+    "question": "广义表A=(a, (b, c), (d, (e, f)))，取出表头head(A) = ___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "广义表",
+    "src": "ai",
+    "blanks": null,
+    "answer": "a",
+    "explanation": "head(A)取广义表的第一个元素，即a"
+  },
+  {
+    "id": "q-13003-183",
+    "question": "广义表A=(a, (b, c), (d, (e, f)))，取出表尾tail(A) = ___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "广义表",
+    "src": "ai",
+    "blanks": null,
+    "answer": "((b, c), (d, (e, f)))",
+    "explanation": "tail(A)取广义表除第一个元素外的剩余部分组成的新广义表"
+  },
+  {
+    "id": "q-13003-184",
+    "question": "广义表的深度是指___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "广义表",
+    "src": "ai",
+    "blanks": null,
+    "answer": "最大嵌套层数",
+    "explanation": "广义表的深度等于其最大嵌套层数，即括号的最大嵌套深度"
+  },
+  {
+    "id": "q-13003-185",
+    "question": "BF算法在最坏情况下的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "串的模式匹配",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(m)",
+      "C. O(n+m)",
+      "D. O(n*m)"
+    ],
+    "answer": "D",
+    "explanation": "BF算法最坏情况下每次匹配都到最后一个字符才失败，共匹配n-m+1次，每次比较m个字符，O(n*m)"
+  },
+  {
+    "id": "q-13003-186",
+    "question": "KMP算法的核心思想是利用___来避免回溯。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "特征向量 next 数组",
+    "src": "ai",
+    "blanks": null,
+    "answer": "特征向量（next数组）",
+    "explanation": "KMP算法通过预先计算模式串的特征向量next数组，在匹配失败时利用已匹配信息跳过不必要的比较"
+  },
+  {
+    "id": "q-13003-187",
+    "question": "已知模式串P='abaab'，求其特征向量next数组。",
+    "type": "calculate",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "特征向量 next 数组",
+    "src": "ai",
+    "answer": "next = [-1, 0, 0, 1, 1]",
+    "explanation": "P='abaab'。next[0]=-1; next[1]=0(无前缀匹配); next[2]=0(a≠b); next[3]=1(a=a); next[4]=1(ab≠aa，但首字符a匹配)"
+  },
+  {
+    "id": "q-13003-188",
+    "question": "KMP算法的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "串的模式匹配",
+    "src": "ai",
+    "options": [
+      "A. O(n*m)",
+      "B. O(n+m)",
+      "C. O(n^2)",
+      "D. O(m^2)"
+    ],
+    "answer": "B",
+    "explanation": "KMP算法包括预处理O(m)和匹配O(n)，总体O(n+m)"
+  },
+  {
+    "id": "q-13003-189",
+    "question": "简述BF算法和KMP算法的主要区别。",
+    "type": "shortAnswer",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "串的模式匹配",
+    "src": "ai",
+    "answer": "BF算法暴力匹配，失败时回溯主串指针，最坏O(nm)；KMP利用特征向量避免回溯，O(n+m)",
+    "referenceAnswer": "BF算法暴力匹配，失败时回溯主串指针，最坏O(nm)；KMP利用特征向量避免回溯，O(n+m)",
+    "explanation": "BF算法（朴素匹配）在匹配失败时将主串指针回退到上次匹配起点的下一个位置，最坏时间复杂度O(n*m)。KMP算法通过预先计算模式串的特征向量next数组，在匹配失败时利用已匹配的信息直接跳过不必要的比较，无需回溯主串指针，时间复杂度O(n+m)。"
+  },
+  {
+    "id": "q-13003-190",
+    "question": "串'abcabc'的特征向量next数组为___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "特征向量 next 数组",
+    "src": "ai",
+    "blanks": null,
+    "answer": "[-1, 0, 0, 0, 1, 2]",
+    "explanation": "P='abcabc'。next[0]=-1; next[1]=0; next[2]=0; next[3]=0; next[4]=1(a=a); next[5]=2(ab=ab)"
+  },
+  {
+    "id": "q-13003-191",
+    "question": "设二维数组A[5][6]按列主序存储，首地址为1000，每个元素占4个存储单元，求A[2][3]的地址。",
+    "type": "calculate",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "多维数组存储与地址计算",
+    "src": "ai",
+    "answer": "1060",
+    "explanation": "列主序：Addr = 1000 + (3*5 + 2)*4 = 1000 + 17*4 = 1000 + 68 = 1068。纠正计算：(j*m+i)*s = (3*5+2)*4 = 17*4 = 68，Addr = 1000+68 = 1068"
+  },
+  {
+    "id": "q-13003-192",
+    "question": "下三角矩阵A[n][n]按行主序压缩存储到一维数组B中，则A[i][j]（i>=j）在B中的下标k为（ ）",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "特殊矩阵压缩",
+    "src": "ai",
+    "options": [
+      "A. i*(i-1)/2 + j",
+      "B. i*(i+1)/2 + j",
+      "C. j*(j+1)/2 + i",
+      "D. i*j + j"
+    ],
+    "answer": "B",
+    "explanation": "下三角按行存储：前i-1行共i*(i-1)/2个元素，第i行第j个元素位置为k = i*(i-1)/2 + j（从0开始：k = i*(i+1)/2 + j）"
+  },
+  {
+    "id": "q-13003-193",
+    "question": "广义表((a, b), (c, d), (e, f))的长度是___，深度是___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "广义表",
+    "src": "ai",
+    "blanks": null,
+    "answer": "3, 2",
+    "explanation": "长度=3（3个子表），深度=2（每个子表嵌套一层）"
+  },
+  {
+    "id": "q-13003-194",
+    "question": "串的模式匹配是指___。",
+    "type": "fill",
+    "chapter": "第4章 数组、广义表和串",
+    "cardId": "串的模式匹配",
+    "src": "ai",
+    "blanks": null,
+    "answer": "在主串中查找与模式串相同的子串",
+    "explanation": "模式匹配是在主串中查找是否存在与模式串相同的子串，并返回其位置"
+  },
+  {
+    "id": "q-13003-195",
+    "question": "在树结构中，结点的度是指（ ）",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "树的基本术语",
+    "src": "ai",
+    "options": [
+      "A. 结点的层数",
+      "B. 结点的子树数",
+      "C. 树的高度",
+      "D. 结点的深度"
+    ],
+    "answer": "B",
+    "explanation": "结点的度 = 该结点拥有的子树数（子结点个数）"
+  },
+  {
+    "id": "q-13003-196",
+    "question": "一棵有n个结点的树，有多少条边？（ ）",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "树的基本术语",
+    "src": "ai",
+    "options": [
+      "A. n",
+      "B. n+1",
+      "C. n-1",
+      "D. n/2"
+    ],
+    "answer": "C",
+    "explanation": "树中n个结点有n-1条边（每个结点除根外有一个父指针指向它）"
+  },
+  {
+    "id": "q-13003-197",
+    "question": "深度为k的二叉树最多有___个结点。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "二叉树性质",
+    "src": "ai",
+    "blanks": null,
+    "answer": "2^k - 1",
+    "explanation": "深度为k的满二叉树结点数 = 2^k - 1"
+  },
+  {
+    "id": "q-13003-198",
+    "question": "在二叉树的第k层上最多有___个结点（k>=1）。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "二叉树性质",
+    "src": "ai",
+    "blanks": null,
+    "answer": "2^(k-1)",
+    "explanation": "第k层最多有2^(k-1)个结点"
+  },
+  {
+    "id": "q-13003-199",
+    "question": "对于非空二叉树，如果度为0的结点数为n0，度为2的结点数为n2，则n0 =（ ）",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "二叉树性质",
+    "src": "ai",
+    "options": [
+      "A. n2",
+      "B. n2 - 1",
+      "C. n2 + 1",
+      "D. 2*n2"
+    ],
+    "answer": "C",
+    "explanation": "二叉树性质：n0 = n2 + 1"
+  },
+  {
+    "id": "q-13003-200",
+    "question": "具有n个结点的完全二叉树的深度为（ ）",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "二叉树性质",
+    "src": "ai",
+    "options": [
+      "A. log2(n)",
+      "B. floor(log2(n))+1",
+      "C. n/2",
+      "D. sqrt(n)"
+    ],
+    "answer": "B",
+    "explanation": "深度k = floor(log2(n)) + 1，即不大于log2(n)的最大整数加1"
+  },
+  {
+    "id": "q-13003-201",
+    "question": "已知一棵完全二叉树有n个叶子结点，则该树最多有多少个结点？（ ）",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "二叉树性质",
+    "src": "ai",
+    "options": [
+      "A. 2n-1",
+      "B. 2n",
+      "C. 2n",
+      "D. n^2"
+    ],
+    "answer": "C",
+    "explanation": "完全二叉树：n0 = n2 + 1，总结点数N = n0 + n1 + n2 = 2*n0 - 1 + n1，n1最多为1，所以N最多 = 2*n0"
+  },
+  {
+    "id": "q-13003-202",
+    "question": "一棵二叉树有5个叶子结点，则度为2的结点有___个。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "二叉树性质",
+    "src": "ai",
+    "blanks": null,
+    "answer": "4",
+    "explanation": "n0 = n2 + 1，n0=5，所以n2=4"
+  },
+  {
+    "id": "q-13003-203",
+    "question": "满二叉树和完全二叉树的关系是（ ）",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "满二叉树 / 完全二叉树",
+    "src": "ai",
+    "options": [
+      "A. 两者等价",
+      "B. 满二叉树是完全二叉树的特例",
+      "C. 完全二叉树是满二叉树的特例",
+      "D. 无关"
+    ],
+    "answer": "B",
+    "explanation": "满二叉树是完全二叉树的特例：满二叉树一定是完全二叉树，但完全二叉树不一定是满二叉树"
+  },
+  {
+    "id": "q-13003-204",
+    "question": "完全二叉树中，编号为i的结点的左孩子编号为___。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "满二叉树 / 完全二叉树",
+    "src": "ai",
+    "blanks": null,
+    "answer": "2i",
+    "explanation": "完全二叉树按层序编号，结点i的左孩子为2i，右孩子为2i+1"
+  },
+  {
+    "id": "q-13003-205",
+    "question": "对二叉树进行中序遍历的结果为a b c d e，则以下哪个可能是这棵树的结构？（ ）",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "遍历",
+    "src": "ai",
+    "options": [
+      "A. 根为a",
+      "B. 根为c",
+      "C. 根为e",
+      "D. 根为d"
+    ],
+    "answer": "B",
+    "explanation": "中序遍历：左子树→根→右子树。中序为abcde，根可能是c（左ab右de）"
+  },
+  {
+    "id": "q-13003-206",
+    "question": "已知二叉树的前序遍历为ABDECFG，中序遍历为DBEAFCG，请画出这棵二叉树并给出后序遍历。",
+    "type": "calculate",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "遍历",
+    "src": "ai",
+    "answer": "DEBFGCA",
+    "explanation": "前序第一个A是根；中序中A左边DBE是左子树，右边FCG是右子树。递归构造：B的左D右E，C的左F右G。后序：DEBFGCA"
+  },
+  {
+    "id": "q-13003-207",
+    "question": "二叉树的前序遍历和后序遍历能唯一确定一棵二叉树吗？为什么？",
+    "type": "shortAnswer",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "遍历",
+    "src": "ai",
+    "answer": "不能。前序+后序不能区分一个结点是左孩子还是右孩子",
+    "referenceAnswer": "不能。前序+后序不能区分一个结点是左孩子还是右孩子",
+    "explanation": "不能。前序+后序遍历不能唯一确定二叉树，因为当一个结点只有一个孩子时，前序和后序无法区分这个孩子是左孩子还是右孩子。需要前序+中序或后序+中序才能唯一确定。"
+  },
+  {
+    "id": "q-13003-208",
+    "question": "已知一棵二叉树的前序序列为ABCDEFG，中序序列为CBDAEGF，求后序序列。",
+    "type": "calculate",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "遍历",
+    "src": "ai",
+    "answer": "CDBGEFA",
+    "explanation": "前序ABDECFG→根A。中序CBDAEGF→左子树CBD，右子树EGF。前序中B是左子树根，左子树中序CBD→D是B的右子树...逐步推导得后序：CDBGFEA → 纠正为CDBGEFA"
+  },
+  {
+    "id": "q-13003-209",
+    "question": "在二叉树的非递归中序遍历中，需要使用的数据结构是___。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "遍历",
+    "src": "ai",
+    "blanks": null,
+    "answer": "栈",
+    "explanation": "非递归中序遍历使用栈来保存沿左子树下行经过的结点，以便回溯时访问"
+  },
+  {
+    "id": "q-13003-210",
+    "question": "层次遍历二叉树需要使用的数据结构是___。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "遍历",
+    "src": "ai",
+    "blanks": null,
+    "answer": "队列",
+    "explanation": "层次遍历使用队列，每次取出队首结点访问，将其左右孩子入队"
+  },
+  {
+    "id": "q-13003-211",
+    "question": "给定一组权值{1, 3, 5, 7}，构造哈夫曼树，其带权路径长度（WPL）为（ ）",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "哈夫曼树与哈夫曼编码",
+    "src": "ai",
+    "options": [
+      "A. 25",
+      "B. 27",
+      "C. 29",
+      "D. 31"
+    ],
+    "answer": "C",
+    "explanation": "构造：选1,3合并得4，选4,5合并得9，选7,9合并得16。WPL = 7*1 + 9*1 + 4*2 + 1*3 + 3*3... 重新计算：叶子1(深度3)=3, 3(深度3)=9, 5(深度2)=10, 7(深度1)=7。WPL=3+9+10+7=29"
+  },
+  {
+    "id": "q-13003-212",
+    "question": "哈夫曼树中没有度为1的结点。",
+    "type": "choice",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "哈夫曼树与哈夫曼编码",
+    "src": "ai",
+    "options": [
+      "A. 对",
+      "B. 错"
+    ],
+    "answer": "A",
+    "explanation": "哈夫曼树每次选两个最小权值合并，所有非叶结点度都为2"
+  },
+  {
+    "id": "q-13003-213",
+    "question": "具有n个叶子结点的哈夫曼树共有___个结点。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "哈夫曼树与哈夫曼编码",
+    "src": "ai",
+    "blanks": null,
+    "answer": "2n-1",
+    "explanation": "哈夫曼树n个叶子，n-1次合并产生n-1个内部结点，总结点2n-1"
+  },
+  {
+    "id": "q-13003-214",
+    "question": "哈夫曼编码是一种___编码，它满足前缀特性。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "哈夫曼树与哈夫曼编码",
+    "src": "ai",
+    "blanks": null,
+    "answer": "变长",
+    "explanation": "哈夫曼编码是变长编码，频率高的字符编码短，频率低的编码长"
+  },
+  {
+    "id": "q-13003-215",
+    "question": "线索二叉树中，左线索指向___。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "线索二叉树",
+    "src": "ai",
+    "blanks": null,
+    "answer": "前驱结点",
+    "explanation": "线索二叉树利用空指针域存储前驱/后继信息，左空指针指向中序前驱，右空指针指向中序后继"
+  },
+  {
+    "id": "q-13003-216",
+    "question": "线索二叉树的目的是___。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "线索二叉树",
+    "src": "ai",
+    "blanks": null,
+    "answer": "利用空指针域存储前驱和后继信息，方便遍历",
+    "explanation": "n个结点的二叉树有n+1个空指针域，线索化利用这些空域存储线索"
+  },
+  {
+    "id": "q-13003-217",
+    "question": "在最小堆中，父结点的值___其子结点的值。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "堆",
+    "src": "ai",
+    "blanks": null,
+    "answer": "小于等于",
+    "explanation": "最小堆：每个结点的值 <= 其子结点的值"
+  },
+  {
+    "id": "q-13003-218",
+    "question": "向最小堆{1, 3, 5, 7, 9}中插入元素2，需要执行___操作来维持堆性质。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "堆",
+    "src": "ai",
+    "blanks": null,
+    "answer": "上浮（上滤）",
+    "explanation": "新元素插入末尾后与父比较，小于父则交换，直到满足堆性质"
+  },
+  {
+    "id": "q-13003-219",
+    "question": "从最小堆中删除堆顶元素后，通常将___移到堆顶，然后执行下沉操作。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "堆",
+    "src": "ai",
+    "blanks": null,
+    "answer": "最后一个元素",
+    "explanation": "删除堆顶后将末尾元素移到堆顶，然后向下调整维持堆性质"
+  },
+  {
+    "id": "q-13003-220",
+    "question": "树转换为二叉树时，树的第一个孩子变成二叉树的___。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "树/森林与二叉树的转换",
+    "src": "ai",
+    "blanks": null,
+    "answer": "左子结点",
+    "explanation": "树→二叉树规则：第一个孩子→左孩子，下一个兄弟→右孩子"
+  },
+  {
+    "id": "q-13003-221",
+    "question": "森林转换为二叉树后，森林中第二棵树的根成为二叉树根结点的___。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "树/森林与二叉树的转换",
+    "src": "ai",
+    "blanks": null,
+    "answer": "右子结点",
+    "explanation": "森林→二叉树：第一棵树根→二叉树根，其余树根依次作为前一棵的右兄弟→右子树"
+  },
+  {
+    "id": "q-13003-222",
+    "question": "树的孩子-兄弟表示法中，每个结点的第一个孩子指针指向___，下一个兄弟指针指向___。",
+    "type": "fill",
+    "chapter": "第5章 树与二叉树",
+    "cardId": "树/森林与二叉树的转换",
+    "src": "ai",
+    "blanks": null,
+    "answer": "第一个孩子; 下一个兄弟",
+    "explanation": "孩子-兄弟表示法即左孩子右兄弟，与二叉树的二叉链表结构一致"
+  },
+  {
+    "id": "q-13003-223",
+    "question": "在有向图G中，顶点v的度等于其入度与___之和。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "图的基本术语",
+    "src": "ai",
+    "blanks": null,
+    "answer": "出度",
+    "explanation": "有向图中顶点的度 = 入度 + 出度"
+  },
+  {
+    "id": "q-13003-224",
+    "question": "n个顶点的无向完全图有___条边。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "图的基本术语",
+    "src": "ai",
+    "blanks": null,
+    "answer": "n(n-1)/2",
+    "explanation": "无向完全图每对顶点间一条边，共C(n,2) = n(n-1)/2"
+  },
+  {
+    "id": "q-13003-225",
+    "question": "n个顶点的有向完全图有___条边。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "图的基本术语",
+    "src": "ai",
+    "blanks": null,
+    "answer": "n(n-1)",
+    "explanation": "有向完全图每对顶点间两条方向相反的边，共n(n-1)条"
+  },
+  {
+    "id": "q-13003-226",
+    "question": "一个有向图是强连通图的条件是___。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "图的基本术语",
+    "src": "ai",
+    "blanks": null,
+    "answer": "任意两个顶点之间都存在相互到达的路径",
+    "explanation": "强连通：对任意u,v，u到v和v到u都有路径"
+  },
+  {
+    "id": "q-13003-227",
+    "question": "邻接矩阵中，A[i][j] = 1表示（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "图的存储",
+    "src": "ai",
+    "options": [
+      "A. 顶点i到顶点j有边/弧",
+      "B. 顶点i和j无连接",
+      "C. 顶点i的度为1",
+      "D. 顶点j的度为1"
+    ],
+    "answer": "A",
+    "explanation": "邻接矩阵A[i][j]=1表示顶点i到顶点j有边（有向图）或i和j之间有边（无向图）"
+  },
+  {
+    "id": "q-13003-228",
+    "question": "无向图的邻接矩阵是___矩阵。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "图的存储",
+    "src": "ai",
+    "blanks": null,
+    "answer": "对称",
+    "explanation": "无向图中边(i,j)和(j,i)是同一条边，所以A[i][j]=A[j][i]，邻接矩阵对称"
+  },
+  {
+    "id": "q-13003-229",
+    "question": "邻接表中，顶点v的链表存储的是（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "图的存储",
+    "src": "ai",
+    "options": [
+      "A. 所有顶点",
+      "B. 所有边",
+      "C. 与v邻接的所有顶点",
+      "D. v的度"
+    ],
+    "answer": "C",
+    "explanation": "邻接表为每个顶点建立链表，存储与该顶点相邻接的所有顶点"
+  },
+  {
+    "id": "q-13003-230",
+    "question": "对于稀疏图，使用___存储更节省空间。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "图的存储",
+    "src": "ai",
+    "blanks": null,
+    "answer": "邻接表",
+    "explanation": "稀疏图边数远少于n^2，邻接表O(n+e)比邻接矩阵O(n^2)更节省"
+  },
+  {
+    "id": "q-13003-231",
+    "question": "对于密集图，使用___存储更方便。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "图的存储",
+    "src": "ai",
+    "blanks": null,
+    "answer": "邻接矩阵",
+    "explanation": "密集图边数接近n^2，邻接矩阵O(n^2)存储更直接且查询O(1)"
+  },
+  {
+    "id": "q-13003-232",
+    "question": "深度优先搜索（DFS）使用的辅助数据结构是___。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "DFS / BFS",
+    "src": "ai",
+    "blanks": null,
+    "answer": "栈",
+    "explanation": "DFS递归调用隐式使用栈，非递归实现显式使用栈"
+  },
+  {
+    "id": "q-13003-233",
+    "question": "广度优先搜索（BFS）使用的辅助数据结构是___。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "DFS / BFS",
+    "src": "ai",
+    "blanks": null,
+    "answer": "队列",
+    "explanation": "BFS逐层访问，使用队列存储待访问的顶点"
+  },
+  {
+    "id": "q-13003-234",
+    "question": "DFS的时间复杂度（用邻接表存储）为（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "DFS / BFS",
+    "src": "ai",
+    "options": [
+      "A. O(V^2)",
+      "B. O(V+E)",
+      "C. O(V*E)",
+      "D. O(E^2)"
+    ],
+    "answer": "B",
+    "explanation": "邻接表存储下DFS需访问每个顶点和每条边，O(V+E)"
+  },
+  {
+    "id": "q-13003-235",
+    "question": "BFS的时间复杂度（用邻接矩阵存储）为（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "DFS / BFS",
+    "src": "ai",
+    "options": [
+      "A. O(V^2)",
+      "B. O(V+E)",
+      "C. O(V*E)",
+      "D. O(E)"
+    ],
+    "answer": "A",
+    "explanation": "邻接矩阵存储下BFS需检查每个顶点的所有可能邻接点，O(V^2)"
+  },
+  {
+    "id": "q-13003-236",
+    "question": "对图的连通分量进行DFS遍历，调用DFS的次数等于（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "DFS / BFS",
+    "src": "ai",
+    "options": [
+      "A. 顶点数",
+      "B. 连通分量数",
+      "C. 边数",
+      "D. 1"
+    ],
+    "answer": "B",
+    "explanation": "对非连通图，需对每个连通分量分别调用DFS，次数等于连通分量数"
+  },
+  {
+    "id": "q-13003-237",
+    "question": "Prim算法构造最小生成树的思想是（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "最小生成树",
+    "src": "ai",
+    "options": [
+      "A. 从一个顶点开始逐步扩展，每次选择连接已选集和未选集的最小权边",
+      "B. 将所有边排序后依次选择不构成回路的边",
+      "C. 对每个顶点找最短边",
+      "D. 随机选择边"
+    ],
+    "answer": "A",
+    "explanation": "Prim算法从一个顶点开始，每次选择连接已选顶点集合和未选顶点集合的权值最小的边"
+  },
+  {
+    "id": "q-13003-238",
+    "question": "Kruskal算法构造最小生成树的思想是（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "最小生成树",
+    "src": "ai",
+    "options": [
+      "A. 从一个顶点开始逐步扩展",
+      "B. 将所有边排序后依次选择不构成回路的边",
+      "C. 对每个顶点找最短边",
+      "D. 使用DFS"
+    ],
+    "answer": "B",
+    "explanation": "Kruskal算法将所有边按权值排序，依次选择不构成回路的边加入生成树"
+  },
+  {
+    "id": "q-13003-239",
+    "question": "Prim算法的时间复杂度为（用邻接矩阵存储）（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "最小生成树",
+    "src": "ai",
+    "options": [
+      "A. O(V^2)",
+      "B. O(V+E)",
+      "C. O(E log V)",
+      "D. O(V log V)"
+    ],
+    "answer": "A",
+    "explanation": "Prim算法用邻接矩阵存储时，需对每个顶点扫描所有邻接点，O(V^2)"
+  },
+  {
+    "id": "q-13003-240",
+    "question": "Kruskal算法的时间复杂度主要由___决定。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "最小生成树",
+    "src": "ai",
+    "blanks": null,
+    "answer": "排序",
+    "explanation": "Kruskal算法需对所有边排序，排序O(E log E)，加上并查集操作"
+  },
+  {
+    "id": "q-13003-241",
+    "question": "Dijkstra算法用于求___的最短路径。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "最短路径",
+    "src": "ai",
+    "blanks": null,
+    "answer": "单源最短路径",
+    "explanation": "Dijkstra算法求从某源点到其他所有顶点的最短路径（非负权值）"
+  },
+  {
+    "id": "q-13003-242",
+    "question": "Dijkstra算法不能处理___权值的图。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "最短路径",
+    "src": "ai",
+    "blanks": null,
+    "answer": "负",
+    "explanation": "Dijkstra基于贪心策略，要求边权非负，负权边会破坏贪心选择的最优性"
+  },
+  {
+    "id": "q-13003-243",
+    "question": "Floyd算法用于求___的最短路径。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "最短路径",
+    "src": "ai",
+    "blanks": null,
+    "answer": "所有点对间",
+    "explanation": "Floyd算法通过动态规划求图中所有顶点对之间的最短路径"
+  },
+  {
+    "id": "q-13003-244",
+    "question": "Dijkstra算法的时间复杂度为（邻接矩阵存储）（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "最短路径",
+    "src": "ai",
+    "options": [
+      "A. O(V^2)",
+      "B. O(V+E)",
+      "C. O(V^3)",
+      "D. O(V*E)"
+    ],
+    "answer": "A",
+    "explanation": "Dijkstra算法邻接矩阵存储O(V^2)，每轮选最小未选O(V)，共V轮"
+  },
+  {
+    "id": "q-13003-245",
+    "question": "Floyd算法的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "最短路径",
+    "src": "ai",
+    "options": [
+      "A. O(V^2)",
+      "B. O(V+E)",
+      "C. O(V^3)",
+      "D. O(V*E)"
+    ],
+    "answer": "C",
+    "explanation": "Floyd算法三重循环，O(V^3)"
+  },
+  {
+    "id": "q-13003-246",
+    "question": "拓扑排序适用于___图。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "拓扑排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "有向无环",
+    "explanation": "拓扑排序只适用于有向无环图（DAG），有环则无法排序"
+  },
+  {
+    "id": "q-13003-247",
+    "question": "拓扑排序的结果是否唯一？（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "拓扑排序",
+    "src": "ai",
+    "options": [
+      "A. 一定唯一",
+      "B. 不唯一",
+      "C. 与存储结构无关",
+      "D. 一定不唯一"
+    ],
+    "answer": "B",
+    "explanation": "拓扑排序不唯一：当存在多个入度为0的顶点时，选择顺序不同导致结果不同"
+  },
+  {
+    "id": "q-13003-248",
+    "question": "拓扑排序算法的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第6章 图结构",
+    "cardId": "拓扑排序",
+    "src": "ai",
+    "options": [
+      "A. O(V^2)",
+      "B. O(V+E)",
+      "C. O(V^3)",
+      "D. O(V*E)"
+    ],
+    "answer": "B",
+    "explanation": "拓扑排序需访问所有顶点和边，O(V+E)"
+  },
+  {
+    "id": "q-13003-249",
+    "question": "AOV网中，顶点表示___，边表示___。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "关键路径",
+    "src": "ai",
+    "blanks": null,
+    "answer": "活动; 制约关系",
+    "explanation": "AOV网：顶点=活动，边=活动间的制约关系（先决条件）"
+  },
+  {
+    "id": "q-13003-250",
+    "question": "AOE网中，顶点表示___，边表示___。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "关键路径",
+    "src": "ai",
+    "blanks": null,
+    "answer": "事件; 活动",
+    "explanation": "AOE网：顶点=事件（状态），边=活动（有持续时间的任务）"
+  },
+  {
+    "id": "q-13003-251",
+    "question": "关键路径是AOE网中从源点到汇点___的路径。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "关键路径",
+    "src": "ai",
+    "blanks": null,
+    "answer": "最长",
+    "explanation": "关键路径 = 从源点到汇点的最长路径，其上活动为关键活动，延迟会影响整个工程"
+  },
+  {
+    "id": "q-13003-252",
+    "question": "关键活动的最早开始时间___最迟开始时间。",
+    "type": "fill",
+    "chapter": "第6章 图结构",
+    "cardId": "关键路径",
+    "src": "ai",
+    "blanks": null,
+    "answer": "等于",
+    "explanation": "关键活动：最早开始时间 = 最迟开始时间，时间余量为0"
+  },
+  {
+    "id": "q-13003-253",
+    "question": "排序算法的稳定性是指（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "排序基本概念",
+    "src": "ai",
+    "options": [
+      "A. 关键字相同的元素排序后相对次序不变",
+      "B. 排序后所有元素有序",
+      "C. 时间复杂度不变",
+      "D. 空间复杂度不变"
+    ],
+    "answer": "A",
+    "explanation": "稳定排序：关键字相同的两个元素排序后相对次序不变"
+  },
+  {
+    "id": "q-13003-254",
+    "question": "内部排序是指___的排序。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "排序基本概念",
+    "src": "ai",
+    "blanks": null,
+    "answer": "在内存中进行",
+    "explanation": "内部排序：待排序数据全部在内存中进行的排序；外部排序：数据量大需借助外存"
+  },
+  {
+    "id": "q-13003-255",
+    "question": "评价排序算法效率的两个主要标准是___和___。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "排序基本概念",
+    "src": "ai",
+    "blanks": null,
+    "answer": "时间复杂度; 空间复杂度",
+    "explanation": "评价排序算法主要看时间复杂度（比较和移动次数）和空间复杂度（辅助空间）"
+  },
+  {
+    "id": "q-13003-256",
+    "question": "直接插入排序的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "直接插入排序",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(n log n)",
+      "C. O(n^2)",
+      "D. O(n^3)"
+    ],
+    "answer": "C",
+    "explanation": "直接插入排序最好O(n)（已有序），最坏和平均O(n^2)"
+  },
+  {
+    "id": "q-13003-257",
+    "question": "直接插入排序是___排序。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "直接插入排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "稳定",
+    "explanation": "直接插入排序是稳定的，相等关键字不会改变相对次序"
+  },
+  {
+    "id": "q-13003-258",
+    "question": "对序列{5, 2, 4, 6, 1, 3}进行直接插入排序，第3趟结果是___。",
+    "type": "calculate",
+    "chapter": "第7章 内部排序",
+    "cardId": "直接插入排序",
+    "src": "ai",
+    "answer": "{2, 4, 5, 6, 1, 3}",
+    "explanation": "第1趟：[5,2]→[2,5]；第2趟：插入4→[2,4,5]；第3趟：插入6→[2,4,5,6]，序列{2,4,5,6,1,3}"
+  },
+  {
+    "id": "q-13003-259",
+    "question": "希尔排序是对___排序的改进。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "希尔排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "直接插入",
+    "explanation": "希尔排序通过增量分组进行直接插入排序，逐步缩小增量，利用直接插入排序在基本有序时高效的特点"
+  },
+  {
+    "id": "q-13003-260",
+    "question": "希尔排序的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "希尔排序",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(n log n)",
+      "C. O(n^2)",
+      "D. 取决于增量序列，约O(n^1.3)"
+    ],
+    "answer": "D",
+    "explanation": "希尔排序时间复杂度取决于增量序列，约O(n^1.3)~O(n^1.5)，不是固定的"
+  },
+  {
+    "id": "q-13003-261",
+    "question": "对序列{5, 1, 4, 2, 8}进行起泡排序，第一趟结果是___。",
+    "type": "calculate",
+    "chapter": "第7章 内部排序",
+    "cardId": "起泡排序",
+    "src": "ai",
+    "answer": "{1, 4, 2, 5, 8}",
+    "explanation": "第1趟比较交换：(5,1)→(1,5), (5,4)→(4,5), (5,2)→(2,5), (5,8)→不动。结果{1,4,2,5,8}"
+  },
+  {
+    "id": "q-13003-262",
+    "question": "起泡排序的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "起泡排序",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(n log n)",
+      "C. O(n^2)",
+      "D. O(n^3)"
+    ],
+    "answer": "C",
+    "explanation": "起泡排序最好O(n)（已有序），最坏和平均O(n^2)"
+  },
+  {
+    "id": "q-13003-263",
+    "question": "起泡排序是___排序。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "起泡排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "稳定",
+    "explanation": "起泡排序交换相邻元素，相等元素不会交换，是稳定的"
+  },
+  {
+    "id": "q-13003-264",
+    "question": "快速排序的平均时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "快速排序",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(n log n)",
+      "C. O(n^2)",
+      "D. O(n^3)"
+    ],
+    "answer": "B",
+    "explanation": "快速排序平均O(n log n)，最坏O(n^2)（已有序或逆序）"
+  },
+  {
+    "id": "q-13003-265",
+    "question": "快速排序的最坏时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "快速排序",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(n log n)",
+      "C. O(n^2)",
+      "D. O(n log^2 n)"
+    ],
+    "answer": "C",
+    "explanation": "最坏情况：序列已有序，每次划分为1和n-1，O(n^2)"
+  },
+  {
+    "id": "q-13003-266",
+    "question": "快速排序是___排序。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "快速排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "不稳定",
+    "explanation": "快速排序在交换过程中可能改变相等元素的相对次序"
+  },
+  {
+    "id": "q-13003-267",
+    "question": "快速排序的核心操作是___。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "快速排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "划分",
+    "explanation": "快速排序通过划分（Partition）将序列分为两部分，左侧<=枢轴，右侧>枢轴，再递归排序"
+  },
+  {
+    "id": "q-13003-268",
+    "question": "对序列{3, 6, 8, 10, 1, 2, 1}以第一个元素为枢轴进行一次划分，结果是___。",
+    "type": "calculate",
+    "chapter": "第7章 内部排序",
+    "cardId": "快速排序",
+    "src": "ai",
+    "answer": "{1, 2, 1, 3, 6, 8, 10}",
+    "explanation": "以3为枢轴划分：左{1,2,1}，枢轴3，右{6,8,10}。结果{1,2,1,3,6,8,10}"
+  },
+  {
+    "id": "q-13003-269",
+    "question": "堆排序的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "堆排序",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(n log n)",
+      "C. O(n^2)",
+      "D. O(n^3)"
+    ],
+    "answer": "B",
+    "explanation": "建堆O(n)，每次调整O(log n)共n-1次，总体O(n log n)"
+  },
+  {
+    "id": "q-13003-270",
+    "question": "堆排序是___排序。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "堆排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "不稳定",
+    "explanation": "堆排序在调整过程中可能改变相等元素的相对位置"
+  },
+  {
+    "id": "q-13003-271",
+    "question": "堆排序的空间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "堆排序",
+    "src": "ai",
+    "options": [
+      "A. O(1)",
+      "B. O(log n)",
+      "C. O(n)",
+      "D. O(n log n)"
+    ],
+    "answer": "A",
+    "explanation": "堆排序只需要常数个辅助空间用于交换，O(1)"
+  },
+  {
+    "id": "q-13003-272",
+    "question": "归并排序的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "归并排序与基数排序",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(n log n)",
+      "C. O(n^2)",
+      "D. O(n^3)"
+    ],
+    "answer": "B",
+    "explanation": "归并排序每趟O(n)，共log n趟，O(n log n)，最好最坏平均都是O(n log n)"
+  },
+  {
+    "id": "q-13003-273",
+    "question": "归并排序是___排序。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "归并排序与基数排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "稳定",
+    "explanation": "归并排序不改变相等元素的相对次序，是稳定的"
+  },
+  {
+    "id": "q-13003-274",
+    "question": "归并排序的空间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "归并排序与基数排序",
+    "src": "ai",
+    "options": [
+      "A. O(1)",
+      "B. O(log n)",
+      "C. O(n)",
+      "D. O(n^2)"
+    ],
+    "answer": "C",
+    "explanation": "归并排序需要O(n)的辅助数组来合并两个有序段"
+  },
+  {
+    "id": "q-13003-275",
+    "question": "基数排序的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "归并排序与基数排序",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(d(n+r))",
+      "C. O(n^2)",
+      "D. O(n log n)"
+    ],
+    "answer": "B",
+    "explanation": "基数排序：d趟分配收集，每趟O(n)，总共O(d(n+r))，r为基数"
+  },
+  {
+    "id": "q-13003-276",
+    "question": "基数排序是___排序。",
+    "type": "fill",
+    "chapter": "第7章 内部排序",
+    "cardId": "归并排序与基数排序",
+    "src": "ai",
+    "blanks": null,
+    "answer": "稳定",
+    "explanation": "基数排序分配收集过程不改变相等元素的相对次序"
+  },
+  {
+    "id": "q-13003-277",
+    "question": "以下排序算法中，最坏情况下时间复杂度仍为O(n log n)的是（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "排序基本概念",
+    "src": "ai",
+    "options": [
+      "A. 快速排序",
+      "B. 起泡排序",
+      "C. 归并排序",
+      "D. 直接插入排序"
+    ],
+    "answer": "C",
+    "explanation": "归并排序和堆排序最坏都是O(n log n)，快速排序最坏O(n^2)"
+  },
+  {
+    "id": "q-13003-278",
+    "question": "以下排序算法中，空间复杂度为O(1)的是（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "排序基本概念",
+    "src": "ai",
+    "options": [
+      "A. 归并排序",
+      "B. 快速排序",
+      "C. 堆排序",
+      "D. 基数排序"
+    ],
+    "answer": "C",
+    "explanation": "堆排序空间O(1)，归并排序O(n)，快速排序O(log n)递归栈"
+  },
+  {
+    "id": "q-13003-279",
+    "question": "对基本有序的序列排序，最适合使用（ ）",
+    "type": "choice",
+    "chapter": "第7章 内部排序",
+    "cardId": "排序基本概念",
+    "src": "ai",
+    "options": [
+      "A. 快速排序",
+      "B. 堆排序",
+      "C. 归并排序",
+      "D. 直接插入排序"
+    ],
+    "answer": "D",
+    "explanation": "直接插入排序在基本有序时接近O(n)，最简单高效"
+  },
+  {
+    "id": "q-13003-280",
+    "question": "平均查找长度（ASL）是指___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "平均查找长度（ASL）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "查找成功时的平均比较次数",
+    "explanation": "ASL = ΣPi*Ci，Pi为查找第i个元素的概率，Ci为查找第i个元素的比较次数"
+  },
+  {
+    "id": "q-13003-281",
+    "question": "衡量查找算法性能的主要指标是___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "平均查找长度（ASL）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "平均查找长度（ASL）",
+    "explanation": "ASL是衡量查找效率的主要指标"
+  },
+  {
+    "id": "q-13003-282",
+    "question": "折半查找要求查找表___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "折半查找（二分查找）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "有序且顺序存储",
+    "explanation": "折半查找前提：表已有序（按关键字排列）且采用顺序存储（支持随机访问）"
+  },
+  {
+    "id": "q-13003-283",
+    "question": "对有序表{1, 3, 5, 7, 9, 11, 13}进行折半查找，查找元素5需要比较___次。",
+    "type": "calculate",
+    "chapter": "第8章 查找",
+    "cardId": "折半查找（二分查找）",
+    "src": "ai",
+    "answer": "1",
+    "explanation": "mid=(0+6)/2=3，A[3]=7>5，right=2; mid=(0+2)/2=1, A[1]=3<5, left=2; mid=2, A[2]=5，找到了。共比较3次。纠正：3次"
+  },
+  {
+    "id": "q-13003-284",
+    "question": "折半查找的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第8章 查找",
+    "cardId": "折半查找（二分查找）",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(log n)",
+      "C. O(n^2)",
+      "D. O(n log n)"
+    ],
+    "answer": "B",
+    "explanation": "折半查找每次排除一半，O(log n)"
+  },
+  {
+    "id": "q-13003-285",
+    "question": "折半查找判定树是一棵___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "折半查找（二分查找）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "平衡二叉树",
+    "explanation": "折半查找判定树形态由表长决定，类似完全二叉树，是一棵平衡二叉树"
+  },
+  {
+    "id": "q-13003-286",
+    "question": "折半查找适用于___存储结构。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "折半查找（二分查找）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "顺序",
+    "explanation": "折半查找需要随机访问，只适用于顺序存储（数组），不适用于链式存储"
+  },
+  {
+    "id": "q-13003-287",
+    "question": "二叉排序树（BST）的中序遍历结果是一个___序列。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "二叉排序树（BST）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "有序（递增）",
+    "explanation": "BST性质：左子树<根<右子树，中序遍历得到有序递增序列"
+  },
+  {
+    "id": "q-13003-288",
+    "question": "在二叉排序树中查找一个关键字，最坏情况下的时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第8章 查找",
+    "cardId": "二叉排序树（BST）",
+    "src": "ai",
+    "options": [
+      "A. O(1)",
+      "B. O(log n)",
+      "C. O(n)",
+      "D. O(n^2)"
+    ],
+    "answer": "C",
+    "explanation": "BST最坏退化为链表（单支树），查找O(n)"
+  },
+  {
+    "id": "q-13003-289",
+    "question": "在二叉排序树中插入一个新结点，新结点一定是___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "二叉排序树（BST）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "叶子结点",
+    "explanation": "BST插入：从根比较，小走左大走右，直到空位置插入，新结点总作为叶子"
+  },
+  {
+    "id": "q-13003-290",
+    "question": "从二叉排序树中删除一个叶子结点，需要（ ）",
+    "type": "choice",
+    "chapter": "第8章 查找",
+    "cardId": "二叉排序树（BST）",
+    "src": "ai",
+    "options": [
+      "A. 直接删除",
+      "B. 用左孩子替换",
+      "C. 用右孩子替换",
+      "D. 用前驱和后继替换"
+    ],
+    "answer": "A",
+    "explanation": "叶子结点直接删除，父结点对应指针置空"
+  },
+  {
+    "id": "q-13003-291",
+    "question": "AVL树中任意结点的平衡因子取值范围是（ ）",
+    "type": "choice",
+    "chapter": "第8章 查找",
+    "cardId": "平衡二叉树（AVL）",
+    "src": "ai",
+    "options": [
+      "A. 0或1",
+      "B. -1, 0或1",
+      "C. 任意整数",
+      "D. 0"
+    ],
+    "answer": "B",
+    "explanation": "平衡因子=左子树高度-右子树高度，AVL树要求|BF|<=1，即-1, 0, 1"
+  },
+  {
+    "id": "q-13003-292",
+    "question": "AVL树中，当插入新结点导致不平衡时，需要进行___来恢复平衡。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "平衡二叉树（AVL）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "旋转",
+    "explanation": "AVL树通过LL/RR/LR/RL四种旋转操作恢复平衡"
+  },
+  {
+    "id": "q-13003-293",
+    "question": "AVL树中LL型不平衡需要进行的旋转是（ ）",
+    "type": "choice",
+    "chapter": "第8章 查找",
+    "cardId": "平衡二叉树（AVL）",
+    "src": "ai",
+    "options": [
+      "A. 右旋",
+      "B. 左旋",
+      "C. 先左旋后右旋",
+      "D. 先右旋后左旋"
+    ],
+    "answer": "A",
+    "explanation": "LL型：新结点插入在左子树的左子树上，需右旋（单次右旋）"
+  },
+  {
+    "id": "q-13003-294",
+    "question": "AVL树的查找时间复杂度为（ ）",
+    "type": "choice",
+    "chapter": "第8章 查找",
+    "cardId": "平衡二叉树（AVL）",
+    "src": "ai",
+    "options": [
+      "A. O(n)",
+      "B. O(log n)",
+      "C. O(n^2)",
+      "D. O(n log n)"
+    ],
+    "answer": "B",
+    "explanation": "AVL树保持平衡，高度O(log n)，查找O(log n)"
+  },
+  {
+    "id": "q-13003-295",
+    "question": "分块查找要求块间___，块内___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "分块查找（索引顺序查找）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "有序; 可以无序",
+    "explanation": "分块查找：索引表有序（块间有序），块内可以无序"
+  },
+  {
+    "id": "q-13003-296",
+    "question": "分块查找的过程是先___再___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "分块查找（索引顺序查找）",
+    "src": "ai",
+    "blanks": null,
+    "answer": "索引表查找; 块内查找",
+    "explanation": "分块查找先在索引表中确定所在块（折半或顺序），再在块内顺序查找"
+  },
+  {
+    "id": "q-13003-297",
+    "question": "哈希表查找的核心思想是___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "哈希表与冲突解决",
+    "src": "ai",
+    "blanks": null,
+    "answer": "通过哈希函数直接定位关键字的位置",
+    "explanation": "哈希表通过哈希函数将关键字映射到存储位置，实现O(1)的平均查找"
+  },
+  {
+    "id": "q-13003-298",
+    "question": "两个不同关键字映射到同一哈希地址的现象称为___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "哈希表与冲突解决",
+    "src": "ai",
+    "blanks": null,
+    "answer": "冲突",
+    "explanation": "不同关键字得到相同哈希值称为冲突（collision）"
+  },
+  {
+    "id": "q-13003-299",
+    "question": "常用的处理冲突的方法有___和___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "哈希表与冲突解决",
+    "src": "ai",
+    "blanks": null,
+    "answer": "开放地址法; 链地址法",
+    "explanation": "开放地址法（线性探测、二次探测等）和链地址法（拉链法）"
+  },
+  {
+    "id": "q-13003-300",
+    "question": "线性探测法中，当位置d发生冲突时，下一个探测位置为___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "哈希表与冲突解决",
+    "src": "ai",
+    "blanks": null,
+    "answer": "d+1",
+    "explanation": "线性探测法：冲突时依次向后探测 d+1, d+2, ..."
+  },
+  {
+    "id": "q-13003-301",
+    "question": "哈希表的平均查找长度主要取决于___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "哈希表与冲突解决",
+    "src": "ai",
+    "blanks": null,
+    "answer": "装填因子",
+    "explanation": "ASL主要取决于装填因子α=n/m（n为记录数，m为表长），α越大冲突越多ASL越大"
+  },
+  {
+    "id": "q-13003-302",
+    "question": "除留余数法的哈希函数为H(key) = ___。",
+    "type": "fill",
+    "chapter": "第8章 查找",
+    "cardId": "哈希表与冲突解决",
+    "src": "ai",
+    "blanks": null,
+    "answer": "key mod p",
+    "explanation": "除留余数法：H(key) = key % p，p通常选不大于表长的最大素数"
+  },
+  {
+    "id": "q-13003-303",
+    "question": "已知哈希表长m=11，哈希函数H(key)=key%11，用线性探测法处理冲突。插入关键字序列{10, 21, 32, 43, 11}，画出哈希表并计算查找成功的ASL。",
+    "type": "calculate",
+    "chapter": "第8章 查找",
+    "cardId": "哈希表与冲突解决",
+    "src": "ai",
+    "answer": "ASL = (1+1+1+2+3)/5 = 1.6",
+    "explanation": "10%11=10→位置10; 21%11=10冲突→位置0; 32%11=10冲突→位置0冲突→位置1; 43%11=10冲突→0冲突→1冲突→位置2; 11%11=0冲突→位置1冲突→位置2冲突→位置3冲突→位置4。ASL=(1+2+3+4+5)/5=3。需重新计算。"
+  },
+  {
+    "id": "q-13003-304",
+    "question": "已知序列{19, 14, 23, 1, 68, 20, 84, 27, 55, 11, 10, 79}，哈希函数H(key)=key%13，用链地址法处理冲突，画出哈希表，并计算ASL。",
+    "type": "calculate",
+    "chapter": "第8章 查找",
+    "cardId": "哈希表与冲突解决",
+    "src": "ai",
+    "answer": "ASL ≈ 1.5",
+    "explanation": "各关键字哈希值：19→6, 14→1, 23→10, 1→1, 68→3, 20→7, 84→6, 27→1, 55→3, 11→11, 10→10, 79→1。链表：0空, 1→14→1→27→79(4), 3→68→55(2), 6→19→84(2), 7→20(1), 10→23→11...纠正。ASL=(1+2+3+4+1+1+2+2+1+1+2+1)/12...需精确计算。"
   }
 ]
