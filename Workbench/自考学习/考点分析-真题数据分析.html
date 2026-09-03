@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>考点分析</title>
+  <link rel="stylesheet" href="../../styles/shared/base-vars.css">
+  <link rel="stylesheet" href="../../styles/shared/base.css">
+  <link rel="stylesheet" href="../../styles/shared/components.css">
+  <link rel="stylesheet" href="../../styles/自考学习/考点分析-真题数据分析.css">
+</head>
+<body>
+  <div class="analysis-container">
+    <!-- Topbar -->
+    <div class="analysis-topbar">
+      <div class="analysis-topbar-left">
+        <h1>考点分析</h1>
+        <span class="subject-tag" id="subjectTag">科目</span>
+      </div>
+      <div class="analysis-stats-mini">
+        <span class="pill pill-total"><span class="dot"></span><b id="statPapers">0</b> 套真题</span>
+        <span class="pill pill-done"><span class="dot"></span><b id="statQuestions">0</b> 道题</span>
+        <span class="pill pill-rate"><span class="dot"></span>覆盖 <b id="statChapters">0</b> 个考点</span>
+      </div>
+    </div>
+
+    <!-- 核心：分值权重 + 趋势 + 洞察 -->
+    <section class="analysis-section section-hero">
+      <div class="section-header">
+        <div>
+          <h2 class="claim-title">各章分值权重 · 构成与趋势</h2>
+          <p class="claim-sub">查看各章分值构成、变化趋势与核心结论</p>
+        </div>
+        <a class="section-review-link" id="reviewLink" href="#">去复盘总结 →</a>
+      </div>
+
+      <div class="weight-layout">
+        <!-- 第一行：环形图 + 年份选择 -->
+        <div class="weight-row weight-row-donut">
+          <div class="donut-section-header">
+            <span class="donut-section-title">分值构成</span>
+            <div class="year-selector" id="yearSelector">
+              <!-- filled by JS -->
+            </div>
+          </div>
+          <div class="weight-donut-wrap">
+            <div class="donut-chart-wrap">
+              <svg id="donutChart" class="donut-svg" viewBox="0 0 200 200"></svg>
+              <div class="donut-center">
+                <div class="donut-center-label" id="donutYear">2026年4月</div>
+                <div class="donut-center-value" id="donutTotal">100分</div>
+              </div>
+            </div>
+            <div class="donut-legend-list" id="donutLegend"></div>
+          </div>
+        </div>
+
+        <!-- 中：趋势折线图 -->
+        <div class="weight-trend-wrap">
+          <div class="trend-chart-header">
+            <span class="trend-chart-title">各章权重变化趋势</span>
+            <span class="trend-chart-hint">点击图例切换显示</span>
+          </div>
+          <svg id="trendChart" class="trend-svg" viewBox="0 0 520 280"></svg>
+          <div class="trend-chart-legend" id="trendLegend"></div>
+        </div>
+
+        <!-- 右：洞察卡片 -->
+        <div class="weight-insights">
+          <h3 class="insights-title">💡 核心洞察</h3>
+          <div class="insights-list" id="insightsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 预测：2026年10月 -->
+    <section class="analysis-section section-predict">
+      <div class="section-header">
+        <div>
+          <h2 class="claim-title">📈 2026年10月 考点权重预测</h2>
+          <p class="claim-sub">基于近5套真题的加权趋势预测，仅供复习参考</p>
+        </div>
+        <span class="predict-badge">趋势预测</span>
+      </div>
+      <div class="predict-grid">
+        <div class="predict-chart-wrap">
+          <h3 class="predict-subtitle">章节权重预测</h3>
+          <div class="predict-bar-chart" id="predictBarChart"></div>
+        </div>
+        <div class="predict-list-wrap">
+          <h3 class="predict-subtitle">知识点权重 Top 10</h3>
+          <div class="predict-top-list" id="predictTopList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 详细知识点柱状图（垂直） -->
+    <section class="analysis-section">
+      <div class="section-header">
+        <div>
+          <h2 class="claim-title">知识点考频明细</h2>
+          <p class="claim-sub">具体到每个知识点的累计题量，按大章分组</p>
+        </div>
+        <div class="filter-tabs" id="detailTabs">
+          <button class="filter-tab active" data-view="all">全部</button>
+          <button class="filter-tab" data-view="top10">Top10</button>
+        </div>
+      </div>
+      <div class="detail-vchart" id="detailVChart"></div>
+    </section>
+
+    <!-- 学习建议 -->
+    <section class="analysis-section">
+      <div class="section-header">
+        <h2 class="claim-title">复习建议</h2>
+        <span class="section-hint">结合预测数据的优先级推荐</span>
+      </div>
+      <div class="advice-list" id="adviceList"></div>
+    </section>
+  </div>
+
+  <script src="../../js/shared/theme-sync.js"></script>
+  <script src="../../data/exam-data-13015.js"></script>
+  <script src="../../data/exam-data-13003.js"></script>
+  <script src="../../data/exam-data-02324.js"></script>
+  <script src="../../js/shared/utils.js"></script>
+  <script src="../../js/自考学习/考点分析.js"></script>
+</body>
+</html>

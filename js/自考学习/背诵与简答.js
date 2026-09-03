@@ -26,6 +26,104 @@ var allData = {};
 // 当前周次各科目对应的章节列表（从 study-plan.json 动态加载）
 var todayChapters = {};
 
+// ============ 真题频考数据匹配 ============
+var CN_NUM_MAP = {'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10};
+var freqSortActive = false;
+
+function getExamData(subject) {
+  if (!window.EXAM_DATA || !window.EXAM_DATA[subject]) return null;
+  return window.EXAM_DATA[subject];
+}
+
+function getCardChapterNum(card) {
+  var m = (card.chapter || '').match(/第(\d+)章/);
+  if (m) return parseInt(m[1]);
+  return 0;
+}
+
+function getExamInfoForCard(card, subject) {
+  var ed = getExamData(subject);
+  if (!ed || !ed.questions) return null;
+  var chNum = getCardChapterNum(card);
+  if (!chNum) return null;
+
+  var cnCh = '第' + Object.keys(CN_NUM_MAP).find(function(k) { return CN_NUM_MAP[k] === chNum; }) + '章';
+  var chQuestions = [];
+  var chKpCount = {};
+  var term = (card.term || card.question || '').toLowerCase().trim();
+
+  ed.questions.forEach(function(q) {
+    var qCh = q.chapter || '';
+    var parts = qCh.split('·');
+    var qPrefix = parts[0] || '';
+    if (qPrefix !== cnCh) return;
+    chQuestions.push(q);
+    var kp = (parts[1] || '其他').trim();
+    if (!chKpCount[kp]) chKpCount[kp] = { count: 0, types: {} };
+    chKpCount[kp].count++;
+    var t = q.type || '其他';
+    chKpCount[kp].types[t] = (chKpCount[kp].types[t] || 0) + 1;
+  });
+
+  if (chQuestions.length === 0) return null;
+
+  // 尝试概念级匹配
+  var bestKp = null;
+  var topKps = Object.keys(chKpCount)
+    .map(function(k) { return { name: k, count: chKpCount[k].count, types: chKpCount[k].types }; })
+    .sort(function(a, b) { return b.count - a.count; });
+
+  for (var i = 0; i < topKps.length; i++) {
+    var kp = (topKps[i].name || '').toLowerCase().trim();
+    if (!kp || kp === '其他') continue;
+    if (term === kp) { bestKp = topKps[i]; break; }
+    if (term.indexOf(kp) >= 0 || kp.indexOf(term) >= 0) { bestKp = topKps[i]; break; }
+    var kws = extractKw(kp);
+    for (var j = 0; j < kws.length; j++) {
+      if (term.indexOf(kws[j]) >= 0) { bestKp = topKps[i]; break; }
+    }
+    if (bestKp) break;
+  }
+
+  if (bestKp) {
+    var sortedTypes = Object.keys(bestKp.types).sort(function(a, b) { return bestKp.types[b] - bestKp.types[a]; });
+    return {
+      type: 'freq',
+      count: bestKp.count,
+      topType: sortedTypes[0] || '',
+      allTypes: bestKp.types,
+      chTotal: chQuestions.length
+    };
+  }
+
+  return { type: 'chapter', count: chQuestions.length, chTotal: chQuestions.length };
+}
+
+function extractKw(s) {
+  var kws = [];
+  var chinese = s.match(/[\u4e00-\u9fa5]+/g);
+  if (chinese) {
+    chinese.forEach(function(seq) {
+      for (var i = 0; i <= seq.length - 2; i++) {
+        kws.push(seq.substring(i, i + 2));
+      }
+    });
+  }
+  var m = s.match(/[a-zA-Z]{2,}/g);
+  if (m) kws = kws.concat(m);
+  return kws;
+}
+
+function toggleFreqSort(btn) {
+  freqSortActive = !freqSortActive;
+  if (freqSortActive) {
+    btn.classList.add('zk-active');
+  } else {
+    btn.classList.remove('zk-active');
+  }
+  renderCards();
+}
+
 function getTodayChapterPrefix() {
   var startDate = new Date('2026-08-25');
   var today = new Date();
@@ -322,11 +420,23 @@ function renderCards() {
   });
 
   var masteryOrder = { 'unknown': 0, 'unsure': 1, 'known': 2 };
-  filtered.sort(function(a, b) {
-    var chCompare = (a.chapter || '').localeCompare(b.chapter || '');
-    if (chCompare !== 0) return chCompare;
-    return (masteryOrder[a.mastery] || 0) - (masteryOrder[b.mastery] || 0);
-  });
+  if (freqSortActive) {
+    var freqCache = {};
+    filtered.forEach(function(c) { freqCache[c.id] = getExamInfoForCard(c, currentSubject); });
+    filtered.sort(function(a, b) {
+      var aI = freqCache[a.id], bI = freqCache[b.id];
+      var aF = aI ? (aI.type === 'freq' ? aI.count : 0.5) : 0;
+      var bF = bI ? (bI.type === 'freq' ? bI.count : 0.5) : 0;
+      if (bF !== aF) return bF - aF;
+      return (a.chapter || '').localeCompare(b.chapter || '');
+    });
+  } else {
+    filtered.sort(function(a, b) {
+      var chCompare = (a.chapter || '').localeCompare(b.chapter || '');
+      if (chCompare !== 0) return chCompare;
+      return (masteryOrder[a.mastery] || 0) - (masteryOrder[b.mastery] || 0);
+    });
+  }
 
   var grid = document.getElementById('cardGrid');
   if (filtered.length === 0) {
@@ -339,6 +449,21 @@ function renderCards() {
     var isCalc = c.cardType === 'calculation';
     var frontExtra = '';
     var backContent = '';
+
+    var examInfo = getExamInfoForCard(c, currentSubject);
+    var freqBadgeHtml = '';
+    var examTypesHtml = '';
+    if (examInfo) {
+      if (examInfo.type === 'freq') {
+        var typeAbbr = examInfo.topType ? examInfo.topType.replace('题', '') : '';
+        freqBadgeHtml = '<div class="recite-freq-badge freq">🔥 频考·' + examInfo.count + '次' + (typeAbbr ? ' ' + typeAbbr : '') + '</div>';
+        var typeList = Object.keys(examInfo.allTypes).sort(function(a, b) { return examInfo.allTypes[b] - examInfo.allTypes[a]; });
+        var typeStr = typeList.map(function(t) { return t + '×' + examInfo.allTypes[t]; }).join('、');
+        examTypesHtml = '<div class="recite-card-section"><span class="recite-section-label exam-freq-label">📊 真题考法</span><div class="recite-section-content">' + typeStr + '<span class="recite-exam-total">（本章共' + examInfo.chTotal + '题）</span></div></div>';
+      } else {
+        freqBadgeHtml = '<div class="recite-freq-badge chapter">📖 本章有真题·' + examInfo.count + '题</div>';
+      }
+    }
 
     if (isCalc) {
       // 计算卡正面：问题 + 输入框 + 提交按钮 + 符号面板
@@ -365,6 +490,7 @@ function renderCards() {
       if (c.exam) {
         backContent += '<div class="recite-card-section"><span class="recite-section-label exam-label">🎯 考点</span><div class="recite-section-content">' + esc(c.exam) + '</div></div>';
       }
+      backContent += examTypesHtml;
       if (c.formula) {
         backContent += '<div class="calc-formula"><b>公式：</b>' + esc(c.formula) + '</div>';
       }
@@ -392,12 +518,14 @@ function renderCards() {
       } else if (c.answer) {
         backContent = '<div class="recite-card-answer">' + esc(c.answer) + '</div>';
       }
+      backContent += examTypesHtml;
     }
 
     return '<div class="recite-card' + (isCalc ? ' calc' : '') + '" id="card-' + c.id + '" onclick="flipCard(this)">' +
       '<div class="recite-card-inner">' +
       '<div class="recite-card-front">' +
       '<div class="recite-card-chapter">' + (c.chapter || '未分类') + (isCalc ? ' · 计算' : '') + '</div>' +
+      freqBadgeHtml +
       '<div class="recite-card-label">' + (isCalc ? '计算' : '问题') + '</div>' +
       '<div class="recite-card-question">' + esc(c.question) + '</div>' +
       (c.hint ? '<div class="calc-card-hint">💡 ' + esc(c.hint) + '</div>' : '') +
@@ -582,7 +710,7 @@ document.getElementById('btnViewTotal').addEventListener('click', function() { s
 function setCardTypeFilter(type, btn) {
   currentCardType = type;
   btn.parentElement.querySelectorAll('.card-type-btn').forEach(function(b) {
-    b.classList.remove('zk-active');
+    if (b.id !== 'btnSortFreq') b.classList.remove('zk-active');
   });
   btn.classList.add('zk-active');
   renderCards();

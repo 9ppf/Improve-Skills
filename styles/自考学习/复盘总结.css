@@ -27,6 +27,22 @@ border-radius: 999px; font-weight: 600;
 .ss-review-header .ss-review-subject b {
 color: var(--accent); font-weight: 700;
 }
+.ss-review-analysis-link { display: none !important;
+font-size: 0.75rem;
+color: var(--accent);
+text-decoration: none;
+padding: 0.2rem 0.6rem;
+border-radius: 6px;
+background: var(--accent-soft, rgba(99,102,241,0.1));
+border: 1px solid var(--accent);
+white-space: nowrap;
+margin-left: auto;
+transition: all 0.15s;
+}
+.ss-review-analysis-link:hover {
+background: var(--accent);
+color: white;
+}
 
 /* ============ 紧凑进度条卡片 ============ */
 .ss-review-dashboard {

@@ -1,0 +1,5 @@
+﻿/* theme.css — 聚合基础样式（变量 + 重置 + 组件）
+   供直接引用 theme.css 的页面使用，等价于分别引入 base-vars / base / components */
+@import url('base-vars.css');
+@import url('base.css');
+@import url('components.css');

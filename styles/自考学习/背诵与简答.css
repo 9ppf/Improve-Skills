@@ -104,6 +104,7 @@ color: var(--surface);
 }
 .card-type-btn.memory.zk-active { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
 .card-type-btn.calc.zk-active { background: var(--accent2); }
+.card-type-btn.freq.zk-active { background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%); color: #fff; }
 
 .recite-stats {
 display: flex;
@@ -258,6 +259,33 @@ font-size: 0.72rem;
 color: var(--accent);
 margin-bottom: 0.3rem;
 font-weight: 600;
+}
+.recite-freq-badge {
+display: inline-block;
+font-size: 0.68rem;
+font-weight: 700;
+padding: 2px 8px;
+border-radius: 4px;
+margin-bottom: 0.4rem;
+line-height: 1.4;
+}
+.recite-freq-badge.freq {
+background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+color: #fff;
+}
+.recite-freq-badge.chapter {
+background: var(--blue-soft);
+color: var(--accent);
+border: 1px solid var(--accent);
+}
+.exam-freq-label {
+color: #ff6b6b !important;
+font-weight: 700;
+}
+.recite-exam-total {
+font-size: 0.7rem;
+color: var(--muted);
+margin-left: 0.3rem;
 }
 .recite-card-actions {
 display: flex;

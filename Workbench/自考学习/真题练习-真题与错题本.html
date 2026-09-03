@@ -4,97 +4,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>真题与错题本</title>
+  <title>真题与模拟</title>
+  <script src="../../js/shared/theme-sync.js"></script>
   <link rel="stylesheet" href="../../styles/shared/base-vars.css">
-<link rel="stylesheet" href="../../styles/shared/base.css">
-<link rel="stylesheet" href="../../styles/shared/components.css">
-<link rel="stylesheet" href="../../styles/自考学习/真题练习-真题与错题本.css">
-<script src="../../js/shared/theme-sync.js"></script>
+  <link rel="stylesheet" href="../../styles/shared/base.css">
+  <link rel="stylesheet" href="../../styles/shared/components.css">
+  <link rel="stylesheet" href="../../styles/自考学习/真题练习-真题与错题本.css">
 </head>
 <body>
-  <article class="exam-page">
-    <div class="exam-tabs" id="subjectTabs">
-      <div class="exam-tab active" data-subject="13015">13015 计算机系统原理</div>
-      <div class="exam-tab" data-subject="02324">02324 离散数学</div>
-      <div class="exam-tab" data-subject="13003">13003 数据结构与算法</div>
+<div class="exam-container">
+  <!-- topbar：标题 + 科目标签 + 统计（与练习测验一致） -->
+  <div class="exam-topbar">
+    <div class="exam-topbar-left">
+      <h1>真题与模拟</h1>
+      <span class="subject-tag" id="subjectTag">科目</span>
+    </div>
+    <div class="exam-stats-mini" id="statsRow">
+      <span class="pill pill-total"><span class="dot"></span>共 <b id="statTotal">0</b> 题</span>
+      <span class="pill pill-done"><span class="dot"></span>已做 <b id="statDone">0</b> 题</span>
+      <span class="pill pill-rate"><span class="dot"></span>正确率 <b id="statRate">0%</b></span>
+    </div>
+  </div>
+
+  <!-- 模式切换 -->
+  <div class="exam-mode-switch">
+    <button class="exam-mode-btn active" data-mode="training">📝 专项训练</button>
+    <button class="exam-mode-btn" data-mode="mock">⏱ 模拟套卷</button>
+  </div>
+
+  <!-- 专项训练面板 -->
+  <div class="exam-mode-pane active" id="paneTraining">
+    <!-- 筛选行（彩色边框区分维度） -->
+    <div class="exam-filter-row">
+      <select class="exam-filter exam-f-blue" id="filterYear">
+        <option value="">全部年份</option>
+      </select>
+      <select class="exam-filter exam-f-purple" id="filterType">
+        <option value="">全部题型</option>
+      </select>
+      <select class="exam-filter exam-f-blue" id="filterChapter">
+        <option value="">全部知识点</option>
+      </select>
+      <select class="exam-filter exam-f-green" id="filterStatus">
+        <option value="">全部状态</option>
+      </select>
+      <span class="exam-filter-count" id="filterCount">0 题</span>
     </div>
 
-    <div class="exam-section">
-      <h2>📊 统计概览</h2>
-      <div class="exam-stats" id="statsArea">
-        <div class="exam-stat"><div class="exam-stat-num" id="statTotal">0</div><div class="exam-stat-label">总题数</div></div>
-        <div class="exam-stat exam-stat-correct"><div class="exam-stat-num" id="statCorrect">0</div><div class="exam-stat-label">已掌握</div></div>
-        <div class="exam-stat exam-stat-wrong"><div class="exam-stat-num" id="statWrong">0</div><div class="exam-stat-label">错题</div></div>
-        <div class="exam-stat"><div class="exam-stat-num" id="statPending">0</div><div class="exam-stat-label">待做</div></div>
-      </div>
-    </div>
+    <!-- 题目列表 -->
+    <div class="exam-question-list" id="trainingList"></div>
 
-    <div class="exam-section">
-      <h2>➕ 添加真题</h2>
-      <div class="exam-add-form">
-        <select id="qYear">
-          <option value="">年份</option>
-          <option value="2025">2025</option>
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="2022">2022</option>
-          <option value="2021">2021</option>
-        </select>
-        <select id="qType">
-          <option value="">题型</option>
-          <option value="选择题">选择题</option>
-          <option value="填空题">填空题</option>
-          <option value="应用题">应用题</option>
-          <option value="算法设计题">算法设计题</option>
-          <option value="简答题">简答题</option>
-        </select>
-        <input type="text" id="qTitle" placeholder="题目标题（如：2024年真题第3题）" />
-        <select id="qStatus">
-          <option value="pending">待做</option>
-          <option value="correct">已掌握</option>
-          <option value="wrong">错题</option>
-        </select>
-        <textarea id="qBody" placeholder="题目内容、解题思路、易错点等（选填）"></textarea>
-        <button id="addBtn">添加到题库</button>
-      </div>
-    </div>
-
-    <div class="exam-section">
-      <h2>📝 题库</h2>
-      <div class="exam-filter">
-        <select id="filterYear">
-          <option value="">全部年份</option>
-          <option value="2025">2025</option>
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="2022">2022</option>
-          <option value="2021">2021</option>
-        </select>
-        <select id="filterType">
-          <option value="">全部题型</option>
-          <option value="选择题">选择题</option>
-          <option value="填空题">填空题</option>
-          <option value="应用题">应用题</option>
-          <option value="算法设计题">算法设计题</option>
-          <option value="简答题">简答题</option>
-        </select>
-        <select id="filterStatus">
-          <option value="">全部状态</option>
-          <option value="pending">待做</option>
-          <option value="correct">已掌握</option>
-          <option value="wrong">错题</option>
-        </select>
-      </div>
-      <div class="exam-question-list" id="questionList"></div>
-    </div>
-
-    <div class="exam-section">
-      <h2>❌ 错题本</h2>
+    <!-- 错题回顾 -->
+    <div class="exam-wrong-section">
+      <h2 class="exam-section-title">❌ 错题回顾</h2>
       <div class="exam-question-list" id="wrongList"></div>
     </div>
-  </article>
+  </div>
+
+  <!-- 模拟套卷面板 -->
+  <div class="exam-mode-pane" id="paneMock">
+    <!-- 套卷选择区 -->
+    <div class="exam-mock-setup" id="mockSetup">
+      <h2 class="exam-section-title">📋 选择套卷</h2>
+      <div class="exam-mock-select-row">
+        <select class="exam-filter exam-f-blue" id="mockPaper">
+          <option value="">选择套卷</option>
+        </select>
+        <button class="exam-mock-start-btn" id="mockStart">开始模拟</button>
+      </div>
+      <!-- 历史成绩 -->
+      <div class="exam-mock-history" id="mockHistory"></div>
+    </div>
+
+    <!-- 考试区 -->
+    <div class="exam-mock-exam" id="mockExam" style="display:none">
+      <div class="exam-mock-bar">
+        <span class="exam-mock-timer" id="mockTimer">⏱ 150:00</span>
+        <span class="exam-mock-progress" id="mockProgress">第 1 / 0 题</span>
+        <button class="exam-mock-submit-btn" id="mockSubmit">交卷</button>
+      </div>
+      <div class="exam-question-list" id="mockList"></div>
+    </div>
+
+    <!-- 成绩区 -->
+    <div class="exam-mock-result" id="mockResult" style="display:none">
+      <h2 class="exam-section-title">📊 考试成绩</h2>
+      <div class="exam-mock-score" id="mockScore"></div>
+      <button class="exam-mock-retry-btn" id="mockRetry">重新模拟</button>
+    </div>
+  </div>
+</div>
 
   <script src="../../js/shared/utils.js"></script>
+  <script src="../../data/exam-data-13015.js"></script>
+  <script src="../../data/exam-data-13003.js"></script>
+  <script src="../../data/exam-data-02324.js"></script>
   <script src="../../js/自考学习/真题练习.js"></script>
 </body>
 </html>

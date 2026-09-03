@@ -60,6 +60,118 @@
   var quizBank = null;
   var expandedChapters = {}; // 多章展开：chKey -> true
 
+  // ============ 真题权重与频考知识点 ============
+
+  var TYPE_SCORES = {
+    '选择题': 2, '填空题': 1, '名词解释题': 3, '简答题': 5,
+    '综合应用题': 10, '论述题': 10, '计算题': 9, '分析设计题': 6,
+    '解答题': 5, '算法阅读题': 5, '算法设计题': 10
+  };
+  var CH_NUM_MAP = ['','一','二','三','四','五','六','七','八','九','十'];
+
+  function getExamData() {
+    if (!window.EXAM_DATA || !window.EXAM_DATA[currentSubject]) return null;
+    return window.EXAM_DATA[currentSubject];
+  }
+
+  function getChapterWeightData(chNum, chName) {
+    var ed = getExamData();
+    if (!ed || !ed.questions || !ed.papers) return null;
+
+    var prefix = '第' + (CH_NUM_MAP[chNum] || chNum) + '章';
+    var totalScoreAll = 0;
+    var chScore = 0;
+    var chQuestions = [];
+    var paperScores = {};
+
+    ed.papers.forEach(function(p) {
+      paperScores[p.year] = { score: 0, total: 0 };
+    });
+
+    ed.questions.forEach(function(q) {
+      var s = TYPE_SCORES[q.type] || 1;
+      if (paperScores[q.year]) paperScores[q.year].total += s;
+      totalScoreAll += s;
+      var qCh = q.chapter || '';
+      if (qCh.indexOf(prefix) === 0) {
+        chScore += s;
+        chQuestions.push(q);
+        if (paperScores[q.year]) paperScores[q.year].score += s;
+      }
+    });
+
+    var pct = totalScoreAll > 0 ? Math.round(chScore / totalScoreAll * 1000) / 10 : 0;
+
+    var years = ed.papers.map(function(p) { return p.year; });
+    var firstYear = years[0];
+    var lastYear = years[years.length - 1];
+    var firstPct = paperScores[firstYear] && paperScores[firstYear].total > 0
+      ? paperScores[firstYear].score / paperScores[firstYear].total * 100 : 0;
+    var lastPct = paperScores[lastYear] && paperScores[lastYear].total > 0
+      ? paperScores[lastYear].score / paperScores[lastYear].total * 100 : 0;
+    var trend = 'stable';
+    if (lastPct - firstPct > 3) trend = 'up';
+    else if (firstPct - lastPct > 3) trend = 'down';
+
+    var kpCount = {};
+    chQuestions.forEach(function(q) {
+      var parts = (q.chapter || '').split('·');
+      var kp = parts[1] || '其他';
+      if (!kpCount[kp]) kpCount[kp] = { count: 0, types: {} };
+      kpCount[kp].count++;
+      var t = q.type || '其他';
+      kpCount[kp].types[t] = (kpCount[kp].types[t] || 0) + 1;
+    });
+    var topKps = Object.keys(kpCount)
+      .map(function(k) { return { name: k, count: kpCount[k].count, types: kpCount[k].types }; })
+      .sort(function(a, b) { return b.count - a.count; })
+      .slice(0, 5);
+
+    return {
+      score: chScore,
+      pct: pct,
+      trend: trend,
+      topKps: topKps,
+      totalQuestions: chQuestions.length,
+      yearPcts: years.map(function(y) {
+        var ps = paperScores[y];
+        return { year: y, pct: ps && ps.total > 0 ? Math.round(ps.score / ps.total * 1000) / 10 : 0 };
+      })
+    };
+  }
+
+  // 频考知识点匹配：判断概念术语是否属于频考知识点
+  function matchFrequentKp(term, topKps) {
+    if (!topKps || !topKps.length) return null;
+    var t = (term || '').toLowerCase().trim();
+    for (var i = 0; i < topKps.length; i++) {
+      var kp = (topKps[i].name || '').toLowerCase().trim();
+      if (!kp || kp === '其他') continue;
+      if (t === kp) return topKps[i];
+      if (t.indexOf(kp) >= 0 || kp.indexOf(t) >= 0) return topKps[i];
+      var kwPairs = extractKw(kp);
+      for (var j = 0; j < kwPairs.length; j++) {
+        if (t.indexOf(kwPairs[j]) >= 0) return topKps[i];
+      }
+    }
+    return null;
+  }
+
+  function extractKw(s) {
+    var kws = [];
+    var chinese = s.match(/[\u4e00-\u9fa5]+/g);
+    if (chinese) {
+      chinese.forEach(function(seq) {
+        for (var i = 0; i <= seq.length - 2; i++) {
+          kws.push(seq.substring(i, i + 2));
+        }
+      });
+    }
+    var m = s.match(/[a-zA-Z]{2,}/g);
+    if (m) kws = kws.concat(m);
+    return kws;
+  }
+
   // ============ localStorage 读写 ============
 
   // 复盘数据（笔记、计划等用户手动输入）
@@ -241,6 +353,8 @@
 
       // 知识框架数据
       var kf = getKfSections(chNum);
+      // 真题权重数据（用于频考知识点标识）
+      var weightData = getChapterWeightData(chNum, chName);
       // 答题统计
       var qStats = getChapterQuizStats(conf.chapters[idx], chNum);
       // 复习调度
@@ -293,9 +407,15 @@
                 ? Math.round(masteryPct * 0.4 + csRate * 0.6)
                 : masteryPct;
               var overallClass = overall >= 80 ? 'ss-cs-good' : overall >= 60 ? 'ss-cs-mid' : 'ss-cs-bad';
-              return '<div class="ss-concept-card ' + colorClass + '" data-term="' + esc(term) + '">' +
+              var freqKp = matchFrequentKp(term, weightData ? weightData.topKps : null);
+              var freqBadge = freqKp
+                ? '<span class="ss-freq-badge" title="真题中出现' + freqKp.count + '次">🔥 频考</span>'
+                : '';
+              var freqClass = freqKp ? ' ss-concept-freq' : '';
+              return '<div class="ss-concept-card ' + colorClass + freqClass + '" data-term="' + esc(term) + '">' +
                 '<div class="ss-concept-card-head">' +
                   '<span class="ss-concept-card-term">' + esc(term) + '</span>' +
+                  freqBadge +
                 '</div>' +
                 '<div class="ss-concept-metrics">' +
                   '<div class="ss-metric">' +
@@ -486,6 +606,33 @@
         var body = document.createElement("div");
         body.className = "ss-card-body-v2";
 
+        // 0. 真题权重与频考知识点
+        var weightSection = null;
+        if (weightData) {
+          weightSection = document.createElement("div");
+          weightSection.className = "ss-review-section ss-section-weight";
+          var trendIcons = { up: '📈 升温', stable: '➖ 稳定', down: '📉 降温' };
+          var trendClasses = { up: 'ss-trend-up', stable: 'ss-trend-stable', down: 'ss-trend-down' };
+          var kpHtml = weightData.topKps.map(function(kp) {
+            var mainType = Object.keys(kp.types).sort(function(a, b) { return kp.types[b] - kp.types[a]; })[0] || '';
+            return '<span class="ss-weight-kp">' +
+              '<span class="ss-weight-kp-name">' + esc(kp.name) + '</span>' +
+              '<span class="ss-weight-kp-count">' + kp.count + '题</span>' +
+              (mainType ? '<span class="ss-weight-kp-type">' + mainType + '</span>' : '') +
+            '</span>';
+          }).join('');
+          weightSection.innerHTML =
+            '<div class="ss-section-title">📋 真题权重与频考知识点</div>' +
+            '<div class="ss-weight-summary">' +
+              '<span class="ss-weight-score">累计 <b>' + weightData.score + '分</b></span>' +
+              '<span class="ss-weight-pct">占比 <b>' + weightData.pct + '%</b></span>' +
+              '<span class="ss-weight-questions">共 <b>' + weightData.totalQuestions + '题</b></span>' +
+              '<span class="ss-weight-trend ' + (trendClasses[weightData.trend] || '') + '">' + (trendIcons[weightData.trend] || '') + '</span>' +
+            '</div>' +
+            (kpHtml ? '<div class="ss-weight-kps">' + kpHtml + '</div>' : '');
+          body.appendChild(weightSection);
+        }
+
         // 1. 本章数据（含错题 — 合并原"错题反思"Tab）
         var dataSection = document.createElement("div");
         dataSection.className = "ss-review-section ss-section-data";
@@ -560,6 +707,7 @@
 
         // 先加数据区，再依次加其他
         body.insertBefore(dataSection, body.firstChild);
+        if (weightSection) body.insertBefore(weightSection, body.firstChild);
 
         // 错题反思（存在错题时，置于概念清单之后、自由笔记之前）
         if (qStats.wrong > 0) {
@@ -1143,6 +1291,23 @@
       bankContainer.addEventListener('click', function(e) {
         if (e.target.classList.contains('ss-bank-back')) switchFeature('review');
       });
+    }
+
+    // 设置"查看考点分析"链接
+    var analysisLink = document.getElementById('analysisLink');
+    if (analysisLink) {
+      analysisLink.href = '考点分析-真题数据分析.html?subject=' + currentSubject;
+    }
+
+    // 支持从分析页跳转来自动展开对应章节
+    var params = new URLSearchParams(window.location.search);
+    var chapter = params.get('chapter');
+    if (chapter) {
+      var conf = SUBJECTS[currentSubject];
+      var chIdx = conf.chapters.indexOf(decodeURIComponent(chapter));
+      if (chIdx >= 0) {
+        expandedChapters['ch' + (chIdx + 1)] = true;
+      }
     }
 
     loadAllAndRender();

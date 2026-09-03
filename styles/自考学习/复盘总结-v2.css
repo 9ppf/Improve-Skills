@@ -291,6 +291,24 @@
   font-weight: 600;
   color: var(--ink);
 }
+.ss-concept-freq {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-soft, rgba(99,102,241,0.2));
+}
+.ss-concept-freq .ss-concept-card-head {
+  background: var(--accent-soft, rgba(99,102,241,0.08));
+}
+.ss-freq-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+  color: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
 .ss-concept-card-body {
   padding: 0.4rem 0.6rem;
 }
@@ -989,6 +1007,82 @@
 }
 .ss-plan-textarea {
   min-height: 60px !important;
+}
+
+/* ============ 真题权重与频考知识点 ============ */
+.ss-section-weight {
+  background: linear-gradient(135deg, var(--blue-soft, rgba(99,102,241,0.08)) 0%, transparent 100%);
+  border-left: 3px solid var(--accent, #6366f1);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.8rem;
+}
+.ss-weight-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.ss-weight-score, .ss-weight-pct, .ss-weight-questions {
+  font-size: 0.75rem;
+  color: var(--muted, #64748b);
+}
+.ss-weight-score b, .ss-weight-pct b {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink, #1e293b);
+}
+.ss-weight-pct b {
+  color: var(--accent, #6366f1);
+}
+.ss-weight-trend {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.ss-trend-up {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+.ss-trend-stable {
+  background: rgba(100, 116, 139, 0.12);
+  color: #64748b;
+}
+.ss-trend-down {
+  background: rgba(244, 63, 94, 0.12);
+  color: #f43f5e;
+}
+.ss-weight-kps {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.ss-weight-kp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  background: var(--surface, #fff);
+  border: 1px solid var(--rule, #e2e8f0);
+  border-radius: 6px;
+}
+.ss-weight-kp-name {
+  font-weight: 600;
+  color: var(--ink, #1e293b);
+}
+.ss-weight-kp-count {
+  color: var(--accent, #6366f1);
+  font-weight: 700;
+}
+.ss-weight-kp-type {
+  font-size: 0.68rem;
+  color: var(--muted, #64748b);
+  padding: 0.05rem 0.3rem;
+  background: var(--bg2, #f1f5f9);
+  border-radius: 4px;
 }
 
 /* ============ 每章重置 ============ */

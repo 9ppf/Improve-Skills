@@ -51,6 +51,7 @@
           <button class="card-type-btn zk-active zk-seg" onclick="setCardTypeFilter('all', this)">全部卡片</button>
           <button class="card-type-btn memory zk-seg" onclick="setCardTypeFilter('memory', this)">🧠 记忆卡</button>
           <button class="card-type-btn calc zk-seg" onclick="setCardTypeFilter('calculation', this)">🧮 计算卡</button>
+          <button class="card-type-btn freq zk-seg" id="btnSortFreq" onclick="toggleFreqSort(this)">🔥 频考优先</button>
         </div>
         <select id="filterChapter">
           <option value="">全部章节</option>
@@ -75,6 +76,9 @@
   </article>
 
   <script src="../../js/shared/utils.js"></script>
+  <script src="../../data/exam-data-13015.js"></script>
+  <script src="../../data/exam-data-02324.js"></script>
+  <script src="../../data/exam-data-13003.js"></script>
   <script src="../../js/自考学习/背诵与简答.js"></script>
 </body>
 </html>

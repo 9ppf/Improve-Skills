@@ -29,17 +29,6 @@
               "contentUrl": "自考学习/知识框架-三科共用.html?subject=13015&v=2.34.0"
             },
             {
-              "name": "真题与错题",
-              "type": "self-study",
-              "stage": "第二阶段",
-              "current": "按年份/题型分类练习",
-              "tasks": [],
-              "review": "计算机系统原理真题练习与错题管理。",
-              "renderMode": "content",
-              "hidden": true,
-              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13015&v=2.3.8"
-            },
-            {
               "name": "背诵与简答",
               "type": "self-study",
               "renderMode": "bare",
@@ -58,6 +47,26 @@
               "tasks": [],
               "review": "计算机系统原理练习测验，含选择/填空/计算/简答/论述题。",
               "contentUrl": "自考学习/练习测验-在线测验.html?subject=13015&v=2.31.53"
+            },
+            {
+              "name": "真题与模拟",
+              "type": "self-study",
+              "stage": "第二阶段",
+              "current": "按年份/题型分类练习",
+              "tasks": [],
+              "review": "计算机系统原理真题练习与模拟训练。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13015&v=2.38.2"
+            },
+            {
+              "name": "考点分析",
+              "type": "self-study",
+              "stage": "数据分析",
+              "current": "真题知识点分布与趋势",
+              "tasks": [],
+              "review": "基于真题数据分析的考点分布与学习建议。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=13015&v=1.0.0"
             },
             {
               "name": "复盘总结",
@@ -89,17 +98,6 @@
               "contentUrl": "自考学习/知识框架-三科共用.html?subject=02324&v=2.34.0"
             },
             {
-              "name": "真题与错题",
-              "type": "self-study",
-              "stage": "第二阶段",
-              "current": "按年份/题型分类练习",
-              "tasks": [],
-              "review": "离散数学真题练习与错题管理。",
-              "renderMode": "content",
-              "hidden": true,
-              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=02324&v=2.3.8"
-            },
-            {
               "name": "背诵与简答",
               "type": "self-study",
               "renderMode": "bare",
@@ -118,6 +116,26 @@
               "tasks": [],
               "review": "离散数学练习测验，含选择/填空/计算/证明题。",
               "contentUrl": "自考学习/练习测验-在线测验.html?subject=02324&v=2.31.53"
+            },
+            {
+              "name": "真题与模拟",
+              "type": "self-study",
+              "stage": "第二阶段",
+              "current": "按年份/题型分类练习",
+              "tasks": [],
+              "review": "离散数学真题练习与模拟训练。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=02324&v=2.38.2"
+            },
+            {
+              "name": "考点分析",
+              "type": "self-study",
+              "stage": "数据分析",
+              "current": "真题知识点分布与趋势",
+              "tasks": [],
+              "review": "基于真题数据分析的考点分布与学习建议。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=02324&v=1.0.0"
             },
             {
               "name": "复盘总结",
@@ -149,17 +167,6 @@
               "contentUrl": "自考学习/知识框架-三科共用.html?subject=13003&v=2.34.0"
             },
             {
-              "name": "真题与错题",
-              "type": "self-study",
-              "stage": "第二阶段",
-              "current": "按年份/题型分类练习",
-              "tasks": [],
-              "review": "数据结构与算法真题练习与错题管理。",
-              "renderMode": "content",
-              "hidden": true,
-              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13003&v=2.3.8"
-            },
-            {
               "name": "背诵与简答",
               "type": "self-study",
               "renderMode": "bare",
@@ -178,6 +185,26 @@
               "tasks": [],
               "review": "数据结构与算法练习测验，含选择/填空/计算/简答/论述题。",
               "contentUrl": "自考学习/练习测验-在线测验.html?subject=13003&v=2.31.53"
+            },
+            {
+              "name": "真题与模拟",
+              "type": "self-study",
+              "stage": "第二阶段",
+              "current": "按年份/题型分类练习",
+              "tasks": [],
+              "review": "数据结构与算法真题练习与模拟训练。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13003&v=2.38.2"
+            },
+            {
+              "name": "考点分析",
+              "type": "self-study",
+              "stage": "数据分析",
+              "current": "真题知识点分布与趋势",
+              "tasks": [],
+              "review": "基于真题数据分析的考点分布与学习建议。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=13003&v=1.0.0"
             },
             {
               "name": "复盘总结",
