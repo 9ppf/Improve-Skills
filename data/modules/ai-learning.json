@@ -21,6 +21,16 @@
           "contentUrl": "ai-learning/ai-knowledge-tree.html?v=2.5.0"
         },
         {
+          "name": "AI 工作流知识梳理",
+          "type": "ai-learning",
+          "renderMode": "bare",
+          "stage": "学习中",
+          "current": "从认知起点到完整架构：工作流概念·RAG原理·SSE流式输出·AI工作流架构",
+          "tasks": [],
+          "review": "时间轴式梳理AI工作流相关知识，含我的思考记录、错误理解与纠正、面试价值总结。",
+          "contentUrl": "ai-learning/ai-workflow-knowledge.html?v=1.1.0"
+        },
+        {
           "name": "Python 知识点详解",
           "type": "python",
           "renderMode": "bare",

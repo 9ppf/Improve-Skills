@@ -180,6 +180,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_save_ai_conv()
         elif self.path == '/api/quiz-photo':
             self._handle_save_quiz_photo()
+        elif self.path == '/api/quiz-ai-help':
+            self._handle_save_quiz_ai_help()
         else:
             self.send_error(404, 'Not Found')
 
@@ -209,6 +211,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_quiz('bank')
         elif self.path.startswith('/api/quiz-records'):
             self._handle_load_quiz('records')
+        elif self.path.startswith('/api/quiz-ai-help'):
+            self._handle_load_quiz_ai_help()
         elif self.path.startswith('/api/quiz-ai'):
             self._handle_load_quiz('ai')
         elif self.path.startswith('/api/ai-plan'):
@@ -523,6 +527,55 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         if not isinstance(photos, dict):
             photos = {}
         self._send_json(200, photos)
+
+    def _handle_load_quiz_ai_help(self):
+        """加载某科目某题目的AI解答对话历史"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        question_id = query.get('questionId', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject parameter'})
+            return
+        filename = f'quiz-ai-help-{subject}.json'
+        path = ROOT / 'data' / filename
+        all_convs = _load_json_backup_on_corrupt(path, default={})
+        if not isinstance(all_convs, dict):
+            all_convs = {}
+        if question_id:
+            result = all_convs.get(question_id, [])
+        else:
+            result = all_convs
+        self._send_json(200, result)
+
+    def _handle_save_quiz_ai_help(self):
+        """保存某题目的AI解答对话历史"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        question_id = data.get('questionId', '')
+        conversation = data.get('conversation', [])
+        if not subject or not question_id:
+            self._send_json(400, {'error': 'Missing subject or questionId'})
+            return
+        filename = f'quiz-ai-help-{subject}.json'
+        path = ROOT / 'data' / filename
+        with _file_lock:
+            all_convs = _load_json_backup_on_corrupt(path, default={})
+            if not isinstance(all_convs, dict):
+                all_convs = {}
+            all_convs[question_id] = conversation
+            try:
+                atomic_write_json(path, all_convs)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
+        self._send_json(200, {'status': 'ok'})
 
     def _handle_load_ai_plan(self):
         path = ROOT / 'data' / 'ai-daily-plan.json'

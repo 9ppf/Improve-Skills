@@ -259,15 +259,52 @@ font-size: 0.72rem;
 color: var(--accent);
 margin-bottom: 0.3rem;
 font-weight: 600;
+display: flex;
+align-items: center;
+gap: 0.4rem;
+flex-wrap: wrap;
+}
+.recite-ch-weight {
+font-size: 0.66rem;
+font-weight: 700;
+padding: 1px 6px;
+border-radius: 3px;
+white-space: nowrap;
+}
+.recite-ch-weight.weight-high {
+background: rgba(239,68,68,0.12);
+color: #ef4444;
+border: 1px solid rgba(239,68,68,0.3);
+}
+.recite-ch-weight.weight-mid {
+background: rgba(245,158,11,0.12);
+color: #f59e0b;
+border: 1px solid rgba(245,158,11,0.3);
+}
+.recite-ch-weight.weight-low {
+background: rgba(100,116,139,0.1);
+color: var(--muted);
+border: 1px solid rgba(100,116,139,0.2);
+}
+.recite-card-question {
+font-size: 1rem;
+font-weight: 600;
+color: var(--ink);
+display: flex;
+align-items: center;
+gap: 0.4rem;
+flex-wrap: wrap;
 }
 .recite-freq-badge {
-display: inline-block;
-font-size: 0.68rem;
+display: inline-flex;
+align-items: center;
+font-size: 0.66rem;
 font-weight: 700;
-padding: 2px 8px;
+padding: 2px 7px;
 border-radius: 4px;
-margin-bottom: 0.4rem;
 line-height: 1.4;
+white-space: nowrap;
+flex-shrink: 0;
 }
 .recite-freq-badge.freq {
 background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);

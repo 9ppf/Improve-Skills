@@ -184,6 +184,50 @@
     QuizUtils.storageSet(STORAGE_KEY, saved);
   }
 
+  /* 解析章节编号：第一章→1, 第2章→2 */
+  function parseChapterNum(chapter) {
+    if (!chapter) return null;
+    var m = chapter.match(/第\s*(\d+)\s*章/);
+    if (m) return parseInt(m[1]);
+    var m2 = chapter.match(/第([一二三四五六七八九十]+)章/);
+    if (m2) {
+      var numMap = {'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10};
+      return numMap[m2[1]] || null;
+    }
+    return null;
+  }
+
+  /* 真题状态变化时回写掌握度到 ss_mastery_{subject} */
+  function updateExamMastery(chapter, status) {
+    var chNum = parseChapterNum(chapter);
+    if (chNum == null) return;
+    var key = 'ss_mastery_' + currentSubject;
+    var state;
+    try {
+      var raw = localStorage.getItem(key);
+      state = raw ? JSON.parse(raw) : { mastery: {}, kp: {}, toc: {} };
+    } catch (e) {
+      state = { mastery: {}, kp: {}, toc: {} };
+    }
+    if (!state.mastery) state.mastery = {};
+    var current = state.mastery[chNum] || 0;
+    if (status === 'correct') {
+      if (current < 4) state.mastery[chNum] = 4;
+    } else if (status === 'wrong') {
+      if (current > 1) state.mastery[chNum] = 1;
+    }
+    try {
+      localStorage.setItem(key, JSON.stringify(state));
+    } catch (e) {}
+    try {
+      fetch('/api/mastery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: currentSubject, chapter: chNum, level: state.mastery[chNum] })
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
   /* ====== 模式切换 ====== */
   document.querySelectorAll('.exam-mode-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -362,6 +406,7 @@
         q.status = newStatus;
         userStatus[qid] = newStatus;
         saveStatus();
+        updateExamMastery(q.chapter, newStatus);
         renderAll();
       }
     }

@@ -735,7 +735,7 @@ function renderChoiceCard(q) {
   var r = results[q.id];
   var letters = 'ABCDEFGH';
   var subLabel = q.subType==='multi'?'（多选）':q.subType==='judge'?'（判断）':'';
-  var optionsHTML = q.options.map(function(opt, i) {
+  var optionsHTML = (q.options || []).map(function(opt, i) {
     var letter = letters[i];
     var cls = '';
     if (r) {
@@ -762,7 +762,7 @@ function renderChoiceCard(q) {
 function renderFillCard(q) {
   var r = results[q.id];
   var hasDetails = r && r.details && r.details.hits;
-  var blanksHTML = q.blanks.map(function(b, i) {
+  var blanksHTML = (q.blanks || []).map(function(b, i) {
     var inputVal = hasDetails ? (r.details.hits[i].userAnswer || '') : '';
     var inputCls = '';
     var resultHTML = '';
@@ -984,7 +984,7 @@ function submitFill(qId) {
   if (results[qId]) return;
   var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (!q) return;
-  var answers = q.blanks.map(function(b, i) {
+  var answers = (q.blanks || []).map(function(b, i) {
     var el = document.getElementById('fill-'+qId+'-'+i);
     return el ? el.value.trim() : '';
   });
@@ -1229,6 +1229,38 @@ function updateSessionAndStats(filtered) {
 /* ====== 单题AI助手 ====== */
 var aiHelpHistory = {}; /* 按题目ID存储对话历史 */
 
+/* 从服务器加载AI对话历史 */
+function loadAIHelpConversation(qId) {
+  return fetch(apiUrl('/api/quiz-ai-help?subject=' + currentSubject + '&questionId=' + qId), { cache: 'no-cache' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (Array.isArray(data)) {
+        aiHelpHistory[qId] = data;
+      }
+      return data;
+    })
+    .catch(function() {
+      aiHelpHistory[qId] = aiHelpHistory[qId] || [];
+      return aiHelpHistory[qId];
+    });
+}
+
+/* 保存AI对话历史到服务器 */
+function saveAIHelpConversation(qId) {
+  var conversation = aiHelpHistory[qId] || [];
+  return fetch(apiUrl('/api/quiz-ai-help'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      subject: currentSubject,
+      questionId: qId,
+      conversation: conversation
+    })
+  }).catch(function() {
+    /* 保存失败不影响用户体验，静默处理 */
+  });
+}
+
 /* 切换AI助手面板显示 */
 function toggleAIHelp(qId) {
   var panel = document.getElementById('ai-help-' + qId);
@@ -1239,11 +1271,18 @@ function toggleAIHelp(qId) {
     panel = document.createElement('div');
     panel.className = 'ai-help-panel zk-show';
     panel.id = 'ai-help-' + qId;
-    panel.innerHTML = renderAIHelpPanel(qId);
+    /* 先加载历史对话，再渲染面板 */
+    panel.innerHTML = '<div class="ai-help-messages"><div class="ai-msg loading">正在加载历史对话...</div></div>';
     card.appendChild(panel);
-    /* 聚焦输入框 */
-    var input = panel.querySelector('.ai-help-input');
-    if (input) input.focus();
+    loadAIHelpConversation(qId).then(function() {
+      panel.innerHTML = renderAIHelpPanel(qId);
+      /* 聚焦输入框 */
+      var input = panel.querySelector('.ai-help-input');
+      if (input) input.focus();
+      /* 滚动到底部 */
+      var msgs = panel.querySelector('.ai-help-messages');
+      if (msgs) msgs.scrollTop = msgs.scrollHeight;
+    });
   } else {
     panel.classList.toggle('zk-show');
   }
@@ -1281,6 +1320,8 @@ function sendAIHelp(qId) {
   input.disabled = true;
   var sendBtn = document.getElementById('ai-send-' + qId);
   if (sendBtn) sendBtn.disabled = true;
+  /* 保存用户消息到服务器，防止刷新丢失 */
+  saveAIHelpConversation(qId);
 
   /* 渲染用户消息 + loading */
   var msgs = document.getElementById('ai-msgs-' + qId);
@@ -1362,6 +1403,8 @@ function sendAIHelp(qId) {
     input.disabled = false;
     if (sendBtn) sendBtn.disabled = false;
     input.focus();
+    /* 保存对话到服务器，实现跨设备同步 */
+    saveAIHelpConversation(qId);
   })
   .catch(function(err) {
     var loading = document.getElementById('ai-loading-' + qId);
@@ -1821,7 +1864,7 @@ function init() {
     if (currentMode !== 'free') {
       /* 尝试恢复保存的筛选状态 */
       var saved = loadFilterState();
-      if (saved && saved.mode) {
+      if (saved && saved.mode && saved.mode !== 'ai') {
         currentMode = saved.mode;
         currentChapterFilter = saved.chapter || 'all';
         currentTypeFilter = saved.type || 'all';

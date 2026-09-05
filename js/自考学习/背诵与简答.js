@@ -30,6 +30,62 @@ var todayChapters = {};
 var CN_NUM_MAP = {'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10};
 var freqSortActive = false;
 
+// 题型分值映射（与考点分析页一致）
+var TYPE_SCORES = {
+  '选择题': 1, '填空题': 2, '名词解释题': 3, '简答题': 6,
+  '综合应用题': 10, '论述题': 10, '计算题': 9, '分析设计题': 6,
+  '解答题': 5, '算法阅读题': 5, '算法设计题': 10, '证明题': 8
+};
+
+// 缓存章节权重数据
+var _chapterWeightCache = null;
+
+function getChapterWeightData(subject) {
+  if (_chapterWeightCache) return _chapterWeightCache;
+  var ed = getExamData(subject);
+  if (!ed || !ed.questions) return null;
+
+  var chScores = {};
+  var totalScore = 0;
+  ed.questions.forEach(function(q) {
+    var ch = q.chapter || '';
+    var idx = ch.indexOf(String.fromCharCode(183));
+    var prefix = idx > 0 ? ch.substring(0, idx) : ch;
+    var m = prefix.match(/第.+/);
+    if (m) prefix = m[0];
+    var s = TYPE_SCORES[q.type] || 1;
+    chScores[prefix] = (chScores[prefix] || 0) + s;
+    totalScore += s;
+  });
+
+  _chapterWeightCache = { scores: chScores, total: totalScore };
+  return _chapterWeightCache;
+}
+
+function getChapterWeightStr(chapter) {
+  var wd = getChapterWeightData(currentSubject);
+  if (!wd) return '';
+  if (!chapter) return '';
+  var prefix = '';
+  var m1 = chapter.match(/第(\d+)章/);
+  if (m1) {
+    var num = parseInt(m1[1]);
+    var cnNum = Object.keys(CN_NUM_MAP).find(function(k) { return CN_NUM_MAP[k] === num; });
+    prefix = cnNum ? '第' + cnNum + '章' : m1[0];
+  }
+  if (!prefix) {
+    var m2 = chapter.match(/第[一二三四五六七八九十]+章/);
+    if (m2) prefix = m2[0];
+  }
+  if (!prefix) return '';
+  var score = wd.scores[prefix] || 0;
+  if (!score) return '';
+  var pct = Math.round(score / wd.total * 100);
+  var isHigh = pct >= 15;
+  var cls = isHigh ? 'weight-high' : (pct >= 10 ? 'weight-mid' : 'weight-low');
+  return '<span class="recite-ch-weight ' + cls + '">' + score + '分·' + pct + '%</span>';
+}
+
 function getExamData(subject) {
   if (!window.EXAM_DATA || !window.EXAM_DATA[subject]) return null;
   return window.EXAM_DATA[subject];
@@ -456,12 +512,12 @@ function renderCards() {
     if (examInfo) {
       if (examInfo.type === 'freq') {
         var typeAbbr = examInfo.topType ? examInfo.topType.replace('题', '') : '';
-        freqBadgeHtml = '<div class="recite-freq-badge freq">🔥 频考·' + examInfo.count + '次' + (typeAbbr ? ' ' + typeAbbr : '') + '</div>';
+        freqBadgeHtml = '<span class="recite-freq-badge freq">🔥 频考·' + examInfo.count + '次' + (typeAbbr ? ' ' + typeAbbr : '') + '</span>';
         var typeList = Object.keys(examInfo.allTypes).sort(function(a, b) { return examInfo.allTypes[b] - examInfo.allTypes[a]; });
         var typeStr = typeList.map(function(t) { return t + '×' + examInfo.allTypes[t]; }).join('、');
         examTypesHtml = '<div class="recite-card-section"><span class="recite-section-label exam-freq-label">📊 真题考法</span><div class="recite-section-content">' + typeStr + '<span class="recite-exam-total">（本章共' + examInfo.chTotal + '题）</span></div></div>';
       } else {
-        freqBadgeHtml = '<div class="recite-freq-badge chapter">📖 本章有真题·' + examInfo.count + '题</div>';
+        freqBadgeHtml = '<span class="recite-freq-badge chapter">📖 本章有真题·' + examInfo.count + '题</span>';
       }
     }
 
@@ -524,10 +580,8 @@ function renderCards() {
     return '<div class="recite-card' + (isCalc ? ' calc' : '') + '" id="card-' + c.id + '" onclick="flipCard(this)">' +
       '<div class="recite-card-inner">' +
       '<div class="recite-card-front">' +
-      '<div class="recite-card-chapter">' + (c.chapter || '未分类') + (isCalc ? ' · 计算' : '') + '</div>' +
-      freqBadgeHtml +
-      '<div class="recite-card-label">' + (isCalc ? '计算' : '问题') + '</div>' +
-      '<div class="recite-card-question">' + esc(c.question) + '</div>' +
+      '<div class="recite-card-chapter">' + (c.chapter || '未分类') + (isCalc ? ' · 计算' : '') + getChapterWeightStr(c.chapter) + '</div>' +
+      '<div class="recite-card-question">' + esc(c.question) + freqBadgeHtml + '</div>' +
       (c.hint ? '<div class="calc-card-hint">💡 ' + esc(c.hint) + '</div>' : '') +
       frontExtra +
       '<span class="recite-mastery ' + c.mastery + '">' + masteryLabel[c.mastery] + '</span>' +
