@@ -279,6 +279,30 @@ function transformKfToCards(data) {
           if (c.answerAliases) card.answerAliases = c.answerAliases;
           cards.push(card);
         });
+      } else if (s.type === '教材精讲') {
+        var concepts = s.coreConcepts || s.items || [];
+        concepts.forEach(function(c) {
+          var term = c.term || '';
+          if (!term) return;
+          var defParts = [];
+          if (c.summary) defParts.push(c.summary);
+          if (c.points && c.points.length) {
+            c.points.forEach(function(p) { defParts.push('• ' + p); });
+          }
+          cards.push({
+            id: Date.now() + Math.random(),
+            term: term,
+            chapter: chName,
+            question: '什么是' + term + '？',
+            def: defParts.join('\n'),
+            ex: c.ex || '',
+            exImage: c.exImage || '',
+            exam: c.exam || '',
+            hint: '【教材精讲】',
+            cardType: c.cardType || 'memory',
+            mastery: 'unknown'
+          });
+        });
       } else if (s.type === '必会公式') {
         // 必会公式 → 计算卡
         var formulas = s.items || s.points || [];
