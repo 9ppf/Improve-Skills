@@ -1,33 +1,17 @@
 {
   "13015": {
     "subject": "13015",
-    "chapter": "第6章 程序中 I/O 操作的实现",
+    "chapter": "第1章 计算机系统概述",
     "level": "unknown"
   },
   "02324": {
     "subject": "02324",
-    "chapter": "第3章 谓词逻辑",
-    "level": "mastered"
+    "chapter": "第5章 关系与函数",
+    "level": "unknown"
   },
   "13003": {
     "subject": "13003",
-    "mastery": {
-      "mastery": {
-        "1": 1,
-        "3": 4
-      },
-      "kp": {
-        "1-1": false,
-        "2-3": false
-      },
-      "_migrated": true,
-      "toc": {
-        "多维数组存储与地址计算": 1
-      },
-      "ch4_多维数组存储与地址计算": "unknown",
-      "ch1_数据、数据元素和数据项": "unknown"
-    },
-    "_migrated": true,
-    "toc": {}
+    "chapter": "第3章 栈和队列",
+    "level": "mastered"
   }
 }
