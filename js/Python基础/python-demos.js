@@ -109,9 +109,7 @@
     var kpState = {};
     try { kpState = JSON.parse(localStorage.getItem("py_kp_detail_v1")) || {}; } catch(e) {}
 
-    function esc(s) {
-      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
+    var esc = QuizUtils.esc;
 
     function hl(code) {
       var s = esc(code);

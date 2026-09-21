@@ -360,8 +360,9 @@ def check_tab_integrity_global() -> list[str]:
         if not (has_btns or has_panes):
             continue
 
-        # 收集所有CSS来源：内联style块 + 外部link引用的CSS文件
+        # 收集所有CSS与JS来源：内联块 + 外部 link/script 引用的文件
         css_pool = content
+        js_pool = content
         import re
         for m in re.finditer(r'<link\s+rel="stylesheet"\s+href="([^"]+\.css)"', content):
             css_path = (item.parent / m.group(1)).resolve()
@@ -369,12 +370,18 @@ def check_tab_integrity_global() -> list[str]:
                 css_pool += '\n' + css_path.read_text(encoding='utf-8')
             except OSError:
                 pass
+        for m in re.finditer(r'<script\s+src="([^"?]+\.js)[^"]*"', content):
+            js_path = (item.parent / m.group(1)).resolve()
+            try:
+                js_pool += '\n' + js_path.read_text(encoding='utf-8')
+            except OSError:
+                pass
 
         missing = []
         for marker, name in required_css.items():
             if marker not in css_pool:
                 missing.append(name)
-        if has_btns and 'switchTab' not in content and 'tabBtns' not in content:
+        if has_btns and 'switchTab' not in js_pool and 'tabBtns' not in js_pool:
             missing.append('Tab switching JS')
 
         if missing:

@@ -174,14 +174,7 @@ function renderArchive() {
   listEl.innerHTML = html;
 }
 
-function escapeHtml(str) {
-  if (!str) return "";
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+var escapeHtml = QuizUtils.esc;
 
 document.getElementById("filterBar").addEventListener("click", function(e) {
   var btn = e.target.closest(".ainews-filter-btn");

@@ -78,8 +78,7 @@ var TYPE_META = {
 };
 var QUIZ_SYMBOLS = ['×','÷','=','≠','≈','≤','≥','<','>','±','²','³','ⁿ','√','π','Σ','∞','%','①','②','③','④','⑤','⑥','⑦','⑧','α','β','γ','δ','θ','λ','μ','σ','φ','ψ','ω','Δ','¬','∧','∨','→','↔','⊕','⊢','⇔','∀','∃','∈','∪','∩','⊆','⊇','∅','≡','P','Q','R','S','T','F','0','1'];
 
-var API_BASE = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
-function apiUrl(path) { return API_BASE + path; }
+var apiUrl = QuizUtils.apiUrl;
 
 var urlParams = new URLSearchParams(window.location.search);
 var currentSubject = urlParams.get('subject') || '13015';
@@ -89,32 +88,63 @@ var questionIdParam = urlParams.get('questionId') || '';
 var currentTypeFilter = 'all';
 var currentChapterFilter = 'all';     /* 章节筛选 */
 var currentStatusFilter = 'all'; /* 状态筛选：all/undone/wrong/right */
+var currentSourceFilter = 'all'; /* 来源筛选：all/textbook/chapter/review/ai */
+var currentKeywordFilter = 'all'; /* 考点频率筛选：all/高频/中频/低频 */
 var quizData = [];
 var results = {};
+
+/* 真题关键词词典：用于统计历年真题中各知识点出现次数 */
+var EXAM_KEYWORDS = {
+  '13015': ['总线','中断','Cache','补码','浮点数','指令','DMA','冯·诺依曼','流水线','过程调用','虚拟存储','存储层次','指令周期','数据通路','栈','汇编','编译','链接','局部性','命中率','寄存器','CPI','存储器','二进制','操作码','地址','文件系统','内核','主存','外设'],
+  '13003': ['二叉树','排序','图','栈','队列','链表','数组','查找','递归','哈希','树','遍历','时间复杂度','空间复杂度','森林','线索','矩阵','串','广义表','完全二叉树','平衡','AVL','B树','散列'],
+  '02324': ['命题','逻辑','集合','关系','函数','图','代数','群','格','布尔代数','谓词','量词','推理','等价','蕴含','自反','对称','传递','偏序','连通','欧拉','哈密顿','树']
+};
 
 /* Subject code -> study-plan 中文名映射 */
 var SUBJECT_NAME_MAP = { '13015': '系统原理', '02324': '离散数学', '13003': '数据结构' };
 var currentMode = 'today';        /* 'today' | 'ai' */
 var todayChapters = [];           /* 本周计划中当前科目的章节列表 */
 
-/* ====== 筛选状态持久化（按科目存 localStorage）====== */
+/* ====== 筛选状态持久化（localStorage + API 双写，换浏览器也能恢复）====== */
 function saveFilterState() {
+  var state = {
+    subject: currentSubject,
+    mode: currentMode,
+    chapter: currentChapterFilter,
+    type: currentTypeFilter,
+    status: currentStatusFilter,
+    source: currentSourceFilter,
+    keyword: currentKeywordFilter
+  };
   try {
-    localStorage.setItem('quiz-filter-' + currentSubject, JSON.stringify({
-      mode: currentMode,
-      chapter: currentChapterFilter,
-      type: currentTypeFilter,
-      status: currentStatusFilter
-    }));
+    localStorage.setItem('quiz-filter-' + currentSubject, JSON.stringify(state));
+  } catch(e) {}
+  try {
+    fetch(apiUrl('/api/quiz-preference'), {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(state)
+    }).catch(function(){});
   } catch(e) {}
 }
 
-function loadFilterState() {
+function loadFilterState(callback) {
+  var local = null;
   try {
     var saved = localStorage.getItem('quiz-filter-' + currentSubject);
-    if (!saved) return null;
-    return JSON.parse(saved);
-  } catch(e) { return null; }
+    if (saved) local = JSON.parse(saved);
+  } catch(e) {}
+  if (local && local.source !== undefined) {
+    callback(local);
+  }
+  try {
+    fetch(apiUrl('/api/quiz-preference?subject=' + currentSubject))
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data && data.subject) callback(data);
+      })
+      .catch(function(){});
+  } catch(e) {}
 }
 
 /* 根据当前模式更新按钮/提示 UI（不修改筛选值，用于恢复状态） */
@@ -560,16 +590,42 @@ function scoreChoice(q, userSelection) {
 
 function scoreFill(q, userAnswers) {
   var hits = [], hitCount = 0;
-  q.blanks.forEach(function(b, i) {
-    var ua = normalize(userAnswers[i] || '');
-    var allTerms = [b.answer].concat(b.synonyms || []);
-    var matched = false;
-    for (var j=0; j<allTerms.length; j++) {
-      if (ua.indexOf(normalize(allTerms[j])) >= 0) { matched = true; break; }
-    }
-    hits.push({ idx: i, userAnswer: userAnswers[i]||'', correctAnswer: b.answer, matched: matched });
-    if (matched) hitCount++;
-  });
+  if (q.unordered) {
+    // 无序匹配：每个用户答案只能匹配一个正确答案（贪心算法）
+    var usedUserIdx = {}; // 已匹配的用户答案索引
+    q.blanks.forEach(function(b, blankIdx) {
+      var allTerms = [b.answer].concat(b.synonyms || []);
+      var matched = false;
+      var matchedUserIdx = -1;
+      for (var k=0; k<userAnswers.length; k++) {
+        if (usedUserIdx[k]) continue;
+        var ua = normalize(userAnswers[k] || '');
+        for (var j=0; j<allTerms.length; j++) {
+          if (ua.indexOf(normalize(allTerms[j])) >= 0) {
+            matched = true;
+            matchedUserIdx = k;
+            break;
+          }
+        }
+        if (matched) break;
+      }
+      if (matched) usedUserIdx[matchedUserIdx] = true;
+      hits.push({ idx: blankIdx, userAnswer: userAnswers[matchedUserIdx]||'', correctAnswer: b.answer, matched: matched });
+      if (matched) hitCount++;
+    });
+  } else {
+    // 有序匹配：按位置一一对应
+    q.blanks.forEach(function(b, i) {
+      var ua = normalize(userAnswers[i] || '');
+      var allTerms = [b.answer].concat(b.synonyms || []);
+      var matched = false;
+      for (var j=0; j<allTerms.length; j++) {
+        if (ua.indexOf(normalize(allTerms[j])) >= 0) { matched = true; break; }
+      }
+      hits.push({ idx: i, userAnswer: userAnswers[i]||'', correctAnswer: b.answer, matched: matched });
+      if (matched) hitCount++;
+    });
+  }
   var threshold = Math.ceil(q.blanks.length * 0.6);
   return {
     score: hitCount, total: q.blanks.length,
@@ -646,7 +702,7 @@ function scoreQuestion(q, userAnswer, userSelection) {
 
 /* ====== RENDERERS ====== */
 
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+var esc = QuizUtils.esc;
 
 /* 渲染选项内容：支持 svg: 前缀（内联SVG）、img: 前缀（图片）、纯文本 */
 function renderContent(s) {
@@ -654,7 +710,8 @@ function renderContent(s) {
   s = s.replace(/^[A-H]\.\s*/, '');
   if (s.indexOf('svg:') === 0) return s.slice(4);
   if (s.indexOf('img:') === 0) return '<img src="' + s.slice(4) + '" style="max-width:100%;border-radius:6px;display:block;margin:4px 0" />';
-  return esc(s);
+  if (typeof AIChat !== 'undefined' && AIChat.formatText) return AIChat.formatText(s);
+  return esc(s).replace(/\n/g, '<br>');
 }
 
 function renderSymbolPalette(qId) {
@@ -694,8 +751,10 @@ function renderReference(label, content, isProof) {
       if (line.indexOf('步骤') >= 0 || line.indexOf('结论') >= 0) return '<div class="proof-step">'+esc(line)+'</div>';
       return '<div>'+esc(line)+'</div>';
     }).join('');
+  } else if (typeof AIChat !== 'undefined' && AIChat.formatText) {
+    html += AIChat.formatText(content);
   } else {
-    html += esc(content);
+    html += esc(content).replace(/\n/g, '<br>');
   }
   html += '</div>';
   return html;
@@ -764,13 +823,24 @@ function renderChoiceCard(q) {
       '<span class="choice-letter">'+letter+'</span><span class="choice-content">'+renderContent(opt)+'</span></div>';
   }).join('');
 
+  var scoreHTML = '';
+  if (r) {
+    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+(q.referenceAnswer?renderReference('📖 参考答案', q.referenceAnswer):'')+renderWrongReason(q.id)+'</div>';
+  } else if (q.src === 'textbook' && q.referenceAnswer) {
+    scoreHTML = '<div class="score-result" id="ref-'+q.id+'" style="display:none;">'+renderReference('📖 参考答案', q.referenceAnswer)+'</div>';
+  }
+
+  var submitRow = '<div class="submit-row">';
+  submitRow += '<button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitChoice(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button>';
+  submitRow += '<button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button>';
+  submitRow += '</div>';
+
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
     '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.choice.badge+'">'+TYPE_META.choice.icon+' 选择题'+subLabel+'</span></div>' +
     '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
     '<div class="choice-options">'+optionsHTML+'</div>' +
-    '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitChoice(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
-    (r ? '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+renderWrongReason(q.id)+'</div>' : '') +
-    '</div>';
+    submitRow +
+    scoreHTML + '</div>';
 }
 
 function renderFillCard(q) {
@@ -808,7 +878,7 @@ function renderFillCard(q) {
 
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
     '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.fill.badge+'">'+TYPE_META.fill.icon+' 填空题</span></div>' +
-    '<div class="quiz-question">'+esc(q.text||q.question).replace(/__\d+__/g,'____')+'</div>' +
+    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
     blanksHTML +
     '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitFill(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
     (r ? '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+compHTML+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+renderWrongReason(q.id)+'</div>' : '') +
@@ -846,6 +916,17 @@ function renderCalculateCard(q) {
     calcResult + '</div>';
 }
 
+function toggleRef(qId) {
+  var el = document.getElementById('ref-' + qId);
+  if (!el) return;
+  if (el.style.display === 'none') {
+    el.style.display = '';
+    el.classList.add('zk-show');
+  } else {
+    el.style.display = 'none';
+  }
+}
+
 function renderShortAnswerCard(q) {
   var r = results[q.id];
   var scoreHTML = '';
@@ -867,13 +948,18 @@ function renderShortAnswerCard(q) {
     scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+
       renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '简答题评分仅供参考，你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
     }
+  } else if (q.src === 'textbook' && q.referenceAnswer) {
+    scoreHTML = '<div class="score-result" id="ref-'+q.id+'" style="display:none;">'+renderReference('📖 参考答案', q.referenceAnswer)+'</div>';
   }
+  var submitRow = '<div class="submit-row">';
+  submitRow += '<button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button>';
+  submitRow += '<button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button>';
+  submitRow += '</div>';
   return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
     '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.shortAnswer.badge+'">'+TYPE_META.shortAnswer.icon+' 简答题</span></div>' +
     '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
-    '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入你的答案..."' +(r?' disabled':'')+'></textarea>' +
-    renderSymbolPalette(q.id) +
-    '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
+    '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入你的答案..."' +(r?' disabled':'')+'></textarea>' + renderSymbolPalette(q.id) +
+    submitRow +
     scoreHTML + '</div>';
 }
 
@@ -1151,8 +1237,67 @@ function renderStatusFilter() {
   filter.innerHTML = html;
 }
 
+/* 来源筛选：教材/章节/复习/AI */
+function renderSourceFilter() {
+  var filter = document.getElementById('sourceFilter');
+  if (!filter) return;
+  var source = currentMode === 'ai' ? aiQuizData : quizData;
+  var srcMap = {};
+  source.forEach(function(q) {
+    var s = q.src || 'ai';
+    srcMap[s] = (srcMap[s] || 0) + 1;
+  });
+  var SRC_META = {
+    textbook: { icon: '📘', label: '教材' },
+    chapter: { icon: '📝', label: '章节' },
+    review: { icon: '📋', label: '复习' },
+    ai: { icon: '🤖', label: 'AI' }
+  };
+  var total = source.length;
+  var html = '<option value="all"'+(currentSourceFilter==='all'?' selected':'')+'>📦 来源：全部 ('+total+')</option>';
+  ['textbook', 'chapter', 'review', 'ai'].forEach(function(s) {
+    if (srcMap[s]) {
+      var meta = SRC_META[s];
+      html += '<option value="'+s+'"'+(currentSourceFilter===s?' selected':'')+'>'+meta.icon+' '+meta.label+' ('+srcMap[s]+')</option>';
+    }
+  });
+  filter.innerHTML = html;
+}
+
 function switchChapter(val) { currentChapterFilter = val; saveFilterState(); renderChapterFilter(); updateFilterCount(); render(); }
 function switchStatus(val) { currentStatusFilter = val; saveFilterState(); renderStatusFilter(); updateFilterCount(); render(); }
+function switchSource(val) { currentSourceFilter = val; saveFilterState(); renderSourceFilter(); updateFilterCount(); render(); }
+
+/* 考点频率筛选：从真题数据统计关键词出现次数 */
+function renderKeywordFilter() {
+  var filter = document.getElementById('keywordFilter');
+  if (!filter) return;
+  var keywords = EXAM_KEYWORDS[currentSubject] || [];
+  var examData = window.EXAM_DATA && window.EXAM_DATA[currentSubject];
+  if (!examData || !examData.questions) {
+    filter.innerHTML = '<option value="all"' + (currentKeywordFilter === 'all' ? ' selected' : '') + '>🎯 考点：全部</option>';
+    return;
+  }
+  /* 统计每个关键词在真题题干+答案中出现的次数 */
+  var freq = {};
+  keywords.forEach(function(kw) { freq[kw] = 0; });
+  examData.questions.forEach(function(q) {
+    var text = (q.title || '') + ' ' + (q.answer || '') + ' ' + (q.options ? q.options.join(' ') : '');
+    keywords.forEach(function(kw) {
+      if (text.indexOf(kw) >= 0) freq[kw]++;
+    });
+  });
+  /* 按频率降序排列，只显示出现2次以上的 */
+  var sorted = Object.keys(freq).filter(function(kw) { return freq[kw] >= 2; })
+    .sort(function(a, b) { return freq[b] - freq[a]; });
+  var html = '<option value="all"' + (currentKeywordFilter === 'all' ? ' selected' : '') + '>🎯 考点：全部</option>';
+  sorted.forEach(function(kw) {
+    html += '<option value="' + kw + '"' + (currentKeywordFilter === kw ? ' selected' : '') + '>' + kw + ' (' + freq[kw] + '次)</option>';
+  });
+  filter.innerHTML = html;
+}
+
+function switchKeyword(val) { currentKeywordFilter = val; saveFilterState(); renderKeywordFilter(); updateFilterCount(); render(); }
 
 /* 更新筛选计数 */
 function updateFilterCount() {
@@ -1161,7 +1306,7 @@ function updateFilterCount() {
   if (el) el.textContent = '显示 ' + filtered.length + ' 题';
 }
 
-/* 三层筛选：知识点 + 题型 + 状态 */
+/* 四层筛选：章节 + 题型 + 状态 + 来源 */
 function getFilteredQuiz() {
   var source = currentMode === 'ai' ? aiQuizData : quizData;
   return source.filter(function(q) {
@@ -1179,6 +1324,15 @@ function getFilteredQuiz() {
       if (currentStatusFilter === 'undone' && r) return false;
       if (currentStatusFilter === 'wrong' && (!r || getCurrentLevel(q.id) === 'mastered')) return false;
       if (currentStatusFilter === 'right' && (!r || getCurrentLevel(q.id) !== 'mastered')) return false;
+    }
+    /* 来源筛选 */
+    if (currentSourceFilter !== 'all') {
+      if ((q.src || 'ai') !== currentSourceFilter) return false;
+    }
+    /* 考点频率筛选 */
+    if (currentKeywordFilter !== 'all') {
+      var qText = (q.question || q.title || '') + ' ' + (q.answer || '') + ' ' + (q.explanation || '');
+      if (qText.indexOf(currentKeywordFilter) < 0) return false;
     }
     return true;
   });
@@ -1217,7 +1371,7 @@ function activateToday() {
     var chLabel = todayChapters.length > 0 ? todayChapters.join('、') : '未加载';
     hint.textContent = '本周计划：' + chLabel;
   }
-  saveFilterState(); renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount(); render();
+  saveFilterState(); renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); renderSourceFilter(); renderKeywordFilter(); updateFilterCount(); render();
 }
 
 function updateSessionAndStats(filtered) {
@@ -1371,65 +1525,36 @@ function sendAIHelp(qId) {
   });
 
   /* 调用AI */
-  fetch(apiUrl('/api/chat'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      messages: messages,
-      stream: false,
-      max_tokens: 1500
-    })
-  })
-  .then(function(r) {
-    if (!r.ok) {
-      // HTTP 错误状态，先解析响应体获取错误信息
-      return r.json().then(function(errData) {
-        var errMsg = (errData && errData.error) ? errData.error : ('HTTP ' + r.status);
-        throw new Error(errMsg);
-      }).catch(function(parseErr) {
-        // 连错误响应都解析失败，直接抛状态码
-        throw new Error('HTTP ' + r.status);
-      });
+  AIChat.chat({
+    messages: messages,
+    maxTokens: 1500,
+    onDone: function(content) {
+      if (!content || !content.trim()) {
+        content = 'AI 返回了空内容';
+      }
+      var loading = document.getElementById('ai-loading-' + qId);
+      if (loading) loading.remove();
+      aiHelpHistory[qId].push({ role: 'assistant', content: content });
+      if (msgs) {
+        msgs.innerHTML += '<div class="ai-msg assistant">'+AIChat.formatText(content)+'</div>';
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+      input.disabled = false;
+      if (sendBtn) sendBtn.disabled = false;
+      input.focus();
+      saveAIHelpConversation(qId);
+    },
+    onError: function(err) {
+      var loading = document.getElementById('ai-loading-' + qId);
+      if (loading) loading.remove();
+      if (msgs) {
+        msgs.innerHTML += '<div class="ai-msg assistant error">⚠️ '+esc(AIChat.formatError(err))+'，请重试</div>';
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+      input.disabled = false;
+      if (sendBtn) sendBtn.disabled = false;
+      input.focus();
     }
-    return r.json();
-  })
-  .then(function(data) {
-    var content = '';
-    if (data.choices && data.choices[0]) {
-      content = data.choices[0].message.content;
-    } else if (data.content) {
-      content = data.content;
-    } else if (typeof data === 'string') {
-      content = data;
-    }
-    if (!content || !content.trim()) {
-      throw new Error('AI 返回了空内容');
-    }
-    /* 移除loading */
-    var loading = document.getElementById('ai-loading-' + qId);
-    if (loading) loading.remove();
-    /* 添加AI回复 */
-    aiHelpHistory[qId].push({ role: 'assistant', content: content });
-    if (msgs) {
-      msgs.innerHTML += '<div class="ai-msg assistant">'+esc(content)+'</div>';
-      msgs.scrollTop = msgs.scrollHeight;
-    }
-    input.disabled = false;
-    if (sendBtn) sendBtn.disabled = false;
-    input.focus();
-    /* 保存对话到服务器，实现跨设备同步 */
-    saveAIHelpConversation(qId);
-  })
-  .catch(function(err) {
-    var loading = document.getElementById('ai-loading-' + qId);
-    if (loading) loading.remove();
-    if (msgs) {
-      msgs.innerHTML += '<div class="ai-msg assistant error">⚠️ 请求失败：'+esc(err.message||'网络错误')+'，请重试</div>';
-      msgs.scrollTop = msgs.scrollHeight;
-    }
-    input.disabled = false;
-    if (sendBtn) sendBtn.disabled = false;
-    input.focus();
   });
 }
 
@@ -1518,7 +1643,10 @@ function render() {
       if (sb2) sb2.classList.remove('zk-show');
       return;
     }
-    list.innerHTML = filtered.map(renderCardWithAIActions).join('');
+    list.innerHTML = filtered.map(function(q, i) {
+      var html = renderCardWithAIActions(q);
+      return html.replace('class="quiz-meta">', 'class="quiz-meta"><span class="quiz-num">#' + (i+1) + '</span>');
+    }).join('');
     updateSessionAndStats(filtered);
     renderQuizNav();
     return;
@@ -1536,7 +1664,10 @@ function render() {
     if (sb) sb.classList.remove('zk-show');
     return;
   }
-  list.innerHTML = filtered.map(renderCard).join('');
+  list.innerHTML = filtered.map(function(q, i) {
+    var html = renderCard(q);
+    return html.replace('class="quiz-meta">', 'class="quiz-meta"><span class="quiz-num">#' + (i+1) + '</span>');
+  }).join('');
   updateSessionAndStats(filtered);
   renderQuizNav();
   if (Object.keys(window.choiceSelections).length > 0) {
@@ -1615,11 +1746,13 @@ function switchMode(mode) {
   currentChapterFilter = 'all';
   currentTypeFilter = 'all';
   currentStatusFilter = 'all';
+  currentSourceFilter = 'all';
+  currentKeywordFilter = 'all';
   var todayBtn = document.getElementById('todayBtn');
   var aiBtn = document.getElementById('aiBtn');
   if (todayBtn) todayBtn.classList.remove('zk-active');
   if (aiBtn) aiBtn.classList.add('zk-active');
-  saveFilterState(); renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); updateFilterCount();
+  saveFilterState(); renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); renderSourceFilter(); renderKeywordFilter(); updateFilterCount();
   updateModeHint();
   updateChrome(mode);
   render();
@@ -1697,34 +1830,17 @@ function generateAIQuestions() {
         '9. 每题加src字段值为"ai"，cardId字段填写对应知识点卡片的序号（1、2、3...，对应上面给出的卡片编号）';
 
       /* 3. 调用 AI API */
-      return fetch(apiUrl('/api/chat'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: prompt }],
-          stream: false,
-          max_tokens: 3000
-        })
+      return AIChat.ask({
+        prompt: prompt,
+        maxTokens: 3000
       });
     })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      /* 4. 解析 AI 返回 */
-      var content = '';
-      if (data.choices && data.choices[0]) {
-        content = data.choices[0].message.content;
-      } else if (data.content) {
-        content = data.content;
-      } else if (typeof data === 'string') {
-        content = data;
-      }
-
+    .then(function(content) {
       var questions = parseAIQuestions(content);
       if (questions.length === 0) {
         throw new Error('AI返回格式解析失败，请重试');
       }
 
-      /* 5. 标准化 type 字段 + 给每题加 id 和来源标签 */
       var TYPE_ALIAS = {
         '单选题':'choice','多选题':'choice','选择题':'choice',
         '填空题':'fill','填空':'fill',
@@ -1748,7 +1864,7 @@ function generateAIQuestions() {
       aiLoading = false;
       var list = document.getElementById('quizList');
       if (list) {
-        list.innerHTML = '<div class="empty-state">⚠️ AI出题失败：' + (err.message || '网络错误') + '<br><button onclick="generateAIQuestions()" class="ai-retry-btn zk-btn-outline">重试</button></div>';
+        list.innerHTML = '<div class="empty-state">⚠️ AI出题失败：' + AIChat.formatError(err) + '<br><button onclick="generateAIQuestions()" class="ai-retry-btn zk-btn-outline">重试</button></div>';
       }
     });
 }
@@ -1798,6 +1914,8 @@ function init() {
   renderTypeFilter();
   renderChapterFilter();
   renderStatusFilter();
+  renderSourceFilter();
+  renderKeywordFilter();
   /* 并行加载学习计划、题库、答题记录，三者就绪后再渲染 */
   var planDone = false, bankDone = false, recordsDone = false;
   var pendingRecords = [];
@@ -1874,31 +1992,33 @@ function init() {
       results[w.questionId].wrongReason = w.wrongReason || '';
     });
     /* 初始化筛选器和今日任务 */
-    renderChapterFilter(); renderTypeFilter(); renderStatusFilter();
+    renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); renderSourceFilter(); renderKeywordFilter();
     if (currentMode !== 'free') {
-      /* 尝试恢复保存的筛选状态 */
-      var saved = loadFilterState();
-      if (saved && saved.mode && saved.mode !== 'ai') {
-        currentMode = saved.mode;
-        currentChapterFilter = saved.chapter || 'all';
-        currentTypeFilter = saved.type || 'all';
-        currentStatusFilter = saved.status || 'all';
-        /* 验证保存的章节/题型在当前题库中仍存在 */
-        if (currentChapterFilter !== 'all') {
-          var chExists = quizData.some(function(q) { return (q.chapter || '') === currentChapterFilter; });
-          if (!chExists) currentChapterFilter = 'all';
+      /* 尝试恢复保存的筛选状态（localStorage + API 双写） */
+      loadFilterState(function(saved) {
+        if (saved && saved.mode && saved.mode !== 'ai') {
+          currentMode = saved.mode;
+          currentChapterFilter = saved.chapter || 'all';
+          currentTypeFilter = saved.type || 'all';
+          currentStatusFilter = saved.status || 'all';
+          currentSourceFilter = saved.source || 'all';
+          currentKeywordFilter = saved.keyword || 'all';
+          if (currentChapterFilter !== 'all') {
+            var chExists = quizData.some(function(q) { return (q.chapter || '') === currentChapterFilter; });
+            if (!chExists) currentChapterFilter = 'all';
+          }
+          if (currentTypeFilter !== 'all') {
+            var tpExists = quizData.some(function(q) { return q.type === currentTypeFilter; });
+            if (!tpExists) currentTypeFilter = 'all';
+          }
+          applyModeUI();
+          renderChapterFilter(); renderTypeFilter(); renderStatusFilter(); renderSourceFilter(); renderKeywordFilter();
+          updateFilterCount();
+          render();
+        } else {
+          activateToday();
         }
-        if (currentTypeFilter !== 'all') {
-          var tpExists = quizData.some(function(q) { return q.type === currentTypeFilter; });
-          if (!tpExists) currentTypeFilter = 'all';
-        }
-        applyModeUI();
-        renderChapterFilter(); renderTypeFilter(); renderStatusFilter();
-        updateFilterCount();
-        render();
-      } else {
-        activateToday();
-      }
+      });
     } else {
       updateFilterCount();
       updateChrome(currentMode);

@@ -33,13 +33,13 @@ var QuizUtils = (function() {
   /* ====== HTML 转义 ====== */
   function esc(s) {
     if (!s) return '';
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  /* ====== API 地址拼接 ====== */
+  /* ====== API 地址拼接（自动处理 file:// 协议）====== */
   function apiUrl(path) {
-    var base = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
-    return base.replace(/\/$/, '') + path;
+    var base = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
+    return base + path;
   }
 
   /* ====== DOM 简写 ====== */

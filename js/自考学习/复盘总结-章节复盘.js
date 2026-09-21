@@ -270,8 +270,7 @@
       }
 
       // ============ API 基址 ============
-      var API_BASE = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
-      function apiUrl(path) { return API_BASE + path; }
+      var apiUrl = QuizUtils.apiUrl;
 
       // ============ 题型元数据 ============
       var TYPE_META = {
@@ -290,11 +289,7 @@
       var bankCache = { subject: null, data: [], filterChapter: '', filterType: '' };
 
       // ============ 工具函数 ============
-      function esc(s) {
-        return String(s == null ? '' : s)
-          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      }
+      var esc = QuizUtils.esc;
       // 时间戳兼容毫秒/秒
       function tsToMs(ts) { ts = ts || 0; return ts > 1e12 ? ts : ts * 1000; }
       function relTime(ts) {

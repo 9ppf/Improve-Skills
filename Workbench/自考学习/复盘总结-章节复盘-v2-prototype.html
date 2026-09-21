@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>章节复盘总结 v2 原型 · 13003 数据结构与算法</title>
+  <script src="../../js/shared/theme-sync.js?v=202609211535"></script>
+<link rel="stylesheet" href="../../styles/shared/base-vars.css">
+<link rel="stylesheet" href="../../styles/shared/base.css">
+<link rel="stylesheet" href="../../styles/shared/components.css">
+<link rel="stylesheet" href="../../styles/自考学习/复盘总结.css">
+<link rel="stylesheet" href="../../styles/自考学习/复盘总结-v2.css">
+</head>
+<body>
+  <article class="ss-review-page">
+    <header class="ss-review-header">
+      <h1>章节复盘总结</h1>
+      <div class="ss-review-subject">当前科目：<b id="subjectName">—</b></div>
+    </header>
+    <div class="ss-feature-tabs" id="featureTabs">
+      <button class="ss-feature-tab zk-active zk-seg" data-feature="review">📝 章节复盘（含错题）</button>
+      <button class="ss-feature-tab zk-seg" data-feature="bank">📚 题库管理</button>
+    </div>
+
+    <!-- 功能 1：章节复盘（含错题） -->
+    <div class="ss-feature-panel zk-active" id="featureReview" data-feature="review">
+    <div id="reviewInsight"></div>
+    <section class="ss-review-dashboard" aria-label="复盘进度">
+      <div class="ss-dashboard-top">
+        <span class="ss-dashboard-label">复盘进度</span>
+        <span class="ss-dashboard-count">
+          已复盘 <b id="reviewedCount">0</b> / <span class="ss-total" id="totalCount">0</span> 章
+        </span>
+      </div>
+      <div class="ss-dashboard-track">
+        <div class="ss-dashboard-fill" id="dashboardFill"></div>
+        <span class="ss-dashboard-pct" id="dashboardPct">0%</span>
+      </div>
+      <div class="ss-dashboard-meta">
+        <div class="ss-dashboard-stats">
+          <span class="ss-stat ss-stat-reviewed"><span class="ss-stat-dot"></span>已复盘 <b id="statReviewed">0</b></span>
+          <span class="ss-stat ss-stat-pending"><span class="ss-stat-dot"></span>待复盘 <b id="statPending">0</b></span>
+        </div>
+        <button class="ss-dashboard-reset zk-btn-outline" id="resetBtn">重置</button>
+      </div>
+    </section>
+
+    <div class="ss-review-list" id="chapterList"></div>
+    </div><!-- /featureReview -->
+
+    <!-- 功能 2：题库管理 -->
+    <div class="ss-feature-panel" id="featureBank" data-feature="bank">
+      <div id="bankContainer"><p style="padding:1rem;color:var(--muted);font-size:0.85rem;">题库管理沿用原有逻辑。</p></div>
+    </div>
+
+    <!-- 引导流按钮 -->
+    <div class="ss-guide-flow">
+      <a class="ss-guide-btn zk-btn-primary" id="guideBtn" href="背诵与简答-核心概念背诵卡.html?subject=13003">
+        ✅ 返回背诵卡 →
+        <div class="ss-guide-subtext">继续学习或复习知识点</div>
+      </a>
+    </div>
+  </article>
+
+  <script src="../../js/shared/utils.js?v=202609211535"></script>
+  <script src="../../js/自考学习/复盘总结-章节复盘-v2.js?v=202609211535"></script>
+</body>
+</html>

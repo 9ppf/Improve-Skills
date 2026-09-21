@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>练习测验</title>
-<script src="../../js/shared/theme-sync.js"></script>
+<script src="../../js/shared/theme-sync.js?v=202609211535"></script>
 <link rel="stylesheet" href="../../styles/shared/base-vars.css">
 <link rel="stylesheet" href="../../styles/shared/base.css">
 <link rel="stylesheet" href="../../styles/shared/components.css">
-<link rel="stylesheet" href="../../styles/自考学习/练习测验.css?v=2.39.0">
+<link rel="stylesheet" href="../../styles/自考学习/练习测验.css?v=2.40.0">
 </head>
 <body>
 <div class="quiz-container">
@@ -32,6 +32,10 @@
     <select class="qf-select qf-type" id="typeFilter" onchange="switchType(this.value)"><option value="all">📝 题型：全部</option></select>
     <span class="qf-sep">·</span>
     <select class="qf-select qf-status" id="statusFilter" onchange="switchStatus(this.value)"><option value="all">📊 状态：全部</option></select>
+    <span class="qf-sep">·</span>
+    <select class="qf-select qf-source" id="sourceFilter" onchange="switchSource(this.value)"><option value="all">📦 来源：全部</option></select>
+    <span class="qf-sep">·</span>
+    <select class="qf-select qf-freq" id="keywordFilter" onchange="switchKeyword(this.value)"><option value="all">🎯 考点：全部</option></select>
     <span class="qf-count" id="filterCount">显示 0 题</span>
   </div>
   <div class="quiz-controlbar" id="actionBar">
@@ -62,7 +66,11 @@
   <button class="quiz-nav-collapsed-btn" onclick="toggleQuizNav()">📋</button>
 </div>
 
-  <script src="../../js/shared/utils.js?v=2.39.0"></script>
-  <script src="../../js/自考学习/练习测验.js?v=2.39.0"></script>
+  <script src="../../data/exam-data-13015.js?v=202609211535"></script>
+  <script src="../../data/exam-data-13003.js?v=202609211535"></script>
+  <script src="../../data/exam-data-02324.js?v=202609211535"></script>
+  <script src="../../js/shared/utils.js?v=202609211535"></script>
+  <script src="../../js/shared/ai-chat.js?v=202609211535"></script>
+  <script src="../../js/自考学习/练习测验.js?v=202609211535"></script>
 </body>
 </html>

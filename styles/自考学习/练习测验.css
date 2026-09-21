@@ -53,6 +53,8 @@ body {
 .qf-kp { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
 .qf-type { border-color: var(--accent2); background: var(--purple-soft); color: var(--accent2); }
 .qf-status { border-color: var(--green); background: var(--green-soft); color: var(--green); }
+.qf-source { border-color: #e8910c; background: #fff4e0; color: #b06d00; }
+.qf-freq { border-color: #d946ef; background: #fdf4ff; color: #a21caf; }
 .qf-sep { color: var(--rule); font-size: 0.75rem; }
 .qf-count {
   font-size: 0.72rem; color: var(--muted);
@@ -313,6 +315,14 @@ body {
 .reference-answer.zk-show { display: block; }
 .reference-label { font-weight: 700; font-size: 0.75rem; color: var(--accent); margin-bottom: 0.2rem; }
 .proof-step { padding: 0.15rem 0 0.15rem 0.4rem; border-left: 2px solid var(--rule); margin: 0.15rem 0; }
+
+/* Table rendering (textbook answers with pipe-delimited rows) */
+.ai-table { width: 100%; border-collapse: collapse; margin: 0.3rem 0; font-size: 0.78rem; }
+.ai-table th, .ai-table td { border: 1px solid var(--rule); padding: 0.2rem 0.4rem; text-align: left; }
+.ai-table th { background: var(--bg-soft); font-weight: 600; }
+.ai-table tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+.ai-table code { font-size: 0.75rem; }
+.quiz-num { font-weight: 700; font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem; }
 
 /* Formula/steps (calculate) */
 .calc-formula {

@@ -12,7 +12,7 @@ window.__apiMastery = null;
 // 防止 API 数据加载完成前用户操作覆盖服务器数据
 var _apiLoaded = false;
 var API_BASE = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
-function apiUrl(path) { return API_BASE + path; }
+var apiUrl = QuizUtils.apiUrl;
 function apiPost(url, data) {
   try {
     fetch(apiUrl(url), {

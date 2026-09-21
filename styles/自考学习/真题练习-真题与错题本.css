@@ -155,8 +155,33 @@ body {
   font-size: 0.95rem;
   margin-bottom: 0.5rem;
   line-height: 1.6;
-  white-space: pre-wrap;
   word-break: break-word;
+}
+/* 题干内表格 */
+.exam-q-title .ai-table,
+.exam-answer-text .ai-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.4rem 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.exam-q-title .ai-table th,
+.exam-q-title .ai-table td,
+.exam-answer-text .ai-table th,
+.exam-answer-text .ai-table td {
+  border: 1px solid var(--rule);
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+}
+.exam-q-title .ai-table th,
+.exam-answer-text .ai-table th {
+  background: var(--bg-soft);
+  font-weight: 600;
+}
+.exam-q-title .ai-table tr:nth-child(even) td,
+.exam-answer-text .ai-table tr:nth-child(even) td {
+  background: var(--bg2);
 }
 
 /* 选项列表 */
@@ -191,7 +216,100 @@ body {
 .exam-link-btn:hover { opacity: 0.7; }
 .exam-link-wrong { color: var(--coral); }
 .exam-link-correct { color: var(--green); }
-.exam-link-muted { color: var(--muted); }
+.exam-link-ai { color: var(--accent2); }
+
+/* ====== AI出题区 ====== */
+.exam-ai-section {
+  margin-top: 1.5rem;
+  border-top: 2px dashed var(--rule);
+  padding-top: 1rem;
+}
+/* 顶部快捷入口（与模式切换同排，右对齐） */
+.exam-ai-quick-btn {
+  margin-left: auto;
+  padding: 0.4rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--accent2);
+  background: var(--purple-soft);
+  color: var(--accent2);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.exam-ai-quick-btn:hover {
+  background: var(--accent2);
+  color: var(--surface);
+}
+.exam-ai-quick-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.exam-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.exam-ai-gen-btn {
+  padding: 0.35rem 0.9rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--accent2);
+  background: var(--purple-soft);
+  color: var(--accent2);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.exam-ai-gen-btn:hover { opacity: 0.85; }
+.exam-ai-gen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* AI生成题目徽章 */
+.exam-badge-ai {
+  background: var(--purple-soft);
+  color: var(--accent2);
+  border: 1px solid var(--accent2);
+}
+
+/* ====== AI解答面板（复用练习测验样式）====== */
+.ai-help-panel {
+  margin-top: 0.6rem; border: 1px solid var(--rule); border-radius: 10px;
+  background: var(--surface); overflow: hidden; display: none;
+}
+.ai-help-panel.zk-show { display: flex; flex-direction: column; }
+.ai-help-messages {
+  max-height: 300px; overflow-y: auto; padding: 0.6rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.ai-msg {
+  max-width: 85%; padding: 0.5rem 0.8rem; border-radius: 10px;
+  font-size: 0.82rem; line-height: 1.6; word-break: break-word;
+}
+.ai-msg.user {
+  align-self: flex-end; background: var(--accent); color: var(--surface);
+}
+.ai-msg.assistant {
+  align-self: flex-start; background: var(--surface); border: 1px solid var(--rule);
+}
+.ai-msg.loading {
+  align-self: flex-start; background: var(--surface); border: 1px solid var(--rule);
+  color: var(--muted); font-style: italic;
+}
+.ai-msg.error { color: var(--coral); }
+.ai-help-input-row {
+  display: flex; gap: 0.4rem; padding: 0.5rem; border-top: 1px solid var(--rule);
+  background: var(--surface);
+}
+.ai-help-input {
+  flex: 1; padding: 0.4rem 0.6rem; border: 1px solid var(--rule);
+  border-radius: 8px; font-size: 0.82rem; outline: none;
+}
+.ai-help-input:focus { border-color: var(--accent2); }
+.ai-help-send {
+  padding: 0.4rem 0.8rem; border-radius: 8px; border: none;
+  background: var(--accent2); color: var(--surface);
+  font-size: 0.82rem; font-weight: 600; cursor: pointer;
+}
+.ai-help-send:hover { opacity: 0.9; }
+.ai-help-send:disabled { background: var(--muted); cursor: not-allowed; }
 
 .exam-q-actions {
   display: flex;
@@ -368,6 +486,55 @@ body {
   background: #fff;
 }
 
+/* 题目导航面板 */
+.exam-nav-panel {
+  position: fixed; right: 16px; top: 50%; transform: translateY(-50%);
+  width: 200px; max-height: 70vh; overflow-y: auto;
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 12px; box-shadow: var(--shadow-card);
+  padding: 12px; z-index: 100; transition: all 0.25s var(--ease);
+}
+.exam-nav-panel.collapsed {
+  width: 44px; height: 44px; padding: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.exam-nav-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px; font-size: 0.72rem; color: var(--muted);
+}
+.exam-nav-count { font-weight: 700; color: var(--accent); }
+.exam-nav-toggle {
+  width: 24px; height: 24px; border: none; background: var(--bg-soft);
+  border-radius: 6px; cursor: pointer; color: var(--muted);
+  font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.exam-nav-toggle:hover { background: var(--accent-soft); color: var(--accent); }
+.exam-nav-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+}
+.exam-nav-item {
+  height: 28px; border-radius: 6px; border: 1.5px solid;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+}
+.exam-nav-item:hover { border-color: var(--accent); transform: scale(1.1); }
+.exam-nav-item.correct { background: var(--green-soft); color: var(--green-text); border-color: var(--green); }
+.exam-nav-item.wrong { background: var(--coral-soft); color: var(--coral-text); border-color: var(--coral); }
+.exam-nav-item.pending { background: var(--bg-soft); color: var(--muted); border-color: var(--rule); }
+.exam-nav-collapsed-btn {
+  width: 44px; height: 44px; border: none; background: var(--bg-soft);
+  border-radius: 12px; cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.exam-nav-collapsed-btn:hover { background: var(--accent-soft); }
+@media (max-width: 768px) {
+  .exam-nav-panel { right: 8px; width: 170px; max-height: 50vh; }
+  .exam-nav-grid { grid-template-columns: repeat(5, 1fr); gap: 3px; }
+  .exam-nav-item { height: 26px; font-size: 0.65rem; }
+}
+
 .exam-mock-retry-btn {
   padding: 0.4rem 1.2rem;
   border-radius: 8px;
@@ -390,3 +557,52 @@ body {
   .exam-filter { font-size: 0.72rem; }
   .exam-mock-bar { flex-wrap: wrap; }
 }
+
+/* ====== 同类题专项练习（每道题下方 AI出题 的结果）====== */
+.exam-link-gen { color: var(--accent2); font-weight: 600; }
+.exam-link-busy { color: var(--muted); cursor: default; }
+
+.exam-ai-practice {
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px dashed var(--accent2);
+  border-radius: 10px;
+}
+.exam-ai-practice-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.exam-ai-practice-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent2);
+}
+.exam-ai-practice-count {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.exam-ai-practice-status {
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.exam-ai-practice-error { color: var(--coral-text); }
+
+/* 生成题顺序平铺（不再按批次分框展示） */
+.exam-ai-practice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+.exam-ai-practice-body .exam-question {
+  border-left: 3px solid var(--accent2);
+}
+
+/* 生成题内部：题干文字略小，与真题卡片区分 */
+.exam-ai-question .exam-q-title { font-size: 0.9rem; }
+.exam-ai-question .exam-q-status-actions { display: none; }
+
+/* 折叠工具类：放在文件末尾，确保覆盖上方同优先级的 display 声明 */
+.exam-hidden { display: none; }

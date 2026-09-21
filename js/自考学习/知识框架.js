@@ -1081,15 +1081,8 @@ function toggleCollapse(header) {
   var PLAN_SUBJECT = SUBJECT_META[SUBJECT_CODE] ? SUBJECT_META[SUBJECT_CODE].plan : '离散数学';
   var SUBJECT_FRAME = '/data/knowledge-framework-' + SUBJECT_CODE + '.json';
 
-  function apiUrl(p) {
-    return (location.protocol === 'file:') ? 'http://localhost:8000' + p : p;
-  }
-
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+  var apiUrl = QuizUtils.apiUrl;
+  var esc = QuizUtils.esc;
 
   // ---- 工具：掌握度 badge 渲染 ----
   var PRI_CLS = { '重点': 'key', '一般': 'normal', '了解': 'survey' };
@@ -1153,8 +1146,25 @@ function toggleCollapse(header) {
       }).join('');
     } else {
       // 必会公式 / 常见题型 / 易错点 / 必会操作与复杂度 / 必会对比表：普通 li
+      var liClass = type === '必会公式' ? 'kf-formula-item' : '';
       body = '<ul>\n' + items.map(function(it) {
-        return '<li>' + (typeof it === 'string' ? esc(it) : esc(it.text != null ? it.text : it.content)) + '</li>';
+        var text = typeof it === 'string' ? it : (it.text != null ? it.text : it.content);
+        var content = esc(text);
+        if (type === '必会公式') {
+          // 按行解析：标题行加粗深色，等式行换色并缩进
+          var lines = content.split('\n');
+          content = lines.map(function(line) {
+            var trimmed = line.trim();
+            if (!trimmed) return '';
+            // 等式行（包含 = 号）：换色 + 缩进对齐到"公式一："之后
+            if (trimmed.indexOf('=') >= 0 && trimmed.indexOf('公式') < 0) {
+              return '<span class="kf-formula-eq">' + trimmed + '</span>';
+            }
+            // 普通行（标题行）
+            return '<span class="kf-formula-title">' + trimmed + '</span>';
+          }).filter(function(l) { return l !== ''; }).join('');
+        }
+        return '<li class="' + liClass + '">' + content + '</li>';
       }).join('\n') + '\n</ul>';
     }
 

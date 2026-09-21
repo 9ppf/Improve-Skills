@@ -768,6 +768,365 @@
     "passThreshold": 60
   },
   {
+    "id": "q-13003-077",
+    "type": "choice",
+    "question": "抽象数据类型（ADT）的三个组成部分是（  ）",
+    "options": [
+      "A. 数据对象、数据关系、基本操作",
+      "B. 数据元素、数据项、数据结构",
+      "C. 逻辑结构、存储结构、运算",
+      "D. 数据、算法、程序"
+    ],
+    "answer": "A",
+    "chapter": "第1章 绪论",
+    "cardId": "抽象数据类型（ADT）",
+    "src": "ai",
+    "explanation": "ADT由数据对象D、数据关系S和基本操作P三部分组成，形式定义为(D, S, P)。"
+  },
+  {
+    "id": "q-13003-087",
+    "type": "fill",
+    "question": "算法处理的数据量大小称为___，通常用字母___表示",
+    "chapter": "第1章 绪论",
+    "cardId": "问题规模与增长函数",
+    "src": "ai",
+    "explanation": "问题规模n表示算法处理的数据量大小",
+    "blanks": [
+      {
+        "answer": "问题规模",
+        "synonyms": []
+      },
+      {
+        "answer": "n",
+        "synonyms": [
+          "N"
+        ]
+      }
+    ],
+    "answer": "问题规模；n"
+  },
+  {
+    "id": "q-13003-088",
+    "type": "choice",
+    "question": "大O表示法描述的是算法的（  ）",
+    "chapter": "第1章 绪论",
+    "cardId": "问题规模与增长函数",
+    "src": "ai",
+    "explanation": "大O表示上界（最坏情况）",
+    "options": [
+      "A. 下界（最好情况）",
+      "B. 上界（最坏情况）",
+      "C. 精确值",
+      "D. 平均情况"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13003-089",
+    "type": "choice",
+    "question": "大Ω表示法描述的是算法的（  ）",
+    "chapter": "第1章 绪论",
+    "cardId": "问题规模与增长函数",
+    "src": "ai",
+    "explanation": "大Ω表示下界（最好情况）",
+    "options": [
+      "A. 下界（最好情况）",
+      "B. 上界（最坏情况）",
+      "C. 精确值",
+      "D. 平均情况"
+    ],
+    "answer": "A"
+  },
+  {
+    "id": "q-13003-090",
+    "type": "choice",
+    "question": "大Θ表示法描述的是算法的（  ）",
+    "chapter": "第1章 绪论",
+    "cardId": "问题规模与增长函数",
+    "src": "ai",
+    "explanation": "大Θ表示上下界相同（精确阶）",
+    "options": [
+      "A. 仅上界",
+      "B. 仅下界",
+      "C. 上下界相同（精确阶）",
+      "D. 平均情况"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13003-091",
+    "type": "fill",
+    "question": "算法执行时间与问题规模n的函数关系称为___，记为___",
+    "chapter": "第1章 绪论",
+    "cardId": "时间复杂度与空间复杂度",
+    "src": "ai",
+    "explanation": "时间复杂度T(n)是算法执行时间与问题规模n的函数关系",
+    "blanks": [
+      {
+        "answer": "时间复杂度",
+        "synonyms": []
+      },
+      {
+        "answer": "T(n)",
+        "synonyms": [
+          "T"
+        ]
+      }
+    ],
+    "answer": "时间复杂度；T(n)"
+  },
+  {
+    "id": "q-13003-092",
+    "type": "choice",
+    "question": "3n²+2n+1的时间复杂度为O(n²)，这种简化方法称为（  ）",
+    "chapter": "第1章 绪论",
+    "cardId": "时间复杂度与空间复杂度",
+    "src": "ai",
+    "explanation": "取主项：忽略常数系数和低阶项，3n²+2n+1→O(n²)",
+    "options": [
+      "A. 取平均值",
+      "B. 取主项",
+      "C. 取最小项",
+      "D. 取最大项"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13003-093",
+    "type": "fill",
+    "question": "算法所需辅助存储空间与n的关系称为___，记为___",
+    "chapter": "第1章 绪论",
+    "cardId": "时间复杂度与空间复杂度",
+    "src": "ai",
+    "explanation": "空间复杂度S(n)是算法所需辅助存储空间与n的关系",
+    "blanks": [
+      {
+        "answer": "空间复杂度",
+        "synonyms": []
+      },
+      {
+        "answer": "S(n)",
+        "synonyms": [
+          "S"
+        ]
+      }
+    ],
+    "answer": "空间复杂度；S(n)"
+  },
+  {
+    "id": "q-13003-094",
+    "type": "choice",
+    "question": "递归算法的空间复杂度需要额外计入（  ）",
+    "chapter": "第1章 绪论",
+    "cardId": "时间复杂度与空间复杂度",
+    "src": "ai",
+    "explanation": "递归算法需计入调用栈空间",
+    "options": [
+      "A. 堆空间",
+      "B. 全局变量空间",
+      "C. 调用栈空间",
+      "D. 静态变量空间"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13003-095",
+    "type": "choice",
+    "question": "每步取局部最优但不保证全局最优的算法策略是（  ）",
+    "chapter": "第1章 绪论",
+    "cardId": "算法设计策略",
+    "src": "ai",
+    "explanation": "贪心法每步取局部最优",
+    "options": [
+      "A. 递推法",
+      "B. 贪心法",
+      "C. 分治法",
+      "D. 动态规划法"
+    ],
+    "answer": "B"
+  },
+  {
+    "id": "q-13003-096",
+    "type": "choice",
+    "question": "以下不属于数据结构三要素的是（  ）",
+    "chapter": "第1章 绪论",
+    "cardId": "数据结构三要素",
+    "src": "ai",
+    "explanation": "数据结构三要素：逻辑结构、存储结构、数据运算（基本操作）",
+    "options": [
+      "A. 逻辑结构",
+      "B. 存储结构",
+      "C. 数据运算",
+      "D. 算法复杂度"
+    ],
+    "answer": "D"
+  },
+  {
+    "id": "q-13003-097",
+    "type": "choice",
+    "question": "关于抽象数据类型（ADT）的说法正确的是（  ）",
+    "chapter": "第1章 绪论",
+    "cardId": "抽象数据类型（ADT）",
+    "src": "ai",
+    "explanation": "ADT相对于程序设计语言提供的基本类型，是抽象意义下的类型",
+    "options": [
+      "A. ADT就是C语言的基本数据类型",
+      "B. ADT只能在定义阶段确定存储方式",
+      "C. ADT是相对于程序设计语言基本类型的抽象类型",
+      "D. ADT不需要定义基本操作"
+    ],
+    "answer": "C"
+  },
+  {
+    "id": "q-13003-098",
+    "type": "fill",
+    "question": "数据结构的存储结构主要有4种：___、___、索引存储和散列存储",
+    "chapter": "第1章 绪论",
+    "cardId": "存储结构与4种基本存储方法",
+    "src": "ai",
+    "explanation": "顺序存储、链式存储、索引存储、散列存储",
+    "blanks": [
+      {
+        "answer": "顺序存储",
+        "synonyms": []
+      },
+      {
+        "answer": "链式存储",
+        "synonyms": []
+      }
+    ],
+    "answer": "顺序存储；链式存储"
+  },
+  {
+    "id": "q-13003-099",
+    "type": "fill",
+    "question": "树结构和图结构属于___结构，它们的特点是元素间的关系是___的",
+    "chapter": "第1章 绪论",
+    "cardId": "逻辑结构分类",
+    "src": "ai",
+    "explanation": "非线性结构，多对多",
+    "blanks": [
+      {
+        "answer": "非线性",
+        "synonyms": []
+      },
+      {
+        "answer": "多对多",
+        "synonyms": [
+          "一对多",
+          "多对多关系"
+        ]
+      }
+    ],
+    "answer": "非线性；多对多"
+  },
+  {
+    "id": "q-13003-100",
+    "type": "fill",
+    "question": "算法的5个特性是：输入、___、___、确定性和可行性",
+    "chapter": "第1章 绪论",
+    "cardId": "算法及其5个特性",
+    "src": "ai",
+    "explanation": "输出、有穷性",
+    "blanks": [
+      {
+        "answer": "输出",
+        "synonyms": []
+      },
+      {
+        "answer": "有穷性",
+        "synonyms": [
+          "有限性"
+        ]
+      }
+    ],
+    "answer": "输出；有穷性"
+  },
+  {
+    "id": "q-13003-101",
+    "type": "fill",
+    "question": "分治法的三个步骤是___、___和合并",
+    "chapter": "第1章 绪论",
+    "cardId": "算法设计策略",
+    "src": "ai",
+    "explanation": "分解→解决→合并",
+    "blanks": [
+      {
+        "answer": "分解",
+        "synonyms": [
+          "分"
+        ]
+      },
+      {
+        "answer": "解决",
+        "synonyms": [
+          "递归求解"
+        ]
+      }
+    ],
+    "answer": "分解；解决"
+  },
+  {
+    "id": "q-13003-102",
+    "type": "shortAnswer",
+    "question": "简述逻辑结构与存储结构之间的关系",
+    "chapter": "第1章 绪论",
+    "cardId": "数据结构三要素",
+    "src": "ai",
+    "explanation": "逻辑结构=逻辑关系，存储结构=物理表示，一种逻辑结构可对应多种存储结构",
+    "answer": "逻辑结构是数据元素间的逻辑关系（如线性、树形、图形），存储结构是数据在计算机中的物理表示。一种逻辑结构可以用多种存储结构实现（如线性表可用顺序存储或链式存储）。存储结构的选择直接影响基本操作的实现效率。"
+  },
+  {
+    "id": "q-13003-103",
+    "type": "shortAnswer",
+    "question": "简述链式存储的基本思想和优缺点",
+    "chapter": "第1章 绪论",
+    "cardId": "存储结构与4种基本存储方法",
+    "src": "ai",
+    "explanation": "链式存储：指针链接，不连续，动态分配",
+    "answer": "基本思想：通过指针指示数据元素间的逻辑关系，存储空间不一定连续。优点：动态分配空间，插入删除不需移动元素（O(1)）。缺点：不支持随机访问，查找需顺序遍历（O(n)），额外存储指针增加空间开销。"
+  },
+  {
+    "id": "q-13003-104",
+    "type": "shortAnswer",
+    "question": "分析以下程序段的时间复杂度：for(i=1;i<n;i*=2) { for(j=0;j<i;j++) { x++; } }",
+    "chapter": "第1章 绪论",
+    "cardId": "时间复杂度与空间复杂度",
+    "src": "ai",
+    "explanation": "等比数列求和：1+2+4+...+n/2=n-1，T(n)=O(n)",
+    "answer": "外层循环i从1开始每次乘2，共log₂n次。内层循环j从0到i-1，执行i次。总执行次数：1+2+4+...+n/2 = n-1 = O(n)。所以时间复杂度为O(n)。"
+  },
+  {
+    "id": "q-13003-105",
+    "type": "shortAnswer",
+    "question": "简述动态规划法的基本思想和适用条件",
+    "chapter": "第1章 绪论",
+    "cardId": "算法设计策略",
+    "src": "ai",
+    "explanation": "动态规划=最优子结构+重叠子问题，自底向上",
+    "answer": "基本思想：将问题分解为子问题，自底向上求解，记录每个子问题的解避免重复计算。适用条件：①最优子结构（问题的最优解包含子问题的最优解）；②重叠子问题（子问题被多次重复计算）。"
+  },
+  {
+    "id": "q-13003-106",
+    "type": "calculate",
+    "question": "已知算法的执行次数函数为 T(n) = 2n² + 5n + 3，求其时间复杂度，说明简化过程",
+    "chapter": "第1章 绪论",
+    "cardId": "时间复杂度与空间复杂度",
+    "src": "ai",
+    "explanation": "取主项→忽略常数→忽略低阶：2n²+5n+3→O(n²)",
+    "answer": "T(n) = 2n² + 5n + 3。取主项（最高阶项）2n²，忽略常数系数2和低阶项5n+3，得到时间复杂度 O(n²)。简化规则：①忽略常数系数：2n²→n²；②忽略低阶项：5n+3→0；③保留最高阶：n²。"
+  },
+  {
+    "id": "q-13003-107",
+    "type": "essay",
+    "question": "论述数据结构中逻辑结构、存储结构和数据运算三者之间的关系，并举例说明同一逻辑结构采用不同存储结构对操作效率的影响",
+    "chapter": "第1章 绪论",
+    "cardId": "抽象数据类型（ADT）",
+    "src": "ai",
+    "explanation": "逻辑结构=做什么，存储结构=怎么做，运算效率受存储制约",
+    "answer": "逻辑结构描述数据元素间的逻辑关系（线性、树形、图形等），是抽象的、独立于存储的。存储结构是逻辑结构在计算机中的具体实现方式（顺序、链式、索引、散列）。数据运算是定义在逻辑结构上的操作集合，但其实现效率取决于存储结构。\n\n以线性表为例：逻辑结构相同（一对一关系），但采用顺序存储时，按位置查找为O(1)、插入删除为O(n)；采用链式存储时，按位置查找为O(n)、插入删除为O(1)。因此，存储结构的选择应根据主要操作类型决定——以查找为主选顺序存储，以插入删除为主选链式存储。\n\n三者关系：逻辑结构是基础，定义了\"做什么\"；存储结构是桥梁，决定了\"怎么做\"；数据运算是目标，其效率受存储结构制约。设计数据结构时，先确定逻辑结构，再根据操作需求选择最优存储结构。"
+  },
+  {
     "id": "q-13003-040",
     "question": "线性表中除首元素外有唯一的（ ）",
     "type": "choice",
@@ -1172,347 +1531,6 @@
     "passThreshold": 60
   },
   {
-    "id": "q-13003-061",
-    "question": "栈的特点是（ ）",
-    "type": "choice",
-    "options": [
-      "A. 先进先出",
-      "B. 后进先出",
-      "C. 随机访问",
-      "D. 双向访问"
-    ],
-    "answer": "B",
-    "explanation": "栈是后进先出（LIFO）结构，只允许在栈顶进行插入和删除。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "栈基本概念",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-062",
-    "question": "栈允许插入和删除的一端称为___，固定不动的一端称为___。",
-    "type": "fill",
-    "blanks": [
-      {
-        "answer": "栈顶",
-        "synonyms": [
-          "top"
-        ]
-      },
-      {
-        "answer": "栈底",
-        "synonyms": [
-          "bottom"
-        ]
-      }
-    ],
-    "explanation": "栈顶是允许插入和删除的一端，栈底是固定不动的一端。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "栈基本概念",
-    "src": "ai",
-    "answer": "栈顶；栈底"
-  },
-  {
-    "id": "q-13003-063",
-    "question": "顺序栈通常将栈底设在何处（ ）",
-    "type": "choice",
-    "options": [
-      "A. 栈底设在数组下标0处",
-      "B. 栈顶设在数组下标0处",
-      "C. 栈顶设在链表表尾",
-      "D. 栈底设在链表表头"
-    ],
-    "answer": "A",
-    "explanation": "顺序栈通常将栈底设在数组下标0处，栈顶随入栈出栈移动。链式栈将栈顶设在链表表头。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "栈基本概念",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-064",
-    "question": "说明栈的定义、特点及两种存储结构。",
-    "type": "shortAnswer",
-    "answer": "只允许栈顶操作，LIFO，顺序栈和链式栈",
-    "explanation": "栈是只允许在一端（栈顶）进行插入和删除的线性表，后进先出（LIFO）。栈底固定不动。顺序栈：栈底设在数组下标0处，栈顶随操作移动。链式栈：栈顶设在链表表头。栈的应用：函数调用、递归、括号匹配等。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "栈基本概念",
-    "src": "ai",
-    "referenceAnswer": "栈是只允许栈顶操作的线性表，LIFO。顺序栈栈底在数组0处，链式栈栈顶在表头。",
-    "points": [
-      {
-        "point": "定义",
-        "weight": 2
-      },
-      {
-        "point": "LIFO",
-        "weight": 2
-      },
-      {
-        "point": "两种存储",
-        "weight": 1
-      }
-    ],
-    "passThreshold": 60
-  },
-  {
-    "id": "q-13003-065",
-    "question": "循环队列队满的条件是（ ）",
-    "type": "choice",
-    "options": [
-      "A. front==rear",
-      "B. (rear+1)%MaxSize==front",
-      "C. rear==MaxSize",
-      "D. front==0"
-    ],
-    "answer": "B",
-    "explanation": "循环队列牺牲一个单元区分空和满：队满条件(rear+1)%MaxSize==front，队空条件front==rear。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "队列与循环队列",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-066",
-    "question": "循环队列队空的条件是___。",
-    "type": "fill",
-    "blanks": [
-      {
-        "answer": "front==rear",
-        "synonyms": [
-          "front等于rear"
-        ]
-      }
-    ],
-    "explanation": "循环队列牺牲一个单元：队空front==rear，队满(rear+1)%MaxSize==front。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "队列与循环队列",
-    "src": "ai",
-    "answer": "front==rear"
-  },
-  {
-    "id": "q-13003-067",
-    "question": "循环队列MaxSize=5，front=2，rear=1，求元素个数。",
-    "type": "calculate",
-    "answer": "4",
-    "answerAliases": [
-      "4",
-      "4个"
-    ],
-    "formula": "元素个数 = (rear - front + MaxSize) % MaxSize",
-    "steps": [
-      "元素个数 = (1 - 2 + 5) % 5",
-      "= 4 % 5 = 4"
-    ],
-    "explanation": "循环队列元素个数=(rear-front+MaxSize)%MaxSize=(1-2+5)%5=4。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "队列与循环队列",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-068",
-    "question": "循环队列MaxSize=5，front=2，rear=1，此时队列中有多少个元素（ ）",
-    "type": "choice",
-    "options": [
-      "A. 3",
-      "B. 4",
-      "C. 5",
-      "D. 无法确定"
-    ],
-    "answer": "B",
-    "explanation": "(rear+1)%MaxSize=(1+1)%5=2=front，队满，但牺牲一个单元，实际元素个数=(rear-front+MaxSize)%MaxSize=(1-2+5)%5=4。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "队列与循环队列",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-069",
-    "question": "说明循环队列如何区分队空和队满，以及如何计算元素个数。",
-    "type": "shortAnswer",
-    "answer": "牺牲一个单元区分空满，队空front==rear，队满(rear+1)%MaxSize==front，元素个数=(rear-front+MaxSize)%MaxSize",
-    "explanation": "循环队列通过牺牲一个存储单元区分空和满：队空条件front==rear，队满条件(rear+1)%MaxSize==front。元素个数=(rear-front+MaxSize)%MaxSize。队列是先进先出（FIFO）结构，队尾插入、队头删除。应用：层序遍历、操作系统调度、缓冲区等。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "队列与循环队列",
-    "src": "ai",
-    "referenceAnswer": "循环队列牺牲一单元区分空满。队空front==rear，队满(rear+1)%MaxSize==front。元素个数=(rear-front+MaxSize)%MaxSize。FIFO，队尾入队头出。",
-    "points": [
-      {
-        "point": "队空条件",
-        "weight": 2
-      },
-      {
-        "point": "队满条件",
-        "weight": 2
-      },
-      {
-        "point": "元素个数",
-        "weight": 1
-      }
-    ],
-    "passThreshold": 60
-  },
-  {
-    "id": "q-13003-070",
-    "question": "n个元素入栈的合法出栈序列数为（ ）",
-    "type": "choice",
-    "options": [
-      "A. n!",
-      "B. 2ⁿ",
-      "C. C(2n,n)/(n+1)",
-      "D. n²"
-    ],
-    "answer": "C",
-    "explanation": "n个元素入栈的合法出栈序列数为卡特兰数Cn=C(2n,n)/(n+1)。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "栈的应用",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-071",
-    "question": "3个元素1,2,3入栈，以下不合法的出栈序列是（ ）",
-    "type": "choice",
-    "options": [
-      "A. 1,2,3",
-      "B. 3,2,1",
-      "C. 3,1,2",
-      "D. 2,1,3"
-    ],
-    "answer": "C",
-    "explanation": "3出栈后栈中2在1上方，必须先出2再出1，不能得到3,1,2。3个元素合法出栈序列共5种：123,132,213,231,321。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "栈的应用",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-072",
-    "question": "栈的应用不包括（ ）",
-    "type": "choice",
-    "options": [
-      "A. 括号匹配",
-      "B. 中缀转后缀表达式",
-      "C. 层序遍历",
-      "D. 递归模拟"
-    ],
-    "answer": "C",
-    "explanation": "层序遍历使用队列，不是栈的应用。栈的应用包括括号匹配、表达式求值、递归模拟、回溯法等。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "栈的应用",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-073",
-    "question": "列举栈的应用并说明出栈序列数。",
-    "type": "shortAnswer",
-    "answer": "括号匹配、表达式求值、递归模拟、回溯法，出栈序列数为卡特兰数",
-    "explanation": "栈的典型应用：括号匹配、中缀转后缀表达式、后缀表达式求值、递归模拟、回溯法。n个元素入栈的合法出栈序列数为卡特兰数Cn=C(2n,n)/(n+1)。如3个元素合法出栈序列共5种：123,132,213,231,321。312不合法（3出后1不能先于2出）。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "栈的应用",
-    "src": "ai",
-    "referenceAnswer": "应用：括号匹配、表达式转换求值、递归模拟、回溯。出栈序列数=卡特兰数C(2n,n)/(n+1)。",
-    "points": [
-      {
-        "point": "应用列举",
-        "weight": 2
-      },
-      {
-        "point": "卡特兰数",
-        "weight": 2
-      },
-      {
-        "point": "举例",
-        "weight": 1
-      }
-    ],
-    "passThreshold": 60
-  },
-  {
-    "id": "q-13003-074",
-    "question": "两端均可插入和删除的线性表称为（ ）",
-    "type": "choice",
-    "options": [
-      "A. 栈",
-      "B. 队列",
-      "C. 双端队列",
-      "D. 循环队列"
-    ],
-    "answer": "C",
-    "explanation": "双端队列是两端均可插入和删除的线性结构。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "双端队列",
-    "src": "ai"
-  },
-  {
-    "id": "q-13003-075",
-    "question": "一端只能删除、另一端可插入和删除的双端队列称为___双端队列。",
-    "type": "fill",
-    "blanks": [
-      {
-        "answer": "输入受限",
-        "synonyms": []
-      }
-    ],
-    "explanation": "输入受限双端队列：一端只能删除，另一端可插入和删除。输出受限双端队列：一端只能插入，另一端可插入和删除。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "双端队列",
-    "src": "ai",
-    "answer": "输入受限"
-  },
-  {
-    "id": "q-13003-076",
-    "question": "什么是双端队列及其受限形式？",
-    "type": "shortAnswer",
-    "answer": "两端均可插入和删除，受限形式有输入受限和输出受限",
-    "explanation": "双端队列是两端均可插入和删除的线性结构。两种受限形式：输入受限双端队列（一端只能删除，另一端可插入和删除），输出受限双端队列（一端只能插入，另一端可插入和删除）。双端队列比普通栈/队列能得到更多种输出序列。",
-    "chapter": "第3章 栈和队列",
-    "cardId": "双端队列",
-    "src": "ai",
-    "referenceAnswer": "双端队列两端可插入和删除。输入受限(一端只能删)，输出受限(一端只能插)。",
-    "points": [
-      {
-        "point": "双端队列定义",
-        "weight": 2
-      },
-      {
-        "point": "输入受限",
-        "weight": 2
-      },
-      {
-        "point": "输出受限",
-        "weight": 1
-      }
-    ],
-    "passThreshold": 60
-  },
-  {
-    "id": "q-13003-077",
-    "type": "choice",
-    "question": "抽象数据类型（ADT）的三个组成部分是（  ）",
-    "options": [
-      "A. 数据对象、数据关系、基本操作",
-      "B. 数据元素、数据项、数据结构",
-      "C. 逻辑结构、存储结构、运算",
-      "D. 数据、算法、程序"
-    ],
-    "answer": "A",
-    "chapter": "第1章 绪论",
-    "cardId": "抽象数据类型（ADT）",
-    "src": "ai",
-    "explanation": "ADT由数据对象D、数据关系S和基本操作P三部分组成，形式定义为(D, S, P)。"
-  },
-  {
-    "id": "q-13003-078",
-    "type": "choice",
-    "question": "输入受限双端队列是指（  ）",
-    "options": [
-      "A. 两端都允许插入和删除",
-      "B. 一端只允许删除，另一端允许插入和删除",
-      "C. 一端只允许插入，另一端允许插入和删除",
-      "D. 两端都只允许插入"
-    ],
-    "answer": "B",
-    "chapter": "第3章 栈和队列",
-    "cardId": "双端队列",
-    "src": "ai",
-    "explanation": "输入受限双端队列：一端只能删除（输入受限），另一端可插入和删除。"
-  },
-  {
     "id": "q-13003-079",
     "type": "choice",
     "question": "线性表L=(a1,a2,...,an)，执行Insert(L,3,x)后，L变为（  ）",
@@ -1642,349 +1660,6 @@
     "src": "ai",
     "explanation": "频繁头尾操作+元素变化大→双向循环链表",
     "answer": "应选双向循环链表。理由：①元素个数变化大，顺序表需预分配空间可能溢出或浪费；②频繁在表头表尾操作，双向循环链表可在O(1)时间内完成头尾插入删除；③顺序表在表头插入需移动所有元素O(n)"
-  },
-  {
-    "id": "q-13003-087",
-    "type": "fill",
-    "question": "算法处理的数据量大小称为___，通常用字母___表示",
-    "chapter": "第1章 绪论",
-    "cardId": "问题规模与增长函数",
-    "src": "ai",
-    "explanation": "问题规模n表示算法处理的数据量大小",
-    "blanks": [
-      {
-        "answer": "问题规模",
-        "synonyms": []
-      },
-      {
-        "answer": "n",
-        "synonyms": [
-          "N"
-        ]
-      }
-    ],
-    "answer": "问题规模；n"
-  },
-  {
-    "id": "q-13003-088",
-    "type": "choice",
-    "question": "大O表示法描述的是算法的（  ）",
-    "chapter": "第1章 绪论",
-    "cardId": "问题规模与增长函数",
-    "src": "ai",
-    "explanation": "大O表示上界（最坏情况）",
-    "options": [
-      "A. 下界（最好情况）",
-      "B. 上界（最坏情况）",
-      "C. 精确值",
-      "D. 平均情况"
-    ],
-    "answer": "B"
-  },
-  {
-    "id": "q-13003-089",
-    "type": "choice",
-    "question": "大Ω表示法描述的是算法的（  ）",
-    "chapter": "第1章 绪论",
-    "cardId": "问题规模与增长函数",
-    "src": "ai",
-    "explanation": "大Ω表示下界（最好情况）",
-    "options": [
-      "A. 下界（最好情况）",
-      "B. 上界（最坏情况）",
-      "C. 精确值",
-      "D. 平均情况"
-    ],
-    "answer": "A"
-  },
-  {
-    "id": "q-13003-090",
-    "type": "choice",
-    "question": "大Θ表示法描述的是算法的（  ）",
-    "chapter": "第1章 绪论",
-    "cardId": "问题规模与增长函数",
-    "src": "ai",
-    "explanation": "大Θ表示上下界相同（精确阶）",
-    "options": [
-      "A. 仅上界",
-      "B. 仅下界",
-      "C. 上下界相同（精确阶）",
-      "D. 平均情况"
-    ],
-    "answer": "C"
-  },
-  {
-    "id": "q-13003-091",
-    "type": "fill",
-    "question": "算法执行时间与问题规模n的函数关系称为___，记为___",
-    "chapter": "第1章 绪论",
-    "cardId": "时间复杂度与空间复杂度",
-    "src": "ai",
-    "explanation": "时间复杂度T(n)是算法执行时间与问题规模n的函数关系",
-    "blanks": [
-      {
-        "answer": "时间复杂度",
-        "synonyms": []
-      },
-      {
-        "answer": "T(n)",
-        "synonyms": [
-          "T"
-        ]
-      }
-    ],
-    "answer": "时间复杂度；T(n)"
-  },
-  {
-    "id": "q-13003-092",
-    "type": "choice",
-    "question": "3n²+2n+1的时间复杂度为O(n²)，这种简化方法称为（  ）",
-    "chapter": "第1章 绪论",
-    "cardId": "时间复杂度与空间复杂度",
-    "src": "ai",
-    "explanation": "取主项：忽略常数系数和低阶项，3n²+2n+1→O(n²)",
-    "options": [
-      "A. 取平均值",
-      "B. 取主项",
-      "C. 取最小项",
-      "D. 取最大项"
-    ],
-    "answer": "B"
-  },
-  {
-    "id": "q-13003-093",
-    "type": "fill",
-    "question": "算法所需辅助存储空间与n的关系称为___，记为___",
-    "chapter": "第1章 绪论",
-    "cardId": "时间复杂度与空间复杂度",
-    "src": "ai",
-    "explanation": "空间复杂度S(n)是算法所需辅助存储空间与n的关系",
-    "blanks": [
-      {
-        "answer": "空间复杂度",
-        "synonyms": []
-      },
-      {
-        "answer": "S(n)",
-        "synonyms": [
-          "S"
-        ]
-      }
-    ],
-    "answer": "空间复杂度；S(n)"
-  },
-  {
-    "id": "q-13003-094",
-    "type": "choice",
-    "question": "递归算法的空间复杂度需要额外计入（  ）",
-    "chapter": "第1章 绪论",
-    "cardId": "时间复杂度与空间复杂度",
-    "src": "ai",
-    "explanation": "递归算法需计入调用栈空间",
-    "options": [
-      "A. 堆空间",
-      "B. 全局变量空间",
-      "C. 调用栈空间",
-      "D. 静态变量空间"
-    ],
-    "answer": "C"
-  },
-  {
-    "id": "q-13003-095",
-    "type": "choice",
-    "question": "每步取局部最优但不保证全局最优的算法策略是（  ）",
-    "chapter": "第1章 绪论",
-    "cardId": "算法设计策略",
-    "src": "ai",
-    "explanation": "贪心法每步取局部最优",
-    "options": [
-      "A. 递推法",
-      "B. 贪心法",
-      "C. 分治法",
-      "D. 动态规划法"
-    ],
-    "answer": "B"
-  },
-  {
-    "id": "q-13003-096",
-    "type": "choice",
-    "question": "以下不属于数据结构三要素的是（  ）",
-    "chapter": "第1章 绪论",
-    "cardId": "数据结构三要素",
-    "src": "ai",
-    "explanation": "数据结构三要素：逻辑结构、存储结构、数据运算（基本操作）",
-    "options": [
-      "A. 逻辑结构",
-      "B. 存储结构",
-      "C. 数据运算",
-      "D. 算法复杂度"
-    ],
-    "answer": "D"
-  },
-  {
-    "id": "q-13003-097",
-    "type": "choice",
-    "question": "关于抽象数据类型（ADT）的说法正确的是（  ）",
-    "chapter": "第1章 绪论",
-    "cardId": "抽象数据类型（ADT）",
-    "src": "ai",
-    "explanation": "ADT相对于程序设计语言提供的基本类型，是抽象意义下的类型",
-    "options": [
-      "A. ADT就是C语言的基本数据类型",
-      "B. ADT只能在定义阶段确定存储方式",
-      "C. ADT是相对于程序设计语言基本类型的抽象类型",
-      "D. ADT不需要定义基本操作"
-    ],
-    "answer": "C"
-  },
-  {
-    "id": "q-13003-098",
-    "type": "fill",
-    "question": "数据结构的存储结构主要有4种：___、___、索引存储和散列存储",
-    "chapter": "第1章 绪论",
-    "cardId": "存储结构与4种基本存储方法",
-    "src": "ai",
-    "explanation": "顺序存储、链式存储、索引存储、散列存储",
-    "blanks": [
-      {
-        "answer": "顺序存储",
-        "synonyms": []
-      },
-      {
-        "answer": "链式存储",
-        "synonyms": []
-      }
-    ],
-    "answer": "顺序存储；链式存储"
-  },
-  {
-    "id": "q-13003-099",
-    "type": "fill",
-    "question": "树结构和图结构属于___结构，它们的特点是元素间的关系是___的",
-    "chapter": "第1章 绪论",
-    "cardId": "逻辑结构分类",
-    "src": "ai",
-    "explanation": "非线性结构，多对多",
-    "blanks": [
-      {
-        "answer": "非线性",
-        "synonyms": []
-      },
-      {
-        "answer": "多对多",
-        "synonyms": [
-          "一对多",
-          "多对多关系"
-        ]
-      }
-    ],
-    "answer": "非线性；多对多"
-  },
-  {
-    "id": "q-13003-100",
-    "type": "fill",
-    "question": "算法的5个特性是：输入、___、___、确定性和可行性",
-    "chapter": "第1章 绪论",
-    "cardId": "算法及其5个特性",
-    "src": "ai",
-    "explanation": "输出、有穷性",
-    "blanks": [
-      {
-        "answer": "输出",
-        "synonyms": []
-      },
-      {
-        "answer": "有穷性",
-        "synonyms": [
-          "有限性"
-        ]
-      }
-    ],
-    "answer": "输出；有穷性"
-  },
-  {
-    "id": "q-13003-101",
-    "type": "fill",
-    "question": "分治法的三个步骤是___、___和合并",
-    "chapter": "第1章 绪论",
-    "cardId": "算法设计策略",
-    "src": "ai",
-    "explanation": "分解→解决→合并",
-    "blanks": [
-      {
-        "answer": "分解",
-        "synonyms": [
-          "分"
-        ]
-      },
-      {
-        "answer": "解决",
-        "synonyms": [
-          "递归求解"
-        ]
-      }
-    ],
-    "answer": "分解；解决"
-  },
-  {
-    "id": "q-13003-102",
-    "type": "shortAnswer",
-    "question": "简述逻辑结构与存储结构之间的关系",
-    "chapter": "第1章 绪论",
-    "cardId": "数据结构三要素",
-    "src": "ai",
-    "explanation": "逻辑结构=逻辑关系，存储结构=物理表示，一种逻辑结构可对应多种存储结构",
-    "answer": "逻辑结构是数据元素间的逻辑关系（如线性、树形、图形），存储结构是数据在计算机中的物理表示。一种逻辑结构可以用多种存储结构实现（如线性表可用顺序存储或链式存储）。存储结构的选择直接影响基本操作的实现效率。"
-  },
-  {
-    "id": "q-13003-103",
-    "type": "shortAnswer",
-    "question": "简述链式存储的基本思想和优缺点",
-    "chapter": "第1章 绪论",
-    "cardId": "存储结构与4种基本存储方法",
-    "src": "ai",
-    "explanation": "链式存储：指针链接，不连续，动态分配",
-    "answer": "基本思想：通过指针指示数据元素间的逻辑关系，存储空间不一定连续。优点：动态分配空间，插入删除不需移动元素（O(1)）。缺点：不支持随机访问，查找需顺序遍历（O(n)），额外存储指针增加空间开销。"
-  },
-  {
-    "id": "q-13003-104",
-    "type": "shortAnswer",
-    "question": "分析以下程序段的时间复杂度：for(i=1;i<n;i*=2) { for(j=0;j<i;j++) { x++; } }",
-    "chapter": "第1章 绪论",
-    "cardId": "时间复杂度与空间复杂度",
-    "src": "ai",
-    "explanation": "等比数列求和：1+2+4+...+n/2=n-1，T(n)=O(n)",
-    "answer": "外层循环i从1开始每次乘2，共log₂n次。内层循环j从0到i-1，执行i次。总执行次数：1+2+4+...+n/2 = n-1 = O(n)。所以时间复杂度为O(n)。"
-  },
-  {
-    "id": "q-13003-105",
-    "type": "shortAnswer",
-    "question": "简述动态规划法的基本思想和适用条件",
-    "chapter": "第1章 绪论",
-    "cardId": "算法设计策略",
-    "src": "ai",
-    "explanation": "动态规划=最优子结构+重叠子问题，自底向上",
-    "answer": "基本思想：将问题分解为子问题，自底向上求解，记录每个子问题的解避免重复计算。适用条件：①最优子结构（问题的最优解包含子问题的最优解）；②重叠子问题（子问题被多次重复计算）。"
-  },
-  {
-    "id": "q-13003-106",
-    "type": "calculate",
-    "question": "已知算法的执行次数函数为 T(n) = 2n² + 5n + 3，求其时间复杂度，说明简化过程",
-    "chapter": "第1章 绪论",
-    "cardId": "时间复杂度与空间复杂度",
-    "src": "ai",
-    "explanation": "取主项→忽略常数→忽略低阶：2n²+5n+3→O(n²)",
-    "answer": "T(n) = 2n² + 5n + 3。取主项（最高阶项）2n²，忽略常数系数2和低阶项5n+3，得到时间复杂度 O(n²)。简化规则：①忽略常数系数：2n²→n²；②忽略低阶项：5n+3→0；③保留最高阶：n²。"
-  },
-  {
-    "id": "q-13003-107",
-    "type": "essay",
-    "question": "论述数据结构中逻辑结构、存储结构和数据运算三者之间的关系，并举例说明同一逻辑结构采用不同存储结构对操作效率的影响",
-    "chapter": "第1章 绪论",
-    "cardId": "抽象数据类型（ADT）",
-    "src": "ai",
-    "explanation": "逻辑结构=做什么，存储结构=怎么做，运算效率受存储制约",
-    "answer": "逻辑结构描述数据元素间的逻辑关系（线性、树形、图形等），是抽象的、独立于存储的。存储结构是逻辑结构在计算机中的具体实现方式（顺序、链式、索引、散列）。数据运算是定义在逻辑结构上的操作集合，但其实现效率取决于存储结构。\n\n以线性表为例：逻辑结构相同（一对一关系），但采用顺序存储时，按位置查找为O(1)、插入删除为O(n)；采用链式存储时，按位置查找为O(n)、插入删除为O(1)。因此，存储结构的选择应根据主要操作类型决定——以查找为主选顺序存储，以插入删除为主选链式存储。\n\n三者关系：逻辑结构是基础，定义了\"做什么\"；存储结构是桥梁，决定了\"怎么做\"；数据运算是目标，其效率受存储结构制约。设计数据结构时，先确定逻辑结构，再根据操作需求选择最优存储结构。"
   },
   {
     "id": "q-13003-108",
@@ -2686,6 +2361,376 @@
     "answer": "链式存储的基本思想：逻辑相邻的元素物理位置不一定相邻，通过指针指示元素间的逻辑关系。每个结点包含数据域（存储元素）和指针域（存储后继结点的地址），通过指针的链接关系体现线性表的一对一逻辑结构。"
   },
   {
+    "id": "q-13003-tb-004",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第2章 线性表",
+    "question": "设线性表采用顺序存储方式保存，每个元素占8个存储单元。第1个元素的存储地址为200，则第5个元素占用的最后一个存储单元的地址是（ ）。",
+    "options": [
+      "239",
+      "240",
+      "247",
+      "248"
+    ],
+    "answer": "A",
+    "referenceAnswer": "正确答案：A\n\n第5个元素的起始地址 = 200 + (5-1)×8 = 232\n最后一个存储单元地址 = 232 + 8 - 1 = 239"
+  },
+  {
+    "id": "q-13003-tb-007",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第2章 线性表",
+    "question": "设指针变量head指向循环链表的头结点，next是结点的指针域，则判断此链表为空的条件是（）。",
+    "options": [
+      "head->next==NULL",
+      "head->next==head",
+      "head->next!=NULL",
+      "head->next!=head->next"
+    ],
+    "answer": "B",
+    "referenceAnswer": "正确答案：B\n\n循环链表中，空表时头结点的next指针指向自身（head->next==head），以维持循环结构。若指向NULL则破坏了循环链表的定义。"
+  },
+  {
+    "id": "q-13003-tb-013",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第2章 线性表",
+    "question": "指针head指向带头结点的单链表L的表头，结点结构为【data|next】，其中data为int型，next是指向后继结点的指针。指针p指向L中的首个数据结点，指针q指向p的后继结点。现要交换p、q所指向的两结点中的data值，下列选项中，不能完成该任务的操作是（）。",
+    "options": [
+      "head->next=q; p->next=q->next; q->next=p;",
+      "p->next=q->next; head->next=q->next=p;",
+      "q->next=p; p->next=q->next; head->next=q;",
+      "int temp=p->data; p->data=q->data; q->data=temp;"
+    ],
+    "answer": "C",
+    "referenceAnswer": "正确答案：C\n\nC选项执行q->next=p后，原q->next指向的后续结点被覆盖丢失，接着p->next=q->next实际得到p->next=p（自环），链表结构被破坏，无法完成data交换。\n\nA选项：head->next=q; p->next=q->next; q->next=p; — 交换p、q位置，data值逻辑上交换。\nB选项：p->next=q->next; head->next=q->next=p; — 链式赋值，交换p、q位置。\nD选项：直接交换data值，标准做法。"
+  },
+  {
+    "id": "q-13003-061",
+    "question": "栈的特点是（ ）",
+    "type": "choice",
+    "options": [
+      "A. 先进先出",
+      "B. 后进先出",
+      "C. 随机访问",
+      "D. 双向访问"
+    ],
+    "answer": "B",
+    "explanation": "栈是后进先出（LIFO）结构，只允许在栈顶进行插入和删除。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "栈基本概念",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-062",
+    "question": "栈允许插入和删除的一端称为___，固定不动的一端称为___。",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "栈顶",
+        "synonyms": [
+          "top"
+        ]
+      },
+      {
+        "answer": "栈底",
+        "synonyms": [
+          "bottom"
+        ]
+      }
+    ],
+    "explanation": "栈顶是允许插入和删除的一端，栈底是固定不动的一端。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "栈基本概念",
+    "src": "ai",
+    "answer": "栈顶；栈底"
+  },
+  {
+    "id": "q-13003-063",
+    "question": "顺序栈通常将栈底设在何处（ ）",
+    "type": "choice",
+    "options": [
+      "A. 栈底设在数组下标0处",
+      "B. 栈顶设在数组下标0处",
+      "C. 栈顶设在链表表尾",
+      "D. 栈底设在链表表头"
+    ],
+    "answer": "A",
+    "explanation": "顺序栈通常将栈底设在数组下标0处，栈顶随入栈出栈移动。链式栈将栈顶设在链表表头。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "栈基本概念",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-064",
+    "question": "说明栈的定义、特点及两种存储结构。",
+    "type": "shortAnswer",
+    "answer": "只允许栈顶操作，LIFO，顺序栈和链式栈",
+    "explanation": "栈是只允许在一端（栈顶）进行插入和删除的线性表，后进先出（LIFO）。栈底固定不动。顺序栈：栈底设在数组下标0处，栈顶随操作移动。链式栈：栈顶设在链表表头。栈的应用：函数调用、递归、括号匹配等。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "栈基本概念",
+    "src": "ai",
+    "referenceAnswer": "栈是只允许栈顶操作的线性表，LIFO。顺序栈栈底在数组0处，链式栈栈顶在表头。",
+    "points": [
+      {
+        "point": "定义",
+        "weight": 2
+      },
+      {
+        "point": "LIFO",
+        "weight": 2
+      },
+      {
+        "point": "两种存储",
+        "weight": 1
+      }
+    ],
+    "passThreshold": 60
+  },
+  {
+    "id": "q-13003-065",
+    "question": "循环队列队满的条件是（ ）",
+    "type": "choice",
+    "options": [
+      "A. front==rear",
+      "B. (rear+1)%MaxSize==front",
+      "C. rear==MaxSize",
+      "D. front==0"
+    ],
+    "answer": "B",
+    "explanation": "循环队列牺牲一个单元区分空和满：队满条件(rear+1)%MaxSize==front，队空条件front==rear。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "队列与循环队列",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-066",
+    "question": "循环队列队空的条件是___。",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "front==rear",
+        "synonyms": [
+          "front等于rear"
+        ]
+      }
+    ],
+    "explanation": "循环队列牺牲一个单元：队空front==rear，队满(rear+1)%MaxSize==front。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "队列与循环队列",
+    "src": "ai",
+    "answer": "front==rear"
+  },
+  {
+    "id": "q-13003-067",
+    "question": "循环队列MaxSize=5，front=2，rear=1，求元素个数。",
+    "type": "calculate",
+    "answer": "4",
+    "answerAliases": [
+      "4",
+      "4个"
+    ],
+    "formula": "元素个数 = (rear - front + MaxSize) % MaxSize",
+    "steps": [
+      "元素个数 = (1 - 2 + 5) % 5",
+      "= 4 % 5 = 4"
+    ],
+    "explanation": "循环队列元素个数=(rear-front+MaxSize)%MaxSize=(1-2+5)%5=4。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "队列与循环队列",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-068",
+    "question": "循环队列MaxSize=5，front=2，rear=1，此时队列中有多少个元素（ ）",
+    "type": "choice",
+    "options": [
+      "A. 3",
+      "B. 4",
+      "C. 5",
+      "D. 无法确定"
+    ],
+    "answer": "B",
+    "explanation": "(rear+1)%MaxSize=(1+1)%5=2=front，队满，但牺牲一个单元，实际元素个数=(rear-front+MaxSize)%MaxSize=(1-2+5)%5=4。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "队列与循环队列",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-069",
+    "question": "说明循环队列如何区分队空和队满，以及如何计算元素个数。",
+    "type": "shortAnswer",
+    "answer": "牺牲一个单元区分空满，队空front==rear，队满(rear+1)%MaxSize==front，元素个数=(rear-front+MaxSize)%MaxSize",
+    "explanation": "循环队列通过牺牲一个存储单元区分空和满：队空条件front==rear，队满条件(rear+1)%MaxSize==front。元素个数=(rear-front+MaxSize)%MaxSize。队列是先进先出（FIFO）结构，队尾插入、队头删除。应用：层序遍历、操作系统调度、缓冲区等。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "队列与循环队列",
+    "src": "ai",
+    "referenceAnswer": "循环队列牺牲一单元区分空满。队空front==rear，队满(rear+1)%MaxSize==front。元素个数=(rear-front+MaxSize)%MaxSize。FIFO，队尾入队头出。",
+    "points": [
+      {
+        "point": "队空条件",
+        "weight": 2
+      },
+      {
+        "point": "队满条件",
+        "weight": 2
+      },
+      {
+        "point": "元素个数",
+        "weight": 1
+      }
+    ],
+    "passThreshold": 60
+  },
+  {
+    "id": "q-13003-070",
+    "question": "n个元素入栈的合法出栈序列数为（ ）",
+    "type": "choice",
+    "options": [
+      "A. n!",
+      "B. 2ⁿ",
+      "C. C(2n,n)/(n+1)",
+      "D. n²"
+    ],
+    "answer": "C",
+    "explanation": "n个元素入栈的合法出栈序列数为卡特兰数Cn=C(2n,n)/(n+1)。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "栈的应用",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-071",
+    "question": "3个元素1,2,3入栈，以下不合法的出栈序列是（ ）",
+    "type": "choice",
+    "options": [
+      "A. 1,2,3",
+      "B. 3,2,1",
+      "C. 3,1,2",
+      "D. 2,1,3"
+    ],
+    "answer": "C",
+    "explanation": "3出栈后栈中2在1上方，必须先出2再出1，不能得到3,1,2。3个元素合法出栈序列共5种：123,132,213,231,321。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "栈的应用",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-072",
+    "question": "栈的应用不包括（ ）",
+    "type": "choice",
+    "options": [
+      "A. 括号匹配",
+      "B. 中缀转后缀表达式",
+      "C. 层序遍历",
+      "D. 递归模拟"
+    ],
+    "answer": "C",
+    "explanation": "层序遍历使用队列，不是栈的应用。栈的应用包括括号匹配、表达式求值、递归模拟、回溯法等。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "栈的应用",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-073",
+    "question": "列举栈的应用并说明出栈序列数。",
+    "type": "shortAnswer",
+    "answer": "括号匹配、表达式求值、递归模拟、回溯法，出栈序列数为卡特兰数",
+    "explanation": "栈的典型应用：括号匹配、中缀转后缀表达式、后缀表达式求值、递归模拟、回溯法。n个元素入栈的合法出栈序列数为卡特兰数Cn=C(2n,n)/(n+1)。如3个元素合法出栈序列共5种：123,132,213,231,321。312不合法（3出后1不能先于2出）。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "栈的应用",
+    "src": "ai",
+    "referenceAnswer": "应用：括号匹配、表达式转换求值、递归模拟、回溯。出栈序列数=卡特兰数C(2n,n)/(n+1)。",
+    "points": [
+      {
+        "point": "应用列举",
+        "weight": 2
+      },
+      {
+        "point": "卡特兰数",
+        "weight": 2
+      },
+      {
+        "point": "举例",
+        "weight": 1
+      }
+    ],
+    "passThreshold": 60
+  },
+  {
+    "id": "q-13003-074",
+    "question": "两端均可插入和删除的线性表称为（ ）",
+    "type": "choice",
+    "options": [
+      "A. 栈",
+      "B. 队列",
+      "C. 双端队列",
+      "D. 循环队列"
+    ],
+    "answer": "C",
+    "explanation": "双端队列是两端均可插入和删除的线性结构。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "双端队列",
+    "src": "ai"
+  },
+  {
+    "id": "q-13003-075",
+    "question": "一端只能删除、另一端可插入和删除的双端队列称为___双端队列。",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "输入受限",
+        "synonyms": []
+      }
+    ],
+    "explanation": "输入受限双端队列：一端只能删除，另一端可插入和删除。输出受限双端队列：一端只能插入，另一端可插入和删除。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "双端队列",
+    "src": "ai",
+    "answer": "输入受限"
+  },
+  {
+    "id": "q-13003-076",
+    "question": "什么是双端队列及其受限形式？",
+    "type": "shortAnswer",
+    "answer": "两端均可插入和删除，受限形式有输入受限和输出受限",
+    "explanation": "双端队列是两端均可插入和删除的线性结构。两种受限形式：输入受限双端队列（一端只能删除，另一端可插入和删除），输出受限双端队列（一端只能插入，另一端可插入和删除）。双端队列比普通栈/队列能得到更多种输出序列。",
+    "chapter": "第3章 栈和队列",
+    "cardId": "双端队列",
+    "src": "ai",
+    "referenceAnswer": "双端队列两端可插入和删除。输入受限(一端只能删)，输出受限(一端只能插)。",
+    "points": [
+      {
+        "point": "双端队列定义",
+        "weight": 2
+      },
+      {
+        "point": "输入受限",
+        "weight": 2
+      },
+      {
+        "point": "输出受限",
+        "weight": 1
+      }
+    ],
+    "passThreshold": 60
+  },
+  {
+    "id": "q-13003-078",
+    "type": "choice",
+    "question": "输入受限双端队列是指（  ）",
+    "options": [
+      "A. 两端都允许插入和删除",
+      "B. 一端只允许删除，另一端允许插入和删除",
+      "C. 一端只允许插入，另一端允许插入和删除",
+      "D. 两端都只允许插入"
+    ],
+    "answer": "B",
+    "chapter": "第3章 栈和队列",
+    "cardId": "双端队列",
+    "src": "ai",
+    "explanation": "输入受限双端队列：一端只能删除（输入受限），另一端可插入和删除。"
+  },
+  {
     "id": "q-13003-151",
     "type": "fill",
     "question": "栈的入栈顺序为a,b,c,d，出栈顺序可能为d,c,b,a或___（写出另一种）",
@@ -3012,6 +3057,36 @@
     "answer": "入队；出队"
   },
   {
+    "id": "q-13003-tb-006",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第3章 栈和队列",
+    "question": "后缀表达式求值的过程中要用到的数据结构是（）。",
+    "options": [
+      "一个保存各种操作符的栈",
+      "一个保存操作数及运算结果的栈",
+      "两个分别保存操作符和操作数的栈",
+      "两个分别保存操作数和运算结果的栈"
+    ],
+    "answer": "B",
+    "referenceAnswer": "正确答案：B\n\n后缀表达式求值只需一个操作数栈：遇到操作数入栈，遇到运算符则弹出栈顶两个操作数进行运算，结果再入栈。不需要单独的运算符栈。"
+  },
+  {
+    "id": "q-13003-tb-011",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第3章 栈和队列",
+    "question": "使用一个大小为6的数组保存循环队列Q。若从Q中出队两个元素，并入队一个元素，此时队尾rear和队头front的值分别为2和4。则在执行这三个操作之前rear和front的值分别是（）。",
+    "options": [
+      "0和3",
+      "1和2",
+      "2和5",
+      "4和5"
+    ],
+    "answer": "B",
+    "referenceAnswer": "正确答案：B\n\n逆推：出队2次使front从front₀变到4，即 (front₀+2)%6=4，得front₀=2。\n入队1次使rear从rear₀变到2，即 (rear₀+1)%6=2，得rear₀=1。\n操作前rear=1，front=2。"
+  },
+  {
     "id": "q-13003-172",
     "question": "设数组A[5][6]按行主序存储，首地址为1000，每个元素占2个存储单元，则A[3][4]的地址为（ ）",
     "type": "choice",
@@ -3295,6 +3370,21 @@
     "blanks": null,
     "answer": "在主串中查找与模式串相同的子串",
     "explanation": "模式匹配是在主串中查找是否存在与模式串相同的子串，并返回其位置"
+  },
+  {
+    "id": "q-13003-tb-012",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第4章 数组、广义表和串",
+    "question": "广义表LS=(((a),(b)),((c,(d)),(e,(f))),(g,h))的表尾是（）。",
+    "options": [
+      "(g,h)",
+      "((c,(d)),(e,(f))),(g,h)",
+      "((g,h))",
+      "(((c,(d)),(e,(f))),(g,h))"
+    ],
+    "answer": "D",
+    "referenceAnswer": "正确答案：D\n\n表头是第一个元素 ((a),(b))，表尾是其余元素组成的广义表，必须加外层括号。剩余元素为 ((c,(d)),(e,(f))) 和 (g,h)，组成表尾 (((c,(d)),(e,(f))),(g,h))。\n选项B缺少最外层括号，不是合法广义表。"
   },
   {
     "id": "q-13003-195",
@@ -3644,6 +3734,36 @@
     "blanks": null,
     "answer": "第一个孩子; 下一个兄弟",
     "explanation": "孩子-兄弟表示法即左孩子右兄弟，与二叉树的二叉链表结构一致"
+  },
+  {
+    "id": "q-13003-tb-008",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第5章 树与二叉树",
+    "question": "将下列数据依次插入到初始为空的二叉排序树中，能得到高度最小的二叉排序树的序列是（）。",
+    "options": [
+      "2, 4, 7, 5, 8, 10",
+      "5, 1, 2, 6, 3, 4",
+      "6, 4, 1, 8, 10, 5",
+      "9, 7, 2, 1, 4, 0"
+    ],
+    "answer": "C",
+    "referenceAnswer": "正确答案：C\n\n序列C（6,4,1,8,10,5）插入后树高为3，最接近完全二叉树形态。根为6，左子树{4,1,5}右子树{8,10}，左右较均衡。其他选项导致严重偏斜，树高更大。"
+  },
+  {
+    "id": "q-13003-tb-014",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第5章 树与二叉树",
+    "question": "一棵二叉排序树中，关键字n所在结点的层数大于关键字m所在结点的层数，则（）。",
+    "options": [
+      "n一定大于m",
+      "n一定小于m",
+      "n一定等于m",
+      "n与m的大小关系不确定"
+    ],
+    "answer": "D",
+    "referenceAnswer": "正确答案：D\n\n二叉排序树中结点的层数取决于插入顺序和树的形态，与关键字大小无必然联系。例如根为50的BST中，左子树深层结点值小于根，右子树深层结点值大于根，因此n与m的大小关系不确定。"
   },
   {
     "id": "q-13003-223",
@@ -4034,6 +4154,66 @@
     "blanks": null,
     "answer": "等于",
     "explanation": "关键活动：最早开始时间 = 最迟开始时间，时间余量为0"
+  },
+  {
+    "id": "q-13003-tb-001",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第6章 图结构",
+    "question": "对下图进行广度优先搜索遍历，正确的遍历序列是（）。",
+    "options": [
+      "bdeac",
+      "badce",
+      "acedb",
+      "abced"
+    ],
+    "answer": "B",
+    "referenceAnswer": "正确答案：B\n\n广度优先搜索（BFS）从起始顶点出发，按层次遍历。从顶点b开始，依次访问其邻接顶点，再按访问顺序继续扩展，最终得到遍历序列 badce。"
+  },
+  {
+    "id": "q-13003-tb-002",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第6章 图结构",
+    "question": "用邻接表保存有n个顶点和e条边的无向图，邻接表中指针个数是（）。",
+    "options": [
+      "e",
+      "n-e",
+      "n+e",
+      "n+2e"
+    ],
+    "answer": "D",
+    "referenceAnswer": "正确答案：D\n\n无向图的邻接表中，n个顶点各有1个表头指针（共n个），每条边在两个端点的邻接链表中各出现1次（共2e个边结点指针），总计 n+2e 个指针。"
+  },
+  {
+    "id": "q-13003-tb-005",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第6章 图结构",
+    "question": "设图G存在拓扑序列，则下列结论中正确的是（）。",
+    "options": [
+      "图G是一个有向图",
+      "图G的拓扑序列唯一",
+      "图G是一个无向图",
+      "图G是一个有向无环图"
+    ],
+    "answer": "D",
+    "referenceAnswer": "正确答案：D\n\n拓扑序列存在的充要条件是图为有向无环图（DAG）。有向图若有环则无拓扑序列；拓扑序列不唯一（当存在多个入度为0的顶点时）；无向图不适用拓扑排序。"
+  },
+  {
+    "id": "q-13003-tb-010",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第6章 图结构",
+    "question": "在带权图的最短路径问题中，路径长度是指（）。",
+    "options": [
+      "路径上边的数目",
+      "路径上结点的数目",
+      "路径上边的权值之和",
+      "到达终点的最短路径数目"
+    ],
+    "answer": "C",
+    "referenceAnswer": "正确答案：C\n\n在带权图中，路径长度指路径上各边的权值之和。无权图的最短路径才是边数最少。"
   },
   {
     "id": "q-13003-253",
@@ -4700,5 +4880,50 @@
     "src": "ai",
     "answer": "ASL ≈ 1.5",
     "explanation": "各关键字哈希值：19→6, 14→1, 23→10, 1→1, 68→3, 20→7, 84→6, 27→1, 55→3, 11→11, 10→10, 79→1。链表：0空, 1→14→1→27→79(4), 3→68→55(2), 6→19→84(2), 7→20(1), 10→23→11...纠正。ASL=(1+2+3+4+1+1+2+2+1+1+2+1)/12...需精确计算。"
+  },
+  {
+    "id": "q-13003-tb-003",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第8章 查找",
+    "question": "对有序表（1，9，12，41，62，77，82，95，100）采用二分查找方法查找值82，查找过程中关键字的比较次数是（）。",
+    "options": [
+      "1",
+      "2",
+      "4",
+      "7"
+    ],
+    "answer": "B",
+    "referenceAnswer": "正确答案：B\n\n第1次比较：mid=4，a[4]=62 < 82，在右半区继续查找。\n第2次比较：mid=6，a[6]=82 == 82，查找成功。\n共比较2次。"
+  },
+  {
+    "id": "q-13003-tb-009",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第8章 查找",
+    "question": "散列查找方法可以达到的最好时间复杂度是（）。",
+    "options": [
+      "O(1)",
+      "O(n)",
+      "O(log n)",
+      "O(√n)"
+    ],
+    "answer": "A",
+    "referenceAnswer": "正确答案：A\n\n散列查找在理想情况下，通过哈希函数直接计算元素位置，无需比较，时间复杂度为O(1)。最坏情况（所有元素冲突）退化为O(n)。"
+  },
+  {
+    "id": "q-13003-tb-015",
+    "type": "choice",
+    "src": "textbook",
+    "chapter": "第8章 查找",
+    "question": "下列关于二分查找判定树T的叙述中，正确的是（）。",
+    "options": [
+      "T是一棵二叉树",
+      "T是一棵满二叉树",
+      "T是一棵完全二叉树",
+      "T的叶结点在同一层"
+    ],
+    "answer": "A",
+    "referenceAnswer": "正确答案：A\n\n二分查找判定树一定是一棵二叉树，但不一定是满二叉树、完全二叉树，叶结点也不一定在同一层。只有当元素个数n=2^h-1时才可能是满二叉树。"
   }
 ]

@@ -1394,6 +1394,24 @@ display: none;
 .section-card.pri-green { border-left: 4px solid var(--mastery-4); }
 .section-card.pri-accent2 { border-left: 4px solid var(--accent2); }
 
+/* 必会公式 li 统一样式 — 与 section-card-title 一致 */
+.kf-formula-item {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.8;
+}
+.kf-formula-item .kf-formula-title {
+  display: block;
+}
+.kf-formula-item .kf-formula-eq {
+  display: block;
+  padding-left: 5em;
+  color: var(--accent);
+  font-weight: 500;
+}
+.kf-formula-item br { display: none; }
+
 /* kf-card 左边框变体 */
 .kf-card.kf-accent2 { border-left: 4px solid var(--accent2); }
 

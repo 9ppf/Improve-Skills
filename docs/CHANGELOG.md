@@ -4,6 +4,55 @@
 
 ---
 
+## v2.41.0
+
+**发布时间**：2026-09-21（北京时间）
+
+### 公共 JS 抽离落地 + 真题练习页 AI 能力 + 题库扩充
+
+**核心变更**：把「公共 JS 与 CSS 抽离方案 B」的 JS 部分落地——新增共享 AI 对话 SDK `js/shared/ai-chat.js`，7 个模块统一接入 `AIChat` 与 `QuizUtils`，删掉各页面自行复制的转义函数；`build.py` 新增构建时 JS 版本号注入，根治浏览器拿到旧 JS 的缓存问题。自考学习模块新增真题练习页的 AI 解答、AI 出题与同类题专项练习（均服务端持久化），练习测验页新增来源筛选、考点频率筛选与筛选状态持久化，复盘总结页新增专项练习分段视图。题库扩充 83 道题。
+
+| 文件 | 更新内容 |
+|---|---|
+| `js/shared/ai-chat.js` | 新增：共享 AI 对话 SDK（单轮 ask、多轮 chat、流式 stream、formatText 渲染、formatError、对话历史上限、在线状态检测） |
+| `js/shared/utils.js` | 新增：`apiUrl()` 自动处理 `file://` 协议下的 localhost 前缀 |
+| `templates/workbench.html` | 修改：引入 utils.js 与 ai-chat.js |
+| `build.py` | 新增：`inject_js_version()`，构建时遍历 `Workbench/` 下全部 HTML，把 `<script src>` 的 `?v=` 统一替换成构建时间戳 |
+| `dev_server.py` | 新增：`/api/exam-ai-help`（真题 AI 解答对话）、`/api/ai-practice`（同类题专项练习）、`/api/quiz-preference`（练习测验筛选状态）三组 GET/POST 端点 |
+| `js/自考学习/真题练习.js` | 新增：AI解答按钮与对话面板、顶部 AI出题快捷入口、单题 AI 出同类型题（原地平铺、可折叠、可累积追加）、状态筛选、题目导航面板（选题卡）；修复：选择题未展开答案即标出正确项、题目 id 数字与字符串不一致导致展开答案与状态标记失效、`.exam-hidden` 被同优先级 display 覆盖致折叠无效 |
+| `js/自考学习/练习测验.js` | 新增：来源筛选（教材/章节/复习/AI）、考点频率筛选（`EXAM_KEYWORDS` 词典）、筛选状态经 `/api/quiz-preference` 持久化、参考答案折叠 `toggleRef()`；修改：填空题无序匹配改贪心算法、接入共享 AIChat |
+| `js/自考学习/复盘总结-章节复盘-v2.js` | 新增：题库管理 Tab 的「专项练习」分段视图，读取 `/api/ai-practice` |
+| `js/自考学习/知识框架.js` | 新增：AI 请求失败自动重试一次；修改：接入共享 AIChat 与 QuizUtils |
+| `js/主工作台/workbench.js` | 修改：AI 问答接入共享 AIChat，新增在线状态检测与对话历史 |
+| `js/今日学习/today-flow.js` | 新增：AI 按掌握状态重排今日任务；修改：接入共享 AIChat |
+| `js/能力提升/能力提升-学习驾驶舱.js`、`js/AI学习/ai-roles-hub.js`、`js/AI学习/ai-news-digest.js` | 修改：接入共享 AIChat 与 QuizUtils |
+| `js/Python基础/*.js`、`js/番茄钟/番茄钟-计时器.js`、`js/自考学习/背诵与简答.js`、`js/自考学习/复盘总结-章节复盘.js` | 修改：接入共享 `QuizUtils.esc` / `apiUrl`，替换本地复制的转义函数 |
+| `styles/自考学习/真题练习-真题与错题本.css` | 新增：AI 解答面板、同类题专项练习、题目导航面板样式；修改：题干表格渲染、正确项高亮改为仅在展开答案后生效 |
+| `styles/自考学习/复盘总结-v2.css` | 新增：专项练习分段视图样式 |
+| `styles/自考学习/练习测验.css` | 新增：来源标签与考点频率筛选样式 |
+| `styles/自考学习/知识框架.css` | 修改：样式微调 |
+| `data/quiz-bank-13015.json` | 扩充：470 → 538 题（新增 68 题） |
+| `data/quiz-bank-13003.json` | 扩充：304 → 319 题（新增 15 题） |
+| `data/exam-data-13015.js` | 修改：2026 年 4 月填空题题干按原卷扫描件还原；计算题第 28 题补表格 |
+| `data/quiz-records-13015.json`、`data/quiz-records-02324.json`、`data/quiz-records-13003.json` | 累积：练习答题记录 |
+| `Workbench/自考学习/备考科目/13015计算机系统原理/CPU执行时间计算专题.html` | 新增：CPU 执行时间计算专题笔记页 |
+| `styles/自考学习/CPU执行时间计算专题.css` | 新增：上页面的专属样式（从页面内联 `<style>` 抽离） |
+| `Workbench/自考学习/复盘总结-章节复盘-v2-prototype.html` | 新增：复盘总结 v2 设计原型 |
+| `.trae/skills/validate_workbench.py` | 修改：Tab 完整性检查补充扫描外链 JS 文件，修掉「切换逻辑写在外链 JS 中被误判为缺失」的误报 |
+| `docs/错题本与作答记录改造方案.md` | 新增：错题本独立建库、存量回填、重做与作答历史、复盘总结换源方案 |
+| `docs/文件说明.md` | 修改：补充上述新增文件与目录的记录 |
+| Workbench 下约 40 个 HTML | 修改：`<script src>` 版本号由 build.py 统一注入 |
+
+**公共 JS 抽离落地**：`js/shared/ai-chat.js` 统一封装 AI 对话能力。各模块删掉自己复制的 `escapeHtml`，改用 `QuizUtils.esc`；接口地址统一走 `QuizUtils.apiUrl`，在 `file://` 协议下自动补 localhost 前缀。
+
+**缓存问题根治**：此前每个页面手写 `?v=xxx`，经常漏改导致浏览器加载旧 JS。现在 `build.py` 在构建末尾遍历全部 HTML 统一替换版本号，不必再逐页维护。
+
+**真题练习页 AI 能力**：每道真题下有「AI解答」（对话持久化到 `/api/exam-ai-help`，换设备可见）与「AI出题」（按该题的题型、章节、难度生成 5 道同类型题，写入 `/api/ai-practice`，在原题下方平铺展示、可折叠、可继续累积）。生成题与真题共用同一套渲染与判分结构。
+
+**练习测验筛选**：新增来源筛选与考点频率筛选，后者从真题数据统计关键词出现次数，只列出出现 2 次以上的知识点并标注次数；筛选状态存服务端，换设备不丢。
+
+---
+
 ## v2.40.0
 
 **发布时间**：2026-09-08（北京时间）

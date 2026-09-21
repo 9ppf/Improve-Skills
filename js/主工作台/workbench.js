@@ -1194,34 +1194,25 @@ function renderTree() {
 
     // ---- 问AI功能 ----
     var askAiOnline = false;
-    var askAiHistory = [];
+    var askAiHistory = AIChat.history.create();
 
     function checkAskAiOnline() {
-      var apiBase = '';
-      if (location.protocol === 'file:') apiBase = 'http://localhost:8000';
-      fetch(apiBase + '/api/mastery', { method: 'GET' })
-        .then(function() {
-          if (!askAiOnline) {
-            askAiOnline = true;
-            var btn = document.getElementById('askAiBtn');
-            var dot = document.getElementById('askAiDot');
-            if (btn) { btn.classList.remove('offline'); }
-            if (dot) { dot.classList.remove('offline'); }
-            var send = document.getElementById('aiModalSend');
-            if (send) send.disabled = false;
-          }
-        })
-        .catch(function() {
-          if (askAiOnline) {
-            askAiOnline = false;
-            var btn = document.getElementById('askAiBtn');
-            var dot = document.getElementById('askAiDot');
-            if (btn) { btn.classList.add('offline'); }
-            if (dot) { dot.classList.add('offline'); }
-            var send = document.getElementById('aiModalSend');
-            if (send) send.disabled = true;
-          }
-        });
+      AIChat.isOnline(function(online) {
+        if (online === askAiOnline) return;
+        askAiOnline = online;
+        var btn = document.getElementById('askAiBtn');
+        var dot = document.getElementById('askAiDot');
+        var send = document.getElementById('aiModalSend');
+        if (online) {
+          if (btn) btn.classList.remove('offline');
+          if (dot) dot.classList.remove('offline');
+          if (send) send.disabled = false;
+        } else {
+          if (btn) btn.classList.add('offline');
+          if (dot) dot.classList.add('offline');
+          if (send) send.disabled = true;
+        }
+      });
     }
 
     function openAskAI() {
@@ -1252,50 +1243,30 @@ function renderTree() {
       body.appendChild(loadingMsg);
       body.scrollTop = body.scrollHeight;
 
-      var apiBase = '';
-      if (location.protocol === 'file:') apiBase = 'http://localhost:8000';
+      AIChat.history.push(askAiHistory, { role: 'user', content: text }, 20);
 
-      askAiHistory.push({ role: 'user', content: text });
-
-      fetch(apiBase + '/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: text }],
-          model: 'deepseek-v4-flash',
-          stream: false,
-          max_tokens: 1000
-        })
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        loadingMsg.remove();
-        var aiText = '';
-        if (data.choices && data.choices[0] && data.choices[0].message) {
-          aiText = data.choices[0].message.content || '';
-        } else if (data.response) {
-          aiText = data.response;
-        } else if (data.content) {
-          aiText = data.content;
-        } else if (data.error) {
-          aiText = '⚠️ ' + data.error;
+      AIChat.ask({
+        prompt: text,
+        model: 'deepseek-v4-flash',
+        maxTokens: 1000,
+        onDone: function(aiText) {
+          loadingMsg.remove();
+          if (!aiText) aiText = '（AI返回为空）';
+          var aiMsg = document.createElement('div');
+          aiMsg.className = 'ai-modal-msg ai';
+          aiMsg.innerHTML = AIChat.formatText(aiText);
+          body.appendChild(aiMsg);
+          body.scrollTop = body.scrollHeight;
+          AIChat.history.push(askAiHistory, { role: 'assistant', content: aiText }, 20);
+        },
+        onError: function(err) {
+          loadingMsg.remove();
+          var errMsg = document.createElement('div');
+          errMsg.className = 'ai-modal-msg ai';
+          errMsg.textContent = '⚠️ ' + AIChat.formatError(err);
+          body.appendChild(errMsg);
+          body.scrollTop = body.scrollHeight;
         }
-        if (!aiText) aiText = '（AI返回为空）';
-        var aiMsg = document.createElement('div');
-        aiMsg.className = 'ai-modal-msg ai';
-        aiMsg.textContent = aiText;
-        body.appendChild(aiMsg);
-        body.scrollTop = body.scrollHeight;
-        askAiHistory.push({ role: 'assistant', content: aiText });
-        if (askAiHistory.length > 20) askAiHistory = askAiHistory.slice(-20);
-      })
-      .catch(function(err) {
-        loadingMsg.remove();
-        var errMsg = document.createElement('div');
-        errMsg.className = 'ai-modal-msg ai';
-        errMsg.textContent = '⚠️ 请求失败：' + (err.message || '网络错误') + '，请确保dev_server.py正在运行';
-        body.appendChild(errMsg);
-        body.scrollTop = body.scrollHeight;
       });
     }
 

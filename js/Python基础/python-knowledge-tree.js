@@ -313,9 +313,7 @@
     var fillEl = document.getElementById("kp-progress-fill");
     var resetBtn = document.getElementById("kp-reset-btn");
 
-    function esc(s) {
-      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
+    var esc = QuizUtils.esc;
 
     function hl(code) {
       var s = esc(code);

@@ -1101,3 +1101,180 @@
   opacity: 1;
   background: var(--coral-soft);
 }
+
+/* ============ 题库管理：视图切换（全部题目 / 专项练习） ============ */
+.ss-bank-seg {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.8rem;
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 0.2rem;
+}
+.ss-bank-seg-btn {
+  flex: 1;
+  padding: 0.35rem 0.6rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ss-bank-seg-btn:hover { color: var(--accent); }
+.ss-bank-seg-btn.zk-active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 1px 4px var(--bg-soft);
+}
+
+/* ============ 题库管理：专项练习（按来源真题分组） ============ */
+.ss-ai-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.ss-ai-group {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.ss-ai-group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  background: var(--bg2);
+  cursor: pointer;
+}
+.ss-ai-group-head:hover { background: var(--accent-soft); }
+.ss-ai-group-badge {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: var(--purple-soft);
+  color: var(--accent2);
+}
+.ss-ai-group-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ss-ai-group-meta {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.ss-ai-group-toggle {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  color: var(--accent2);
+  font-weight: 600;
+}
+.ss-ai-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 0.7rem;
+}
+
+/* 生成批次 */
+.ss-ai-batch {
+  border: 1px dashed var(--rule);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+}
+.ss-ai-batch-head {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+/* 单道生成题 */
+.ss-ai-q {
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--rule);
+}
+.ss-ai-q:first-child { border-top: none; }
+.ss-ai-q-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+.ss-ai-q-num {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent2);
+  min-width: 1.2rem;
+}
+.ss-ai-q-text {
+  flex: 1;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.ss-ai-q-type {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.ss-ai-q-reveal {
+  flex-shrink: 0;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ss-ai-q-reveal:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.ss-ai-q-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 0.3rem 0 0 1.6rem;
+}
+.ss-ai-q-option {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.ss-ai-q-detail {
+  margin: 0.4rem 0 0 1.6rem;
+  padding: 0.5rem 0.6rem;
+  background: var(--bg2);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+.ss-ai-q-dl-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-right: 0.4rem;
+}
+.ss-ai-q-ans {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--green);
+}
+.ss-ai-q-expl {
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--ink);
+}

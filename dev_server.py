@@ -182,6 +182,12 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_save_quiz_photo()
         elif self.path == '/api/quiz-ai-help':
             self._handle_save_quiz_ai_help()
+        elif self.path == '/api/exam-ai-help':
+            self._handle_save_exam_ai_help()
+        elif self.path == '/api/ai-practice':
+            self._handle_save_ai_practice()
+        elif self.path == '/api/quiz-preference':
+            self._handle_save_quiz_preference()
         else:
             self.send_error(404, 'Not Found')
 
@@ -213,6 +219,10 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_quiz('records')
         elif self.path.startswith('/api/quiz-ai-help'):
             self._handle_load_quiz_ai_help()
+        elif self.path.startswith('/api/exam-ai-help'):
+            self._handle_load_exam_ai_help()
+        elif self.path.startswith('/api/ai-practice'):
+            self._handle_load_ai_practice()
         elif self.path.startswith('/api/quiz-ai'):
             self._handle_load_quiz('ai')
         elif self.path.startswith('/api/ai-plan'):
@@ -223,6 +233,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_study_plan()
         elif self.path.startswith('/api/quiz-photos'):
             self._handle_load_quiz_photos()
+        elif self.path.startswith('/api/quiz-preference'):
+            self._handle_load_quiz_preference()
         else:
             super().do_GET()
 
@@ -577,6 +589,100 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 return
         self._send_json(200, {'status': 'ok'})
 
+    def _handle_load_exam_ai_help(self):
+        """加载真题页面的AI解答对话历史"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        question_id = query.get('questionId', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject parameter'})
+            return
+        filename = f'exam-ai-help-{subject}.json'
+        path = ROOT / 'data' / filename
+        all_convs = _load_json_backup_on_corrupt(path, default={})
+        if not isinstance(all_convs, dict):
+            all_convs = {}
+        if question_id:
+            result = all_convs.get(question_id, [])
+        else:
+            result = all_convs
+        self._send_json(200, result)
+
+    def _handle_save_exam_ai_help(self):
+        """保存真题页面的AI解答对话历史"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        question_id = data.get('questionId', '')
+        conversation = data.get('conversation', [])
+        if not subject or not question_id:
+            self._send_json(400, {'error': 'Missing subject or questionId'})
+            return
+        filename = f'exam-ai-help-{subject}.json'
+        path = ROOT / 'data' / filename
+        with _file_lock:
+            all_convs = _load_json_backup_on_corrupt(path, default={})
+            if not isinstance(all_convs, dict):
+                all_convs = {}
+            all_convs[question_id] = conversation
+            try:
+                atomic_write_json(path, all_convs)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
+        self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_ai_practice(self):
+        """加载某科目全部「同类题专项练习」批次（真题页 AI出题 生成）"""
+        from urllib.parse import urlparse, parse_qs
+        qs = parse_qs(urlparse(self.path).query)
+        subject = qs.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject parameter'})
+            return
+        filename = f'ai-practice-{subject}.json'
+        path = ROOT / 'data' / filename
+        data = _load_json_backup_on_corrupt(path, default=[])
+        if not isinstance(data, list):
+            data = []
+        self._send_json(200, data)
+
+    def _handle_save_ai_practice(self):
+        """追加一个「同类题专项练习」批次"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        batch = data.get('batch', {})
+        if not subject or not isinstance(batch, dict) or not batch.get('batchId'):
+            self._send_json(400, {'error': 'Missing subject or batch'})
+            return
+        filename = f'ai-practice-{subject}.json'
+        path = ROOT / 'data' / filename
+        with _file_lock:
+            batches = _load_json_backup_on_corrupt(path, default=[])
+            if not isinstance(batches, list):
+                batches = []
+            # 同 batchId 视为覆盖（避免重复提交产生重复批次）
+            batches = [b for b in batches if not (isinstance(b, dict) and b.get('batchId') == batch['batchId'])]
+            batches.append(batch)
+            try:
+                atomic_write_json(path, batches)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
+        self._send_json(200, {'status': 'ok', 'total': len(batches)})
+
     def _handle_load_ai_plan(self):
         path = ROOT / 'data' / 'ai-daily-plan.json'
         try:
@@ -620,6 +726,43 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         except (FileNotFoundError, json.JSONDecodeError):
             data = []
         self._send_json(200, data)
+
+    def _handle_load_quiz_preference(self):
+        """GET /api/quiz-preference?subject=13015 → load filter state from JSON file."""
+        from urllib.parse import urlparse, parse_qs
+        qs = parse_qs(urlparse(self.path).query)
+        subject = qs.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / f'quiz-preference-{subject}.json'
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = {}
+        self._send_json(200, data)
+
+    def _handle_save_quiz_preference(self):
+        """POST /api/quiz-preference → save filter state to JSON file."""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / f'quiz-preference-{subject}.json'
+        try:
+            atomic_write_json(path, data)
+        except OSError as e:
+            self._send_json(500, {'error': f'Cannot write: {e}'})
+            return
+        self._send_json(200, {'status': 'ok'})
 
     def _handle_save_ai_conv(self):
         content_length = int(self.headers.get('Content-Length', 0))

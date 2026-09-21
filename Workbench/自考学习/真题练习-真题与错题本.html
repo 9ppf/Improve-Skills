@@ -5,11 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>真题与模拟</title>
-  <script src="../../js/shared/theme-sync.js"></script>
+  <script src="../../js/shared/theme-sync.js?v=202609211535"></script>
   <link rel="stylesheet" href="../../styles/shared/base-vars.css">
   <link rel="stylesheet" href="../../styles/shared/base.css">
   <link rel="stylesheet" href="../../styles/shared/components.css">
-  <link rel="stylesheet" href="../../styles/自考学习/真题练习-真题与错题本.css">
+  <link rel="stylesheet" href="../../styles/自考学习/真题练习-真题与错题本.css?v=202609202215">
 </head>
 <body>
 <div class="exam-container">
@@ -30,6 +30,7 @@
   <div class="exam-mode-switch">
     <button class="exam-mode-btn active" data-mode="training">📝 专项训练</button>
     <button class="exam-mode-btn" data-mode="mock">⏱ 模拟套卷</button>
+    <button class="exam-ai-quick-btn" id="aiQuickBtn" onclick="jumpToAIExam()">🤖 AI出题</button>
   </div>
 
   <!-- 专项训练面板 -->
@@ -53,6 +54,22 @@
 
     <!-- 题目列表 -->
     <div class="exam-question-list" id="trainingList"></div>
+
+    <!-- AI出题区 -->
+    <div class="exam-ai-section">
+      <div class="exam-ai-header">
+        <h2 class="exam-section-title">🤖 AI专项出题</h2>
+        <button class="exam-ai-gen-btn" id="aiGenBtn" onclick="generateAIExamQuestions()">🤖 AI出题</button>
+      </div>
+      <div class="exam-question-list" id="aiExamList">
+        <div class="exam-empty">点击上方「🤖 AI出题」按钮，将按当前筛选范围（年份/题型/知识点）的真题风格生成 5 道新题目</div>
+      </div>
+    </div>
+
+    <!-- 题目导航面板 -->
+    <div class="exam-nav-panel collapsed" id="examNavPanel">
+      <button class="exam-nav-collapsed-btn" onclick="toggleExamNav()">📋</button>
+    </div>
 
     <!-- 错题回顾 -->
     <div class="exam-wrong-section">
@@ -95,10 +112,11 @@
   </div>
 </div>
 
-  <script src="../../js/shared/utils.js"></script>
-  <script src="../../data/exam-data-13015.js"></script>
-  <script src="../../data/exam-data-13003.js"></script>
-  <script src="../../data/exam-data-02324.js"></script>
-  <script src="../../js/自考学习/真题练习.js"></script>
+  <script src="../../js/shared/utils.js?v=202609211535"></script>
+  <script src="../../js/shared/ai-chat.js?v=202609211535"></script>
+  <script src="../../data/exam-data-13015.js?v=202609211535"></script>
+  <script src="../../data/exam-data-13003.js?v=202609211535"></script>
+  <script src="../../data/exam-data-02324.js?v=202609211535"></script>
+  <script src="../../js/自考学习/真题练习.js?v=202609211535"></script>
 </body>
 </html>

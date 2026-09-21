@@ -1,0 +1,385 @@
+.note-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.note-header {
+  text-align: center;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.note-header h1 {
+  font-size: 28px;
+  margin: 0 0 12px;
+  color: var(--text-primary);
+}
+
+.note-header .note-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.subject-tag {
+  display: inline-block;
+  padding: 4px 14px;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.note-section {
+  margin-bottom: 36px;
+}
+
+.note-section h2 {
+  font-size: 20px;
+  margin: 0 0 16px;
+  padding-left: 12px;
+  border-left: 4px solid var(--primary-color);
+  color: var(--text-primary);
+}
+
+.note-section h3 {
+  font-size: 16px;
+  margin: 20px 0 10px;
+  color: var(--text-primary);
+}
+
+.note-section p {
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin: 8px 0;
+}
+
+/* 公式块 */
+.formula-block {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 14px 0;
+  overflow-x: auto;
+}
+
+.formula-block .formula {
+  font-family: "Cambria Math", "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 2.2;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.formula-block .formula-label {
+  text-align: right;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.formula-inline {
+  font-family: "Cambria Math", "Times New Roman", serif;
+  font-style: italic;
+  padding: 0 3px;
+}
+
+/* 表格 */
+.note-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.note-table th,
+.note-table td {
+  padding: 10px 14px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.note-table th {
+  background: var(--primary-color);
+  color: #fff;
+  font-weight: 500;
+}
+
+.note-table tr:last-child td {
+  border-bottom: none;
+}
+
+.note-table tbody tr:nth-child(even) {
+  background: var(--bg-secondary);
+}
+
+/* 步骤列表 */
+.step-list {
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  margin: 14px 0;
+}
+
+.step-list li {
+  counter-increment: step;
+  position: relative;
+  padding: 10px 16px 10px 52px;
+  margin-bottom: 10px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+.step-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.step-list li .step-formula {
+  display: block;
+  margin-top: 6px;
+  font-family: "Cambria Math", "Times New Roman", serif;
+  font-size: 15px;
+  color: var(--primary-color);
+}
+
+/* 陷阱卡片 */
+.trap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.trap-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid #ff6b6b;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.trap-card .trap-num {
+  font-size: 12px;
+  color: #ff6b6b;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.trap-card .trap-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.trap-card .trap-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* 例题区 */
+.example-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 14px 0;
+}
+
+.example-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.example-question {
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.example-answer h4 {
+  font-size: 14px;
+  color: var(--text-primary);
+  margin: 14px 0 8px;
+}
+
+.calc-line {
+  font-family: "Cambria Math", "Times New Roman", serif;
+  font-size: 15px;
+  line-height: 2;
+  color: var(--text-primary);
+  padding-left: 12px;
+}
+
+.answer-result {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 16px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+[data-theme="dark"] .answer-result {
+  background: rgba(46, 125, 50, 0.2);
+  color: #66bb6a;
+}
+
+/* 口诀 */
+.mnemonic-box {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 14px 0;
+  text-align: center;
+}
+
+.mnemonic-box .mnemonic-title {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.mnemonic-box .mnemonic-text {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 2;
+  letter-spacing: 1px;
+}
+
+/* 汇总表 */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.summary-table th,
+.summary-table td {
+  padding: 12px 14px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.summary-table th {
+  background: var(--primary-color);
+  color: #fff;
+  font-weight: 500;
+}
+
+.summary-table tbody tr:nth-child(even) {
+  background: var(--bg-secondary);
+}
+
+.summary-table .highlight {
+  background: #fff3e0;
+  font-weight: 600;
+  color: #e65100;
+}
+
+[data-theme="dark"] .summary-table .highlight {
+  background: rgba(230, 81, 0, 0.15);
+  color: #ffb74d;
+}
+
+/* 注意提示 */
+.note-tip {
+  background: #fff8e1;
+  border-left: 4px solid #ff9800;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 14px;
+  color: #e65100;
+  line-height: 1.7;
+}
+
+[data-theme="dark"] .note-tip {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ffb74d;
+}
+
+.note-tip strong {
+  color: #e65100;
+}
+
+[data-theme="dark"] .note-tip strong {
+  color: #ffb74d;
+}
+
+/* 流程图 */
+.flow-chart {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+.flow-step {
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .flow-step {
+  background: var(--bg-card, #2a2a2a);
+}
+
+.flow-arrow {
+  color: var(--primary-color);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .note-page { padding: 20px 14px 60px; }
+  .note-header h1 { font-size: 22px; }
+  .trap-grid { grid-template-columns: 1fr; }
+  .formula-block .formula { font-size: 14px; }
+  .flow-chart { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+}

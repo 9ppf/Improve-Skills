@@ -914,5 +914,90 @@
     "total": 1,
     "level": "mastered",
     "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-181",
+    "timestamp": "2026-09-14T07:34:42.068Z",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-185",
+    "timestamp": "2026-09-14T07:35:06.425Z",
+    "type": "choice",
+    "chapter": "第4章 数组、广义表和串",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-tb-004",
+    "timestamp": "2026-09-16T08:26:41.310Z",
+    "type": "choice",
+    "chapter": "第2章 线性表",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-tb-007",
+    "timestamp": "2026-09-16T08:26:45.853Z",
+    "type": "choice",
+    "chapter": "第2章 线性表",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-tb-013",
+    "timestamp": "2026-09-17T07:26:03.195Z",
+    "type": "choice",
+    "chapter": "第2章 线性表",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "session": "today-task",
+    "wrongReason": "不知道怎么各个节点的位置"
+  },
+  {
+    "questionId": "q-13003-tb-006",
+    "timestamp": "2026-09-17T07:28:12.826Z",
+    "type": "choice",
+    "chapter": "第3章 栈和队列",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-tb-011",
+    "timestamp": "2026-09-17T07:28:21.506Z",
+    "type": "choice",
+    "chapter": "第3章 栈和队列",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "session": "today-task"
   }
 ]

@@ -210,15 +210,10 @@
   }
 
   // ============ API 基址 ============
-  var API_BASE = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
-  function apiUrl(path) { return API_BASE + path; }
+  var apiUrl = QuizUtils.apiUrl;
 
   // ============ 工具函数 ============
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+  var esc = QuizUtils.esc;
   function tsToMs(ts) { ts = ts || 0; return ts > 1e12 ? ts : ts * 1000; }
   function relTime(ts) {
     if (!ts) return '—';
@@ -892,11 +887,129 @@
     });
   }
 
+  // ============ 题库管理：视图切换（全部题目 / 专项练习） ============
+  var bankView = 'all';                 // all | ai
+  var aiPracticeBatches = [];           // 真题页 AI出题 生成的批次
+  var aiPracticeLoaded = false;         // 是否已拉取
+  var aiPracticeCollapsed = {};         // 源题 key → true 表示折叠（默认折叠）
+  var AI_TYPE_LABEL = {
+    choice: '选择题', fill: '填空题', calculate: '计算题',
+    shortAnswer: '简答题', essay: '论述题', proof: '证明题'
+  };
+
+  function bankSegHtml() {
+    return '<div class="ss-bank-seg">' +
+      '<button class="ss-bank-seg-btn zk-seg' + (bankView === 'all' ? ' zk-active' : '') +
+        '" data-bankview="all">📚 全部题目</button>' +
+      '<button class="ss-bank-seg-btn zk-seg' + (bankView === 'ai' ? ' zk-active' : '') +
+        '" data-bankview="ai">🎯 专项练习</button>' +
+      '</div>';
+  }
+
+  function loadAiPracticeForBank() {
+    fetch(apiUrl('/api/ai-practice?subject=' + currentSubject), { cache: 'no-cache' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        aiPracticeBatches = Array.isArray(data) ? data : [];
+        aiPracticeLoaded = true;
+        renderBankDefault();
+      })
+      .catch(function() {
+        aiPracticeBatches = [];
+        aiPracticeLoaded = true;
+        renderBankDefault();
+      });
+  }
+
+  // 专项练习视图：按「来源真题」分组，每组含若干生成批次
+  function renderAiPracticeView() {
+    if (!aiPracticeLoaded) return '<div class="ss-bank-empty">正在加载专项练习…</div>';
+    if (!aiPracticeBatches.length) {
+      return '<div class="ss-bank-empty">还没有专项练习。去「真题练习」页，在任意题目下点「🤖 AI出题」，' +
+        '生成的同类型题会自动汇总到这里。</div>';
+    }
+
+    var groups = {}, order = [], totalItems = 0;
+    aiPracticeBatches.forEach(function(b) {
+      var src = b.source || {};
+      var key = String(src.questionId || '') || '__none__';
+      if (!groups[key]) { groups[key] = { source: src, batches: [] }; order.push(key); }
+      groups[key].batches.push(b);
+      totalItems += (b.items || []).length;
+    });
+
+    var html = '<div class="ss-bank-stats">' +
+      '<span>共<b>' + totalItems + '</b>题</span>' +
+      '<span>来源真题<b>' + order.length + '</b>道</span>' +
+      '<span>生成批次<b>' + aiPracticeBatches.length + '</b></span>' +
+      '</div>';
+
+    html += '<div class="ss-ai-groups">';
+    order.forEach(function(key) {
+      var g = groups[key];
+      var src = g.source;
+      var items = 0;
+      g.batches.forEach(function(b) { items += (b.items || []).length; });
+      var collapsed = aiPracticeCollapsed[key] !== false;
+      html += '<div class="ss-ai-group">' +
+        '<div class="ss-ai-group-head" data-aigroup="' + esc(key) + '">' +
+          '<span class="ss-ai-group-badge">' + esc(src.type || '题目') + '</span>' +
+          '<span class="ss-ai-group-title">' + esc(src.title || '（按筛选条件生成）') + '</span>' +
+          '<span class="ss-ai-group-meta">' +
+            esc(src.year || '') + (src.chapter ? ' · ' + esc(src.chapter) : '') +
+            ' · ' + items + ' 题' +
+          '</span>' +
+          '<span class="ss-ai-group-toggle">' + (collapsed ? '展开 ▸' : '收起 ▾') + '</span>' +
+        '</div>' +
+        '<div class="ss-ai-group-body' + (collapsed ? ' zk-hidden' : '') + '">' +
+          g.batches.map(function(b, bi) { return aiBatchHtml(b, bi); }).join('') +
+        '</div>' +
+        '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  // 单个生成批次：批次头 + 题目列表
+  function aiBatchHtml(batch, bi) {
+    var items = batch.items || [];
+    var html = '<div class="ss-ai-batch">' +
+      '<div class="ss-ai-batch-head">第 ' + (bi + 1) + ' 批 · ' + items.length + ' 题 · ' +
+        esc(batch.generatedAt || '') + '</div>';
+    items.forEach(function(q, qi) {
+      var qType = AI_TYPE_LABEL[q.type] || q.typeLabel || '题目';
+      html += '<div class="ss-ai-q">' +
+        '<div class="ss-ai-q-row">' +
+          '<span class="ss-ai-q-num">' + (qi + 1) + '</span>' +
+          '<span class="ss-ai-q-text">' + esc(q.question || '') +
+            ' <span class="ss-ai-q-type">(' + esc(qType) + ')</span></span>' +
+          '<button class="ss-ai-q-reveal" data-aiqid="' + esc(q.id) + '">显示答案</button>' +
+        '</div>';
+      if (q.options && q.options.length) {
+        html += '<div class="ss-ai-q-options">';
+        q.options.forEach(function(opt) {
+          html += '<div class="ss-ai-q-option">' + esc(opt) + '</div>';
+        });
+        html += '</div>';
+      }
+      html += '<div class="ss-ai-q-detail zk-hidden" id="aidetail-' + esc(q.id) + '">' +
+        '<span class="ss-ai-q-dl-label">答案</span>' +
+        '<span class="ss-ai-q-ans">' + esc(q.answer || '') + '</span>' +
+        (q.explanation ? '<div class="ss-ai-q-expl"><span class="ss-ai-q-dl-label">解析</span>' +
+          esc(q.explanation) + '</div>' : '') +
+        '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
   function renderBankDefault(fromCardId) {
     var bankContainer = document.getElementById('bankContainer');
     if (!bankContainer) return;
 
     if (fromCardId) {
+      bankView = 'all';
       bankFilters = { chapter: '', cardId: fromCardId, type: '', status: 'wrong', search: '' };
     }
 
@@ -933,7 +1046,13 @@
       }
     });
 
-    var html = '<div class="ss-bank-toolbar">' +
+    // 视图切换：全部题目 / 专项练习
+    if (bankView === 'ai') {
+      bankContainer.innerHTML = bankSegHtml() + renderAiPracticeView();
+      return;
+    }
+
+    var html = bankSegHtml() + '<div class="ss-bank-toolbar">' +
       (fromCardId ? '<button class="ss-bank-back">← 返回复盘</button>' : '') +
       '<select class="ss-bank-filter ss-bf-chapter" data-filter="chapter">' +
         '<option value="">📖 全部章节</option>' +
@@ -1203,6 +1322,12 @@
     if (nameEl) nameEl.textContent = conf.name;
     document.title = conf.name + ' · 章节复盘';
 
+    // 切换科目时重置题库视图与专项练习缓存
+    bankView = 'all';
+    aiPracticeLoaded = false;
+    aiPracticeBatches = [];
+    aiPracticeCollapsed = {};
+
     Promise.all([
       fetch(apiUrl('/data/' + conf.kfFile), { cache: 'no-cache' }).then(function(r) { return r.json(); }),
       fetch(apiUrl('/api/quiz-records?subject=' + currentSubject), { cache: 'no-cache' }).then(function(r) { return r.json(); }),
@@ -1289,7 +1414,31 @@
     var bankContainer = document.getElementById('bankContainer');
     if (bankContainer) {
       bankContainer.addEventListener('click', function(e) {
-        if (e.target.classList.contains('ss-bank-back')) switchFeature('review');
+        var t = e.target;
+        if (t.classList.contains('ss-bank-back')) { switchFeature('review'); return; }
+        // 题库视图切换（全部题目 / 专项练习）
+        var segBtn = t.closest ? t.closest('[data-bankview]') : null;
+        if (segBtn) {
+          bankView = segBtn.dataset.bankview;
+          if (bankView === 'ai' && !aiPracticeLoaded) { loadAiPracticeForBank(); return; }
+          renderBankDefault();
+          return;
+        }
+        // 专项练习：按来源真题分组折叠
+        var grpHead = t.closest ? t.closest('[data-aigroup]') : null;
+        if (grpHead) {
+          var gk = grpHead.dataset.aigroup;
+          aiPracticeCollapsed[gk] = (aiPracticeCollapsed[gk] === false);
+          renderBankDefault();
+          return;
+        }
+        // 专项练习：显示/隐藏答案
+        var rev = t.closest ? t.closest('[data-aiqid]') : null;
+        if (rev) {
+          var detail = document.getElementById('aidetail-' + rev.dataset.aiqid);
+          if (detail) detail.classList.toggle('zk-hidden');
+          return;
+        }
       });
     }
 

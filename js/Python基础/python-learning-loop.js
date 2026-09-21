@@ -172,11 +172,7 @@
           (fullLoops ? "，其中 <b>" + fullLoops + "</b> 个已走完全部 5 步。" : "。");
       }
 
-      function escapeHtml(s) {
-        return String(s).replace(/[&<>"']/g, function (c) {
-          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-        });
-      }
+      var escapeHtml = QuizUtils.esc;
 
       function updateFilterUI() {
         var filter = getFilter();

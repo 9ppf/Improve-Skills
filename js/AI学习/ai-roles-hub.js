@@ -637,84 +637,31 @@
     aiSendBtn.disabled = true;
     aiSendBtn.textContent = "AI 思考中...";
 
-    fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: conversationHistory, model: "deepseek-v4-flash", stream: true })
-    }).then(function(response) {
-      if (!response.ok) {
-        return response.json().then(function(err) {
-          throw new Error(err.error || ("HTTP " + response.status));
-        });
+    AIChat.stream({
+      messages: conversationHistory,
+      model: "deepseek-v4-flash",
+      onChunk: function(delta, fullText) {
+        if (bubble.textContent.indexOf("正在思考") === 0) {
+          bubble.textContent = "";
+        }
+        bubbleEl.classList.remove("typing");
+        bubble.innerHTML = AIChat.formatText(fullText);
+      },
+      onDone: function(fullText) {
+        if (fullText) {
+          conversationHistory.push({ role: "assistant", content: fullText });
+        }
+        aiSendBtn.disabled = false;
+        aiSendBtn.textContent = "发送追问";
+        aiFollowUp.focus();
+      },
+      onError: function(err) {
+        bubbleEl.classList.remove("typing");
+        bubbleEl.classList.add("error");
+        bubble.textContent = "❌ " + AIChat.formatError(err);
+        aiSendBtn.disabled = false;
+        aiSendBtn.textContent = "发送追问";
       }
-      var reader = response.body.getReader();
-      var decoder = new TextDecoder();
-      var fullText = "";
-
-      function readChunk() {
-        reader.read().then(function(result) {
-          if (result.done) {
-            bubbleEl.classList.remove("typing");
-            if (fullText) {
-              conversationHistory.push({ role: "assistant", content: fullText });
-            }
-            aiSendBtn.disabled = false;
-            aiSendBtn.textContent = "发送追问";
-            aiFollowUp.focus();
-            return;
-          }
-          var chunk = decoder.decode(result.value, { stream: true });
-          var lines = chunk.split("\n");
-          for (var i = 0; i < lines.length; i++) {
-            var line = lines[i].trim();
-            if (line.startsWith("data: ") && line !== "data: [DONE]") {
-              try {
-                var parsed = JSON.parse(line.slice(6));
-                if (parsed.error) {
-                  bubbleEl.classList.remove("typing");
-                  bubbleEl.classList.add("error");
-                  bubble.textContent = "❌ " + parsed.error;
-                  aiSendBtn.disabled = false;
-                  aiSendBtn.textContent = "发送追问";
-                  return;
-                }
-                var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta;
-                if (delta && delta.reasoning_content) {
-                  if (!fullText) {
-                    bubble.textContent = "💭 思考中...\n\n";
-                    bubbleEl.classList.remove("typing");
-                  }
-                }
-                if (delta && delta.content) {
-                  if (bubble.textContent.indexOf("💭 思考中") === 0) {
-                    bubble.textContent = "";
-                  }
-                  fullText += delta.content;
-                  bubble.textContent = fullText;
-                }
-              } catch (e) { /* partial chunk, skip */ }
-            }
-          }
-          if (fullText) { bubbleEl.classList.remove("typing"); }
-          readChunk();
-        });
-      }
-      readChunk();
-    }).catch(function(err) {
-      bubbleEl.classList.remove("typing");
-      bubbleEl.classList.add("error");
-      var msg = err.message || "";
-      if (msg.indexOf("Insufficient Balance") !== -1) {
-        bubble.textContent = "❌ DeepSeek 账户余额不足\n\n请访问 platform.deepseek.com 充值（¥10 即可使用数月），充值后重试。";
-      } else if (msg.indexOf("401") !== -1 || msg.toLowerCase().indexOf("invalid api key") !== -1) {
-        bubble.textContent = "❌ API Key 无效\n\n请检查 .env 文件中的 DEEPSEEK_API_KEY 是否正确。";
-      } else if (msg.indexOf("Failed to fetch") !== -1 || msg.indexOf("NetworkError") !== -1) {
-        bubble.textContent = "❌ 无法连接服务器\n\n请确认 dev_server.py 正在运行（python dev_server.py）。";
-      } else {
-        bubble.textContent = "❌ " + msg + "\n\n请确认 dev_server.py 正在运行。";
-      }
-      aiSendBtn.disabled = false;
-      aiSendBtn.textContent = "发送追问";
     });
   }
 

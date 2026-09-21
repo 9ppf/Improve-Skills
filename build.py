@@ -646,6 +646,47 @@ def _render_template(template: str, context: dict[str, str]) -> str:
     return html
 
 
+_JS_SRC_RE = re.compile(
+    r'(<script\s+src=")([^"]+?\.js)(\?v=[^"]*)?("[^>]*>)'
+)
+
+
+def inject_js_version() -> str:
+    """Inject ?v=build-timestamp into all <script src> tags under Workbench/.
+
+    Scans every .html file in Workbench/ and its subdirectories, finds
+    <script src="...js"> tags, and adds or replaces the ?v= parameter
+    with the current build timestamp. This forces browsers to fetch the
+    latest JS after each build, preventing stale-cache bugs.
+
+    Returns the version string that was injected.
+    """
+    version = datetime.now().strftime('%Y%m%d%H%M')
+    workbench_dir = ROOT / 'Workbench'
+    if not workbench_dir.exists():
+        return version
+
+    count = 0
+    for html_file in workbench_dir.rglob('*.html'):
+        try:
+            content = html_file.read_text(encoding='utf-8')
+        except OSError:
+            continue
+
+        def _replace(match):
+            nonlocal count
+            prefix, src, _old_v, suffix = match.groups()
+            count += 1
+            return f'{prefix}{src}?v={version}{suffix}'
+
+        new_content = _JS_SRC_RE.sub(_replace, content)
+        if new_content != content:
+            html_file.write_text(new_content, encoding='utf-8')
+
+    print(f'  injected ?v={version} into {count} script tags')
+    return version
+
+
 def build() -> Path:
     """Run the full build process."""
     print('Loading workbench config...')
@@ -703,6 +744,9 @@ def build() -> Path:
 
     print('Writing workbench...')
     WORKBENCH.write_text(html, encoding='utf-8')
+
+    print('Injecting JS cache-busting version...')
+    version = inject_js_version()
 
     print('Validating JS syntax...')
     try:

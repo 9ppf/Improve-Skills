@@ -3,16 +3,9 @@
 // 抽离自 today-flow.html
 // ============================================================
 
-var API_BASE = '';
-if (location.protocol === 'file:') API_BASE = 'http://localhost:8000';
-function apiUrl(p) { return API_BASE + p; }
+var apiUrl = QuizUtils.apiUrl;
 function fetchJson(p) { return fetch(apiUrl(p)); }
-function escapeHtml(s) {
-  if (!s) return '';
-  return String(s).replace(/[&<>"']/g, function(c) {
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-  });
-}
+var escapeHtml = QuizUtils.esc;
 
 function pickRandom(arr, n) {
   var pool = arr.slice();
@@ -138,53 +131,43 @@ function aiGenerateAgentTasks(originalTasks) {
   prompt += '3. 每个任务后面用一句话说明为什么优先安排\n\n';
   prompt += '请输出JSON数组，每个元素包含：index（原任务序号，从1开始）、reason（优先原因）。只输出JSON，不要其他文字。';
 
-  fetch(apiUrl('/api/chat'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], model: 'deepseek-v4-flash', stream: false, max_tokens: 600 })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    var text = '';
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      text = data.choices[0].message.content || '';
-    }
-    // parse JSON from response
-    var match = text.match(/\[[\s\S]*\]/);
-    if (!match) return;
-    try {
-      var reorder = JSON.parse(match[0]);
-      var taskMap = {};
-      reorder.forEach(function(item) { taskMap[item.index] = item; });
-      // reorder tasks
-      var reordered = [];
-      var used = {};
-      // first: AI-reordered order
-      for (var i = 0; i < reorder.length; i++) {
-        var idx = reorder[i].index - 1;
-        if (idx >= 0 && idx < originalTasks.length && !used[idx]) {
-          var t = originalTasks[idx];
-          t._aiReason = reorder[i].reason || '';
-          reordered.push(t);
-          used[idx] = true;
+  AIChat.ask({
+    prompt: prompt,
+    model: 'deepseek-v4-flash',
+    maxTokens: 600,
+    onDone: function(text) {
+      var match = text.match(/\[[\s\S]*\]/);
+      if (!match) return;
+      try {
+        var reorder = JSON.parse(match[0]);
+        var taskMap = {};
+        reorder.forEach(function(item) { taskMap[item.index] = item; });
+        var reordered = [];
+        var used = {};
+        for (var i = 0; i < reorder.length; i++) {
+          var idx = reorder[i].index - 1;
+          if (idx >= 0 && idx < originalTasks.length && !used[idx]) {
+            var t = originalTasks[idx];
+            t._aiReason = reorder[i].reason || '';
+            reordered.push(t);
+            used[idx] = true;
+          }
         }
-      }
-      // append any missed tasks
-      for (var i = 0; i < originalTasks.length; i++) {
-        if (!used[i]) reordered.push(originalTasks[i]);
-      }
-      aiTaskList = reordered;
-      // re-render if todayData already set
-      if (todayData) {
-        todayData.tasks = reordered;
-        currentTaskIdx = 0;
-        renderTask();
-        renderOverview();
-        aiAddMsg('ai', '🧠 已根据掌握状态重新排列今日任务，优先攻克薄弱点。');
-      }
-    } catch(e) {}
-  })
-  .catch(function() {});
+        for (var i = 0; i < originalTasks.length; i++) {
+          if (!used[i]) reordered.push(originalTasks[i]);
+        }
+        aiTaskList = reordered;
+        if (todayData) {
+          todayData.tasks = reordered;
+          currentTaskIdx = 0;
+          renderTask();
+          renderOverview();
+          aiAddMsg('ai', '🧠 已根据掌握状态重新排列今日任务，优先攻克薄弱点。');
+        }
+      } catch(e) {}
+    },
+    onError: function() {}
+  });
 }
 
 // ===== ④ 反馈：更新掌握状态 =====
@@ -1060,59 +1043,37 @@ function aiSend() {
 
 function aiCall(prompt, callback) {
   var loadingEl = aiAddMsg('loading', 'AI 思考中...');
-  fetch(apiUrl('/api/chat'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], model: 'deepseek-v4-flash', stream: false, max_tokens: 300 })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    loadingEl.remove();
-    var text = '';
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      text = data.choices[0].message.content || '';
-    } else if (data.response) {
-      text = data.response;
-    } else if (data.content) {
-      text = data.content;
-    } else if (data.error) {
-      text = '⚠️ ' + data.error;
+  AIChat.ask({
+    prompt: prompt,
+    model: 'deepseek-v4-flash',
+    maxTokens: 300,
+    onDone: function(text) {
+      loadingEl.remove();
+      if (!text) text = '（无回复）';
+      callback(text);
+    },
+    onError: function(e) {
+      loadingEl.remove();
+      aiAddMsg('ai', '⚠️ 请求失败：' + AIChat.formatError(e));
     }
-    if (!text) text = '（无回复）';
-    callback(text);
-  })
-  .catch(function(e) {
-    loadingEl.remove();
-    aiAddMsg('ai', '⚠️ 请求失败：' + (e.message || '网络错误'));
   });
 }
 
 function aiCallDirect(messages, callback) {
   var loadingEl = aiAddMsg('loading', 'AI 思考中...');
-  fetch(apiUrl('/api/chat'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: messages, model: 'deepseek-v4-flash', stream: false, max_tokens: 800 })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    loadingEl.remove();
-    var text = '';
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      text = data.choices[0].message.content || '';
-    } else if (data.response) {
-      text = data.response;
-    } else if (data.content) {
-      text = data.content;
-    } else if (data.error) {
-      text = '⚠️ ' + data.error;
+  AIChat.chat({
+    messages: messages,
+    model: 'deepseek-v4-flash',
+    maxTokens: 800,
+    onDone: function(text) {
+      loadingEl.remove();
+      if (!text) text = '（无回复）';
+      callback(text);
+    },
+    onError: function(e) {
+      loadingEl.remove();
+      aiAddMsg('ai', '⚠️ 请求失败：' + AIChat.formatError(e));
     }
-    if (!text) text = '（无回复）';
-    callback(text);
-  })
-  .catch(function(e) {
-    loadingEl.remove();
-    aiAddMsg('ai', '⚠️ 请求失败：' + (e.message || '网络错误'));
   });
 }
 

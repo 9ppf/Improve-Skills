@@ -298,11 +298,7 @@ function addTask() {
   showToast('已添加任务');
 }
 
-function escapeHtml(str) {
-  var div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
+var escapeHtml = QuizUtils.esc;
 
 // ---------- Overall Progress ----------
 function renderOverall(pyKt, pyLoop, exam, recite) {
@@ -414,8 +410,7 @@ function renderCards() {
 var SCHEDULE_STORAGE_KEY = 'schedule_data';
 var SCHEDULE_VERSION_KEY = 'schedule_data_version';
 var SCHEDULE_VERSION = 'v3.4.1'; // 更新计划数据时递增此版本号，自动清除旧缓存
-var API_BASE = (location.protocol === 'file:') ? 'http://localhost:8000' : '';
-function apiUrl(path) { return API_BASE + path; }
+var apiUrl = QuizUtils.apiUrl;
 function apiPost(url, data) {
   try { fetch(apiUrl(url), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(function(e) {}); } catch(e) {}
 }
@@ -756,53 +751,38 @@ function aiCall(messages, callback, isChat) {
 }
 
 function aiDoFetch(messages, callback) {
-  fetch(apiUrl('/api/chat'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      messages: messages,
-      model: 'deepseek-v4-flash',
-      stream: false,
-      max_tokens: 3000
-    })
-  }).then(function(res) {
-    if (!res.ok) {
-      return res.text().then(function(txt) {
-        var errMsg = txt;
-        try { errMsg = JSON.parse(txt).error || txt; } catch(e) {}
-        throw new Error(errMsg || ('服务器错误 ' + res.status));
-      });
-    }
-    return res.json();
-  }).then(function(data) {
-    aiStopProgress();
-    AI_LOADING = false;
-    AI_RETRY_CONTEXT = null;
-    var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-    document.getElementById('aiStatus').textContent = '✅ 收到 AI 响应，正在处理…';
-    // try-catch 防止回调内 JS 错误导致无输出
-    try {
-      callback(content || '');
-    } catch(cbErr) {
-      console.error('[AI] 回调执行出错:', cbErr);
-      document.getElementById('aiStatus').textContent = '⚠️ 内部错误：' + cbErr.message + '（请截图控制台联系修复）';
-    }
-  }).catch(function(err) {
-    aiStopProgress();
-    console.error('[AI] 请求失败:', err.message);
-    // 自动重试 1 次
-    if (AI_RETRY_CONTEXT && AI_RETRY_CONTEXT.retryCount < 1) {
-      AI_RETRY_CONTEXT.retryCount++;
-      document.getElementById('aiStatus').innerHTML =
-        '<span class="ai-loading">🔄 连接中断，2 秒后自动重试…</span>';
-      setTimeout(function() {
-        AI_START_TIME = Date.now();
-        aiStartProgress();
-        aiDoFetch(messages, callback);
-      }, 2000);
-    } else {
+  AIChat.chat({
+    messages: messages,
+    model: 'deepseek-v4-flash',
+    maxTokens: 3000,
+    onDone: function(content) {
+      aiStopProgress();
       AI_LOADING = false;
-      aiShowRetryButtons(err.message);
+      AI_RETRY_CONTEXT = null;
+      document.getElementById('aiStatus').textContent = '✅ 收到 AI 响应，正在处理…';
+      try {
+        callback(content || '');
+      } catch(cbErr) {
+        console.error('[AI] 回调执行出错:', cbErr);
+        document.getElementById('aiStatus').textContent = '⚠️ 内部错误：' + cbErr.message + '（请截图控制台联系修复）';
+      }
+    },
+    onError: function(err) {
+      aiStopProgress();
+      console.error('[AI] 请求失败:', err.message);
+      if (AI_RETRY_CONTEXT && AI_RETRY_CONTEXT.retryCount < 1) {
+        AI_RETRY_CONTEXT.retryCount++;
+        document.getElementById('aiStatus').innerHTML =
+          '<span class="ai-loading">🔄 连接中断，2 秒后自动重试…</span>';
+        setTimeout(function() {
+          AI_START_TIME = Date.now();
+          aiStartProgress();
+          aiDoFetch(messages, callback);
+        }, 2000);
+      } else {
+        AI_LOADING = false;
+        aiShowRetryButtons(err.message);
+      }
     }
   });
 }
