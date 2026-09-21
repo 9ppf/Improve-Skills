@@ -26,6 +26,7 @@ Usage:
 """
 
 import argparse
+import hashlib
 import importlib
 import json
 import re
@@ -651,17 +652,42 @@ _JS_SRC_RE = re.compile(
 )
 
 
-def inject_js_version() -> str:
-    """Inject ?v=build-timestamp into all <script src> tags under Workbench/.
+def _js_content_hash() -> str:
+    """按页面实际加载的 JS 源文件内容算出缓存版本号。
 
-    Scans every .html file in Workbench/ and its subdirectories, finds
-    <script src="...js"> tags, and adds or replaces the ?v= parameter
-    with the current build timestamp. This forces browsers to fetch the
-    latest JS after each build, preventing stale-cache bugs.
+    只把 js/、data/、Workbench/data/、styles/shared/ 下的 .js 内容纳入哈希，
+    内容不变则版本号不变。这样重复构建不会产生无意义的文件改动，
+    也不会让 Workbench 下几十个 HTML 每次构建都变成"已修改"。
+    """
+    roots = [ROOT / 'js', DATA_DIR, ROOT / 'Workbench' / 'data', ROOT / 'styles' / 'shared']
+    files: list[Path] = []
+    for root in roots:
+        if root.exists():
+            files.extend(sorted(root.rglob('*.js')))
+    digest = hashlib.md5()
+    for path in files:
+        try:
+            rel = path.relative_to(ROOT).as_posix()
+        except ValueError:
+            rel = path.as_posix()
+        digest.update(rel.encode('utf-8'))
+        try:
+            digest.update(path.read_bytes())
+        except OSError:
+            continue
+    return digest.hexdigest()[:8]
+
+
+def inject_js_version() -> str:
+    """Inject ?v=<js-content-hash> into all <script src> tags under Workbench/.
+
+    遍历 Workbench/ 下全部 HTML，把 <script src="...js"> 的 ?v= 统一替换成
+    由 JS 源码内容算出的版本号，避免浏览器加载到旧 JS。
+    版本号取内容哈希而非时间戳：源码没动时重复构建不会改写任何文件。
 
     Returns the version string that was injected.
     """
-    version = datetime.now().strftime('%Y%m%d%H%M')
+    version = _js_content_hash()
     workbench_dir = ROOT / 'Workbench'
     if not workbench_dir.exists():
         return version
