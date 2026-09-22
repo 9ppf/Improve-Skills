@@ -562,7 +562,11 @@ def _cleanup_old_backups(directory: Path, pattern: str, keep: int = 3) -> list[P
     """Keep the most recent backup files matching pattern, remove the rest."""
     removed = []
     # 按修改时间倒序，保留前 keep 个
-    backups = sorted(directory.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
+    backups = sorted(
+        (p for p in directory.glob(pattern) if p.exists()),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
     for old in backups[keep:]:
         _remove_path(old)
         removed.append(old)

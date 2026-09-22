@@ -301,9 +301,15 @@
   // ============ 按概念聚合答题统计 ============
   function buildConceptStats() {
     var stats = {};
-    if (!quizRecords || !quizBank) return stats;
+    if (!quizRecords) return stats;
     var qMap = {};
-    quizBank.forEach(function(q) { if (q.id && q.cardId) qMap[q.id] = q.cardId; });
+    if (quizBank) {
+      quizBank.forEach(function(q) { if (q.id && q.cardId) qMap[q.id] = q.cardId; });
+    }
+    var ed = getExamData();
+    if (ed && ed.questions) {
+      ed.questions.forEach(function(q) { if (q.id && q.cardId) qMap[q.id] = q.cardId; });
+    }
     var seen = {};
     quizRecords.forEach(function(r) {
       if (!r) return;
@@ -954,7 +960,7 @@
       html += '<div class="ss-ai-group">' +
         '<div class="ss-ai-group-head" data-aigroup="' + esc(key) + '">' +
           '<span class="ss-ai-group-badge">' + esc(src.type || '题目') + '</span>' +
-          '<span class="ss-ai-group-title">' + esc(src.title || '（按筛选条件生成）') + '</span>' +
+          '<span class="ss-ai-group-title">' + esc(src.question || '（按筛选条件生成）') + '</span>' +
           '<span class="ss-ai-group-meta">' +
             esc(src.year || '') + (src.chapter ? ' · ' + esc(src.chapter) : '') +
             ' · ' + items + ' 题' +
@@ -1347,8 +1353,26 @@
   function loadReviewInsight() {
     var container = document.getElementById("reviewInsight");
     if (!container) return;
-    var total = quizRecords ? quizRecords.length : 0;
-    var wrong = quizRecords ? quizRecords.filter(function(r) { return r && r.isCorrect === false; }).length : 0;
+    var total = 0, wrong = 0;
+    var srcStats = { practice: { total: 0, wrong: 0 }, exam: { total: 0, wrong: 0 }, ai: { total: 0, wrong: 0 } };
+    if (quizRecords) {
+      var latest = {};
+      quizRecords.forEach(function(r) {
+        if (!r || !r.questionId) return;
+        var prev = latest[r.questionId];
+        if (!prev || (r.timestamp && prev.timestamp && r.timestamp > prev.timestamp)) {
+          latest[r.questionId] = r;
+        }
+      });
+      Object.keys(latest).forEach(function(qid) {
+        total++;
+        var r = latest[qid];
+        var src = (r.source || 'practice');
+        if (!srcStats[src]) srcStats[src] = { total: 0, wrong: 0 };
+        srcStats[src].total++;
+        if (!r.isCorrect) { wrong++; srcStats[src].wrong++; }
+      });
+    }
     var correctRate = total > 0 ? Math.round((total - wrong) / total * 100) : 0;
 
     if (total === 0) {
@@ -1375,6 +1399,11 @@
         '<span class="ss-insight-stat"><span class="ss-insight-num green">' + correctRate + '%</span> <span class="ss-insight-label">正确率</span></span>' +
         '<span class="ss-insight-divider"></span>' +
         '<span class="ss-insight-stat"><span class="ss-insight-num coral">' + wrong + '</span> <span class="ss-insight-label">错题</span></span>' +
+      '</div>' +
+      '<div class="ss-insight-sources">' +
+        (srcStats.practice.total > 0 ? '<span class="ss-src-tag ss-src-practice">练习 ' + srcStats.practice.total + '(' + srcStats.practice.wrong + '错)</span>' : '') +
+        (srcStats.exam.total > 0 ? '<span class="ss-src-tag ss-src-exam">真题 ' + srcStats.exam.total + '(' + srcStats.exam.wrong + '错)</span>' : '') +
+        (srcStats.ai.total > 0 ? '<span class="ss-src-tag ss-src-ai">AI ' + srcStats.ai.total + '(' + srcStats.ai.wrong + '错)</span>' : '') +
       '</div>' +
     '</div>';
   }
@@ -1462,6 +1491,9 @@
     loadAllAndRender();
   }
 
-  if (document.readyState !== 'loading') init();
-  else document.addEventListener('DOMContentLoaded', init);
+  function startInit() {
+    (window.examDataReady || Promise.resolve()).then(init);
+  }
+  if (document.readyState !== 'loading') startInit();
+  else document.addEventListener('DOMContentLoaded', startInit);
 })();

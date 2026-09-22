@@ -797,7 +797,7 @@ document.getElementById('filterChapter').addEventListener('change', renderCards)
 document.getElementById('filterMastery').addEventListener('change', renderCards);
 document.getElementById('addCardBtn').addEventListener('click', addCard);
 
-loadData();
+(window.examDataReady || Promise.resolve()).then(function() { loadData(); });
 var dataBase = API_BASE ? API_BASE + '/data' : '../../data';
 // 三科均改用知识框架 JSON 作为数据源
 var cardSources = [

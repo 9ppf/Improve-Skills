@@ -4,6 +4,45 @@
 
 ---
 
+## v2.42.0
+
+**发布时间**：2026-09-22（北京时间）
+
+### 三页面统一判分 + 错题本页面 + 题库管理独立页 + 组件提取与复用
+
+**核心变更**：将练习测验、真题练习、错题本三个页面的判分逻辑统一到共享函数（`quiz-helpers.js` 中的 `scoreChoice/scoreFill/scoreCalculate/scorePointsBased/scoreProof/scoreQuestion`），消除各页面独立判分的割裂感。新增独立错题本页面（跨三个题库来源汇总错题，支持直接答题与已解决标记）。题库管理从复盘总结页抽离为独立页面。统一题目渲染架构为「分发器→共享函数」模式，所有按钮改为 `data-action` 委托，按钮样式统一为镂空设计。答题记录改为追加式存储，保留历史记录。
+
+| 文件 | 更新内容 |
+|---|---|
+| `js/shared/quiz-helpers.js` | 新增：共享判分函数（normalize/getLevel/scoreChoice/scoreFill/scoreCalculate/scorePointsBased/scoreProof/scoreQuestion 分发器），统一三个页面判分逻辑；新增：共享渲染函数（renderCard/renderChoiceCard/renderFillCard/renderTextCard/answerRow/renderReference/renderScoreHeader/renderWrongReason/renderSelfEval/renderSymbolPalette/renderQuizPhoto） |
+| `js/自考学习/练习测验.js` | 修改：删除本地判分函数，委托 H.scoreChoice/scoreFill/scoreQuestion；submitText 对无 points/steps 的主观题回退到自评；渲染函数委托 H.renderCard |
+| `js/自考学习/真题练习.js` | 修改：submit-choice/submit-fill/submit-text 改用 H.scoreChoice/scoreFill/scoreQuestion；saveExamRecord 接受 result 对象；submit-text 对无结构化数据的题目回退到自评 |
+| `js/自考学习/错题本.js` | 新增：独立错题本页面逻辑，合并三个题库（quiz-bank/exam-data/ai-practice）筛选 isCorrect=false 记录；修改：submit-choice/submit-fill/submit-text 改用共享判分函数；saveRecord 接受 result 对象；删除本地 scoreFill 函数 |
+| `js/自考学习/题库管理.js` | 新增：从复盘总结页抽离的独立题库管理页面，新增题目来源筛选（练习/真题/专项），删除新增题目功能 |
+| `js/自考学习/exam-data-loader.js` | 新增：真题数据加载器，供错题本和题库管理页面引用 |
+| `js/自考学习/复盘总结-章节复盘.js` | 修改：错题数据来源改为与错题本一致（合并 quiz-bank/exam-data/ai-practice）；已解决标记逻辑迁移到 API |
+| `styles/自考学习/真题练习-真题与错题本.css` | 修改：按钮样式统一为镂空设计（透明背景+彩色边框+彩色文字，悬停填充）；状态指示图标保留 |
+| `styles/自考学习/错题本.css` | 新增：错题本页面专属样式 |
+| `styles/自考学习/题库管理.css` | 新增：题库管理页面专属样式 |
+| `styles/自考学习/复盘总结.css` | 修改：移除题库管理相关样式 |
+| `dev_server.py` | 新增：`/api/wrong-solved`（错题已解决标记读写），答题记录改为追加式存储 |
+| `data/modules/self-study.json` | 修改：导航新增「错题本」和「题库管理」条目，调整顺序 |
+| `data/quiz-bank-02324.json` | 修改：填空题 blanks 字段从字符串数组统一为对象数组格式，去除 UTF-8 BOM |
+| `data/exam-data-02324.js` | 修改：真题字段统一（title→question，中文 type→英文，选择题 answer 仅保留字母） |
+| `data/exam-data-13003.js` | 修改：同上字段统一 |
+| `data/exam-data-13015.js` | 修改：同上字段统一 |
+| `Workbench/自考学习/错题本.html` | 新增：错题本页面 HTML |
+| `Workbench/自考学习/题库管理.html` | 新增：题库管理页面 HTML |
+| Workbench 下约 40 个 HTML | 修改：build.py 自动注入版本参数 |
+
+**统一判分逻辑**：选择题直接比对字母；填空题支持有序/无序匹配 + 同义词；计算题模糊匹配（包含/被包含/相等）；简答/论述题通过 points 关键词数组匹配；证明题通过 steps 关键词数组匹配。无结构化数据（points/steps）的题目自动回退到自评三档按钮。三个页面的判分行为完全一致。
+
+**错题本页面**：通过 URL 参数 `?subject=xxx` 控制科目，合并三个题库来源的错题记录，支持来源/章节/题型/状态筛选，支持直接答题（提交→判分→写回 quiz-records→标记已解决），已解决标记通过 API 持久化到 `wrong-solved-{科目}.json`。
+
+**组件提取与复用**：渲染函数和判分函数集中在 `quiz-helpers.js`，通过 `opts` 参数控制功能差异（showPhoto/showSymbol/showPoints/showSteps/showAIGen/showRedo/showYear 等）。所有按钮事件改为 `data-action` 委托，禁止内联 `onclick`。按钮样式统一为镂空设计。
+
+---
+
 ## v2.41.1
 
 **发布时间**：2026-09-21（北京时间）

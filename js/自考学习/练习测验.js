@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // 练习测验 - 在线测验 页面 JS
 // 抽离自 练习测验-在线测验.html
 // ============================================================
@@ -289,10 +289,13 @@ function compressImage(file, callback) {
 }
 
 /* 拍照上传处理：压缩→存 localStorage→创建答题记录→显示自评按钮 */
-function uploadQuizPhoto(qId) {
-  var input = document.getElementById('photo-input-' + qId);
-  if (!input || !input.files || !input.files[0]) return;
-  compressImage(input.files[0], function(dataURL) {
+function uploadQuizPhoto(qId, file) {
+  var inputFile = file || (function() {
+    var el = document.getElementById('photo-input-' + qId);
+    return el && el.files ? el.files[0] : null;
+  })();
+  if (!inputFile) return;
+  compressImage(inputFile, function(dataURL) {
     savePhoto(qId, dataURL);
     if (!results[qId]) {
       var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
@@ -307,23 +310,9 @@ function uploadQuizPhoto(qId) {
   });
 }
 
-/* 渲染照片缩略图（点击新窗口查看原图） */
+/* 拍照缩略图 — 委托共享函数 */
 function renderQuizPhoto(qId) {
-  var photo = loadPhoto(qId);
-  if (!photo) return '';
-  return '<div class="quiz-photo zk-show"><div class="quiz-photo-label">📷 我的拍照</div>' +
-    '<img src="'+photo+'" class="quiz-photo-img" onclick="window.open(this.src, \'_blank\')"/></div>';
-}
-
-function normalize(str) {
-  if (!str) return '';
-  return str.replace(/\s+/g, '').replace(/[，。、；：""''（）\(\)\[\]\{\}]/g, '').toLowerCase();
-}
-
-function getLevel(score, total, passThreshold) {
-  if (score >= passThreshold) return 'mastered';
-  if (score >= Math.ceil(passThreshold * 0.5)) return 'unsure';
-  return 'unknown';
+  return H.renderPhoto(loadPhoto(qId));
 }
 
 function levelText(level) {
@@ -395,15 +384,15 @@ function saveQuizRecord(q, userAnswer, userSelection, result) {
       score: result.score,
       total: result.total,
       level: result.level,
+      source: 'practice',
       session: currentMode === 'today' ? 'today-task' : 'free-practice'
     };
     var payload = { subject: currentSubject, record: record };
-    // 先写本地 localStorage（防止页面被 reload 时连兜底都来不及执行）
+    // 先写本地 localStorage（追加式，不去重）
     var pending = getPendingRecords();
-    pending = pending.filter(function(p) { return p.record.questionId !== record.questionId; });
     pending.push(payload);
     setPendingRecords(pending);
-    // 再异步发请求，成功则清本地
+    // 再异步发请求，成功则按 timestamp 移除本地条目
     fetch(apiUrl('/api/quiz-records'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -411,9 +400,8 @@ function saveQuizRecord(q, userAnswer, userSelection, result) {
     }).then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       var cur = getPendingRecords();
-      var before = cur.length;
-      cur = cur.filter(function(p) { return p.record.questionId !== record.questionId; });
-      if (cur.length !== before) setPendingRecords(cur);
+      cur = cur.filter(function(p) { return p.record.timestamp !== record.timestamp; });
+      setPendingRecords(cur);
     }).catch(function(e) {
       console.warn('记录保存到服务器失败，已暂存本地，下次加载时自动重传:', e);
     });
@@ -433,7 +421,7 @@ function setPendingRecords(arr) {
 function flushPendingRecords() {
   var pending = getPendingRecords();
   if (!pending.length) return Promise.resolve();
-  // 逐个重传，成功就从队列里移除，返回 Promise 以便链式调用
+  // 逐个重传，成功就按 timestamp 从队列里移除
   var promises = pending.map(function(payload) {
     return fetch(apiUrl('/api/quiz-records'), {
       method: 'POST',
@@ -442,7 +430,7 @@ function flushPendingRecords() {
     }).then(function(r) {
       if (r.ok) {
         var remaining = getPendingRecords().filter(function(p) {
-          return p.record.questionId !== payload.record.questionId;
+          return p.record.timestamp !== payload.record.timestamp;
         });
         setPendingRecords(remaining);
         return true;
@@ -568,479 +556,127 @@ function startAutoSync() {
   };
 }
 
-/* ====== SCORERS ====== */
-
-function scoreChoice(q, userSelection) {
-  var correct = q.answer;
-  var isCorrect = false;
-  if (q.subType === 'multi') {
-    var userSet = (userSelection || '').split('').sort().join('');
-    var correctSet = correct.split('').sort().join('');
-    isCorrect = userSet === correctSet;
-  } else {
-    // 默认按单选题处理（subType 为 'single'、'judge' 或未定义）
-    isCorrect = userSelection === correct;
-  }
-  return {
-    score: isCorrect ? 1 : 0, total: 1,
-    level: isCorrect ? 'mastered' : 'unknown',
-    details: { isCorrect: isCorrect, userAnswer: userSelection, correctAnswer: correct }
-  };
-}
-
-function scoreFill(q, userAnswers) {
-  var hits = [], hitCount = 0;
-  if (q.unordered) {
-    // 无序匹配：每个用户答案只能匹配一个正确答案（贪心算法）
-    var usedUserIdx = {}; // 已匹配的用户答案索引
-    q.blanks.forEach(function(b, blankIdx) {
-      var allTerms = [b.answer].concat(b.synonyms || []);
-      var matched = false;
-      var matchedUserIdx = -1;
-      for (var k=0; k<userAnswers.length; k++) {
-        if (usedUserIdx[k]) continue;
-        var ua = normalize(userAnswers[k] || '');
-        for (var j=0; j<allTerms.length; j++) {
-          if (ua.indexOf(normalize(allTerms[j])) >= 0) {
-            matched = true;
-            matchedUserIdx = k;
-            break;
-          }
-        }
-        if (matched) break;
-      }
-      if (matched) usedUserIdx[matchedUserIdx] = true;
-      hits.push({ idx: blankIdx, userAnswer: userAnswers[matchedUserIdx]||'', correctAnswer: b.answer, matched: matched });
-      if (matched) hitCount++;
-    });
-  } else {
-    // 有序匹配：按位置一一对应
-    q.blanks.forEach(function(b, i) {
-      var ua = normalize(userAnswers[i] || '');
-      var allTerms = [b.answer].concat(b.synonyms || []);
-      var matched = false;
-      for (var j=0; j<allTerms.length; j++) {
-        if (ua.indexOf(normalize(allTerms[j])) >= 0) { matched = true; break; }
-      }
-      hits.push({ idx: i, userAnswer: userAnswers[i]||'', correctAnswer: b.answer, matched: matched });
-      if (matched) hitCount++;
-    });
-  }
-  var threshold = Math.ceil(q.blanks.length * 0.6);
-  return {
-    score: hitCount, total: q.blanks.length,
-    level: getLevel(hitCount, q.blanks.length, threshold),
-    details: { hits: hits }
-  };
-}
-
-function scoreCalculate(q, userAnswer) {
-  var normUser = normalize(userAnswer);
-  var allTerms = [q.answer].concat(q.answerAliases || []);
-  var matched = false;
-  for (var i=0; i<allTerms.length; i++) {
-    var normTerm = normalize(allTerms[i]);
-    if (!normTerm) continue;
-    if (normUser === normTerm || normUser.indexOf(normTerm) >= 0 || normTerm.indexOf(normUser) >= 0) { matched = true; break; }
-  }
-  return {
-    score: matched ? 1 : 0, total: 1,
-    level: matched ? 'mastered' : 'unknown',
-    details: { isCorrect: matched }
-  };
-}
-
-function scorePointsBased(q, userAnswer) {
-  var normUser = normalize(userAnswer);
-  var hits = [], totalWeight = 0, hitWeight = 0;
-  (q.points || []).forEach(function(p) {
-    totalWeight += p.weight || 1;
-    var allTerms = [p.point].concat(p.synonyms || []);
-    var matched = false, matchedTerm = null;
-    for (var i=0; i<allTerms.length; i++) {
-      if (normUser.indexOf(normalize(allTerms[i])) >= 0) { matched = true; matchedTerm = allTerms[i]; break; }
-    }
-    hits.push({ point: p.point, synonyms: p.synonyms||[], matched: matched, matchedTerm: matchedTerm, weight: p.weight||1 });
-    if (matched) hitWeight += (p.weight||1);
-  });
-  return {
-    score: hitWeight, total: totalWeight,
-    level: getLevel(hitWeight, totalWeight, q.passThreshold || Math.ceil(totalWeight*0.6)),
-    details: { hits: hits }
-  };
-}
-
-function scoreProof(q, userAnswer) {
-  var normUser = normalize(userAnswer);
-  var hits = [], hitCount = 0;
-  (q.steps || []).forEach(function(s) {
-    var matched = false, matchedTerm = null;
-    for (var i=0; i<(s.keywords||[]).length; i++) {
-      if (normUser.indexOf(normalize(s.keywords[i])) >= 0) { matched = true; matchedTerm = s.keywords[i]; break; }
-    }
-    hits.push({ desc: s.desc, keywords: s.keywords||[], matched: matched, matchedTerm: matchedTerm, hint: s.hint||'' });
-    if (matched) hitCount++;
-  });
-  return {
-    score: hitCount, total: (q.steps||[]).length,
-    level: getLevel(hitCount, (q.steps||[]).length, q.passThreshold || Math.ceil((q.steps||[]).length*0.6)),
-    details: { hits: hits }
-  };
-}
-
-function scoreQuestion(q, userAnswer, userSelection) {
-  switch(q.type) {
-    case 'choice': return scoreChoice(q, userSelection);
-    case 'fill': return scoreFill(q, userAnswer);
-    case 'calculate': return scoreCalculate(q, userAnswer);
-    case 'shortAnswer':
-    case 'essay': return scorePointsBased(q, userAnswer);
-    case 'proof': return scoreProof(q, userAnswer);
-    default: return { score:0, total:1, level:'unknown', details:{} };
-  }
-}
-
 /* ====== RENDERERS ====== */
 
 var esc = QuizUtils.esc;
 
-/* 渲染选项内容：支持 svg: 前缀（内联SVG）、img: 前缀（图片）、纯文本 */
-function renderContent(s) {
-  s = String(s || '');
-  s = s.replace(/^[A-H]\.\s*/, '');
-  if (s.indexOf('svg:') === 0) return s.slice(4);
-  if (s.indexOf('img:') === 0) return '<img src="' + s.slice(4) + '" style="max-width:100%;border-radius:6px;display:block;margin:4px 0" />';
-  if (typeof AIChat !== 'undefined' && AIChat.formatText) return AIChat.formatText(s);
-  return esc(s).replace(/\n/g, '<br>');
-}
+var H = QuizHelpers;
+var renderContent = H.renderContent;
+var levelText = H.levelText;
 
+/* 特殊符号面板 — 委托共享函数 */
 function renderSymbolPalette(qId) {
-  return '<span class="symbol-toggle" onclick="toggleSymbols(\''+qId+'\')">🔣 特殊符号</span>' +
-    '<div class="symbol-palette" id="sym-'+qId+'">' +
-    QUIZ_SYMBOLS.map(function(s){ return '<button type="button" class="symbol-btn zk-btn-outline" onclick="insertSymbol(\''+qId+'\',\''+s+'\')">'+s+'</button>'; }).join('') +
-    '</div>';
+  return H.renderSymbolPalette(qId);
 }
 
 function renderSelfEval(qId, label) {
   var r = results[qId];
   var overrideLevel = r ? (r.selfOverride || r.level) : null;
-  return '<div class="self-eval zk-show"><div class="self-eval-label">'+label+'</div>' +
-    '<div class="self-eval-buttons">' +
-    '<button class="self-eval-btn '+(overrideLevel==='mastered'?'quiz-selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'mastered\')">🟢 完全掌握</button>' +
-    '<button class="self-eval-btn '+(overrideLevel==='unsure'?'quiz-selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'unsure\')">🟡 部分掌握</button>' +
-    '<button class="self-eval-btn '+(overrideLevel==='unknown'?'quiz-selected':'')+' zk-btn-outline" onclick="selfEval(\''+qId+'\',\'unknown\')">🔴 不会</button>' +
-    '</div></div>';
+  return H.renderSelfEval(overrideLevel, qId, label);
 }
 
 function renderScoreHeader(qId, q) {
   var r = results[qId];
-  var overrideLevel = r.selfOverride || r.level;
-  var olt = levelText(overrideLevel);
-  var detail = '得分 ' + r.score + '/' + r.total;
-  if (q.passThreshold) detail += '（通过线 ' + q.passThreshold + '）';
-  if (r.selfOverride) detail += ' · 自评覆盖';
-  return '<div class="score-header"><span class="score-badge '+olt.cls+'">'+olt.icon+' '+olt.text+'</span><span class="score-detail">'+detail+'</span></div>';
+  return H.renderScoreHeader(r.score, r.total, r.selfOverride || r.level, q.passThreshold, r.selfOverride);
 }
 
 function renderReference(label, content, isProof) {
-  if (!content) return '';
-  var html = '<div class="reference-answer zk-show"><div class="reference-label">'+label+'</div>';
-  if (isProof && Array.isArray(content)) {
-    html += content.map(function(line) {
-      if (line === '') return '<br>';
-      if (line.indexOf('步骤') >= 0 || line.indexOf('结论') >= 0) return '<div class="proof-step">'+esc(line)+'</div>';
-      return '<div>'+esc(line)+'</div>';
-    }).join('');
-  } else if (typeof AIChat !== 'undefined' && AIChat.formatText) {
-    html += AIChat.formatText(content);
-  } else {
-    html += esc(content).replace(/\n/g, '<br>');
-  }
-  html += '</div>';
-  return html;
+  return H.renderReference(label, content, isProof);
 }
 
 function renderUserAnswer(qId) {
   var r = results[qId];
   if (!r || !r.details) return '';
-  var ua = r.details.userAnswer || '';
-  if (!ua || ua === '📷 照片提交') return '';
-  return '<div class="user-answer zk-show"><div class="user-answer-label">✍️ 我的答案</div><div class="user-answer-text">'+esc(ua)+'</div></div>';
+  return H.renderUserAnswer(r.details.userAnswer);
 }
 
 function renderWrongReason(qId) {
   var r = results[qId];
   if (!r) return '';
   if (r.score >= r.total) return '';
-  var existing = r.wrongReason || '';
-  var html = '<div class="wrong-reason" id="wr-'+qId+'">';
-  if (existing) {
-    html += '<div class="wrong-reason-label">📝 错因记录</div>';
-    html += '<div class="wrong-reason-text">'+esc(existing)+'</div>';
-    html += '<button class="wrong-reason-edit-btn zk-btn-outline" onclick="toggleWrongReasonEdit(\''+qId+'\')">编辑</button>';
-  } else {
-    html += '<button class="wrong-reason-btn zk-btn-outline" onclick="toggleWrongReasonEdit(\''+qId+'\')">📝 写错因</button>';
-  }
-  html += '<div class="wrong-reason-editor" id="wr-edit-'+qId+'" style="display:none">';
-  html += '<textarea class="wrong-reason-textarea" id="wr-input-'+qId+'" placeholder="记录错因：概念混淆？公式没记住？计算失误？" rows="3">'+esc(existing)+'</textarea>';
-  html += '<div class="wrong-reason-actions">';
-  html += '<button class="zk-btn-primary" onclick="saveWrongReason(\''+qId+'\')">保存</button>';
-  html += '<button class="zk-btn-outline" onclick="cancelWrongReason(\''+qId+'\')">取消</button>';
-  html += '</div></div></div>';
-  return html;
+  return H.renderWrongReason(r.wrongReason, qId);
 }
 
-var SRC_LABELS = {
-  'ai': '',
-  '教材例题': '📘 教材',
-  '章节练习题': '📝 章节',
-  '复习资料': '📋 复习'
-};
+var SRC_LABELS = H.SRC_LABELS;
 
 function renderSrcTag(q) {
-  var src = q.src || '';
-  var label = SRC_LABELS[src];
-  if (!label) return '';
-  return '<span class="quiz-src-tag src-' + (src || 'default') + '">' + esc(label) + '</span>';
+  return H.renderSrcTag(q.src);
 }
 
 function renderChoiceCard(q) {
   var r = results[q.id];
-  var letters = 'ABCDEFGH';
-  var subLabel = q.subType==='multi'?'（多选）':q.subType==='judge'?'（判断）':'';
-  var optionsHTML = (q.options || []).map(function(opt, i) {
-    var letter = letters[i];
-    var cls = '';
-    if (r) {
-      cls += ' disabled';
-      var userSel = (r.details && r.details.userAnswer) || '';
-      var correctAns = (r.details && r.details.correctAnswer) || '';
-      if (correctAns.indexOf(letter) >= 0) cls += ' correct';
-      else if (userSel.indexOf(letter) >= 0) cls += ' wrong';
-      else if (userSel.indexOf(letter) >= 0 && correctAns.indexOf(letter) < 0) cls += ' wrong';
-    }
-    return '<div class="choice-option'+cls+'" data-letter="'+letter+'" data-qid="'+q.id+'">' +
-      '<span class="choice-letter">'+letter+'</span><span class="choice-content">'+renderContent(opt)+'</span></div>';
-  }).join('');
-
-  var scoreHTML = '';
-  if (r) {
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+(q.referenceAnswer?renderReference('📖 参考答案', q.referenceAnswer):'')+renderWrongReason(q.id)+'</div>';
-  } else if (q.src === 'textbook' && q.referenceAnswer) {
-    scoreHTML = '<div class="score-result" id="ref-'+q.id+'" style="display:none;">'+renderReference('📖 参考答案', q.referenceAnswer)+'</div>';
-  }
-
-  var submitRow = '<div class="submit-row">';
-  submitRow += '<button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitChoice(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button>';
-  submitRow += '<button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button>';
-  submitRow += '</div>';
-
-  return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.choice.badge+'">'+TYPE_META.choice.icon+' 选择题'+subLabel+'</span></div>' +
-    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
-    '<div class="choice-options">'+optionsHTML+'</div>' +
-    submitRow +
-    scoreHTML + '</div>';
+  return H.renderChoiceCard(q, r, {
+    selected: window.choiceSelections[q.id] || '',
+    subType: q.subType
+  });
 }
 
 function renderFillCard(q) {
   var r = results[q.id];
-  var hasDetails = r && r.details && r.details.hits;
-  var blanksHTML = (q.blanks || []).map(function(b, i) {
-    var inputVal = hasDetails ? (r.details.hits[i].userAnswer || '') : '';
-    var inputCls = '';
-    var resultHTML = '';
-    if (hasDetails) {
-      var hit = r.details.hits[i];
-      inputCls = hit.matched ? ' correct' : ' wrong';
-      resultHTML = '<span class="fill-blank-result '+(hit.matched?'correct':'wrong')+'">'+(hit.matched?'✅':'❌ '+esc(b.answer))+'</span>';
-    }
-    return '<div class="fill-blank-row">' +
-      '<span class="fill-blank-label">空'+(i+1)+'</span>' +
-      '<input type="text" class="fill-blank-input'+inputCls+'" id="fill-'+q.id+'-'+i+'" placeholder="'+(b.hint||'')+'" value="'+esc(inputVal)+'" '+(r?'disabled':'')+'>' +
-      resultHTML + '</div>';
-  }).join('');
-
-  var compHTML = '';
-  if (hasDetails) {
-    var rows = r.details.hits.map(function(h) {
-      return '<div class="fill-comp-row">' +
-        '<span class="fill-comp-cell idx">空'+(h.idx+1)+'</span>' +
-        '<span class="fill-comp-cell">'+esc(h.userAnswer||'(空)')+'</span>' +
-        '<span class="fill-comp-cell">'+esc(h.correctAnswer)+'</span>' +
-        '<span class="fill-comp-cell '+(h.matched?'correct':'wrong')+'">'+(h.matched?'✅':'❌')+'</span>' +
-        '</div>';
-    }).join('');
-    compHTML = '<div class="fill-comparison">' +
-      '<div class="fill-comp-row quiz-header"><span class="fill-comp-cell idx">空格</span><span class="fill-comp-cell">你的答案</span><span class="fill-comp-cell">正确答案</span><span class="fill-comp-cell">结果</span></div>' +
-      rows + '</div>';
-  }
-
-  return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.fill.badge+'">'+TYPE_META.fill.icon+' 填空题</span></div>' +
-    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
-    blanksHTML +
-    '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitFill(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
-    (r ? '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+compHTML+(q.explanation?'<div class="reference-answer zk-show"><div class="reference-label">📖 解析</div>'+esc(q.explanation)+'</div>':'')+renderWrongReason(q.id)+'</div>' : '') +
-    '</div>';
+  return H.renderFillCard(q, r, { showComparison: true });
 }
 
+/* 计算题 — 委托共享函数 */
 function renderCalculateCard(q) {
-  var r = results[q.id];
-  var photo = loadPhoto(q.id);
-  var calcResult = '';
-  if (r) {
-    var stepsHTML = (q.steps||[]).map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('');
-    calcResult = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q) +
-      renderQuizPhoto(q.id) +
-      renderUserAnswer(q.id) +
-      (q.formula?'<div class="calc-formula">📐 '+esc(q.formula)+'</div>':'') +
-      (stepsHTML?'<ol class="calc-steps">'+stepsHTML+'</ol>':'') +
-      (q.answer?'<span class="calc-answer">答案：'+esc(q.answer)+'</span>':'') +
-      renderSelfEval(q.id, '计算题自动评分可能有误差，你觉得实际掌握了吗？') +
-      renderWrongReason(q.id) +
-      '</div>';
-  }
-  return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.calculate.badge+'">'+TYPE_META.calculate.icon+' 计算题</span></div>' +
-    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
-    (q.hint?'<div class="quiz-hint">💡 '+esc(q.hint)+'</div>':'') +
-    '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入计算结果..."' +(r?' disabled':'')+'></textarea>' +
-    renderSymbolPalette(q.id) +
-    '<div class="submit-row">' +
-      '<input type="file" accept="image/*" capture="environment" id="photo-input-'+q.id+'" style="display:none" onchange="uploadQuizPhoto(\''+q.id+'\')"/>' +
-      '<button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button>' +
-      '<button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button>' +
-      (r ? (photo ? '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 重拍</button>' : '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 补拍</button>') : '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 拍照上传</button>') +
-    '</div>' +
-    calcResult + '</div>';
+  return H.renderCalculateCard(q, results[q.id], {
+    getPhoto: loadPhoto,
+    showSymbol: true
+  });
 }
 
 function toggleRef(qId) {
-  var el = document.getElementById('ref-' + qId);
-  if (!el) return;
-  if (el.style.display === 'none') {
-    el.style.display = '';
-    el.classList.add('zk-show');
+  var card = document.getElementById('card-' + qId);
+  if (!card) return;
+  var ans = card.querySelector('.exam-q-answer');
+  if (!ans) return;
+  if (ans.style.display === 'none') {
+    ans.style.display = '';
   } else {
-    el.style.display = 'none';
+    ans.style.display = 'none';
   }
+  /* 更新按钮文字 */
+  var btn = card.querySelector('[data-action="toggle-ref"]');
+  if (btn) btn.textContent = ans.style.display === 'none' ? '展开答案 ▼' : '收起 ▲';
 }
 
+function redoQuestion(qId) {
+  delete results[qId];
+  if (window.choiceSelections) delete window.choiceSelections[qId];
+  updateStats();
+  render();
+}
+
+/* 简答题 — 委托共享函数 */
 function renderShortAnswerCard(q) {
-  var r = results[q.id];
-  var scoreHTML = '';
-  if (r) {
-    if (r.details && r.details.hits) {
-    var pointsHTML = r.details.hits.map(function(h) {
-      var synHTML = h.synonyms.length > 0
-        ? '<div class="point-synonyms">同义词：'+h.synonyms.map(function(s){return '<span class="'+(h.matchedTerm===s?'match':'')+'">'+esc(s)+'</span>';}).join('、')+'</div>'
-        : '';
-      return '<li class="point-item '+(h.matched?'hit':'miss')+'">' +
-        '<span class="point-icon">'+(h.matched?'✅':'⬜')+'</span>' +
-        '<div class="point-text"><span class="point-label">'+esc(h.point)+'</span>' +
-        (h.matched && h.matchedTerm && h.matchedTerm !== h.point ? ' <span class="match-hint">（命中：'+esc(h.matchedTerm)+'）</span>' : '') +
-        synHTML + '</div></li>';
-    }).join('');
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+'<ul class="points-list">'+pointsHTML+'</ul>'+
-      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '简答题评分仅供参考，你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
-    } else {
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+
-      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '简答题评分仅供参考，你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
-    }
-  } else if (q.src === 'textbook' && q.referenceAnswer) {
-    scoreHTML = '<div class="score-result" id="ref-'+q.id+'" style="display:none;">'+renderReference('📖 参考答案', q.referenceAnswer)+'</div>';
-  }
-  var submitRow = '<div class="submit-row">';
-  submitRow += '<button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button>';
-  submitRow += '<button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button>';
-  submitRow += '</div>';
-  return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.shortAnswer.badge+'">'+TYPE_META.shortAnswer.icon+' 简答题</span></div>' +
-    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
-    '<textarea class="answer-textarea" id="input-'+q.id+'" placeholder="输入你的答案..."' +(r?' disabled':'')+'></textarea>' + renderSymbolPalette(q.id) +
-    submitRow +
-    scoreHTML + '</div>';
+  return H.renderShortAnswerCard(q, results[q.id], {
+    showSymbol: true
+  });
 }
 
+/* 论述题 — 委托共享函数 */
 function renderEssayCard(q) {
-  var r = results[q.id];
-  var scoreHTML = '';
-  if (r) {
-    if (r.details && r.details.hits) {
-    var pointsHTML = r.details.hits.map(function(h) {
-      var synHTML = h.synonyms.length > 0
-        ? '<div class="point-synonyms">同义词：'+h.synonyms.map(function(s){return '<span class="'+(h.matchedTerm===s?'match':'')+'">'+esc(s)+'</span>';}).join('、')+'</div>'
-        : '';
-      return '<li class="point-item '+(h.matched?'hit':'miss')+'">' +
-        '<span class="point-icon">'+(h.matched?'✅':'⬜')+'</span>' +
-        '<div class="point-text"><span class="point-label">'+esc(h.point)+'</span>' +
-        (h.matched && h.matchedTerm && h.matchedTerm !== h.point ? ' <span class="match-hint">（命中：'+esc(h.matchedTerm)+'）</span>' : '') +
-        synHTML + '</div></li>';
-    }).join('');
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+'<ul class="points-list">'+pointsHTML+'</ul>'+
-      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '论述题主观性较强，系统评分仅供参考。你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
-    } else {
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderUserAnswer(q.id)+
-      renderReference('📖 参考答案', q.referenceAnswer) + renderSelfEval(q.id, '论述题主观性较强，系统评分仅供参考。你觉得实际掌握了吗？') + renderWrongReason(q.id) + '</div>';
-    }
-  }
-  return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.essay.badge+'">'+TYPE_META.essay.icon+' 论述题</span></div>' +
-    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
-    (q.hint?'<div class="quiz-hint">💡 '+esc(q.hint)+'</div>':'') +
-    '<textarea class="answer-textarea lg" id="input-'+q.id+'" placeholder="输入你的论述...（建议 200-400 字）"' +(r?' disabled':'')+'></textarea>' +
-    renderSymbolPalette(q.id) +
-    '<div class="submit-row"><button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button><button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button></div>' +
-    scoreHTML + '</div>';
+  return H.renderEssayCard(q, results[q.id], {
+    showSymbol: true
+  });
 }
 
+/* 证明题 — 委托共享函数 */
 function renderProofCard(q) {
-  var r = results[q.id];
-  var photo = loadPhoto(q.id);
-  var scoreHTML = '';
-  if (r) {
-    if (r.details && r.details.hits) {
-    var stepsHTML = r.details.hits.map(function(h) {
-      return '<li class="point-item '+(h.matched?'hit':'miss')+'">' +
-        '<span class="point-icon">'+(h.matched?'✅':'⬜')+'</span>' +
-        '<div class="point-text"><span class="point-label">'+esc(h.desc)+'</span>' +
-        (h.matched && h.matchedTerm ? ' <span class="match-hint">（命中：'+esc(h.matchedTerm)+'）</span>' : '') +
-        (!h.matched ? '<div class="point-desc">期望关键词：'+h.keywords.slice(0,3).map(esc).join('、')+'…</div>' : '') +
-        '</div></li>';
-    }).join('');
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderQuizPhoto(q.id)+renderUserAnswer(q.id)+'<ul class="points-list">'+stepsHTML+'</ul>'+
-      renderReference('📖 参考证明（'+q.method+'）', q.referenceProof, true) + renderSelfEval(q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？') + renderWrongReason(q.id) + '</div>';
-    } else {
-    scoreHTML = '<div class="score-result zk-show">'+renderScoreHeader(q.id,q)+renderQuizPhoto(q.id)+renderUserAnswer(q.id)+
-      renderReference('📖 参考证明（'+q.method+'）', q.referenceProof, true) + renderSelfEval(q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？') + renderWrongReason(q.id) + '</div>';
-    }
-  }
-  return '<div class="quiz-card '+(r?getCurrentLevel(q.id):'')+'" id="card-'+q.id+'">' +
-    '<div class="quiz-meta"><span class="quiz-chapter">'+q.chapter+(q.cardId?' · '+q.cardId:'')+'</span>'+renderSrcTag(q)+'<span class="quiz-badge '+TYPE_META.proof.badge+'">'+TYPE_META.proof.icon+' 证明题</span></div>' +
-    '<div class="quiz-question">'+renderContent(q.question)+'</div>' +
-    '<div class="method-box"><div class="method-label">📐 规定证明方法：'+esc(q.method)+'</div><div class="method-hint">'+esc(q.methodHint||'')+'</div></div>' +
-    '<textarea class="answer-textarea xl" id="input-'+q.id+'" placeholder="按上述方法写出证明过程..."' +(r?' disabled':'')+'></textarea>' +
-    renderSymbolPalette(q.id) +
-    '<div class="submit-row">' +
-      '<input type="file" accept="image/*" capture="environment" id="photo-input-'+q.id+'" style="display:none" onchange="uploadQuizPhoto(\''+q.id+'\')"/>' +
-      '<button class="submit-btn '+(r?'done':'')+' zk-btn-primary" onclick="submitText(\''+q.id+'\')" '+(r?'disabled':'')+'>'+(r?'已完成':'提交')+'</button>' +
-      '<button class="ai-help-btn zk-btn-outline" onclick="toggleAIHelp(\''+q.id+'\')">🤖 AI解答</button>' +
-      (r ? (photo ? '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 重拍</button>' : '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 补拍</button>') : '<button class="photo-upload-btn zk-btn-outline" onclick="document.getElementById(\'photo-input-'+q.id+'\').click()">📷 拍照上传</button>') +
-    '</div>' +
-    scoreHTML + '</div>';
+  return H.renderProofCard(q, results[q.id], {
+    getPhoto: loadPhoto,
+    showSymbol: true
+  });
 }
 
+/* 统一分发器 — 委托共享函数 */
 function renderCard(q) {
-  switch(q.type) {
-    case 'choice': return renderChoiceCard(q);
-    case 'fill': return renderFillCard(q);
-    case 'calculate': return renderCalculateCard(q);
-    case 'shortAnswer': return renderShortAnswerCard(q);
-    case 'essay': return renderEssayCard(q);
-    case 'proof': return renderProofCard(q);
-    default: return '<div class="quiz-card">未知题型: '+q.type+'</div>';
-  }
+  return H.renderCard(q, results[q.id], {
+    selected: window.choiceSelections[q.id] || '',
+    subType: q.subType,
+    showComparison: true,
+    getPhoto: loadPhoto,
+    showSymbol: true
+  });
 }
 
 /* ====== SUBMIT HANDLERS ====== */
@@ -1073,7 +709,7 @@ function submitChoice(qId) {
   if (!q) return;
   var sel = window.choiceSelections[qId] || '';
   if (!sel) { alert('请先选择答案'); return; }
-  var result = scoreChoice(q, sel);
+  var result = H.scoreChoice(q, sel);
   results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
   updateMastery(q.chapter, result.level);
   saveQuizRecord(q, null, sel, result);
@@ -1085,11 +721,11 @@ function submitFill(qId) {
   var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (!q) return;
   var answers = (q.blanks || []).map(function(b, i) {
-    var el = document.getElementById('fill-'+qId+'-'+i);
+    var el = document.getElementById('fill-'+qId+'-'+i) || document.querySelector('[data-blank-id="'+qId+'"][data-blank-idx="'+i+'"]');
     return el ? el.value.trim() : '';
   });
   if (answers.every(function(a){return !a;})) { alert('请先填写答案'); return; }
-  var result = scoreFill(q, answers);
+  var result = H.scoreFill(q, answers);
   results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
   updateMastery(q.chapter, result.level);
   saveQuizRecord(q, answers.join(' | '), null, result);
@@ -1100,11 +736,19 @@ function submitText(qId) {
   if (results[qId]) return;
   var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (!q) return;
-  var ta = document.getElementById('input-'+qId);
+  var ta = document.getElementById('input-'+qId) || document.querySelector('[data-input-id="'+qId+'"]');
   if (!ta) return;
   var ans = ta.value.trim();
   if (!ans) { alert('请先输入答案'); return; }
-  var result = scoreQuestion(q, ans, null);
+  var result = H.scoreQuestion(q, ans, null);
+  if (!result) {
+    /* 无 points/steps 的主观题回退到自评 */
+    results[qId] = { score: 0, total: 1, level: 'unknown', details: { userAnswer: ans }, selfOverride: null, wrongReason: '', pendingAssess: true };
+    updateMastery(q.chapter, 'unknown');
+    saveQuizRecord(q, ans, null, { score: 0, total: 1, level: 'unknown', details: { userAnswer: ans } });
+    updateStats(); render();
+    return;
+  }
   if (!result.details) result.details = {};
   result.details.userAnswer = ans;
   results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
@@ -1171,7 +815,7 @@ function toggleSymbols(qId) {
 }
 
 function insertSymbol(qId, sym) {
-  var ta = document.getElementById('input-'+qId);
+  var ta = document.getElementById('input-'+qId) || document.querySelector('[data-input-id="'+qId+'"]');
   if (!ta || ta.disabled) return;
   var s = ta.selectionStart || 0, e = ta.selectionEnd || 0;
   ta.value = ta.value.substring(0, s) + sym + ta.value.substring(e);
@@ -1282,7 +926,7 @@ function renderKeywordFilter() {
   var freq = {};
   keywords.forEach(function(kw) { freq[kw] = 0; });
   examData.questions.forEach(function(q) {
-    var text = (q.title || '') + ' ' + (q.answer || '') + ' ' + (q.options ? q.options.join(' ') : '');
+    var text = (q.question || '') + ' ' + (q.answer || '') + ' ' + (q.options ? q.options.join(' ') : '');
     keywords.forEach(function(kw) {
       if (text.indexOf(kw) >= 0) freq[kw]++;
     });
@@ -1467,8 +1111,8 @@ function renderAIHelpPanel(qId) {
   }
   return '<div class="ai-help-messages" id="ai-msgs-'+qId+'">'+msgsHTML+'</div>' +
     '<div class="ai-help-input-row">' +
-    '<input type="text" class="ai-help-input" id="ai-input-'+qId+'" placeholder="输入你的问题..." onkeydown="if(event.key===\'Enter\')sendAIHelp(\''+qId+'\')">' +
-    '<button class="ai-help-send zk-btn-primary" id="ai-send-'+qId+'" onclick="sendAIHelp(\''+qId+'\')">发送</button>' +
+    '<input type="text" class="ai-help-input" id="ai-input-'+qId+'" placeholder="输入你的问题..." data-action="ai-input" data-id="'+qId+'">' +
+    '<button class="ai-help-send zk-btn-primary" id="ai-send-'+qId+'" data-action="ai-send" data-id="'+qId+'">发送</button>' +
     '</div>';
 }
 
@@ -1513,7 +1157,7 @@ function sendAIHelp(qId) {
     if (q.answer) questionContext += '正确答案：' + q.answer + '\n';
     if (q.formula) questionContext += '公式：' + q.formula + '\n';
     if (q.steps) questionContext += '解题步骤：' + q.steps.join(' → ') + '\n';
-    if (q.blanks) questionContext += '填空答案：' + q.blanks.map(function(b){return b.answer;}).join('、') + '\n';
+    if (q.blanks) questionContext += '填空答案：' + q.blanks.map(function(b){return (typeof b==='string')?b:(b.answer||'');}).join('、') + '\n';
     if (q.referenceAnswer) questionContext += '参考答案：' + q.referenceAnswer + '\n';
     if (q.explanation) questionContext += '解析：' + q.explanation + '\n';
   }
@@ -1566,8 +1210,8 @@ function renderCardWithAIActions(q) {
     var cardBadge = q.cardId ? 'AI生成 · 来源：卡片' + q.cardId : 'AI生成';
     var actions = '<div class="card-badge-row">' +
       '<span class="card-badge ai">🤖 ' + cardBadge + '</span>' +
-      '<button class="ai-action-btn ai-action-bookmark' + bookmarked + ' zk-btn-ghost" onclick="bookmarkAIQuestion(\'' + q.id + '\')"' + (q._bookmarked ? ' disabled' : '') + '>' + bookmarkText + '</button>' +
-      '<button class="ai-action-btn ai-action-delete zk-btn-ghost" onclick="deleteAIQuestion(\'' + q.id + '\')">🗑️ 删除</button>' +
+      '<button class="ai-action-btn ai-action-bookmark' + bookmarked + ' zk-btn-ghost" data-action="ai-bookmark" data-id="' + q.id + '"' + (q._bookmarked ? ' disabled' : '') + '>' + bookmarkText + '</button>' +
+      '<button class="ai-action-btn ai-action-delete zk-btn-ghost" data-action="ai-delete" data-id="' + q.id + '">🗑️ 删除</button>' +
       '</div>';
     var pos = html.lastIndexOf('</div>');
     if (pos !== -1) html = html.substring(0, pos) + actions + '</div>';
@@ -1630,7 +1274,7 @@ function render() {
       list.innerHTML = '<div class="empty-state">' +
         '<div class="ai-gen-header">🤖 AI出题</div>' +
         '<div class="ai-gen-info">' + chapterInfo + ' · 根据背诵卡内容生成5道题</div>' +
-        '<button onclick="generateAIQuestions()" class="ai-gen-btn zk-btn-primary">🤖 生成5道题</button>' +
+        '<button data-action="generate-ai" class="ai-gen-btn zk-btn-primary">🤖 生成5道题</button>' +
         '</div>';
       var sb1 = document.getElementById('sessionBar');
       if (sb1) sb1.classList.remove('zk-show');
@@ -1864,7 +1508,7 @@ function generateAIQuestions() {
       aiLoading = false;
       var list = document.getElementById('quizList');
       if (list) {
-        list.innerHTML = '<div class="empty-state">⚠️ AI出题失败：' + AIChat.formatError(err) + '<br><button onclick="generateAIQuestions()" class="ai-retry-btn zk-btn-outline">重试</button></div>';
+        list.innerHTML = '<div class="empty-state">⚠️ AI出题失败：' + AIChat.formatError(err) + '<br><button data-action="generate-ai" class="ai-retry-btn zk-btn-outline">重试</button></div>';
       }
     });
 }
@@ -1932,7 +1576,8 @@ function init() {
         } else if (q.type === 'fill' && q.blanks) {
           var userArr = rec.userAnswer.split(' | ');
           details = { hits: q.blanks.map(function(b, i) {
-            return { idx: i, userAnswer: userArr[i] || '', correctAnswer: b.answer, matched: (userArr[i] || '').indexOf(b.answer) >= 0 };
+            var bAns = (typeof b === 'string') ? b : (b.answer || '');
+            return { idx: i, userAnswer: userArr[i] || '', correctAnswer: bAns, matched: (userArr[i] || '').indexOf(bAns) >= 0 };
           })};
         } else if (q.type === 'calculate') {
           details = { isCorrect: rec.isCorrect, userAnswer: rec.userAnswer || '' };
@@ -1967,10 +1612,17 @@ function init() {
         wrongReason: rec.wrongReason || ''
       };
     }
-    /* 第一步：应用服务端记录（只填充不存在的） */
+    /* 第一步：应用服务端记录（追加式：同题取最新一条） */
+    var latestByQid = {};
     pendingRecords.forEach(function(rec) {
-      if (!rec.questionId || results[rec.questionId]) return;
-      results[rec.questionId] = buildResultFromRecord(rec);
+      if (!rec.questionId) return;
+      var prev = latestByQid[rec.questionId];
+      if (!prev || (rec.timestamp && prev.timestamp && rec.timestamp > prev.timestamp)) {
+        latestByQid[rec.questionId] = rec;
+      }
+    });
+    Object.keys(latestByQid).forEach(function(qid) {
+      results[qid] = buildResultFromRecord(latestByQid[qid]);
     });
     pendingRecords = [];
     /* 第二步：用 localStorage 待重传记录覆盖（本地记录更新，优先级更高） */
@@ -2071,14 +1723,94 @@ function init() {
     });
 }
 
+/* 统一 data-action 事件委托 */
 document.addEventListener('click', function(e) {
-  var el = e.target.closest('.choice-option');
-  if (el && el.dataset.qid) {
-    toggleChoiceOption(el.dataset.qid, el.dataset.letter);
+  var el = e.target.closest('[data-action]');
+  if (!el) return;
+  var action = el.dataset.action;
+  var id = el.dataset.id;
+
+  switch (action) {
+    case 'select-option':
+      toggleChoiceOption(el.dataset.qid, el.dataset.letter);
+      break;
+    case 'submit-choice':
+      submitChoice(id);
+      break;
+    case 'submit-fill':
+      submitFill(id);
+      break;
+    case 'submit-text':
+      submitText(id);
+      break;
+    case 'ai-help':
+      toggleAIHelp(id);
+      break;
+    case 'ai-send':
+      sendAIHelp(id);
+      break;
+    case 'toggle-symbols':
+      toggleSymbols(id);
+      break;
+    case 'insert-symbol':
+      insertSymbol(id, el.dataset.symbol);
+      break;
+    case 'self-assess':
+      selfEval(id, el.dataset.level);
+      break;
+    case 'toggle-wr-edit':
+      toggleWrongReasonEdit(id);
+      break;
+    case 'save-wr':
+      saveWrongReason(id);
+      break;
+    case 'cancel-wr':
+      cancelWrongReason(id);
+      break;
+    case 'take-photo':
+      document.getElementById('photo-input-' + id).click();
+      break;
+    case 'open-photo':
+      window.open(el.src, '_blank');
+      break;
+    case 'toggle-ref':
+      toggleRef(id);
+      break;
+    case 'redo':
+      redoQuestion(id);
+      break;
+    case 'ai-bookmark':
+      bookmarkAIQuestion(id);
+      break;
+    case 'ai-delete':
+      deleteAIQuestion(id);
+      break;
+    case 'generate-ai':
+      generateAIQuestions();
+      break;
+    case 'toggle-quiz-nav':
+      toggleQuizNav();
+      break;
+    case 'quiz-nav-jump':
+      quizNavJump(id);
+      break;
   }
 });
 
-init();
+/* AI输入框回车发送 */
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var el = e.target.closest('[data-action="ai-input"]');
+  if (el) sendAIHelp(el.dataset.id);
+});
+
+/* 文件上传 change 事件 */
+document.addEventListener('change', function(e) {
+  var el = e.target.closest('[data-action="upload-photo"]');
+  if (el && el.files && el.files[0]) uploadQuizPhoto(el.dataset.id, el.files[0]);
+});
+
+(window.examDataReady || Promise.resolve()).then(function() { init(); });
 
 
 /* ====== 浮动题号导航面板 ====== */
@@ -2092,7 +1824,7 @@ function renderQuizNav() {
 
   if (filtered.length === 0) {
     panel.innerHTML = '<div class="quiz-nav-header"><span class="quiz-nav-count">无题目</span>' +
-      '<button class="quiz-nav-toggle" onclick="toggleQuizNav()">▾</button></div>';
+      '<button class="quiz-nav-toggle" data-action="toggle-quiz-nav">▾</button></div>';
     return;
   }
 
@@ -2107,13 +1839,13 @@ function renderQuizNav() {
     else if (r) { cls = 'answered'; answered++; }
 
     var title = (q.chapter || '') + ' · ' + (q.type || '');
-    return '<div class="quiz-nav-item ' + cls + '" onclick="quizNavJump(\'' + q.id + '\')" title="' + title + '">' + (i + 1) + '</div>';
+    return '<div class="quiz-nav-item ' + cls + '" data-action="quiz-nav-jump" data-id="' + q.id + '" title="' + title + '">' + (i + 1) + '</div>';
   }).join('');
 
   panel.innerHTML =
     '<div class="quiz-nav-header">' +
       '<span class="quiz-nav-count">已答 ' + answered + '/' + filtered.length + '</span>' +
-      '<button class="quiz-nav-toggle" onclick="toggleQuizNav()">▾</button>' +
+      '<button class="quiz-nav-toggle" data-action="toggle-quiz-nav">▾</button>' +
     '</div>' +
     '<div class="quiz-nav-grid">' + items + '</div>';
 }
@@ -2135,6 +1867,6 @@ function toggleQuizNav() {
   if (!panel.classList.contains('collapsed')) {
     renderQuizNav();
   } else {
-    panel.innerHTML = '<button class="quiz-nav-collapsed-btn" onclick="toggleQuizNav()">📋</button>';
+    panel.innerHTML = '<button class="quiz-nav-collapsed-btn" data-action="toggle-quiz-nav">📋</button>';
   }
 }

@@ -1,0 +1,35 @@
+/* 错题本专属样式 — 复用真题练习 exam-* 样式，仅补充差异 */
+
+/* 已解决卡片灰显 */
+.wrong-card-wrapper.is-solved .exam-question {
+  opacity: 0.55;
+  border-color: var(--rule);
+}
+.wrong-card-wrapper.is-solved .exam-q-header {
+  opacity: 0.7;
+}
+
+/* 已解决按钮 */
+.exam-link-solved {
+  color: var(--green);
+  border-color: var(--green);
+}
+.exam-link-solved:hover {
+  background: var(--green);
+  color: var(--surface);
+}
+
+/* 标记已解决行 */
+.wrong-solve-row {
+  justify-content: flex-end;
+  padding-top: 0;
+  margin-top: -0.3rem;
+}
+
+/* 空状态 */
+.exam-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}

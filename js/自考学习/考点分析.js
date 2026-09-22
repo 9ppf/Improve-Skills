@@ -885,4 +885,6 @@ function renderAdvice() {
   document.getElementById('adviceList').innerHTML = html;
 }
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+  (window.examDataReady || Promise.resolve()).then(init);
+});

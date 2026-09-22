@@ -59,6 +59,26 @@
               "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13015&v=2.38.2"
             },
             {
+              "name": "题库管理",
+              "type": "self-study",
+              "stage": "已就绪",
+              "current": "题目统一管理",
+              "tasks": [],
+              "review": "计算机系统原理题库管理，支持按来源/章节/题型/状态筛选，新增/编辑/删除题目。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/题库管理.html?subject=13015&v=1.0.0"
+            },
+            {
+              "name": "错题本",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "错题汇总",
+              "current": "跨来源错题 · 可直接答题",
+              "tasks": [],
+              "review": "计算机系统原理错题本，汇总练习测验、真题、AI专项的错题，支持直接答题消灭错题。",
+              "contentUrl": "自考学习/错题本.html?subject=13015&v=202609220100"
+            },
+            {
               "name": "考点分析",
               "type": "self-study",
               "stage": "数据分析",
@@ -128,6 +148,26 @@
               "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=02324&v=2.38.2"
             },
             {
+              "name": "题库管理",
+              "type": "self-study",
+              "stage": "已就绪",
+              "current": "题目统一管理",
+              "tasks": [],
+              "review": "离散数学题库管理，支持按来源/章节/题型/状态筛选，新增/编辑/删除题目。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/题库管理.html?subject=02324&v=1.0.0"
+            },
+            {
+              "name": "错题本",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "错题汇总",
+              "current": "跨来源错题 · 可直接答题",
+              "tasks": [],
+              "review": "离散数学错题本，汇总练习测验、真题、AI专项的错题，支持直接答题消灭错题。",
+              "contentUrl": "自考学习/错题本.html?subject=02324&v=202609220100"
+            },
+            {
               "name": "考点分析",
               "type": "self-study",
               "stage": "数据分析",
@@ -195,6 +235,26 @@
               "review": "数据结构与算法真题练习与模拟训练。",
               "renderMode": "bare",
               "contentUrl": "自考学习/真题练习-真题与错题本.html?subject=13003&v=2.38.2"
+            },
+            {
+              "name": "题库管理",
+              "type": "self-study",
+              "stage": "已就绪",
+              "current": "题目统一管理",
+              "tasks": [],
+              "review": "数据结构与算法题库管理，支持按来源/章节/题型/状态筛选，新增/编辑/删除题目。",
+              "renderMode": "bare",
+              "contentUrl": "自考学习/题库管理.html?subject=13003&v=1.0.0"
+            },
+            {
+              "name": "错题本",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "错题汇总",
+              "current": "跨来源错题 · 可直接答题",
+              "tasks": [],
+              "review": "数据结构与算法错题本，汇总练习测验、真题、AI专项的错题，支持直接答题消灭错题。",
+              "contentUrl": "自考学习/错题本.html?subject=13003&v=202609220100"
             },
             {
               "name": "考点分析",

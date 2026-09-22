@@ -1,0 +1,77 @@
+/* ============ 题库管理页面 ============ */
+.ss-bank-page { max-width: 900px; margin: 0 auto; padding: 1rem 1.2rem 3rem; }
+.ss-bank-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+.ss-bank-header h1 { font-size: 1.3rem; font-weight: 800; color: var(--ink); margin: 0; }
+.ss-bank-subject { font-size: 0.86rem; color: var(--muted); }
+
+/* 统计 */
+.ss-bank-stats { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+.ss-bank-stat-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.ss-bank-stat-chip { font-size: 0.76rem; color: var(--ink); background: var(--blue-soft); padding: 0.25rem 0.65rem; border-radius: 999px; }
+.ss-bank-stat-chip.unanswered { background: rgba(107,114,128,0.1); color: var(--muted); }
+.ss-bank-stat-chip.correct { background: var(--green-soft); color: var(--green-text); }
+.ss-bank-stat-chip.wrong { background: var(--coral-soft); color: var(--coral); }
+.ss-bank-stat-chip.total { background: var(--blue-soft); color: var(--accent); font-weight: 700; }
+
+/* 筛选行 */
+.ss-bank-toolbar { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+.ss-bank-toolbar-spacer { flex: 1; }
+.ss-bank-select { font-family: inherit; font-size: 0.85rem; padding: 0.45rem 0.7rem; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; }
+.ss-bank-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--blue-soft); }
+.ss-bank-select-chapter { border-color: var(--purple-soft); background: var(--purple-soft); color: var(--purple-text); }
+.ss-bank-select-chapter:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px var(--purple-soft); }
+.ss-bank-select-type { border-color: var(--purple-soft); background: var(--purple-soft); color: var(--purple-text); }
+.ss-bank-select-type:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12); }
+.ss-bank-select-status { border-color: var(--green-soft); background: var(--green-soft); color: var(--green-text); }
+.ss-bank-select-status:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12); }
+.ss-bank-select-source { border-color: var(--accent-soft, var(--blue-soft)); background: var(--blue-soft); color: var(--accent); }
+.ss-bank-select-source:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--blue-soft); }
+.ss-bank-add { font-family: inherit; font-size: 0.85rem; font-weight: 600; padding: 0.45rem 1rem; border-radius: 8px; border: none; cursor: pointer; color: var(--surface); background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 3px 12px var(--blue-soft); transition: transform 0.15s; }
+.ss-bank-add:hover { transform: translateY(-1px); }
+
+/* 答题状态标签 */
+.ss-bank-status { font-size: 0.74rem; font-weight: 600; padding: 0.12rem 0.5rem; border-radius: 999px; white-space: nowrap; }
+.ss-bank-status-unanswered { background: rgba(107, 114, 128, 0.1); color: var(--muted); }
+.ss-bank-status-correct { background: var(--green-soft); color: var(--green-text); }
+.ss-bank-status-wrong { background: var(--coral-soft); color: var(--coral); }
+
+/* 来源标签 */
+.ss-bank-source { font-size: 0.72rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 6px; white-space: nowrap; }
+.ss-bank-source-practice { background: var(--blue-soft); color: var(--accent); }
+.ss-bank-source-exam { background: var(--green-soft); color: var(--green-text); }
+.ss-bank-source-ai { background: var(--purple-soft); color: var(--accent2); }
+
+/* 题目分组 */
+.ss-bank-group { margin-bottom: 1.4rem; }
+.ss-bank-group-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; padding-left: 0.2rem; font-weight: 700; }
+.ss-bank-group-count { font-size: 0.76rem; color: var(--muted); background: var(--bg-soft); padding: 0.12rem 0.6rem; border-radius: 999px; font-weight: 600; }
+
+/* 题目卡片 */
+.ss-bank-card { background: var(--surface); border: 1px solid var(--blue-soft); border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 0.7rem; box-shadow: 0 3px 16px var(--bg-soft); backdrop-filter: blur(10px); transition: border-color 0.2s, box-shadow 0.2s; }
+.ss-bank-card:hover { border-color: var(--blue-soft); box-shadow: 0 5px 20px var(--bg-soft); }
+.ss-bank-card-head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.ss-bank-qid { font-size: 0.72rem; font-family: ui-monospace, Consolas, monospace; color: var(--muted); background: var(--bg-soft); padding: 0.1rem 0.45rem; border-radius: 6px; }
+.ss-bank-type { font-size: 0.74rem; font-weight: 600; color: var(--accent2); background: var(--purple-soft); padding: 0.12rem 0.55rem; border-radius: 999px; }
+.ss-bank-diff { font-size: 0.74rem; color: var(--amber); }
+.ss-bank-card-actions { margin-left: auto; display: flex; gap: 0.4rem; }
+.ss-bank-edit, .ss-bank-del { font-family: inherit; font-size: 0.76rem; font-weight: 600; padding: 0.3rem 0.7rem; border-radius: 7px; cursor: pointer; border: 1px solid var(--rule); background: var(--surface); color: var(--muted); transition: all 0.2s; }
+.ss-bank-edit:hover { border-color: var(--accent); color: var(--accent); }
+.ss-bank-del:hover { border-color: var(--coral); color: var(--coral); background: var(--coral-soft); }
+.ss-bank-question { font-size: 0.94rem; color: var(--ink); margin-bottom: 0.55rem; line-height: 1.7; }
+.ss-bank-ans-block { font-size: 0.84rem; color: var(--muted); }
+.ss-bank-options { margin-bottom: 0.35rem; }
+.ss-bank-opt { padding: 0.15rem 0; }
+.ss-bank-answer { margin-bottom: 0.3rem; }
+.ss-bank-answer b { color: var(--green); }
+.ss-bank-formula, .ss-bank-threshold, .ss-bank-steps { margin-bottom: 0.3rem; }
+.ss-bank-explanation { font-size: 0.82rem; color: var(--muted); background: var(--blue-soft); padding: 0.55rem 0.75rem; border-radius: 9px; margin-bottom: 0.4rem; line-height: 1.7; }
+.ss-bank-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.ss-bank-tag { font-size: 0.7rem; color: var(--muted); background: var(--bg-soft); padding: 0.1rem 0.5rem; border-radius: 6px; }
+
+/* Toast */
+.ss-toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translate(-50%, 20px); background: var(--ink); color: var(--surface); padding: 0.7rem 1.2rem; border-radius: 10px; font-size: 0.86rem; box-shadow: 0 8px 28px var(--bg-soft); opacity: 0; transition: all 0.3s; z-index: 9999; }
+.ss-toast.ss-toast-error { background: var(--coral); }
+.ss-toast.ss-toast-show { opacity: 1; transform: translate(-50%, 0); }
+
+/* 空状态 */
+.ss-empty { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 0.9rem; }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>错题本</title>
+  <script src="../../js/shared/theme-sync.js?v=4f76b4d7"></script>
+  <link rel="stylesheet" href="../../styles/shared/base-vars.css">
+  <link rel="stylesheet" href="../../styles/shared/base.css">
+  <link rel="stylesheet" href="../../styles/shared/components.css">
+  <link rel="stylesheet" href="../../styles/自考学习/真题练习-真题与错题本.css?v=202609220400">
+  <link rel="stylesheet" href="../../styles/自考学习/错题本.css?v=202609220100">
+</head>
+<body>
+<div class="exam-container">
+
+  <!-- 顶部栏 -->
+  <div class="quiz-topbar">
+    <a href="背诵与简答-核心概念背诵卡.html" class="back-btn">←</a>
+    <span class="quiz-title" id="pageTitle">错题本</span>
+    <span class="pill pill-rate"><span class="dot"></span>错题 <b id="statWrong">0</b></span>
+    <span class="pill pill-rate"><span class="dot"></span>已解决 <b id="statSolved">0</b></span>
+    <span class="pill pill-rate"><span class="dot"></span>待消灭 <b id="statPending">0</b></span>
+  </div>
+
+  <!-- 筛选行 -->
+  <div class="exam-filter-row">
+    <select class="exam-filter exam-f-purple" id="filterSource">
+      <option value="">全部来源</option>
+      <option value="practice">练习测验</option>
+      <option value="exam">真题</option>
+      <option value="ai">AI专项</option>
+    </select>
+    <select class="exam-filter exam-f-blue" id="filterChapter">
+      <option value="">全部章节</option>
+    </select>
+    <select class="exam-filter exam-f-purple" id="filterType">
+      <option value="">全部题型</option>
+      <option value="choice">选择题</option>
+      <option value="fill">填空题</option>
+      <option value="calculate">计算题</option>
+      <option value="shortAnswer">简答题</option>
+      <option value="essay">论述题</option>
+      <option value="proof">证明题</option>
+    </select>
+    <select class="exam-filter exam-f-green" id="filterStatus">
+      <option value="">全部状态</option>
+      <option value="pending">待消灭</option>
+      <option value="solved">已解决</option>
+    </select>
+    <span class="exam-filter-count" id="filterCount">0 题</span>
+  </div>
+
+  <!-- 错题列表 -->
+  <div class="exam-question-list" id="wrongList">
+    <div class="exam-empty">加载中...</div>
+  </div>
+
+</div>
+
+<script src="../../js/shared/utils.js?v=4f76b4d7"></script>
+<script src="../../js/shared/ai-chat.js?v=4f76b4d7"></script>
+<script src="../../js/shared/quiz-helpers.js?v=4f76b4d7"></script>
+<script src="../../js/自考学习/exam-data-loader.js?v=4f76b4d7"></script>
+<script src="../../js/自考学习/错题本.js?v=4f76b4d7"></script>
+</body>
+</html>

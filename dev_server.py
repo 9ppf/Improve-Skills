@@ -172,6 +172,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_append_quiz_record()
         elif self.path == '/api/quiz-wrong-reason':
             self._handle_update_wrong_reason()
+        elif self.path == '/api/wrong-solved':
+            self._handle_save_wrong_solved()
         elif self.path == '/api/quiz-ai':
             self._handle_save_quiz('ai')
         elif self.path == '/api/ai-plan':
@@ -217,6 +219,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_quiz('bank')
         elif self.path.startswith('/api/quiz-records'):
             self._handle_load_quiz('records')
+        elif self.path.startswith('/api/wrong-solved'):
+            self._handle_load_wrong_solved()
         elif self.path.startswith('/api/quiz-ai-help'):
             self._handle_load_quiz_ai_help()
         elif self.path.startswith('/api/exam-ai-help'):
@@ -441,18 +445,7 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             records = _load_json_backup_on_corrupt(path, default=[])
             if not isinstance(records, list):
                 records = []
-            # 按 questionId 去重：已存在则更新（保留原 wrongReason 等字段），不存在则追加
-            updated = False
-            for i in range(len(records)):
-                if records[i].get('questionId') == question_id:
-                    # 合并：新记录覆盖旧记录的字段，但保留旧记录中不在新记录里的字段（如 wrongReason）
-                    merged = dict(records[i])
-                    merged.update(record)
-                    records[i] = merged
-                    updated = True
-                    break
-            if not updated:
-                records.append(record)
+            records.append(record)
             try:
                 atomic_write_json(path, records)
             except OSError as e:
@@ -495,6 +488,53 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 self._send_json(500, {'error': f'Cannot write: {e}'})
                 return
         self._send_json(200, {'status': 'ok'})
+
+    def _handle_save_wrong_solved(self):
+        """保存错题已解决状态（跨设备同步）"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        question_id = data.get('questionId', '')
+        solved = data.get('solved', False)
+        if not subject or not question_id:
+            self._send_json(400, {'error': 'Missing subject or questionId'})
+            return
+        path = ROOT / 'data' / f'wrong-solved-{subject}.json'
+        with _file_lock:
+            store = _load_json_backup_on_corrupt(path, default={})
+            if not isinstance(store, dict):
+                store = {}
+            store[question_id] = bool(solved)
+            try:
+                atomic_write_json(path, store)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
+        self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_wrong_solved(self):
+        """加载错题已解决状态"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / f'wrong-solved-{subject}.json'
+        store = _load_json_backup_on_corrupt(path, default={})
+        if not isinstance(store, dict):
+            store = {}
+        body = json.dumps(store, ensure_ascii=False).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def _handle_save_quiz_photo(self):
         """保存拍照答案到服务端（跨设备同步）"""

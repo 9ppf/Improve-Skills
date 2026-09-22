@@ -286,7 +286,6 @@
       // ============ 功能切换状态 ============
       var currentFeature = 'review';
       var wrongCache = { subject: null, records: [], bank: [] };
-      var bankCache = { subject: null, data: [], filterChapter: '', filterType: '' };
 
       // ============ 工具函数 ============
       var esc = QuizUtils.esc;
@@ -318,7 +317,6 @@
         document.querySelectorAll('.ss-feature-panel').forEach(function(p) {
           p.classList.toggle('zk-active', p.dataset.feature === feature);
         });
-        if (feature !== 'bank') closeBankForm();
         loadActiveFeature();
       }
       function loadActiveFeature() {
@@ -328,8 +326,6 @@
           loadReviewInsight();
         } else if (currentFeature === 'wrong') {
           loadWrongReview();
-        } else if (currentFeature === 'bank') {
-          loadQuizBank();
         }
       }
 
@@ -384,12 +380,19 @@
       }
 
       // ============ 错题「已解决」标记（localStorage，前端持久） ============
+      var solvedCache = {};
       function loadSolved(subject) {
-        try { var raw = localStorage.getItem('ss_wrong_solved_' + subject); return raw ? JSON.parse(raw) : {}; }
-        catch (e) { return {}; }
+        return fetch(apiUrl('/api/wrong-solved?subject=' + subject), { cache: 'no-cache' })
+          .then(function(r) { return r.json(); })
+          .then(function(data) { solvedCache = data || {}; return solvedCache; })
+          .catch(function() { return {}; });
       }
-      function saveSolved(subject, obj) {
-        try { localStorage.setItem('ss_wrong_solved_' + subject, JSON.stringify(obj)); } catch (e) {}
+      function saveSolved(subject, qid, solved) {
+        fetch(apiUrl('/api/wrong-solved'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subject: subject, questionId: qid, solved: solved })
+        }).catch(function() {});
       }
 
       // ============ 错题反思：加载 ============
@@ -399,10 +402,23 @@
         container.innerHTML = '<div class="ss-loading">加载中…</div>';
         Promise.all([
           fetch(apiUrl('/api/quiz-records?subject=' + subject), { cache: 'no-cache' }).then(function(r) { return r.json(); }),
-          fetch(apiUrl('/api/quiz-bank?subject=' + subject), { cache: 'no-cache' }).then(function(r) { return r.json(); })
+          fetch(apiUrl('/api/quiz-bank?subject=' + subject), { cache: 'no-cache' }).then(function(r) { return r.json(); }),
+          fetch(apiUrl('/api/ai-practice?subject=' + subject), { cache: 'no-cache' }).then(function(r) { return r.json(); }).catch(function() { return []; }),
+          (window.examDataReady || Promise.resolve()).then(function() {
+            var examData = window.EXAM_DATA && window.EXAM_DATA[subject];
+            return (examData && examData.questions) || [];
+          }),
+          loadSolved(subject)
         ]).then(function(res) {
           var records = Array.isArray(res[0]) ? res[0] : [];
           var bank = Array.isArray(res[1]) ? res[1] : [];
+          var aiBatches = Array.isArray(res[2]) ? res[2] : [];
+          var examQs = Array.isArray(res[3]) ? res[3] : [];
+          aiBatches.forEach(function(batch) {
+            var qs = (batch && (batch.items || batch.questions)) || [];
+            qs.forEach(function(q) { bank.push(q); });
+          });
+          examQs.forEach(function(q) { bank.push(q); });
           wrongCache.subject = subject; wrongCache.records = records; wrongCache.bank = bank;
           renderWrong(records, bank, subject);
         }).catch(function(err) {
@@ -503,7 +519,7 @@
           groups[ch].push(d);
         });
 
-        var solved = loadSolved(subject);
+        var solved = solvedCache;
         var total = list.length;
         var chapterCount = Object.keys(groups).length;
         var latestTs = list.length ? tsToMs(list[0].rec.timestamp) : 0;
@@ -608,379 +624,6 @@
         return '练习测验.html?subject=' + encodeURIComponent(currentSubject) + '&questionId=' + encodeURIComponent(qid);
       }
 
-      // ============ 题库管理：加载 ============
-      function loadQuizBank() {
-        var container = document.getElementById('bankContainer');
-        var subject = currentSubject;
-        if (bankCache.subject !== subject) { bankCache.filterChapter = ''; bankCache.filterType = ''; bankCache.filterStatus = ''; }
-        container.innerHTML = '<div class="ss-loading">加载中…</div>';
-        // 同时加载题库和答题记录，用于判断每题的完成状态
-        Promise.all([
-          fetch(apiUrl('/api/quiz-bank?subject=' + subject), { cache: 'no-cache' }).then(function(r) { return r.json(); }),
-          fetch(apiUrl('/api/quiz-records?subject=' + subject), { cache: 'no-cache' }).then(function(r) { return r.json(); })
-        ]).then(function(res) {
-          var bankData = Array.isArray(res[0]) ? res[0] : [];
-          var records = Array.isArray(res[1]) ? res[1] : [];
-          // 构建题目状态映射：questionId → {isCorrect, level}
-          var statusMap = {};
-          records.forEach(function(r) {
-            if (r && r.questionId) {
-              // 保留最新记录（覆盖旧记录）
-              statusMap[r.questionId] = { isCorrect: r.isCorrect, level: r.level };
-            }
-          });
-          bankCache.subject = subject;
-          bankCache.data = bankData;
-          bankCache.statusMap = statusMap;
-          renderBank();
-        }).catch(function(err) {
-          container.innerHTML = '<div class="ss-error-box">⚠️ 无法加载题库：' +
-            esc(err.message || '网络请求失败') + '。请确认本地服务（http://localhost:8000）已启动。</div>';
-        });
-      }
-
-      // ============ 题库管理：渲染 ============
-      function renderBank() {
-        var container = document.getElementById('bankContainer');
-        var data = bankCache.data;
-        var statusMap = bankCache.statusMap || {};
-        var typeCounts = {}, chapterCounts = {};
-        var statusCounts = { unanswered: 0, correct: 0, wrong: 0 };
-        data.forEach(function(q) {
-          var t = q.type || 'other';
-          typeCounts[t] = (typeCounts[t] || 0) + 1;
-          var c = q.chapter || '未分类';
-          chapterCounts[c] = (chapterCounts[c] || 0) + 1;
-          // 统计答题状态
-          var st = statusMap[q.id];
-          if (!st) statusCounts.unanswered++;
-          else if (st.isCorrect) statusCounts.correct++;
-          else statusCounts.wrong++;
-        });
-        var chapters = Object.keys(chapterCounts);
-        var types = Object.keys(typeCounts);
-
-        var typeChips = types.map(function(t) {
-          var m = TYPE_META[t] || { label: t, icon: '' };
-          return '<span class="ss-bank-stat-chip">' + m.icon + ' ' + esc(m.label) + ' ' + typeCounts[t] + '</span>';
-        }).join('');
-
-        // 状态统计 chips
-        var statusChips =
-          '<span class="ss-bank-stat-chip unanswered">⚪ 未答 ' + statusCounts.unanswered + '</span>' +
-          '<span class="ss-bank-stat-chip correct">✓ 答对 ' + statusCounts.correct + '</span>' +
-          '<span class="ss-bank-stat-chip wrong">✗ 答错 ' + statusCounts.wrong + '</span>';
-
-        var statsHtml =
-          '<div class="ss-bank-stats">' +
-            '<div class="ss-bank-stat-chips">' +
-              '<span class="ss-bank-stat-chip total">📊 总题数 ' + data.length + '</span>' +
-              (typeChips || '<span class="ss-bank-stat-chip">暂无</span>') +
-            '</div>' +
-          '</div>';
-
-        var fc = bankCache.filterChapter, ft = bankCache.filterType, fs = bankCache.filterStatus;
-        var chapterOpts = '<option value="">📚 全部章节</option>' +
-          chapters.map(function(c) { return '<option value="' + esc(c) + '"' + (c === fc ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('');
-        var typeOpts = '<option value="">📝 全部题型</option>' +
-          types.map(function(t) { var m = TYPE_META[t] || { label: t }; return '<option value="' + esc(t) + '"' + (t === ft ? ' selected' : '') + '>' + esc(m.label) + '</option>'; }).join('');
-        var statusOpts = '<option value="">📊 全部状态</option>' +
-          '<option value="unanswered"' + (fs === 'unanswered' ? ' selected' : '') + '>⚪ 未答（' + statusCounts.unanswered + '）</option>' +
-          '<option value="correct"' + (fs === 'correct' ? ' selected' : '') + '>✓ 答对（' + statusCounts.correct + '）</option>' +
-          '<option value="wrong"' + (fs === 'wrong' ? ' selected' : '') + '>✗ 答错（' + statusCounts.wrong + '）</option>';
-
-        var toolbarHtml =
-          '<div class="ss-bank-toolbar">' +
-            '<select id="bankFilterChapter" class="ss-bank-select ss-bank-select-chapter">' + chapterOpts + '</select>' +
-            '<select id="bankFilterType" class="ss-bank-select ss-bank-select-type">' + typeOpts + '</select>' +
-            '<select id="bankFilterStatus" class="ss-bank-select ss-bank-select-status">' + statusOpts + '</select>' +
-            '<span class="ss-bank-toolbar-spacer"></span>' +
-            '<button class="ss-bank-add zk-btn-primary" id="bankAddBtn">+ 新增题目</button>' +
-          '</div>';
-
-        var formHtml = '<div class="ss-bank-form zk-hidden" id="bankForm"></div>';
-
-        var filtered = data.filter(function(q) {
-          if (fc && (q.chapter || '') !== fc) return false;
-          if (ft && (q.type || '') !== ft) return false;
-          // 答题状态筛选
-          if (fs) {
-            var st = statusMap[q.id];
-            if (fs === 'unanswered' && st) return false;
-            if (fs === 'correct' && (!st || !st.isCorrect)) return false;
-            if (fs === 'wrong' && (!st || st.isCorrect)) return false;
-          }
-          return true;
-        });
-
-        var listHtml;
-        if (!filtered.length) {
-          listHtml = '<div class="ss-empty">' + (data.length ? '🔍 当前筛选无匹配题目' : '题库为空，点击「新增题目」添加第一道题') + '</div>';
-        } else {
-          var groups = {};
-          filtered.forEach(function(q) { var c = q.chapter || '未分类'; if (!groups[c]) groups[c] = []; groups[c].push(q); });
-          listHtml = Object.keys(groups).map(function(c) {
-            var cards = groups[c].map(function(q) { return renderBankCard(q, data.indexOf(q)); }).join('');
-            return '<div class="ss-bank-group"><div class="ss-bank-group-head"><span>' + esc(c) + '</span><span class="ss-bank-group-count">' + groups[c].length + ' 题</span></div>' + cards + '</div>';
-          }).join('');
-        }
-
-        container.innerHTML = statsHtml + toolbarHtml + formHtml + listHtml;
-
-        var fcEl = document.getElementById('bankFilterChapter');
-        var ftEl = document.getElementById('bankFilterType');
-        var fsEl = document.getElementById('bankFilterStatus');
-        if (fcEl) fcEl.addEventListener('change', function() { bankCache.filterChapter = fcEl.value; renderBank(); });
-        if (ftEl) ftEl.addEventListener('change', function() { bankCache.filterType = ftEl.value; renderBank(); });
-        if (fsEl) fsEl.addEventListener('change', function() { bankCache.filterStatus = fsEl.value; renderBank(); });
-        var addBtn = document.getElementById('bankAddBtn');
-        if (addBtn) addBtn.addEventListener('click', function() { openBankForm(null); });
-      }
-
-      function renderBankCard(q, idx) {
-        var typeMeta = TYPE_META[q.type] || { label: q.type || '其他', icon: '' };
-        var diff = q.difficulty || 0;
-        var diffLabel = diff === 1 ? '简单' : diff === 2 ? '中等' : diff === 3 ? '困难' : '未设';
-        var diffStars = diff ? '⭐'.repeat(diff) : '';
-        var tags = (Array.isArray(q.tags) && q.tags.length) ? q.tags.map(function(t) { return '<span class="ss-bank-tag">' + esc(t) + '</span>'; }).join('') : '';
-        var qText = q.question || q.text || '(无题目)';
-        var ansHtml = renderBankAnswer(q);
-        var subLabel = q.subType && SUBTYPE_LABEL[q.subType] ? '（' + SUBTYPE_LABEL[q.subType] + '）' : '';
-        // 答题状态标签
-        var st = (bankCache.statusMap || {})[q.id];
-        var statusBadge = !st ? '<span class="ss-bank-status ss-bank-status-unanswered">⚪ 未答</span>' :
-          st.isCorrect ? '<span class="ss-bank-status ss-bank-status-correct">✓ 答对</span>' :
-          '<span class="ss-bank-status ss-bank-status-wrong">✗ 答错</span>';
-
-        return '<div class="ss-bank-card" data-idx="' + idx + '">' +
-          '<div class="ss-bank-card-head">' +
-            '<span class="ss-bank-qid">' + esc(q.id || '') + '</span>' +
-            '<span class="ss-bank-type">' + typeMeta.icon + ' ' + esc(typeMeta.label) + subLabel + '</span>' +
-            statusBadge +
-            '<span class="ss-bank-diff">' + diffStars + ' ' + esc(diffLabel) + '</span>' +
-            '<div class="ss-bank-card-actions">' +
-              '<button class="ss-bank-edit zk-btn-outline" data-idx="' + idx + '">编辑</button>' +
-              '<button class="ss-bank-del zk-btn-outline" data-idx="' + idx + '">删除</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="ss-bank-question">' + esc(qText) + '</div>' +
-          ansHtml +
-          (q.explanation ? '<div class="ss-bank-explanation">📖 ' + esc(q.explanation) + '</div>' : '') +
-          (tags ? '<div class="ss-bank-tags">' + tags + '</div>' : '') +
-        '</div>';
-      }
-
-      function renderBankAnswer(q) {
-        var parts = [];
-        if (q.type === 'choice') {
-          if (Array.isArray(q.options)) {
-            var letters = 'ABCDEFGH';
-            parts.push('<div class="ss-bank-options">' + q.options.map(function(o, i) {
-              return '<div class="ss-bank-opt">' + (letters[i] || '?') + '. ' + esc(o.replace(/^[A-H]\.\s*/, '')) + '</div>';
-            }).join('') + '</div>');
-          }
-          if (q.answer) parts.push('<div class="ss-bank-answer">答案：<b>' + esc(q.answer) + '</b></div>');
-        } else if (q.type === 'fill') {
-          if (Array.isArray(q.blanks)) parts.push('<div class="ss-bank-answer">答案：' + q.blanks.map(function(b, i) { return '<b>' + (i + 1) + '.</b> ' + esc(b.answer || ''); }).join('　') + '</div>');
-        } else if (q.type === 'calculate') {
-          if (q.formula) parts.push('<div class="ss-bank-formula">公式：' + esc(q.formula) + '</div>');
-          if (q.answer) parts.push('<div class="ss-bank-answer">答案：<b>' + esc(q.answer) + '</b></div>');
-        } else if (q.type === 'shortAnswer' || q.type === 'essay' || q.type === 'proof') {
-          if (q.referenceAnswer) parts.push('<div class="ss-bank-answer">参考答案：' + esc(q.referenceAnswer) + '</div>');
-          if (q.passThreshold) parts.push('<div class="ss-bank-threshold">通过线：' + q.passThreshold + '</div>');
-        }
-        if (Array.isArray(q.steps) && q.steps.length) parts.push('<div class="ss-bank-steps">步骤：' + q.steps.map(esc).join(' → ') + '</div>');
-        return parts.length ? '<div class="ss-bank-ans-block">' + parts.join('') + '</div>' : '';
-      }
-
-      // ============ 题库管理：保存到服务器 ============
-      function saveBank() {
-        renderBank();
-        fetch(apiUrl('/api/quiz-bank'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ subject: bankCache.subject, data: bankCache.data })
-        })
-          .then(function(r) { return r.json(); })
-          .then(function(res) {
-            if (res && res.error) { showToast('保存失败：' + res.error, 'error'); loadQuizBank(); }
-            else { showToast('已保存', 'success'); }
-          })
-          .catch(function(err) {
-            showToast('保存失败：' + (err.message || '网络错误') + '，请重试', 'error');
-            loadQuizBank();
-          });
-      }
-
-      // ============ 题库管理：新增/编辑表单 ============
-      function openBankForm(idx) {
-        var form = document.getElementById('bankForm');
-        if (!form) return;
-        var isEdit = idx != null;
-        var q = isEdit ? bankCache.data[idx] : null;
-        var data = bankCache.data;
-        var conf = SUBJECTS[currentSubject];
-
-        var chSet = {};
-        conf.chapters.forEach(function(name, i) { chSet['第' + (i + 1) + '章 ' + name] = true; });
-        data.forEach(function(d) { if (d.chapter) chSet[d.chapter] = true; });
-        var chapterList = Object.keys(chSet);
-
-        var typeOpts = Object.keys(TYPE_META).map(function(t) {
-          return '<option value="' + t + '"' + (q && q.type === t ? ' selected' : '') + '>' + TYPE_META[t].icon + ' ' + TYPE_META[t].label + '</option>';
-        }).join('');
-
-        var subTypeVal = (q && q.subType) || 'single';
-        var subTypeOpts = Object.keys(SUBTYPE_LABEL).map(function(k) {
-          return '<option value="' + k + '"' + (subTypeVal === k ? ' selected' : '') + '>' + SUBTYPE_LABEL[k] + '</option>';
-        }).join('');
-
-        var optionsVal = (q && Array.isArray(q.options)) ? q.options.join('\n') : '';
-        var answerVal = '';
-        if (q) {
-          if (q.type === 'choice' || q.type === 'calculate') answerVal = q.answer || '';
-          else if (q.type === 'fill') answerVal = (q.blanks || []).map(function(b) { return b.answer || ''; }).join(' | ');
-          else if (q.type === 'shortAnswer' || q.type === 'essay' || q.type === 'proof') answerVal = q.referenceAnswer || '';
-        }
-        var passVal = (q && q.passThreshold) || 3;
-        var diffVal = (q && q.difficulty) || 1;
-
-        form.innerHTML =
-          '<div class="ss-bank-form-head"><span>' + (isEdit ? '编辑题目' : '新增题目') + '</span><button class="ss-bank-form-close zk-btn-outline" type="button">×</button></div>' +
-          '<div class="ss-bank-form-body">' +
-            '<div class="ss-bank-form-row">' +
-              '<label class="ss-bank-field">题型<select id="bfType" class="ss-bank-input">' + typeOpts + '</select></label>' +
-              '<label class="ss-bank-field ss-field-choice-only zk-hidden">子类型<select id="bfSubType" class="ss-bank-input">' + subTypeOpts + '</select></label>' +
-              '<label class="ss-bank-field">难度<select id="bfDifficulty" class="ss-bank-input"><option value="1">⭐ 简单</option><option value="2">⭐⭐ 中等</option><option value="3">⭐⭐⭐ 困难</option></select></label>' +
-            '</div>' +
-            '<label class="ss-bank-field">章节<input id="bfChapter" class="ss-bank-input" list="bfChapterList" placeholder="如：第1章 计算机系统概述" value="' + esc(q ? q.chapter : '') + '"/><datalist id="bfChapterList">' + chapterList.map(function(c) { return '<option value="' + esc(c) + '">'; }).join('') + '</datalist></label>' +
-            '<label class="ss-bank-field">题目<textarea id="bfQuestion" class="ss-bank-input ss-bank-textarea" placeholder="题干文本">' + esc(q ? (q.question || q.text || '') : '') + '</textarea></label>' +
-            '<label class="ss-bank-field ss-field-choice-only zk-hidden">选项（每行一个，仅选择题）<textarea id="bfOptions" class="ss-bank-input ss-bank-textarea" placeholder="A 选项&#10;B 选项">' + esc(optionsVal) + '</textarea></label>' +
-            '<label class="ss-bank-field">答案<span id="bfAnswerHint">（字母，如 A）</span><input id="bfAnswer" class="ss-bank-input" value="' + esc(answerVal) + '"/></label>' +
-            '<label class="ss-bank-field ss-field-points-only zk-hidden">通过阈值<input id="bfPass" class="ss-bank-input" type="number" min="1" value="' + passVal + '"/></label>' +
-            '<label class="ss-bank-field">解析<textarea id="bfExplanation" class="ss-bank-input ss-bank-textarea" placeholder="解析（可选）">' + esc(q ? (q.explanation || '') : '') + '</textarea></label>' +
-            '<label class="ss-bank-field">标签（逗号分隔）<input id="bfTags" class="ss-bank-input" value="' + esc(q && q.tags ? q.tags.join(', ') : '') + '"/></label>' +
-            '<div class="ss-bank-form-actions"><button class="ss-bank-form-save zk-btn-primary" type="button">' + (isEdit ? '保存修改' : '添加题目') + '</button><button class="ss-bank-form-cancel zk-btn-outline" type="button">取消</button></div>' +
-          '</div>';
-        form.classList.remove('zk-hidden');
-        form.dataset.editIdx = isEdit ? String(idx) : '';
-
-        document.getElementById('bfDifficulty').value = String(diffVal);
-        toggleFormFields();
-
-        document.getElementById('bfType').addEventListener('change', toggleFormFields);
-        form.querySelector('.ss-bank-form-close').addEventListener('click', closeBankForm);
-        form.querySelector('.ss-bank-form-cancel').addEventListener('click', closeBankForm);
-        form.querySelector('.ss-bank-form-save').addEventListener('click', function() { submitBankForm(isEdit ? idx : null); });
-
-        form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-
-      function toggleFormFields() {
-        var typeEl = document.getElementById('bfType');
-        if (!typeEl) return;
-        var type = typeEl.value;
-        var showChoice = (type === 'choice');
-        var showPoints = (type === 'shortAnswer' || type === 'essay' || type === 'proof');
-        document.querySelectorAll('.ss-field-choice-only').forEach(function(el) { el.classList.toggle('zk-hidden', !showChoice); });
-        document.querySelectorAll('.ss-field-points-only').forEach(function(el) { el.classList.toggle('zk-hidden', !showPoints); });
-        var hint = document.getElementById('bfAnswerHint');
-        if (hint) {
-          if (type === 'choice') hint.textContent = '（字母，如 A 或 ACD）';
-          else if (type === 'fill') hint.textContent = '（各空答案用 | 分隔）';
-          else if (type === 'calculate') hint.textContent = '（最终答案）';
-          else hint.textContent = '（参考答案要点）';
-        }
-      }
-
-      function submitBankForm(editIdx) {
-        var type = document.getElementById('bfType').value;
-        var subType = document.getElementById('bfSubType') ? document.getElementById('bfSubType').value : 'single';
-        var chapter = document.getElementById('bfChapter').value.trim();
-        var difficulty = parseInt(document.getElementById('bfDifficulty').value, 10) || 1;
-        var question = document.getElementById('bfQuestion').value;
-        var optionsRaw = document.getElementById('bfOptions').value;
-        var answer = document.getElementById('bfAnswer').value;
-        var passEl = document.getElementById('bfPass');
-        var pass = passEl ? (parseInt(passEl.value, 10) || 3) : 3;
-        var explanation = document.getElementById('bfExplanation').value;
-        var tagsRaw = document.getElementById('bfTags').value;
-
-        if (!question.trim()) { showToast('请填写题目内容', 'error'); return; }
-        if (!chapter) { showToast('请填写章节', 'error'); return; }
-        if (type === 'choice' && !answer.trim()) { showToast('请填写答案（字母）', 'error'); return; }
-
-        var tags = tagsRaw ? tagsRaw.split(/[,，]/).map(function(t) { return t.trim(); }).filter(Boolean) : [];
-
-        var obj;
-        if (editIdx != null) {
-          obj = bankCache.data[editIdx] || {};
-        } else {
-          obj = { id: 'q-new-' + Date.now() };
-        }
-
-        obj.type = type;
-        obj.chapter = chapter;
-        obj.difficulty = difficulty;
-        if (tags.length) obj.tags = tags; else delete obj.tags;
-        if (explanation) obj.explanation = explanation; else delete obj.explanation;
-
-        // 题干：填空题用 text，其余用 question
-        if (type === 'fill') { obj.text = question; delete obj.question; }
-        else { obj.question = question; delete obj.text; }
-
-        if (type === 'choice') {
-          obj.subType = subType;
-          obj.options = optionsRaw.split(/\n/).map(function(s) { return s.trim(); }).filter(Boolean);
-          obj.answer = answer.trim().toUpperCase();
-        } else {
-          delete obj.subType; delete obj.options;
-        }
-
-        if (type === 'fill') {
-          var blanks = answer.split('|').map(function(s) { return s.trim(); }).filter(function(s) { return s !== ''; });
-          var existing = Array.isArray(obj.blanks) ? obj.blanks : [];
-          obj.blanks = blanks.map(function(ans, i) {
-            var b = existing[i] || {};
-            b.answer = ans;
-            return b;
-          });
-          delete obj.answer;
-        } else {
-          delete obj.blanks;
-        }
-
-        if (type === 'calculate') {
-          obj.answer = answer.trim();
-        } else if (type === 'shortAnswer' || type === 'essay') {
-          obj.referenceAnswer = answer;
-          obj.passThreshold = pass || 3;
-          if (!Array.isArray(obj.points)) obj.points = [];
-          delete obj.answer;
-        } else if (type === 'proof') {
-          obj.referenceAnswer = answer;
-          obj.passThreshold = pass || 3;
-          if (!Array.isArray(obj.steps)) obj.steps = [];
-          delete obj.answer;
-        } else {
-          delete obj.referenceAnswer; delete obj.passThreshold; delete obj.points; delete obj.steps;
-        }
-
-        if (editIdx == null) {
-          bankCache.data.push(obj);
-        } else {
-          bankCache.data[editIdx] = obj;
-        }
-
-        closeBankForm();
-        saveBank();
-      }
-
-      function closeBankForm() {
-        var form = document.getElementById('bankForm');
-        if (form) { form.classList.add('zk-hidden'); form.innerHTML = ''; }
-      }
-
       // ============ 绑定事件 ============
       document.getElementById("resetBtn").addEventListener("click", resetCurrent);
 
@@ -996,27 +639,11 @@
         var btn = e.target.closest(".ss-wrong-solve");
         if (!btn) return;
         var qid = btn.dataset.qid;
-        var solved = loadSolved(currentSubject);
-        if (solved[qid]) delete solved[qid]; else solved[qid] = true;
-        saveSolved(currentSubject, solved);
-        // 用缓存数据直接重渲染，避免重复请求
+        var isSolved = !!solvedCache[qid];
+        var newState = !isSolved;
+        if (newState) solvedCache[qid] = true; else delete solvedCache[qid];
+        saveSolved(currentSubject, qid, newState);
         renderWrong(wrongCache.records, wrongCache.bank, currentSubject);
-      });
-
-      // 题库卡片：编辑 / 删除（事件委托）
-      document.getElementById("bankContainer").addEventListener("click", function(e) {
-        var editBtn = e.target.closest(".ss-bank-edit");
-        var delBtn = e.target.closest(".ss-bank-del");
-        if (editBtn) {
-          openBankForm(parseInt(editBtn.dataset.idx, 10));
-        } else if (delBtn) {
-          var idx = parseInt(delBtn.dataset.idx, 10);
-          var q = bankCache.data[idx];
-          if (!q) return;
-          if (!confirm("确定删除题目「" + (q.id || "") + "」吗？此操作不可恢复。")) return;
-          bankCache.data.splice(idx, 1);
-          saveBank();
-        }
       });
 
       // 每分钟刷新一次「已保存」相对时间
@@ -1030,7 +657,7 @@
       var tabParam = initParams.get('tab');
       var hashFeature = window.location.hash.replace('#', '');
       var targetFeature = hashFeature || tabParam || '';
-      if (targetFeature && (targetFeature === 'wrong' || targetFeature === 'bank' || targetFeature === 'review')) {
+      if (targetFeature && (targetFeature === 'wrong' || targetFeature === 'review')) {
         switchFeature(targetFeature);
       }
 
