@@ -26,6 +26,7 @@
   var pendingText = {};        /* questionId → 输入文本 */
   var pendingAssess = {};      /* questionId → true（待自评） */
   var expandedSet = {};        /* questionId → true（展开答案） */
+  var markedMap = {};          /* questionId → true（手动加入错题库） */
 
   var filters = { source: '', chapter: '', type: '', status: '' };
 
@@ -84,6 +85,12 @@
         .then(function (data) { solvedMap = data || {}; })
         .catch(function () { solvedMap = {}; })
     );
+    promises.push(
+      fetch(apiUrl('/api/wrong-marked?subject=' + currentSubject), { cache: 'no-cache' })
+        .then(function (r) { return r.json(); })
+        .then(function (data) { markedMap = data || {}; })
+        .catch(function () { markedMap = {}; })
+    );
 
     return Promise.all(promises).then(buildWrongList);
   }
@@ -105,6 +112,17 @@
       if (r && r.isCorrect === false && !solvedMap[qid]) {
         var q = allQuestions[qid];
         if (q) wrongRecords.push({ q: q, r: r });
+      }
+    });
+    /* 手动标记加入错题库的题目 */
+    Object.keys(markedMap).forEach(function (qid) {
+      if (markedMap[qid] && !solvedMap[qid]) {
+        var q = allQuestions[qid];
+        var r = recordMap[qid];
+        if (q) {
+          var exists = wrongRecords.some(function (w) { return w.q.id === qid; });
+          if (!exists) wrongRecords.push({ q: q, r: r });
+        }
       }
     });
 
@@ -204,9 +222,12 @@
         selected: selectedOption[q.id] || '',
         showYear: !!q.year,
         showAIGen: false,
-        expanded: expandedSet[q.id] !== false,
+        expanded: expandedSet[q.id] === true,
         showSymbol: true,
-        getPhoto: loadPhoto
+        getPhoto: loadPhoto,
+        /* 已加入错题库：未解决的题目都在错题库里 */
+        marked: !solvedMap[q.id],
+        history: allRecords.filter(function(rec) { return rec.questionId === q.id; })
       });
 
       /* 已解决按钮 */
@@ -247,10 +268,12 @@
       score: score,
       total: total,
       level: lv,
+      details: result ? result.details : null,
       source: q.src === 'ai' ? 'ai' : (q.src === 'exam' ? 'exam' : 'practice'),
       session: q.src === 'ai' ? 'ai-practice' : (q.src === 'exam' ? 'exam-training' : 'practice')
     };
     recordMap[q.id] = record;
+    allRecords.push(record);
     fetch(apiUrl('/api/quiz-records'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -280,7 +303,7 @@
     var el = e.target.closest('[data-action]');
     if (!el) return;
     var action = el.dataset.action;
-    var qid = el.dataset.id;
+    var qid = el.dataset.id || el.dataset.qid;
     if (!qid) return;
 
     if (action === 'select-option') {
@@ -294,6 +317,7 @@
       var result = H.scoreChoice(q, letter);
       delete selectedOption[qid];
       saveRecord(q, letter, result.level === 'mastered', result.level, result);
+      expandedSet[qid] = true;
       buildWrongList();
     } else if (action === 'submit-fill') {
       var qf = findQuestion(qid);
@@ -306,6 +330,7 @@
       if (!allFilled) { alert('请填写所有空'); return; }
       var result = H.scoreFill(qf, userAnswers);
       saveRecord(qf, userAnswers.join(' | '), result.level === 'mastered', result.level, result);
+      expandedSet[qid] = true;
       buildWrongList();
     } else if (action === 'submit-text') {
       var inputEl = document.querySelector('[data-input-id="' + qid + '"]');
@@ -317,6 +342,7 @@
       var result = H.scoreQuestion(qt, text, null);
       if (result) {
         saveRecord(qt, text, result.level === 'mastered', result.level, result);
+        expandedSet[qid] = true;
         buildWrongList();
       } else {
         pendingText[qid] = text;
@@ -332,15 +358,31 @@
       delete pendingText[qid];
       delete pendingAssess[qid];
       saveRecord(q2, text2, isCorrect2, level);
+      expandedSet[qid] = true;
       buildWrongList();
     } else if (action === 'toggle-ref') {
       expandedSet[qid] = !expandedSet[qid];
       renderList();
+    } else if (action === 'toggle-marked') {
+      markedMap[qid] = !markedMap[qid];
+      fetch(apiUrl('/api/wrong-marked'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: currentSubject, questionId: qid, marked: markedMap[qid] })
+      }).catch(function() {});
+      renderList();
+    } else if (action === 'toggle-history') {
+      var histPanel = document.getElementById('hist-' + qid);
+      if (histPanel) histPanel.style.display = histPanel.style.display === 'none' ? '' : 'none';
     } else if (action === 'redo') {
       delete pendingText[qid];
       delete pendingAssess[qid];
       delete selectedOption[qid];
       delete recordMap[qid];
+      delete expandedSet[qid];
+      wrongRecords.forEach(function(item) {
+        if (item.q.id === qid) item.r = null;
+      });
       renderList();
     } else if (action === 'toggle-solved') {
       toggleSolved(qid);

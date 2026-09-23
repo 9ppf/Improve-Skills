@@ -131,6 +131,12 @@
       '</div>';
   };
 
+  /* 加入错题库按钮（独立于提交状态，内联） */
+  QuizHelpers.renderMarkedBtn = function (qId, marked) {
+    return '<span class="exam-link-btn exam-link-marked ' + (marked ? 'is-selected' : '') + '" data-action="toggle-marked" data-id="' + qId + '">' +
+      (marked ? '已加入错题库' : '加入错题库') + '</span>';
+  };
+
   /* 特殊符号面板（仅 div，按钮在 renderActions 中） */
   QuizHelpers.SYMBOLS = ['×','÷','=','≠','≈','≤','≥','<','>','±','²','³','ⁿ','√','π','Σ','∞','%','①','②','③','④','⑤','⑥','⑦','⑧','α','β','γ','δ','θ','λ','μ','σ','φ','ψ','ω','Δ','¬','∧','∨','→','↔','⊕','⊢','⇔','∀','∃','∈','∪','∩','⊆','⊇','∅','≡','P','Q','R','S','T','F','0','1'];
 
@@ -210,7 +216,13 @@
     if (r) {
       actions += '<span class="exam-link-btn exam-link-redo" data-action="redo" data-id="' + q.id + '">重做</span>';
     }
-    var hasAnswer = r || q.referenceAnswer || q.referenceProof;
+    if (opts.marked !== undefined) {
+      actions += QuizHelpers.renderMarkedBtn(q.id, opts.marked);
+    }
+    if (opts.history && opts.history.length > 1) {
+      actions += '<span class="exam-link-btn exam-link-history" data-action="toggle-history" data-id="' + q.id + '">往期答案(' + opts.history.length + ')</span>';
+    }
+    var hasAnswer = r || q.referenceAnswer || q.referenceProof || q.answer || (q.steps && q.steps.length);
     if (hasAnswer) {
       actions += '<span class="exam-link-btn" data-action="toggle-ref" data-id="' + q.id + '">' + (opts.expanded !== false ? '收起' : '展开答案') + '</span>';
     }
@@ -227,6 +239,7 @@
 
   /* ====== 内部辅助：外壳 ====== */
   function renderShell(q, r, opts, bodyHTML, answerHTML) {
+    var historyHTML = QuizHelpers.renderHistoryPanel(opts.history, q.id);
     return '<div class="exam-question" id="card-' + q.id + '" data-qid="' + q.id + '">' +
       '<div class="exam-q-header">' + renderBadges(q, r, opts) + '</div>' +
       '<div class="exam-q-title">' + QuizHelpers.renderContent(q.question || '') + '</div>' +
@@ -234,6 +247,7 @@
       bodyHTML +
       renderActions(q, r, opts) +
       (answerHTML || '') +
+      historyHTML +
       '</div>';
   }
 
@@ -247,7 +261,6 @@
       var letter = letters[i];
       var cls = 'exam-q-option';
       if (r) {
-        cls += ' disabled';
         var correctAns = (r.details && r.details.correctAnswer) || q.answer || '';
         var userAns = (r.details && r.details.userAnswer) || '';
         if (correctAns.indexOf(letter) >= 0) cls += ' is-correct';
@@ -287,14 +300,11 @@
     var blanksHTML = (q.blanks || []).map(function (b, i) {
       var bAns = (typeof b === 'string') ? b : (b.answer || '');
       var bHint = (typeof b === 'string') ? '' : (b.hint || '');
-      var inputVal = hasDetails ? (r.details.hits[i].userAnswer || '') : '';
+      var inputVal = '';
       var inputCls = '';
       var resultHTML = '';
-      if (hasDetails) {
-        var hit = r.details.hits[i];
-        inputCls = hit.matched ? ' is-correct' : ' is-wrong';
-        resultHTML = '<span class="exam-fill-result ' + (hit.matched ? 'correct' : 'wrong') + '">' +
-          (hit.matched ? '✅' : '❌ ' + esc(bAns)) + '</span>';
+      if (!r) {
+        inputVal = '';
       }
       return '<div class="exam-fill-row">' +
         '<span class="exam-fill-label">空' + (i + 1) + '</span>' +
@@ -302,8 +312,11 @@
         resultHTML + '</div>';
     }).join('');
 
-    var bodyHTML = '<div class="exam-fill-inputs">' + blanksHTML + '</div>';
-    if (opts.showSymbol) bodyHTML += QuizHelpers.renderSymbolPalette(q.id);
+    var bodyHTML = '';
+    if (!r) {
+      bodyHTML = '<div class="exam-fill-inputs">' + blanksHTML + '</div>';
+      if (opts.showSymbol) bodyHTML += QuizHelpers.renderSymbolPalette(q.id);
+    }
 
     var answerContent = '';
     if (r) {
@@ -347,6 +360,12 @@
       if (q.answer) answerContent += QuizHelpers.answerRow('答案', 'correct', q.answer);
       answerContent += QuizHelpers.renderSelfEval(r.selfOverride || r.level, q.id, '计算题自动评分可能有误差，你觉得实际掌握了吗？');
       if (r.score < (r.total || 1)) answerContent += QuizHelpers.renderWrongReason(r.wrongReason, q.id);
+    } else if (q.answer || q.steps || q.formula) {
+      if (q.formula) answerContent += QuizHelpers.answerRow('公式', 'info', q.formula);
+      if (q.steps && q.steps.length) {
+        answerContent += '<div class="exam-steps"><ol>' + q.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></div>';
+      }
+      if (q.answer) answerContent += QuizHelpers.answerRow('答案', 'correct', q.answer);
     }
 
     return renderShell(q, r, opts, bodyHTML, renderAnswerArea(q, r, opts, answerContent));
@@ -366,11 +385,11 @@
       if (r.details && r.details.hits) {
         answerContent += '<ul class="exam-points-list">' + renderPointsHTML(r.details.hits) + '</ul>';
       }
-      answerContent += QuizHelpers.renderReference('参考答案', q.referenceAnswer);
+      answerContent += QuizHelpers.renderReference('参考答案', q.referenceAnswer || q.answer);
       answerContent += QuizHelpers.renderSelfEval(r.selfOverride || r.level, q.id, '简答题评分仅供参考，你觉得实际掌握了吗？');
       if (r.score < (r.total || 1)) answerContent += QuizHelpers.renderWrongReason(r.wrongReason, q.id);
-    } else if (q.src === 'textbook' && q.referenceAnswer) {
-      answerContent += QuizHelpers.renderReference('参考答案', q.referenceAnswer);
+    } else if (q.referenceAnswer || q.answer) {
+      answerContent += QuizHelpers.renderReference('参考答案', q.referenceAnswer || q.answer);
     }
 
     return renderShell(q, r, opts, bodyHTML, renderAnswerArea(q, r, opts, answerContent));
@@ -392,9 +411,11 @@
       if (r.details && r.details.hits) {
         answerContent += '<ul class="exam-points-list">' + renderPointsHTML(r.details.hits) + '</ul>';
       }
-      answerContent += QuizHelpers.renderReference('参考答案', q.referenceAnswer);
+      answerContent += QuizHelpers.renderReference('参考答案', q.referenceAnswer || q.answer);
       answerContent += QuizHelpers.renderSelfEval(r.selfOverride || r.level, q.id, '论述题主观性较强，系统评分仅供参考。你觉得实际掌握了吗？');
       if (r.score < (r.total || 1)) answerContent += QuizHelpers.renderWrongReason(r.wrongReason, q.id);
+    } else if (q.referenceAnswer || q.answer) {
+      answerContent += QuizHelpers.renderReference('参考答案', q.referenceAnswer || q.answer);
     }
 
     return renderShell(q, r, opts, bodyHTML, renderAnswerArea(q, r, opts, answerContent));
@@ -431,8 +452,10 @@
         answerContent += '<ul class="exam-points-list">' + stepsHTML + '</ul>';
       }
       answerContent += QuizHelpers.renderReference('参考证明（' + (q.method || '') + '）', q.referenceProof, true);
-      answerContent += QuizHelpers.renderSelfEval(r.selfOverride || r.level, q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得证明思路掌握了吗？');
+      answerContent += QuizHelpers.renderSelfEval(r.selfOverride || r.level, q.id, '证明题路径不唯一，系统只检查关键步骤。你觉得实际掌握了吗？');
       if (r.score < (r.total || 1)) answerContent += QuizHelpers.renderWrongReason(r.wrongReason, q.id);
+    } else if (q.referenceProof) {
+      answerContent += QuizHelpers.renderReference('参考证明（' + (q.method || '') + '）', q.referenceProof, true);
     }
 
     return renderShell(q, r, opts, bodyHTML, renderAnswerArea(q, r, opts, answerContent));
@@ -625,6 +648,27 @@
         return null;
       default: return null;
     }
+  };
+
+  /* 往期答案面板 */
+  QuizHelpers.renderHistoryPanel = function (history, qId) {
+    if (!history || history.length <= 1) return '';
+    var rows = history.map(function (r, i) {
+      var cls = r.isCorrect ? 'correct' : 'wrong';
+      var icon = r.isCorrect ? '✅' : '❌';
+      var ts = r.timestamp ? new Date(r.timestamp).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+      var ans = r.userAnswer || '(空)';
+      var lv = r.level || (r.isCorrect ? 'mastered' : 'unknown');
+      var lvText = lv === 'mastered' ? '已掌握' : lv === 'unsure' ? '不熟练' : '不会';
+      return '<div class="exam-history-row ' + cls + '">' +
+        '<span class="exam-history-idx">#' + (i + 1) + '</span>' +
+        '<span class="exam-history-time">' + esc(ts) + '</span>' +
+        '<span class="exam-history-icon">' + icon + '</span>' +
+        '<span class="exam-history-answer">' + esc(ans) + '</span>' +
+        '<span class="exam-history-level">' + esc(lvText) + '</span>' +
+        '</div>';
+    }).join('');
+    return '<div class="exam-history-panel" id="hist-' + qId + '" style="display:none">' + rows + '</div>';
   };
 
   global.QuizHelpers = QuizHelpers;

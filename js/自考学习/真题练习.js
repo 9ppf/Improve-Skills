@@ -20,10 +20,12 @@
   var H = QuizHelpers;
   var allQuestions = [];
   var recordMap = {};          /* questionId → 最新答题记录 */
+  var allRecords = [];         /* 全部答题记录（用于往期答案） */
   var selectedOption = {};     /* questionId → 选中字母（选择题型，提交前） */
   var pendingText = {};        /* questionId → 输入文本（非选择题型，提交前） */
   var pendingAssess = {};      /* questionId → true（已提交文本但未自评） */
   var expandedSet = {};        /* questionId → true（展开答案） */
+  var markedMap = {};          /* questionId → true（手动加入错题库） */
 
   /* 同类题专项练习状态 */
   var aiPracticeBatches = [];
@@ -32,6 +34,96 @@
   var aiPracticeCollapsed = {};
 
   function qkey(id) { return String(id); }
+
+  /* ====== 待重传记录队列（localStorage 兜底，断网不丢） ====== */
+  function getPendingRecords() {
+    try {
+      var raw = localStorage.getItem('exam-pending-records-' + currentSubject);
+      return raw ? JSON.parse(raw) : [];
+    } catch(e) { return []; }
+  }
+  function setPendingRecords(arr) {
+    try { localStorage.setItem('exam-pending-records-' + currentSubject, JSON.stringify(arr)); } catch(e) {}
+  }
+  function flushPendingRecords() {
+    var pending = getPendingRecords();
+    if (!pending.length) return Promise.resolve();
+    var promises = pending.map(function(payload) {
+      return fetch(apiUrl('/api/quiz-records'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function(r) {
+        if (r.ok) {
+          var remaining = getPendingRecords().filter(function(p) {
+            return p.record.timestamp !== payload.record.timestamp;
+          });
+          setPendingRecords(remaining);
+          return true;
+        }
+        return false;
+      }).catch(function() { return false; });
+    });
+    return Promise.all(promises);
+  }
+
+  /* ====== 错因待重传队列 ====== */
+  function getPendingWrongReasons() {
+    try {
+      var raw = localStorage.getItem('exam-pending-wrong-reasons-' + currentSubject);
+      return raw ? JSON.parse(raw) : [];
+    } catch(e) { return []; }
+  }
+  function setPendingWrongReasons(arr) {
+    try { localStorage.setItem('exam-pending-wrong-reasons-' + currentSubject, JSON.stringify(arr)); } catch(e) {}
+  }
+  function flushPendingWrongReasons() {
+    var pending = getPendingWrongReasons();
+    if (!pending.length) return Promise.resolve();
+    var promises = pending.map(function(payload) {
+      return fetch(apiUrl('/api/quiz-wrong-reason'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function(r) {
+        if (r.ok) {
+          var remaining = getPendingWrongReasons().filter(function(p) {
+            return p.questionId !== payload.questionId;
+          });
+          setPendingWrongReasons(remaining);
+          if (recordMap[payload.questionId]) {
+            recordMap[payload.questionId].wrongReason = payload.wrongReason;
+          }
+          return true;
+        }
+        return false;
+      }).catch(function() { return false; });
+    });
+    return Promise.all(promises);
+  }
+
+  /* ====== 后台自动同步 ====== */
+  var _syncTimer = null;
+  var _syncing = false;
+  function syncNow() {
+    if (_syncing) return;
+    _syncing = true;
+    flushPendingRecords().then(function() {
+      return flushPendingWrongReasons();
+    }).then(function() {
+      _syncing = false;
+    }).catch(function() {
+      _syncing = false;
+    });
+  }
+  function startAutoSync() {
+    if (_syncTimer) return;
+    _syncTimer = setInterval(syncNow, 15000);
+    /* 页面重新可见时立即同步 */
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) syncNow();
+    });
+  }
 
   function loadData() {
     var examData = window.EXAM_DATA && window.EXAM_DATA[currentSubject];
@@ -43,15 +135,28 @@
       .then(function(r) { return r.json(); })
       .then(function(records) {
         recordMap = {};
-        (Array.isArray(records) ? records : []).forEach(function(r) {
-          if (!r || !r.questionId) return;
+        allRecords = Array.isArray(records) ? records.filter(function(r) { return r && r.questionId; }) : [];
+        allRecords.forEach(function(r) {
           var prev = recordMap[r.questionId];
           if (!prev || (r.timestamp && prev.timestamp && r.timestamp > prev.timestamp)) {
             recordMap[r.questionId] = r;
           }
         });
+        /* 用 localStorage 待重传记录覆盖（本地记录更新，优先级更高） */
+        var localPending = getPendingRecords();
+        localPending.forEach(function(p) {
+          if (!p.record || !p.record.questionId) return;
+          recordMap[p.record.questionId] = p.record;
+          allRecords.push(p.record);
+        });
       })
-      .catch(function() { recordMap = {}; });
+      .catch(function() { recordMap = {}; })
+      .then(function() {
+        return fetch(apiUrl('/api/wrong-marked?subject=' + currentSubject), { cache: 'no-cache' });
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) { markedMap = data || {}; })
+      .catch(function() { markedMap = {}; });
   }
 
   function saveExamRecord(q, userAnswer, isCorrect, level, result) {
@@ -74,16 +179,29 @@
       score: score,
       total: total,
       level: lv,
+      details: result ? result.details : null,
       source: q.src === 'ai' ? 'ai' : 'exam',
       session: q.src === 'ai' ? 'ai-practice' : 'exam-training'
     };
     recordMap[q.id] = record;
+    allRecords.push(record);
+    /* 先写本地 localStorage 兜底 */
+    var payload = { subject: currentSubject, record: record };
+    var pending = getPendingRecords();
+    pending.push(payload);
+    setPendingRecords(pending);
+    /* 异步上传，成功则从待重传队列移除 */
     fetch(apiUrl('/api/quiz-records'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subject: currentSubject, record: record })
+      body: JSON.stringify(payload)
+    }).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      var cur = getPendingRecords();
+      cur = cur.filter(function(p) { return p.record.timestamp !== record.timestamp; });
+      setPendingRecords(cur);
     }).catch(function(e) {
-      console.warn('记录保存失败:', e);
+      console.warn('记录保存失败，已存本地待同步:', e);
     });
     updateExamMastery(q.chapter, isCorrect);
   }
@@ -91,10 +209,23 @@
   function saveWrongReason(qid, reason) {
     var rec = recordMap[qid];
     if (rec) rec.wrongReason = reason;
+    /* 先写本地 localStorage 兜底 */
+    var payload = { subject: currentSubject, questionId: qid, wrongReason: reason };
+    var pending = getPendingWrongReasons();
+    /* 同一题只保留最新一条 */
+    pending = pending.filter(function(p) { return p.questionId !== qid; });
+    pending.push(payload);
+    setPendingWrongReasons(pending);
+    /* 异步上传，成功则从待重传队列移除 */
     fetch(apiUrl('/api/quiz-wrong-reason'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subject: currentSubject, questionId: qid, wrongReason: reason })
+      body: JSON.stringify(payload)
+    }).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      var cur = getPendingWrongReasons();
+      cur = cur.filter(function(p) { return p.questionId !== qid; });
+      setPendingWrongReasons(cur);
     }).catch(function() {});
   }
 
@@ -252,9 +383,12 @@
       selected: selectedOption[q.id] || '',
       showYear: true,
       showAIGen: true,
-      expanded: showAnswer !== false,
+      expanded: showAnswer === true,
       showSymbol: true,
-      getPhoto: loadPhoto
+      getPhoto: loadPhoto,
+      /* 已加入错题库：手动标记 或 答错自动进入 */
+      marked: !!markedMap[q.id] || (r && r.isCorrect === false),
+      history: allRecords.filter(function(rec) { return rec.questionId === q.id; })
     });
 
     if (showAiPractice) {
@@ -355,9 +489,9 @@
 
   /* ====== 事件代理 ====== */
   function handleQuestionClick(e) {
-    var el = e.target;
-    if (!el.dataset || !el.dataset.action) return;
-    var qid = el.dataset.id;
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+    var qid = el.dataset.id || el.dataset.qid;
     var action = el.dataset.action;
 
     if (action === 'select-option') {
@@ -372,6 +506,7 @@
       var result = H.scoreChoice(q, letter);
       delete selectedOption[qid];
       saveExamRecord(q, letter, result.level === 'mastered', result.level, result);
+      expandedSet[qkey(qid)] = true;
       renderAll();
       renderAIExamList();
     } else if (action === 'submit-fill') {
@@ -386,6 +521,7 @@
       var result = H.scoreFill(qf, userAnswers);
       var userAnsStr = userAnswers.join(' | ');
       saveExamRecord(qf, userAnsStr, result.level === 'mastered', result.level, result);
+      expandedSet[qkey(qid)] = true;
       renderAll();
       renderAIExamList();
     } else if (action === 'submit-text') {
@@ -398,6 +534,7 @@
       var result = H.scoreQuestion(qt, text, null);
       if (result) {
         saveExamRecord(qt, text, result.level === 'mastered', result.level, result);
+        expandedSet[qkey(qid)] = true;
         renderAll();
         renderAIExamList();
       } else {
@@ -416,13 +553,27 @@
       delete pendingText[qid];
       delete pendingAssess[qid];
       saveExamRecord(q2, text2, isCorrect2, level);
+      expandedSet[qkey(qid)] = true;
       renderAll();
       renderAIExamList();
     } else if (action === 'toggle-ref') {
       expandedSet[qid] = !expandedSet[qid];
       renderTrainingList();
       renderWrongList();
+    } else if (action === 'toggle-marked') {
+      markedMap[qid] = !markedMap[qid];
+      fetch(apiUrl('/api/wrong-marked'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: currentSubject, questionId: qid, marked: markedMap[qid] })
+      }).catch(function() {});
+      renderAll();
+      renderTrainingList();
+      renderWrongList();
       renderAIExamList();
+    } else if (action === 'toggle-history') {
+      var histPanel = document.getElementById('hist-' + qid);
+      if (histPanel) histPanel.style.display = histPanel.style.display === 'none' ? '' : 'none';
     } else if (action === 'redo') {
       delete recordMap[qid];
       delete selectedOption[qid];
@@ -990,6 +1141,10 @@
           renderWrongList();
         }
       });
+      /* 启动自动同步（每15秒 + 页面可见时重试） */
+      startAutoSync();
+      /* 首次重传本地待同步数据 */
+      syncNow();
     });
   });
 

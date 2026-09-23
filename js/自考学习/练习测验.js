@@ -92,6 +92,9 @@ var currentSourceFilter = 'all'; /* 来源筛选：all/textbook/chapter/review/a
 var currentKeywordFilter = 'all'; /* 考点频率筛选：all/高频/中频/低频 */
 var quizData = [];
 var results = {};
+var allRecords = [];  /* 全部答题记录（用于往期答案） */
+var expandedSet = {}; /* questionId → true（展开答案） */
+var markedMap = {};   /* questionId → true（手动加入错题库） */
 
 /* 真题关键词词典：用于统计历年真题中各知识点出现次数 */
 var EXAM_KEYWORDS = {
@@ -388,6 +391,7 @@ function saveQuizRecord(q, userAnswer, userSelection, result) {
       session: currentMode === 'today' ? 'today-task' : 'free-practice'
     };
     var payload = { subject: currentSubject, record: record };
+    allRecords.push(record);
     // 先写本地 localStorage（追加式，不去重）
     var pending = getPendingRecords();
     pending.push(payload);
@@ -603,40 +607,42 @@ function renderSrcTag(q) {
   return H.renderSrcTag(q.src);
 }
 
+/* 判断题目是否在错题库中：手动标记 或 答错自动进入 */
+function isInWrongBook(q) {
+  var r = results[q.id];
+  return !!markedMap[q.id] || (r && r.isCorrect === false);
+}
+
 function renderChoiceCard(q) {
   var r = results[q.id];
   return H.renderChoiceCard(q, r, {
     selected: window.choiceSelections[q.id] || '',
-    subType: q.subType
+    subType: q.subType,
+    history: getHistory(q.id),
+    expanded: expandedSet[q.id] === true,
+    marked: isInWrongBook(q)
   });
 }
 
 function renderFillCard(q) {
   var r = results[q.id];
-  return H.renderFillCard(q, r, { showComparison: true });
+  return H.renderFillCard(q, r, { showComparison: true, history: getHistory(q.id), expanded: expandedSet[q.id] === true, marked: isInWrongBook(q) });
 }
 
 /* 计算题 — 委托共享函数 */
 function renderCalculateCard(q) {
   return H.renderCalculateCard(q, results[q.id], {
     getPhoto: loadPhoto,
-    showSymbol: true
+    showSymbol: true,
+    history: getHistory(q.id),
+    expanded: expandedSet[q.id] === true,
+    marked: isInWrongBook(q)
   });
 }
 
 function toggleRef(qId) {
-  var card = document.getElementById('card-' + qId);
-  if (!card) return;
-  var ans = card.querySelector('.exam-q-answer');
-  if (!ans) return;
-  if (ans.style.display === 'none') {
-    ans.style.display = '';
-  } else {
-    ans.style.display = 'none';
-  }
-  /* 更新按钮文字 */
-  var btn = card.querySelector('[data-action="toggle-ref"]');
-  if (btn) btn.textContent = ans.style.display === 'none' ? '展开答案 ▼' : '收起 ▲';
+  expandedSet[qId] = expandedSet[qId] !== true;
+  render();
 }
 
 function redoQuestion(qId) {
@@ -649,14 +655,20 @@ function redoQuestion(qId) {
 /* 简答题 — 委托共享函数 */
 function renderShortAnswerCard(q) {
   return H.renderShortAnswerCard(q, results[q.id], {
-    showSymbol: true
+    showSymbol: true,
+    history: getHistory(q.id),
+    expanded: expandedSet[q.id] === true,
+    marked: isInWrongBook(q)
   });
 }
 
 /* 论述题 — 委托共享函数 */
 function renderEssayCard(q) {
   return H.renderEssayCard(q, results[q.id], {
-    showSymbol: true
+    showSymbol: true,
+    history: getHistory(q.id),
+    expanded: expandedSet[q.id] === true,
+    marked: isInWrongBook(q)
   });
 }
 
@@ -664,7 +676,10 @@ function renderEssayCard(q) {
 function renderProofCard(q) {
   return H.renderProofCard(q, results[q.id], {
     getPhoto: loadPhoto,
-    showSymbol: true
+    showSymbol: true,
+    history: getHistory(q.id),
+    expanded: expandedSet[q.id] === true,
+    marked: isInWrongBook(q)
   });
 }
 
@@ -675,8 +690,18 @@ function renderCard(q) {
     subType: q.subType,
     showComparison: true,
     getPhoto: loadPhoto,
-    showSymbol: true
+    showSymbol: true,
+    showPoints: true,
+    showSteps: true,
+    history: getHistory(q.id),
+    expanded: expandedSet[q.id] === true,
+    marked: isInWrongBook(q)
   });
+}
+
+/* 获取某题的往期答题记录 */
+function getHistory(qId) {
+  return allRecords.filter(function(r) { return r.questionId === qId; });
 }
 
 /* ====== SUBMIT HANDLERS ====== */
@@ -696,11 +721,7 @@ function toggleChoiceOption(qId, letter) {
   } else {
     window.choiceSelections[qId] = letter;
   }
-  document.querySelectorAll('#card-'+qId+' .choice-option').forEach(function(el) {
-    var l = el.dataset.letter;
-    var selected = (window.choiceSelections[qId] || '').indexOf(l) >= 0;
-    el.classList.toggle('quiz-selected', selected);
-  });
+  render();
 }
 
 function submitChoice(qId) {
@@ -713,6 +734,7 @@ function submitChoice(qId) {
   results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
   updateMastery(q.chapter, result.level);
   saveQuizRecord(q, null, sel, result);
+  expandedSet[qId] = true;
   updateStats(); render();
 }
 
@@ -729,6 +751,7 @@ function submitFill(qId) {
   results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
   updateMastery(q.chapter, result.level);
   saveQuizRecord(q, answers.join(' | '), null, result);
+  expandedSet[qId] = true;
   updateStats(); render();
 }
 
@@ -746,6 +769,7 @@ function submitText(qId) {
     results[qId] = { score: 0, total: 1, level: 'unknown', details: { userAnswer: ans }, selfOverride: null, wrongReason: '', pendingAssess: true };
     updateMastery(q.chapter, 'unknown');
     saveQuizRecord(q, ans, null, { score: 0, total: 1, level: 'unknown', details: { userAnswer: ans } });
+    expandedSet[qId] = true;
     updateStats(); render();
     return;
   }
@@ -754,6 +778,7 @@ function submitText(qId) {
   results[qId] = { score: result.score, total: result.total, level: result.level, details: result.details, selfOverride: null, wrongReason: '' };
   updateMastery(q.chapter, result.level);
   saveQuizRecord(q, ans, null, result);
+  expandedSet[qId] = true;
   updateStats(); render();
 }
 
@@ -762,6 +787,7 @@ function selfEval(qId, level) {
   results[qId].selfOverride = level;
   var q = quizData.find(function(x){return x.id===qId;}) || aiQuizData.find(function(x){return x.id===qId;});
   if (q) updateMastery(q.chapter, level);
+  expandedSet[qId] = true;
   updateStats(); render();
 }
 
@@ -1314,15 +1340,6 @@ function render() {
   }).join('');
   updateSessionAndStats(filtered);
   renderQuizNav();
-  if (Object.keys(window.choiceSelections).length > 0) {
-    Object.keys(window.choiceSelections).forEach(function(qId) {
-      var sel = window.choiceSelections[qId] || '';
-      document.querySelectorAll('#card-'+qId+' .choice-option').forEach(function(el) {
-        var l = el.dataset.letter;
-        if (sel.indexOf(l) >= 0) el.classList.add('quiz-selected');
-      });
-    });
-  }
 }
 
 function switchType(type) {
@@ -1613,6 +1630,7 @@ function init() {
       };
     }
     /* 第一步：应用服务端记录（追加式：同题取最新一条） */
+    allRecords = pendingRecords.slice();
     var latestByQid = {};
     pendingRecords.forEach(function(rec) {
       if (!rec.questionId) return;
@@ -1721,6 +1739,11 @@ function init() {
       recordsDone = true;
       finalize();
     });
+  /* 加载手动标记错题 */
+  fetch(apiUrl('/api/wrong-marked?subject=' + currentSubject), { cache: 'no-cache' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) { markedMap = data || {}; })
+    .catch(function() { markedMap = {}; });
 }
 
 /* 统一 data-action 事件委托 */
@@ -1728,7 +1751,7 @@ document.addEventListener('click', function(e) {
   var el = e.target.closest('[data-action]');
   if (!el) return;
   var action = el.dataset.action;
-  var id = el.dataset.id;
+  var id = el.dataset.id || el.dataset.qid;
 
   switch (action) {
     case 'select-option':
@@ -1758,6 +1781,15 @@ document.addEventListener('click', function(e) {
     case 'self-assess':
       selfEval(id, el.dataset.level);
       break;
+    case 'toggle-marked':
+      markedMap[id] = !markedMap[id];
+      fetch(apiUrl('/api/wrong-marked'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: currentSubject, questionId: id, marked: markedMap[id] })
+      }).catch(function() {});
+      render();
+      break;
     case 'toggle-wr-edit':
       toggleWrongReasonEdit(id);
       break;
@@ -1775,6 +1807,10 @@ document.addEventListener('click', function(e) {
       break;
     case 'toggle-ref':
       toggleRef(id);
+      break;
+    case 'toggle-history':
+      var histPanel = document.getElementById('hist-' + id);
+      if (histPanel) histPanel.style.display = histPanel.style.display === 'none' ? '' : 'none';
       break;
     case 'redo':
       redoQuestion(id);

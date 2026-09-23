@@ -393,8 +393,9 @@ body {
 
 .exam-q-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem 0.75rem;
   align-items: center;
+  flex-wrap: wrap;
   margin-top: 0.5rem;
 }
 .exam-q-status-actions { display: none; }
@@ -639,6 +640,10 @@ body {
 }
 .exam-self-eval-label { font-size: 0.78rem; color: var(--muted); flex-shrink: 0; }
 .exam-link-btn.is-selected { font-weight: 700; opacity: 1; background: var(--accent); color: var(--surface); }
+.exam-link-marked { border-color: var(--danger, #e74c3c); color: var(--danger, #e74c3c); }
+.exam-link-marked:hover { background: var(--danger, #e74c3c); color: var(--surface); }
+.exam-link-marked.is-selected { background: var(--danger, #e74c3c); color: var(--surface); border-color: var(--danger, #e74c3c); }
+.exam-link-marked.is-selected:hover { background: var(--coral); color: var(--surface); }
 
 /* 要点列表 */
 .exam-points-list { list-style: none; padding: 0; margin: 0.4rem 0; }
@@ -695,3 +700,24 @@ body {
 .exam-label-mastered { background: var(--green-soft); color: var(--green); }
 .exam-label-unsure { background: var(--amber-soft); color: var(--amber); }
 .exam-label-unknown { background: var(--coral-soft); color: var(--coral); }
+
+/* 往期答案面板 */
+.exam-link-history { color: var(--muted); font-size: 0.78rem; }
+.exam-history-panel {
+  margin-top: 0.4rem; padding: 0.4rem 0.6rem;
+  background: var(--bg-soft); border-radius: 8px;
+  border-left: 3px solid var(--accent2);
+}
+.exam-history-row {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.2rem 0; font-size: 0.78rem;
+  border-bottom: 1px solid var(--rule);
+}
+.exam-history-row:last-child { border-bottom: none; }
+.exam-history-row.correct { color: var(--green); }
+.exam-history-row.wrong { color: var(--coral); }
+.exam-history-idx { flex-shrink: 0; font-weight: 600; color: var(--muted); min-width: 1.8rem; }
+.exam-history-time { flex-shrink: 0; color: var(--muted); font-size: 0.72rem; min-width: 5rem; }
+.exam-history-icon { flex-shrink: 0; }
+.exam-history-answer { flex: 1; word-break: break-all; line-height: 1.4; }
+.exam-history-level { flex-shrink: 0; font-size: 0.72rem; color: var(--muted); }

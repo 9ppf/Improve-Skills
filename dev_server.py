@@ -174,6 +174,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_update_wrong_reason()
         elif self.path == '/api/wrong-solved':
             self._handle_save_wrong_solved()
+        elif self.path == '/api/wrong-marked':
+            self._handle_save_wrong_marked()
         elif self.path == '/api/quiz-ai':
             self._handle_save_quiz('ai')
         elif self.path == '/api/ai-plan':
@@ -221,6 +223,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_quiz('records')
         elif self.path.startswith('/api/wrong-solved'):
             self._handle_load_wrong_solved()
+        elif self.path.startswith('/api/wrong-marked'):
+            self._handle_load_wrong_marked()
         elif self.path.startswith('/api/quiz-ai-help'):
             self._handle_load_quiz_ai_help()
         elif self.path.startswith('/api/exam-ai-help'):
@@ -526,6 +530,53 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._send_json(400, {'error': 'Missing subject'})
             return
         path = ROOT / 'data' / f'wrong-solved-{subject}.json'
+        store = _load_json_backup_on_corrupt(path, default={})
+        if not isinstance(store, dict):
+            store = {}
+        body = json.dumps(store, ensure_ascii=False).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _handle_save_wrong_marked(self):
+        """手动标记加入错题库"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        question_id = data.get('questionId', '')
+        marked = data.get('marked', False)
+        if not subject or not question_id:
+            self._send_json(400, {'error': 'Missing subject or questionId'})
+            return
+        path = ROOT / 'data' / f'wrong-marked-{subject}.json'
+        with _file_lock:
+            store = _load_json_backup_on_corrupt(path, default={})
+            if not isinstance(store, dict):
+                store = {}
+            store[question_id] = bool(marked)
+            try:
+                atomic_write_json(path, store)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
+        self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_wrong_marked(self):
+        """加载手动标记的错题"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / f'wrong-marked-{subject}.json'
         store = _load_json_backup_on_corrupt(path, default={})
         if not isinstance(store, dict):
             store = {}

@@ -8,14 +8,14 @@ services:
     name: improve-skills
     runtime: python
     region: singapore          # 新加坡节点，国内访问较快
-    plan: free                  # 免费层（750 小时/月）
+    plan: starter               # Starter 计划（$7/月，含持久磁盘，不休眠）
     branch: main                # 跟踪 main 分支
 
-    # 构建阶段：安装依赖 + 编译 SCSS → CSS + 生成 HTML
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python build.py
+    # 构建阶段：安装依赖 + 编译 SCSS → CSS + 生成 HTML + 备份初始数据到 data-seed
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python build.py && cp -r data data-seed
 
-    # 启动命令：--no-build 跳过构建（已在 buildCommand 完成），--no-watch 禁用文件监听
-    startCommand: python dev_server.py --no-build --no-watch
+    # 启动命令：首次部署时将初始数据同步到持久磁盘，然后启动服务器
+    startCommand: bash start.sh
 
     # 健康检查
     healthCheckPath: /api/health
@@ -28,9 +28,8 @@ services:
       - key: PYTHON_VERSION
         value: "3.11.7"
 
-    # ====== 持久存储卷：保存用户数据（JSON 文件 + 照片） ======
-    # Render 免费层不支持持久磁盘，以下配置需要 Starter 计划 ($7/月)
-    # 免费层替代方案：数据存到外部（如 Supabase / Cloudflare R2）
+    # ====== 持久存储卷：保存用户数据（答题记录、照片、错题标记等） ======
+    # Starter 计划支持持久磁盘，重新部署/重启后数据不丢失
     disk:
       - name: improve-skills-data
         mountPath: /opt/render/project/src/data
