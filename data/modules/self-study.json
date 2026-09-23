@@ -89,6 +89,26 @@
               "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=13015&v=1.0.0"
             },
             {
+              "name": "知识库",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "知识沉淀",
+              "current": "精选知识点 · 5星评级",
+              "tasks": [],
+              "review": "计算机系统原理知识库，沉淀核心知识点，支持权重评级、章节分类、搜索筛选。",
+              "contentUrl": "自考学习/知识库.html?subject=13015&v=202609230100"
+            },
+            {
+              "name": "做题技巧",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "知识沉淀",
+              "current": "解题方法 · 例题配套",
+              "tasks": [],
+              "review": "计算机系统原理做题技巧总结，含解题步骤、避坑指南和配套例题。",
+              "contentUrl": "自考学习/做题技巧.html?subject=13015&v=202609230100"
+            },
+            {
               "name": "复盘总结",
               "type": "self-study",
               "stage": "待填充",
@@ -178,6 +198,26 @@
               "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=02324&v=1.0.0"
             },
             {
+              "name": "知识库",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "知识沉淀",
+              "current": "精选知识点 · 5星评级",
+              "tasks": [],
+              "review": "离散数学知识库，沉淀核心知识点，支持权重评级、章节分类、搜索筛选。",
+              "contentUrl": "自考学习/知识库.html?subject=02324&v=202609230100"
+            },
+            {
+              "name": "做题技巧",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "知识沉淀",
+              "current": "解题方法 · 例题配套",
+              "tasks": [],
+              "review": "离散数学做题技巧总结，含解题步骤、避坑指南和配套例题。",
+              "contentUrl": "自考学习/做题技巧.html?subject=02324&v=202609230100"
+            },
+            {
               "name": "复盘总结",
               "type": "self-study",
               "stage": "待填充",
@@ -265,6 +305,26 @@
               "review": "基于真题数据分析的考点分布与学习建议。",
               "renderMode": "bare",
               "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=13003&v=1.0.0"
+            },
+            {
+              "name": "知识库",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "知识沉淀",
+              "current": "精选知识点 · 5星评级",
+              "tasks": [],
+              "review": "数据结构与算法知识库，沉淀核心知识点，支持权重评级、章节分类、搜索筛选。",
+              "contentUrl": "自考学习/知识库.html?subject=13003&v=202609230100"
+            },
+            {
+              "name": "做题技巧",
+              "type": "self-study",
+              "renderMode": "bare",
+              "stage": "知识沉淀",
+              "current": "解题方法 · 例题配套",
+              "tasks": [],
+              "review": "数据结构与算法做题技巧总结，含解题步骤、避坑指南和配套例题。",
+              "contentUrl": "自考学习/做题技巧.html?subject=13003&v=202609230100"
             },
             {
               "name": "复盘总结",

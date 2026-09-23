@@ -23,6 +23,8 @@ function apiPost(url, data) {
   } catch(e) {}
 }
 var allData = {};
+// 已加入知识库的卡片ID映射（id -> true）
+var knowledgeMap = {};
 // 当前周次各科目对应的章节列表（从 study-plan.json 动态加载）
 var todayChapters = {};
 
@@ -617,6 +619,7 @@ function renderCards() {
       '<button class="recite-card-btn known' + (c.mastery === 'known' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'known\')"><span>✓ 掌握</span></button>' +
       '<button class="recite-card-btn unsure' + (c.mastery === 'unsure' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'unsure\')"><span>○ 不熟</span></button>' +
       '<button class="recite-card-btn unknown' + (c.mastery === 'unknown' ? ' active' : '') + '" onclick="setMastery(' + c.id + ',\'unknown\')"><span>✗ 不会</span></button>' +
+      '<button class="recite-card-btn knowledge' + (knowledgeMap[c.id] ? ' active' : '') + '" onclick="toggleKnowledge(' + c.id + ')">' + (knowledgeMap[c.id] ? '★ 已入库' : '☆ 知识库') + '</button>' +
       '<a class="recite-card-btn practice" href="练习测验.html?subject=' + currentSubject + '&from=recite' + (c.chapter ? '&chapter=' + encodeURIComponent(c.chapter) : '') + '" onclick="event.stopPropagation()">📝 练习</a>' +
       '<button class="recite-card-btn delete" onclick="deleteCard(' + c.id + ')">删</button>' +
       '</div></div></div></div>';
@@ -721,6 +724,90 @@ function deleteCard(id) {
   if (idx >= 0) { cards.splice(idx, 1); saveData(); renderAll(); }
 }
 
+/* ====== 加入/移除知识库 ====== */
+function toggleKnowledge(id) {
+  var cards = getCards(currentSubject);
+  var c = cards.find(function(x) { return x.id === id; });
+  if (!c) return;
+
+  if (knowledgeMap[id]) {
+    // 已在知识库中，移除
+    delete knowledgeMap[id];
+    // 从后端知识库中删除（通过更新单条为特殊标记不可行，这里整体覆盖太复杂
+    // 简化：先只移除本地标记，实际从知识库删除需要单独API，先不做
+    // TODO: 添加删除单条知识点的API
+  } else {
+    // 加入知识库
+    knowledgeMap[id] = true;
+    // 构造知识点条目
+    var content = buildKnowledgeContent(c);
+    var item = {
+      id: 'recite-' + currentSubject + '-' + c.id,
+      title: c.question || '未命名',
+      content: content,
+      chapter: c.chapter || '未分类',
+      weight: 3,  // 默认3星
+      source: '背诵卡片',
+      tags: c.cardType === 'calculation' ? ['计算'] : [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      reviewCount: 0,
+      lastReviewAt: null,
+    };
+    // 保存到后端
+    apiPost('/api/knowledge', { subject: currentSubject, item: item });
+  }
+
+  renderAll();
+}
+
+/* 将背诵卡片内容格式化为知识库内容 */
+function buildKnowledgeContent(c) {
+  var parts = [];
+  // 定义/答案
+  if (c.def) {
+    parts.push('**定义**\n' + c.def);
+  } else if (c.answer) {
+    parts.push('**答案**\n' + c.answer);
+  }
+  // 举例
+  if (c.example) {
+    parts.push('**举例**\n' + c.example);
+  }
+  // 考点
+  if (c.exam) {
+    parts.push('**考点**\n' + c.exam);
+  }
+  // 解题步骤（计算卡）
+  if (c.steps && c.steps.length) {
+    parts.push('**解题步骤**\n' + c.steps.join('\n'));
+  }
+  // 提示
+  if (c.hint) {
+    parts.push('**提示**\n' + c.hint);
+  }
+  return parts.join('\n\n');
+}
+
+/* 加载知识库数据，同步已加入状态 */
+function loadKnowledgeStatus() {
+  fetch(apiUrl('/api/knowledge?subject=' + currentSubject))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var items = data.items || [];
+      items.forEach(function(item) {
+        // 从知识库ID中提取背诵卡ID
+        // 格式：recite-{subject}-{cardId}
+        var match = item.id && item.id.match(/^recite-[^-]+-(.+)$/);
+        if (match) {
+          knowledgeMap[match[1]] = true;
+        }
+      });
+      renderAll();
+    })
+    .catch(function() {});
+}
+
 function addCard() {
   var chapter = document.getElementById('cardChapter').value.trim();
   var question = document.getElementById('cardQuestion').value.trim();
@@ -781,6 +868,7 @@ function switchView(view) {
 function switchSubject(subject) {
   currentSubject = subject;
   renderAll();
+  loadKnowledgeStatus();
 }
 
 document.getElementById('btnViewToday').addEventListener('click', function() { switchView('today'); });

@@ -137,6 +137,14 @@
       (marked ? '已加入错题库' : '加入错题库') + '</span>';
   };
 
+  /* 设为技巧例题按钮 */
+  QuizHelpers.renderTipExampleBtn = function (qId, isExample, tipCount) {
+    var cls = 'exam-link-btn exam-link-tip' + (isExample ? ' is-selected' : '');
+    var text = isExample ? '★ 已加入技巧' : '☆ 设为技巧例题';
+    if (tipCount && tipCount > 0) text += '(' + tipCount + ')';
+    return '<span class="' + cls + '" data-action="toggle-tip-example" data-id="' + qId + '">' + text + '</span>';
+  };
+
   /* 特殊符号面板（仅 div，按钮在 renderActions 中） */
   QuizHelpers.SYMBOLS = ['×','÷','=','≠','≈','≤','≥','<','>','±','²','³','ⁿ','√','π','Σ','∞','%','①','②','③','④','⑤','⑥','⑦','⑧','α','β','γ','δ','θ','λ','μ','σ','φ','ψ','ω','Δ','¬','∧','∨','→','↔','⊕','⊢','⇔','∀','∃','∈','∪','∩','⊆','⊇','∅','≡','P','Q','R','S','T','F','0','1'];
 
@@ -218,6 +226,9 @@
     }
     if (opts.marked !== undefined) {
       actions += QuizHelpers.renderMarkedBtn(q.id, opts.marked);
+    }
+    if (opts.tipExample !== undefined) {
+      actions += QuizHelpers.renderTipExampleBtn(q.id, opts.tipExample, opts.tipCount || 0);
     }
     if (opts.history && opts.history.length > 1) {
       actions += '<span class="exam-link-btn exam-link-history" data-action="toggle-history" data-id="' + q.id + '">往期答案(' + opts.history.length + ')</span>';

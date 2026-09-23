@@ -192,6 +192,10 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_save_ai_practice()
         elif self.path == '/api/quiz-preference':
             self._handle_save_quiz_preference()
+        elif self.path == '/api/knowledge':
+            self._handle_save_knowledge()
+        elif self.path == '/api/study-tips':
+            self._handle_save_study_tips()
         else:
             self.send_error(404, 'Not Found')
 
@@ -243,6 +247,10 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_quiz_photos()
         elif self.path.startswith('/api/quiz-preference'):
             self._handle_load_quiz_preference()
+        elif self.path.startswith('/api/knowledge'):
+            self._handle_load_knowledge()
+        elif self.path.startswith('/api/study-tips'):
+            self._handle_load_study_tips()
         else:
             super().do_GET()
 
@@ -357,6 +365,135 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
         self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_study_tips(self):
+        """GET /api/study-tips?subject=13015 → 加载做题技巧"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / 'study-tips' / f'study-tips-{subject}.json'
+        if not path.exists():
+            self._send_json(200, {
+                'subject': subject,
+                'total': 0,
+                'categories': [],
+                'tips': [],
+                'updatedAt': None,
+            })
+            return
+        store = _load_json_backup_on_corrupt(path, default={
+            'subject': subject, 'total': 0, 'categories': [], 'tips': [], 'updatedAt': None
+        })
+        body = json.dumps(store, ensure_ascii=False).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _handle_save_study_tips(self):
+        """POST /api/study-tips → 保存做题技巧（整体覆盖或单条更新/删除）"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / 'study-tips' / f'study-tips-{subject}.json'
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        with _file_lock:
+            now = __import__('datetime').datetime.now().isoformat()
+            # 单条更新模式
+            tip = data.get('tip')
+            action = data.get('action', 'upsert')  # upsert / delete / add-example / remove-example
+            if tip or action in ('delete', 'add-example', 'remove-example'):
+                store = _load_json_backup_on_corrupt(path, default={
+                    'subject': subject, 'total': 0, 'categories': [], 'tips': [], 'updatedAt': None
+                })
+                tips = store.get('tips', [])
+                categories = set(store.get('categories', []))
+
+                if action == 'delete':
+                    tip_id = data.get('tipId', '')
+                    tips = [t for t in tips if t.get('id') != tip_id]
+                elif action == 'add-example':
+                    tip_id = data.get('tipId', '')
+                    qid = data.get('questionId', '')
+                    for t in tips:
+                        if t.get('id') == tip_id:
+                            examples = t.get('examples', [])
+                            if qid not in examples:
+                                examples.append(qid)
+                                t['examples'] = examples
+                                t['updatedAt'] = now
+                            break
+                elif action == 'remove-example':
+                    tip_id = data.get('tipId', '')
+                    qid = data.get('questionId', '')
+                    for t in tips:
+                        if t.get('id') == tip_id:
+                            t['examples'] = [e for e in t.get('examples', []) if e != qid]
+                            t['updatedAt'] = now
+                            break
+                elif tip:
+                    tip_id = tip.get('id', '')
+                    found = False
+                    for i, existing in enumerate(tips):
+                        if existing.get('id') == tip_id:
+                            # 保留例题列表
+                            tip['examples'] = tip.get('examples', existing.get('examples', []))
+                            tips[i] = tip
+                            found = True
+                            break
+                    if not found:
+                        if 'examples' not in tip:
+                            tip['examples'] = []
+                        tips.append(tip)
+                    # 更新分类
+                    cat = tip.get('category', '')
+                    if cat:
+                        categories.add(cat)
+
+                store['tips'] = tips
+                store['total'] = len(tips)
+                store['categories'] = sorted(list(categories))
+                store['updatedAt'] = now
+                try:
+                    atomic_write_json(path, store)
+                except OSError as e:
+                    self._send_json(500, {'error': f'Cannot write: {e}'})
+                    return
+                self._send_json(200, {'status': 'ok', 'total': len(tips)})
+                return
+
+            # 整体覆盖模式
+            if 'tips' in data:
+                store = {
+                    'subject': subject,
+                    'subjectName': data.get('subjectName', ''),
+                    'total': len(data['tips']),
+                    'categories': data.get('categories', []),
+                    'tips': data['tips'],
+                    'updatedAt': now,
+                }
+                try:
+                    atomic_write_json(path, store)
+                except OSError as e:
+                    self._send_json(500, {'error': f'Cannot write: {e}'})
+                    return
+                self._send_json(200, {'status': 'ok', 'total': len(data['tips'])})
+                return
+
+            self._send_json(400, {'error': 'Missing tips or tip'})
 
     def _handle_load_recite_mastery(self):
         """加载背诵卡掌握程度（{question: mastery} 扁平结构）"""
@@ -854,6 +991,104 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._send_json(500, {'error': f'Cannot write: {e}'})
             return
         self._send_json(200, {'status': 'ok'})
+
+    def _handle_load_knowledge(self):
+        """GET /api/knowledge?subject=13015 → 加载知识库"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / 'knowledge' / f'knowledge-bank-{subject}.json'
+        if not path.exists():
+            self._send_json(200, {
+                'subject': subject,
+                'total': 0,
+                'sources': [],
+                'items': [],
+                'updatedAt': None,
+            })
+            return
+        store = _load_json_backup_on_corrupt(path, default={
+            'subject': subject, 'total': 0, 'sources': [], 'items': [], 'updatedAt': None
+        })
+        body = json.dumps(store, ensure_ascii=False).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _handle_save_knowledge(self):
+        """POST /api/knowledge → 保存知识库（整体覆盖或单条更新）"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / 'knowledge' / f'knowledge-bank-{subject}.json'
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        with _file_lock:
+            # 单条更新模式：传了 item 就更新单条
+            item = data.get('item')
+            if item:
+                store = _load_json_backup_on_corrupt(path, default={
+                    'subject': subject, 'total': 0, 'sources': [], 'items': [], 'updatedAt': None
+                })
+                items = store.get('items', [])
+                item_id = item.get('id', '')
+                found = False
+                for i, existing in enumerate(items):
+                    if existing.get('id') == item_id:
+                        items[i] = item
+                        found = True
+                        break
+                if not found:
+                    items.append(item)
+                # 更新 sources
+                source = item.get('source', '')
+                sources = store.get('sources', [])
+                if source and source not in sources:
+                    sources.append(source)
+                store['items'] = items
+                store['total'] = len(items)
+                store['sources'] = sources
+                store['updatedAt'] = __import__('datetime').datetime.now().isoformat()
+                try:
+                    atomic_write_json(path, store)
+                except OSError as e:
+                    self._send_json(500, {'error': f'Cannot write: {e}'})
+                    return
+                self._send_json(200, {'status': 'ok', 'total': len(items)})
+                return
+
+            # 整体覆盖模式：传了完整的 items 数组
+            if 'items' in data:
+                store = {
+                    'subject': subject,
+                    'subjectName': data.get('subjectName', ''),
+                    'total': len(data['items']),
+                    'sources': data.get('sources', []),
+                    'items': data['items'],
+                    'updatedAt': __import__('datetime').datetime.now().isoformat(),
+                }
+                try:
+                    atomic_write_json(path, store)
+                except OSError as e:
+                    self._send_json(500, {'error': f'Cannot write: {e}'})
+                    return
+                self._send_json(200, {'status': 'ok', 'total': len(data['items'])})
+                return
+
+            self._send_json(400, {'error': 'Missing items or item'})
 
     def _handle_save_ai_conv(self):
         content_length = int(self.headers.get('Content-Length', 0))

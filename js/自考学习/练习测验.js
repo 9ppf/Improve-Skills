@@ -95,6 +95,8 @@ var results = {};
 var allRecords = [];  /* 全部答题记录（用于往期答案） */
 var expandedSet = {}; /* questionId → true（展开答案） */
 var markedMap = {};   /* questionId → true（手动加入错题库） */
+var tipExampleMap = {}; /* questionId → [tipId1, tipId2]（属于哪些做题技巧的例题） */
+var tipList = [];     /* 所有做题技巧列表 */
 
 /* 真题关键词词典：用于统计历年真题中各知识点出现次数 */
 var EXAM_KEYWORDS = {
@@ -620,13 +622,15 @@ function renderChoiceCard(q) {
     subType: q.subType,
     history: getHistory(q.id),
     expanded: expandedSet[q.id] === true,
-    marked: isInWrongBook(q)
+    marked: isInWrongBook(q),
+    tipExample: !!tipExampleMap[q.id],
+    tipCount: (tipExampleMap[q.id] || []).length
   });
 }
 
 function renderFillCard(q) {
   var r = results[q.id];
-  return H.renderFillCard(q, r, { showComparison: true, history: getHistory(q.id), expanded: expandedSet[q.id] === true, marked: isInWrongBook(q) });
+  return H.renderFillCard(q, r, { showComparison: true, history: getHistory(q.id), expanded: expandedSet[q.id] === true, marked: isInWrongBook(q), tipExample: !!tipExampleMap[q.id], tipCount: (tipExampleMap[q.id] || []).length });
 }
 
 /* 计算题 — 委托共享函数 */
@@ -636,7 +640,9 @@ function renderCalculateCard(q) {
     showSymbol: true,
     history: getHistory(q.id),
     expanded: expandedSet[q.id] === true,
-    marked: isInWrongBook(q)
+    marked: isInWrongBook(q),
+    tipExample: !!tipExampleMap[q.id],
+    tipCount: (tipExampleMap[q.id] || []).length
   });
 }
 
@@ -658,7 +664,9 @@ function renderShortAnswerCard(q) {
     showSymbol: true,
     history: getHistory(q.id),
     expanded: expandedSet[q.id] === true,
-    marked: isInWrongBook(q)
+    marked: isInWrongBook(q),
+    tipExample: !!tipExampleMap[q.id],
+    tipCount: (tipExampleMap[q.id] || []).length
   });
 }
 
@@ -668,7 +676,9 @@ function renderEssayCard(q) {
     showSymbol: true,
     history: getHistory(q.id),
     expanded: expandedSet[q.id] === true,
-    marked: isInWrongBook(q)
+    marked: isInWrongBook(q),
+    tipExample: !!tipExampleMap[q.id],
+    tipCount: (tipExampleMap[q.id] || []).length
   });
 }
 
@@ -679,7 +689,9 @@ function renderProofCard(q) {
     showSymbol: true,
     history: getHistory(q.id),
     expanded: expandedSet[q.id] === true,
-    marked: isInWrongBook(q)
+    marked: isInWrongBook(q),
+    tipExample: !!tipExampleMap[q.id],
+    tipCount: (tipExampleMap[q.id] || []).length
   });
 }
 
@@ -695,7 +707,9 @@ function renderCard(q) {
     showSteps: true,
     history: getHistory(q.id),
     expanded: expandedSet[q.id] === true,
-    marked: isInWrongBook(q)
+    marked: isInWrongBook(q),
+    tipExample: !!tipExampleMap[q.id],
+    tipCount: (tipExampleMap[q.id] || []).length
   });
 }
 
@@ -789,6 +803,79 @@ function selfEval(qId, level) {
   if (q) updateMastery(q.chapter, level);
   expandedSet[qId] = true;
   updateStats(); render();
+}
+
+/* ====== 做题技巧：设为/移除例题 ====== */
+function toggleTipExample(qId) {
+  var existing = tipExampleMap[qId] || [];
+  if (existing.length > 0) {
+    // 已经在某些技巧里了，显示选择菜单让用户选要加入哪个，或移除
+    showTipSelector(qId, existing);
+  } else {
+    // 还没加入任何技巧，直接弹选择器
+    showTipSelector(qId, []);
+  }
+}
+
+function showTipSelector(qId, existingTipIds) {
+  if (tipList.length === 0) {
+    alert('还没有做题技巧，先去「做题技巧」页面新建一个吧！');
+    return;
+  }
+  // 简单用 prompt 让用户输入技巧序号
+  var msg = '选择要加入的技巧编号（输入编号即可，多个用逗号分隔，留空取消）：\n\n';
+  tipList.forEach(function(tip, i) {
+    var isIn = existingTipIds.indexOf(tip.id) >= 0;
+    msg += (i + 1) + '. ' + tip.title + (isIn ? ' 【已加入】' : '') + '\n';
+  });
+  msg += '\n提示：输入 0 可从所有技巧中移除';
+  var input = prompt(msg);
+  if (input === null || input.trim() === '') return;
+
+  var val = input.trim();
+  if (val === '0') {
+    // 从所有技巧中移除
+    existingTipIds.forEach(function(tipId) {
+      removeFromTip(qId, tipId);
+    });
+    return;
+  }
+
+  var indices = val.split(/[,，\s]+/).map(function(s) { return parseInt(s); }).filter(function(n) { return n > 0 && n <= tipList.length; });
+  indices.forEach(function(idx) {
+    var tip = tipList[idx - 1];
+    if (tip && existingTipIds.indexOf(tip.id) < 0) {
+      addToTip(qId, tip.id);
+    }
+  });
+}
+
+function addToTip(qId, tipId) {
+  fetch(apiUrl('/api/study-tips'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subject: currentSubject, action: 'add-example', tipId: tipId, questionId: qId })
+  }).then(function() {
+    if (!tipExampleMap[qId]) tipExampleMap[qId] = [];
+    if (tipExampleMap[qId].indexOf(tipId) < 0) {
+      tipExampleMap[qId].push(tipId);
+    }
+    render();
+  }).catch(function() {});
+}
+
+function removeFromTip(qId, tipId) {
+  fetch(apiUrl('/api/study-tips'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subject: currentSubject, action: 'remove-example', tipId: tipId, questionId: qId })
+  }).then(function() {
+    if (tipExampleMap[qId]) {
+      tipExampleMap[qId] = tipExampleMap[qId].filter(function(id) { return id !== tipId; });
+      if (tipExampleMap[qId].length === 0) delete tipExampleMap[qId];
+    }
+    render();
+  }).catch(function() {});
 }
 
 function toggleWrongReasonEdit(qId) {
@@ -1744,6 +1831,22 @@ function init() {
     .then(function(r) { return r.json(); })
     .then(function(data) { markedMap = data || {}; })
     .catch(function() { markedMap = {}; });
+
+  /* 加载做题技巧数据 */
+  fetch(apiUrl('/api/study-tips?subject=' + currentSubject), { cache: 'no-cache' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      tipList = data.tips || [];
+      tipExampleMap = {};
+      tipList.forEach(function(tip) {
+        (tip.examples || []).forEach(function(qid) {
+          if (!tipExampleMap[qid]) tipExampleMap[qid] = [];
+          tipExampleMap[qid].push(tip.id);
+        });
+      });
+      render();
+    })
+    .catch(function() { tipList = []; tipExampleMap = {}; });
 }
 
 /* 统一 data-action 事件委托 */
@@ -1789,6 +1892,9 @@ document.addEventListener('click', function(e) {
         body: JSON.stringify({ subject: currentSubject, questionId: id, marked: markedMap[id] })
       }).catch(function() {});
       render();
+      break;
+    case 'toggle-tip-example':
+      toggleTipExample(id);
       break;
     case 'toggle-wr-edit':
       toggleWrongReasonEdit(id);

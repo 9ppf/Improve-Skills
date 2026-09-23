@@ -171,7 +171,8 @@ border: 2px solid var(--rule);
 position: absolute;
 top: 0;
 left: 0;
-width: auto; min-width: 80px;
+width: 100%;
+box-sizing: border-box;
 backface-visibility: hidden;
 -webkit-backface-visibility: hidden;
 border-radius: 12px;
@@ -326,26 +327,34 @@ margin-left: 0.3rem;
 }
 .recite-card-actions {
 display: flex;
-gap: 0.5rem;
-margin-top: 0.5rem;
+flex-wrap: wrap;
+gap: 0.4rem;
+margin-top: 0.6rem;
 }
 .recite-card-btn {
-flex: 1;
-padding: 0.35rem;
+flex: 1 1 calc(33% - 0.5rem);
+min-width: 0;
+padding: 0.35rem 0.2rem;
 border-radius: 8px;
 border: 1px solid var(--rule);
 background: var(--surface);
-font-size: 0.8rem;
+font-size: 0.78rem;
 cursor: pointer;
 text-align: center;
 transition: all 0.2s;
+white-space: nowrap;
 }
 .recite-card-btn.known { color: var(--green); border-color: var(--green); }
 .recite-card-btn.unsure { color: var(--amber); border-color: var(--amber); }
 .recite-card-btn.unknown { color: var(--coral); border-color: var(--coral); }
+.recite-card-btn.knowledge { color: var(--accent2); border-color: var(--accent2); }
 .recite-card-btn:hover { opacity: 0.8; }
 .recite-card-btn.zk-active { background: currentColor; }
 .recite-card-btn.zk-active span { color: var(--surface); }
+.recite-card-btn.known.active { background: var(--green); color: #fff; }
+.recite-card-btn.unsure.active { background: var(--amber); color: #fff; }
+.recite-card-btn.unknown.active { background: var(--coral); color: #fff; }
+.recite-card-btn.knowledge.active { background: var(--accent2); color: #fff; }
 
 .recite-mastery {
 display: inline-block;
@@ -592,8 +601,8 @@ margin-right: 0.4rem;
 }
 
 @media (max-width: 640px) {
-.recite-card-actions { flex-wrap: wrap; gap: 0.35rem; }
-.recite-card-btn { font-size: 0.75rem; padding: 0.3rem 0.4rem; }
+.recite-card-actions { gap: 0.35rem; }
+.recite-card-btn { font-size: 0.72rem; padding: 0.3rem 0.15rem; }
 }
 
 /* ===== 行内样式抽离后新增类 ===== */
@@ -615,12 +624,12 @@ margin-right: 0.4rem;
 /* 背面卡片按钮变体 */
 .recite-card-btn.practice {
   color: var(--accent); border-color: var(--accent);
-  flex: 0 0 auto; padding: 0.35rem 0.7rem;
-  text-decoration: none; cursor: pointer; font-size: 0.8rem;
+  flex: 1 1 calc(33% - 0.5rem);
+  text-decoration: none; cursor: pointer; font-size: 0.78rem;
 }
 .recite-card-btn.delete {
   color: var(--coral); border-color: var(--coral);
-  flex: 0 0 auto; padding: 0.35rem 0.7rem; margin-left: auto;
+  flex: 1 1 calc(33% - 0.5rem);
 }
 
 /* 卡片 minHeight 用CSS变量驱动 */

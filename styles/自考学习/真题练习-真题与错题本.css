@@ -644,6 +644,10 @@ body {
 .exam-link-marked:hover { background: var(--danger, #e74c3c); color: var(--surface); }
 .exam-link-marked.is-selected { background: var(--danger, #e74c3c); color: var(--surface); border-color: var(--danger, #e74c3c); }
 .exam-link-marked.is-selected:hover { background: var(--coral); color: var(--surface); }
+.exam-link-tip { border-color: var(--accent2, #a855f7); color: var(--accent2, #a855f7); }
+.exam-link-tip:hover { background: var(--accent2, #a855f7); color: var(--surface); }
+.exam-link-tip.is-selected { background: var(--accent2, #a855f7); color: var(--surface); border-color: var(--accent2, #a855f7); }
+.exam-link-tip.is-selected:hover { opacity: 0.9; }
 
 /* 要点列表 */
 .exam-points-list { list-style: none; padding: 0; margin: 0.4rem 0; }
