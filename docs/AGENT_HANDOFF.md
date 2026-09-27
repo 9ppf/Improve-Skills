@@ -133,6 +133,7 @@
 | 45 | **CSS 抽离路径前缀陷阱** | v2.32.0 | `Workbench/` 目录在项目根目录下一级，计算 HTML 到 `styles/` 的相对路径时必须 +1 层。如 `Workbench/module/page.html` 的前缀是 `../../`（不是 `../`），`Workbench/a/b/c/page.html` 是 `../../../../`。 |
 | 46 | **validate_workbench.py 只查内联 CSS** | v2.32.0 | 验证器的 Tab 完整性检查在 HTML 的 `<style>` 块和 `<link>` 引用的外部 CSS 中搜索类名。CSS 抽离后需确保 `<link>` 路径正确（相对路径前缀不能少算一层），否则验证器找不到 CSS 文件会报 "incomplete Tab implementation"。 |
 | 47 | **API 路由前缀匹配顺序陷阱** | v2.39.0 | 使用 `startswith` 匹配路由时，路径更具体的必须放在更前面。如 `/api/quiz-ai-help` 必须放在 `/api/quiz-ai` 之前，否则会被后者抢先匹配，导致请求走到错误的处理函数返回空数据。新增 API 路由时要检查是否与已有前缀冲突。 |
+| 48 | **修改 `data/` 目录不会触发 dev_server 自动重建** | v2.44.0 | `dev_server.py` 的文件监听（watchdog）将 `data` 目录列入 `IGNORE_PATTERNS`，修改 `data/modules/*.json` 等数据文件后**不会自动触发构建**，工作台页面看不到变化。必须手动运行 `python build.py` 重新构建后才能生效。 |
 
 ### 4.1 CSS/SASS 架构规则（v2.32.0 确立）
 

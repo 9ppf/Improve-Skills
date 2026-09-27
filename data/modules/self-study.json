@@ -29,13 +29,13 @@
               "contentUrl": "自考学习/知识框架-三科共用.html?subject=13015&v=2.34.0"
             },
             {
-              "name": "背诵与简答",
+              "name": "知识点",
               "type": "self-study",
               "renderMode": "bare",
               "stage": "待填充",
               "current": "正面问题 · 背面答案",
               "tasks": [],
-              "review": "计算机系统原理核心概念与简答题背诵。",
+              "review": "计算机系统原理核心概念与知识点，含背诵卡片与知识沉淀。",
               "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=13015&v=2.31.53"
             },
             {
@@ -89,16 +89,6 @@
               "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=13015&v=1.0.0"
             },
             {
-              "name": "知识库",
-              "type": "self-study",
-              "renderMode": "bare",
-              "stage": "知识沉淀",
-              "current": "精选知识点 · 5星评级",
-              "tasks": [],
-              "review": "计算机系统原理知识库，沉淀核心知识点，支持权重评级、章节分类、搜索筛选。",
-              "contentUrl": "自考学习/知识库.html?subject=13015&v=202609230100"
-            },
-            {
               "name": "做题技巧",
               "type": "self-study",
               "renderMode": "bare",
@@ -138,13 +128,13 @@
               "contentUrl": "自考学习/知识框架-三科共用.html?subject=02324&v=2.34.0"
             },
             {
-              "name": "背诵与简答",
+              "name": "知识点",
               "type": "self-study",
               "renderMode": "bare",
               "stage": "待填充",
               "current": "正面问题 · 背面答案",
               "tasks": [],
-              "review": "离散数学核心概念与简答题背诵。",
+              "review": "离散数学核心概念与知识点，含背诵卡片与知识沉淀。",
               "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=02324&v=2.31.53"
             },
             {
@@ -198,16 +188,6 @@
               "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=02324&v=1.0.0"
             },
             {
-              "name": "知识库",
-              "type": "self-study",
-              "renderMode": "bare",
-              "stage": "知识沉淀",
-              "current": "精选知识点 · 5星评级",
-              "tasks": [],
-              "review": "离散数学知识库，沉淀核心知识点，支持权重评级、章节分类、搜索筛选。",
-              "contentUrl": "自考学习/知识库.html?subject=02324&v=202609230100"
-            },
-            {
               "name": "做题技巧",
               "type": "self-study",
               "renderMode": "bare",
@@ -247,13 +227,13 @@
               "contentUrl": "自考学习/知识框架-三科共用.html?subject=13003&v=2.34.0"
             },
             {
-              "name": "背诵与简答",
+              "name": "知识点",
               "type": "self-study",
               "renderMode": "bare",
               "stage": "待填充",
               "current": "正面问题 · 背面答案",
               "tasks": [],
-              "review": "数据结构与算法核心概念与简答题背诵。",
+              "review": "数据结构与算法核心概念与知识点，含背诵卡片与知识沉淀。",
               "contentUrl": "自考学习/背诵与简答-核心概念背诵卡.html?subject=13003&v=2.31.53"
             },
             {
@@ -305,16 +285,6 @@
               "review": "基于真题数据分析的考点分布与学习建议。",
               "renderMode": "bare",
               "contentUrl": "自考学习/考点分析-真题数据分析.html?subject=13003&v=1.0.0"
-            },
-            {
-              "name": "知识库",
-              "type": "self-study",
-              "renderMode": "bare",
-              "stage": "知识沉淀",
-              "current": "精选知识点 · 5星评级",
-              "tasks": [],
-              "review": "数据结构与算法知识库，沉淀核心知识点，支持权重评级、章节分类、搜索筛选。",
-              "contentUrl": "自考学习/知识库.html?subject=13003&v=202609230100"
             },
             {
               "name": "做题技巧",

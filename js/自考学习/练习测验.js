@@ -64,7 +64,7 @@ function transformKfToCards(data) {
 }
 
 var SUBJECT_CONFIG = {
-  '13015': { name: '计算机系统原理', types: ['choice','fill','calculate','shortAnswer','essay'] },
+  '13015': { name: '计算机系统原理', types: ['choice','fill','calculate','shortAnswer','nounExplain','essay'] },
   '02324': { name: '离散数学', types: ['choice','fill','calculate','proof'] },
   '13003': { name: '数据结构与算法', types: ['choice','fill','calculate','shortAnswer','essay'] }
 };
@@ -73,6 +73,7 @@ var TYPE_META = {
   fill: { label: '填空题', icon: '✏️', badge: 'badge-fill' },
   calculate: { label: '计算题', icon: '🧮', badge: 'badge-calculate' },
   shortAnswer: { label: '简答题', icon: '📝', badge: 'badge-shortAnswer' },
+  nounExplain: { label: '名词解释', icon: '📖', badge: 'badge-nounExplain' },
   essay: { label: '论述题', icon: '📖', badge: 'badge-essay' },
   proof: { label: '证明题', icon: '🔬', badge: 'badge-proof' }
 };
@@ -1008,11 +1009,12 @@ function renderSourceFilter() {
     textbook: { icon: '📘', label: '教材' },
     chapter: { icon: '📝', label: '章节' },
     review: { icon: '📋', label: '复习' },
-    ai: { icon: '🤖', label: 'AI' }
+    ai: { icon: '🤖', label: 'AI' },
+    '老师总结': { icon: '👨‍🏫', label: '老师总结' }
   };
   var total = source.length;
   var html = '<option value="all"'+(currentSourceFilter==='all'?' selected':'')+'>📦 来源：全部 ('+total+')</option>';
-  ['textbook', 'chapter', 'review', 'ai'].forEach(function(s) {
+  ['textbook', 'chapter', 'review', 'ai', '老师总结'].forEach(function(s) {
     if (srcMap[s]) {
       var meta = SRC_META[s];
       html += '<option value="'+s+'"'+(currentSourceFilter===s?' selected':'')+'>'+meta.icon+' '+meta.label+' ('+srcMap[s]+')</option>';

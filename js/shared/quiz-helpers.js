@@ -41,7 +41,11 @@
     '章节练习题': '章节',
     '复习资料': '复习',
     'exam': '真题',
-    'practice': ''
+    'practice': '',
+    '老师总结': '老师总结',
+    'textbook': '教材',
+    'chapter': '章节',
+    'review': '复习'
   };
   QuizHelpers.SRC_LABELS = SRC_LABELS;
 
@@ -171,7 +175,7 @@
   /* ====== 共享常量 ====== */
   QuizHelpers.TYPE_LABEL = {
     choice: '选择题', fill: '填空题', calculate: '计算题',
-    shortAnswer: '简答题', essay: '论述题', proof: '证明题'
+    shortAnswer: '简答题', nounExplain: '名词解释', essay: '论述题', proof: '证明题'
   };
 
   QuizHelpers.STATUS_LABEL = {
@@ -499,6 +503,8 @@
       case 'calculate':
         return QuizHelpers.renderCalculateCard(q, r, opts);
       case 'shortAnswer':
+        return QuizHelpers.renderShortAnswerCard(q, r, opts);
+      case 'nounExplain':
         return QuizHelpers.renderShortAnswerCard(q, r, opts);
       case 'essay':
         return QuizHelpers.renderEssayCard(q, r, opts);

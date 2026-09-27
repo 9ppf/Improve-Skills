@@ -6,7 +6,7 @@ var urlParams = new URLSearchParams(window.location.search);
 // 数据缓存版本号：优先从URL的v参数读取，与self-study.json版本号同步
 var DATA_VERSION = urlParams.get('v') || '23';
 var currentSubject = window.RECITE_SUBJECT || urlParams.get('subject') || '13015';
-var currentView = 'today';
+var currentView = urlParams.get('view') || 'today';
 var currentCardType = 'all';
 window.__apiMastery = null;
 // 防止 API 数据加载完成前用户操作覆盖服务器数据
@@ -450,6 +450,8 @@ var masteryLabel = { known: '已掌握', unsure: '不熟练', unknown: '不会' 
 function renderStats() {
   var cards = getCards(currentSubject);
   if (currentView === 'today') cards = cards.filter(isTodayCard);
+  // 排除已加入知识库的卡片
+  cards = cards.filter(function(c) { return !knowledgeMap[c.id]; });
   var known = 0, unsure = 0, unknown = 0;
   cards.forEach(function(c) {
     if (c.mastery === 'known') known++;
@@ -498,7 +500,9 @@ function renderCards() {
     var typeMatch = true;
     if (currentCardType === 'memory') typeMatch = c.cardType !== 'calculation';
     if (currentCardType === 'calculation') typeMatch = c.cardType === 'calculation';
-    return typeMatch && (!fc || c.chapter === fc) && (!fm || c.mastery === fm);
+    // 过滤已加入知识库的卡片
+    var inKb = knowledgeMap[c.id];
+    return typeMatch && (!fc || c.chapter === fc) && (!fm || c.mastery === fm) && !inKb;
   });
 
   var masteryOrder = { 'unknown': 0, 'unsure': 1, 'known': 2 };
@@ -733,9 +737,11 @@ function toggleKnowledge(id) {
   if (knowledgeMap[id]) {
     // 已在知识库中，移除
     delete knowledgeMap[id];
-    // 从后端知识库中删除（通过更新单条为特殊标记不可行，这里整体覆盖太复杂
-    // 简化：先只移除本地标记，实际从知识库删除需要单独API，先不做
-    // TODO: 添加删除单条知识点的API
+    // 从后端知识库删除
+    var kbId = 'recite-' + currentSubject + '-' + id;
+    fetch(apiUrl('/api/knowledge?subject=' + currentSubject + '&id=' + encodeURIComponent(kbId)), {
+      method: 'DELETE'
+    }).catch(function() {});
   } else {
     // 加入知识库
     knowledgeMap[id] = true;
@@ -862,17 +868,47 @@ function switchView(view) {
   document.querySelectorAll('.recite-view-btn').forEach(function(btn) {
     btn.classList.toggle('zk-active', btn.dataset.view === view);
   });
-  renderAll();
+
+  var isKnowledge = view === 'knowledge';
+  // 背诵相关区域
+  var sections = ['sectionStats', 'sectionAdd', 'sectionCards'];
+  sections.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = isKnowledge ? 'none' : '';
+  });
+  // 知识库区域
+  var kbSection = document.getElementById('sectionKnowledge');
+  if (kbSection) kbSection.style.display = isKnowledge ? '' : 'none';
+
+  if (isKnowledge) {
+    // 切换到知识库视图时，初始化并加载数据
+    if (typeof KnowledgeBank !== 'undefined') {
+      if (!KnowledgeBank._initedRecite) {
+        KnowledgeBank.init({ prefix: 'kb', subject: currentSubject });
+        KnowledgeBank._initedRecite = true;
+      } else {
+        KnowledgeBank.refresh();
+      }
+    }
+  } else {
+    // 切回背诵视图时，重新同步知识库状态（可能在知识点Tab里删了条目）
+    loadKnowledgeStatus();
+  }
 }
 
 function switchSubject(subject) {
   currentSubject = subject;
   renderAll();
   loadKnowledgeStatus();
+  // 如果知识库已初始化，也刷新
+  if (typeof KnowledgeBank !== 'undefined' && KnowledgeBank._initedRecite) {
+    KnowledgeBank.refresh();
+  }
 }
 
 document.getElementById('btnViewToday').addEventListener('click', function() { switchView('today'); });
 document.getElementById('btnViewTotal').addEventListener('click', function() { switchView('total'); });
+document.getElementById('btnViewKnowledge').addEventListener('click', function() { switchView('knowledge'); });
 function setCardTypeFilter(type, btn) {
   currentCardType = type;
   btn.parentElement.querySelectorAll('.card-type-btn').forEach(function(b) {
@@ -886,6 +922,11 @@ document.getElementById('filterMastery').addEventListener('change', renderCards)
 document.getElementById('addCardBtn').addEventListener('click', addCard);
 
 (window.examDataReady || Promise.resolve()).then(function() { loadData(); });
+
+// 初始化时根据 URL 参数切换视图
+if (currentView === 'knowledge') {
+  switchView('knowledge');
+}
 var dataBase = API_BASE ? API_BASE + '/data' : '../../data';
 // 三科均改用知识框架 JSON 作为数据源
 var cardSources = [

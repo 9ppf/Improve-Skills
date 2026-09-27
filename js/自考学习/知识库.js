@@ -1,11 +1,13 @@
-/**
+﻿/**
  * 知识库 — 页面逻辑
  * 浏览、搜索、筛选、编辑知识点，支持5星权重调整
+ * 
+ * 用法1：独立页面 — 自动初始化，元素ID为 filterChapter / knowledgeList 等
+ * 用法2：嵌入其他页面 — 调用 KnowledgeBank.init({ prefix: 'kb', subject: '13015' })
  */
-(function() {
+window.KnowledgeBank = (function() {
 
   var apiUrl = QuizUtils.apiUrl;
-  var currentSubject = QuizUtils.getSubjectFromUrl();
 
   var SUBJECT_NAMES = {
     '13015': '计算机系统原理',
@@ -13,35 +15,51 @@
     '13003': '数据结构与算法'
   };
 
+  var currentSubject = '';
+  var idPrefix = '';       // 元素ID前缀（嵌入页面时用）
   var allItems = [];        // 所有知识点
   var filteredItems = [];   // 筛选后的知识点
   var expandedMap = {};     // id → true（展开状态）
   var editingItem = null;   // 当前编辑的知识点
   var editStarValue = 3;    // 编辑弹窗中的星数
+  var initialized = false;
+
+  function $(id) {
+    return document.getElementById(idPrefix + id);
+  }
 
   /* ====== 初始化 ====== */
-  function init() {
-    // 设置页面标题
-    var subjectName = SUBJECT_NAMES[currentSubject] || '知识库';
-    document.getElementById('pageTitle').textContent = subjectName + ' · 知识库';
+  function init(options) {
+    if (initialized) return;
+    initialized = true;
+
+    options = options || {};
+    idPrefix = options.prefix || '';
+    currentSubject = options.subject || QuizUtils.getSubjectFromUrl();
+
+    // 设置页面标题（独立页面才设置）
+    if (!idPrefix && $('pageTitle')) {
+      var subjectName = SUBJECT_NAMES[currentSubject] || '知识库';
+      $('pageTitle').textContent = subjectName + ' · 知识库';
+    }
 
     // 绑定筛选事件
-    document.getElementById('filterChapter').addEventListener('change', renderList);
-    document.getElementById('filterWeight').addEventListener('change', renderList);
-    document.getElementById('filterSource').addEventListener('change', renderList);
-    document.getElementById('searchInput').addEventListener('input', debounce(renderList, 200));
+    $('filterChapter').addEventListener('change', renderList);
+    $('filterWeight').addEventListener('change', renderList);
+    $('filterSource').addEventListener('change', renderList);
+    $('searchInput').addEventListener('input', debounce(renderList, 200));
 
     // 列表事件委托
-    document.getElementById('knowledgeList').addEventListener('click', handleListClick);
+    $('knowledgeList').addEventListener('click', handleListClick);
 
     // 弹窗事件
-    document.getElementById('modalClose').addEventListener('click', closeModal);
-    document.getElementById('modalCancel').addEventListener('click', closeModal);
-    document.getElementById('modalSave').addEventListener('click', saveEdit);
-    document.getElementById('editStars').addEventListener('click', handleStarInput);
+    $('modalClose').addEventListener('click', closeModal);
+    $('modalCancel').addEventListener('click', closeModal);
+    $('modalSave').addEventListener('click', saveEdit);
+    $('editStars').addEventListener('click', handleStarInput);
 
     // 点击弹窗外部关闭
-    document.getElementById('editModal').addEventListener('click', function(e) {
+    $('editModal').addEventListener('click', function(e) {
       if (e.target.id === 'editModal') closeModal();
     });
 
@@ -71,7 +89,7 @@
         updateStats();
       })
       .catch(function() {
-        document.getElementById('knowledgeList').innerHTML =
+        $('knowledgeList').innerHTML =
           '<div class="kb-empty">加载失败，请刷新重试</div>';
       });
   }
@@ -84,8 +102,8 @@
       var ch = item.chapter || '未分类';
       chapterSet[ch] = (chapterSet[ch] || 0) + 1;
     });
-    var chapterSelect = document.getElementById('filterChapter');
-    var chapterDatalist = document.getElementById('chapterList');
+    var chapterSelect = $('filterChapter');
+    var chapterDatalist = $('chapterList');
     // 清空现有选项（保留第一个）
     while (chapterSelect.options.length > 1) chapterSelect.remove(1);
     chapterDatalist.innerHTML = '';
@@ -102,7 +120,7 @@
     });
 
     // 来源筛选
-    var sourceSelect = document.getElementById('filterSource');
+    var sourceSelect = $('filterSource');
     while (sourceSelect.options.length > 1) sourceSelect.remove(1);
     (data.sources || []).forEach(function(src) {
       var opt = document.createElement('option');
@@ -114,10 +132,10 @@
 
   /* ====== 筛选 + 渲染列表 ====== */
   function renderList() {
-    var chapter = document.getElementById('filterChapter').value;
-    var weight = document.getElementById('filterWeight').value;
-    var source = document.getElementById('filterSource').value;
-    var keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+    var chapter = $('filterChapter').value;
+    var weight = $('filterWeight').value;
+    var source = $('filterSource').value;
+    var keyword = $('searchInput').value.trim().toLowerCase();
 
     filteredItems = allItems.filter(function(item) {
       // 章节筛选
@@ -133,11 +151,12 @@
       }
       // 来源筛选
       if (source && item.source !== source) return false;
-      // 关键词搜索
+      // 关键词搜索（忽略换行和多余空格）
       if (keyword) {
-        var title = (item.title || '').toLowerCase();
-        var content = (item.content || '').toLowerCase();
-        if (title.indexOf(keyword) === -1 && content.indexOf(keyword) === -1) return false;
+        var title = normalizeText(item.title || '');
+        var content = normalizeText(item.content || '');
+        var normKeyword = normalizeText(keyword);
+        if (title.indexOf(normKeyword) === -1 && content.indexOf(normKeyword) === -1) return false;
       }
       return true;
     });
@@ -149,10 +168,10 @@
     });
 
     // 更新计数
-    document.getElementById('filterCount').textContent = filteredItems.length + ' 条';
+    $('filterCount').textContent = filteredItems.length + ' 条';
 
     // 渲染
-    var list = document.getElementById('knowledgeList');
+    var list = $('knowledgeList');
     if (filteredItems.length === 0) {
       list.innerHTML = '<div class="kb-empty">没有匹配的知识点</div>';
       return;
@@ -221,15 +240,107 @@
     return html;
   }
 
-  /* ====== 格式化内容（换行转 <br>，简单处理） ====== */
+  /* ====== 格式化内容（支持Markdown图片、加粗、表格、换行） ====== */
   function formatContent(text) {
     if (!text) return '';
-    var escaped = escapeHtml(text);
-    // 段落分隔
-    escaped = escaped.replace(/\n\n/g, '</p><p>');
-    // 单换行
-    escaped = escaped.replace(/\n/g, '<br>');
-    return '<p>' + escaped + '</p>';
+    var lines = text.split('\n');
+    var htmlParts = [];
+    var currentPara = [];
+    var inTable = false;
+    var tableRows = [];
+
+    function flushPara() {
+      if (currentPara.length > 0) {
+        var escaped = escapeHtml(currentPara.join('\n'));
+        // 图片
+        escaped = escaped.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function (match, alt, url) {
+          return '<img src="' + url + '" alt="' + alt + '" class="kb-content-img">';
+        });
+        // 加粗
+        escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        // 单换行转 <br>
+        escaped = escaped.replace(/\n/g, '<br>');
+        htmlParts.push('<p>' + escaped + '</p>');
+        currentPara = [];
+      }
+    }
+
+    function flushTable() {
+      if (tableRows.length > 0) {
+        var thead = '';
+        var tbody = '';
+        // 第1行是表头，第2行是分隔线（跳过），之后是数据行
+        if (tableRows.length >= 1) {
+          var headers = parseTableRow(tableRows[0]);
+          thead = '<tr><th>' + headers.join('</th><th>') + '</th></tr>';
+        }
+        for (var i = 2; i < tableRows.length; i++) {
+          var cells = parseTableRow(tableRows[i]);
+          tbody += '<tr><td>' + cells.join('</td><td>') + '</td></tr>';
+        }
+        htmlParts.push(
+          '<table class="kb-content-table">' +
+          '<thead>' + thead + '</thead>' +
+          '<tbody>' + tbody + '</tbody>' +
+          '</table>'
+        );
+        tableRows = [];
+      }
+    }
+
+    function parseTableRow(line) {
+      // 去掉首尾的 |，然后按 | 分割
+      var trimmed = line.replace(/^\||\|$/g, '').trim();
+      var cells = trimmed.split('|').map(function (c) {
+        return escapeHtml(c.trim());
+      });
+      return cells;
+    }
+
+    function isTableLine(line) {
+      // 表格行：以 | 开头和结尾，且包含至少2个 |
+      return /^\s*\|.*\|\s*$/.test(line) && (line.match(/\|/g) || []).length >= 2;
+    }
+
+    function isTableSeparator(line) {
+      // 分隔线：|---|---| 这种
+      return /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?\s*$/.test(line);
+    }
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+
+      if (inTable) {
+        if (isTableLine(line) || isTableSeparator(line)) {
+          tableRows.push(line);
+        } else if (line.trim() === '') {
+          // 空行结束表格
+          flushTable();
+          inTable = false;
+        } else {
+          // 非表格行，结束表格
+          flushTable();
+          inTable = false;
+          currentPara.push(line);
+        }
+      } else {
+        if (isTableLine(line) && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
+          // 发现表格开始（当前行是表头，下一行是分隔线）
+          flushPara();
+          inTable = true;
+          tableRows.push(line);
+        } else if (line.trim() === '') {
+          flushPara();
+        } else {
+          currentPara.push(line);
+        }
+      }
+    }
+
+    flushPara();
+    flushTable();
+
+    return htmlParts.join('');
   }
 
   /* ====== HTML 转义 ====== */
@@ -238,6 +349,16 @@
     var div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  /* ====== 文本标准化（用于搜索比较：去换行、合并空格、转小写） ====== */
+  function normalizeText(text) {
+    if (!text) return '';
+    return text
+      .toLowerCase()
+      .replace(/[\r\n\t]+/g, '')   // 去掉换行和制表符
+      .replace(/\s+/g, ' ')         // 多余空格合并为一个
+      .trim();
   }
 
   /* ====== 列表点击事件委托 ====== */
@@ -309,19 +430,19 @@
     if (!item) return;
     editingItem = item;
 
-    document.getElementById('editTitle').value = item.title || '';
-    document.getElementById('editChapter').value = item.chapter || '';
-    document.getElementById('editTags').value = (item.tags || []).join(', ');
-    document.getElementById('editContent').value = item.content || '';
+    $('editTitle').value = item.title || '';
+    $('editChapter').value = item.chapter || '';
+    $('editTags').value = (item.tags || []).join(', ');
+    $('editContent').value = item.content || '';
     editStarValue = item.weight || 3;
     updateStarInput();
 
-    document.getElementById('editModal').style.display = 'flex';
+    $('editModal').style.display = 'flex';
   }
 
   /* ====== 关闭弹窗 ====== */
   function closeModal() {
-    document.getElementById('editModal').style.display = 'none';
+    $('editModal').style.display = 'none';
     editingItem = null;
   }
 
@@ -350,18 +471,18 @@
   function saveEdit() {
     if (!editingItem) return;
 
-    var title = document.getElementById('editTitle').value.trim();
+    var title = $('editTitle').value.trim();
     if (!title) {
       alert('请输入标题');
       return;
     }
 
     editingItem.title = title;
-    editingItem.chapter = document.getElementById('editChapter').value.trim() || '未分类';
+    editingItem.chapter = $('editChapter').value.trim() || '未分类';
     editingItem.weight = editStarValue;
-    var tagsStr = document.getElementById('editTags').value.trim();
+    var tagsStr = $('editTags').value.trim();
     editingItem.tags = tagsStr ? tagsStr.split(/[,，]/).map(function(t) { return t.trim(); }).filter(Boolean) : [];
-    editingItem.content = document.getElementById('editContent').value;
+    editingItem.content = $('editContent').value;
     editingItem.updatedAt = new Date().toISOString();
 
     saveItemToServer(editingItem);
@@ -414,22 +535,66 @@
 
   /* ====== 更新统计 ====== */
   function updateStats() {
-    document.getElementById('statTotal').textContent = allItems.length;
+    $('statTotal').textContent = allItems.length;
     if (allItems.length > 0) {
       var total = 0;
       allItems.forEach(function(item) { total += (item.weight || 0); });
       var avg = (total / allItems.length).toFixed(1);
-      document.getElementById('statAvgWeight').textContent = avg;
+      $('statAvgWeight').textContent = avg;
     } else {
-      document.getElementById('statAvgWeight').textContent = '0';
+      $('statAvgWeight').textContent = '0';
     }
   }
 
-  // 启动
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  // 对外 API
+  return {
+    init: init,
+    loadData: loadKnowledge,
+    refresh: function() { loadKnowledge(); },
+    addItem: function(item) {
+      // 检查是否已存在（按来源+来源ID去重）
+      var existing = allItems.find(function(i) {
+        return i.sourceId && item.sourceId && i.sourceId === item.sourceId && i.source === item.source;
+      });
+      if (existing) return { success: false, message: '已在知识库中' };
+      allItems.push(item);
+      saveAllToServer(function() {
+        loadKnowledge();
+      });
+      return { success: true };
+    },
+    removeItem: function(source, sourceId) {
+      var before = allItems.length;
+      allItems = allItems.filter(function(i) {
+        return !(i.source === source && i.sourceId === sourceId);
+      });
+      if (allItems.length < before) {
+        saveAllToServer(function() { loadKnowledge(); });
+        return true;
+      }
+      return false;
+    },
+    hasItem: function(source, sourceId) {
+      return allItems.some(function(i) {
+        return i.source === source && i.sourceId === sourceId;
+      });
+    },
+    getAllItems: function() { return allItems; }
+  };
 
+})();
+
+// 独立页面自动初始化
+(function() {
+  function autoInit() {
+    // 如果页面有 pageTitle 元素，说明是独立知识库页面
+    if (document.getElementById('pageTitle')) {
+      KnowledgeBank.init({ prefix: '', subject: QuizUtils.getSubjectFromUrl() });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoInit);
+  } else {
+    autoInit();
+  }
 })();

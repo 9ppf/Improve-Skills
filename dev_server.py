@@ -76,6 +76,178 @@ def _load_json_backup_on_corrupt(path, default=None):
     except OSError:
         return default if default is not None else []
 
+
+# ============================================================
+#  做题技巧 — md 文件读写工具
+# ============================================================
+
+def _parse_yaml_front_matter(text):
+    """简单解析 YAML front matter，返回 (meta_dict, body_text)"""
+    if not text.startswith('---'):
+        return {}, text
+    lines = text.split('\n')
+    end_idx = None
+    for i in range(1, len(lines)):
+        if lines[i].strip() == '---':
+            end_idx = i
+            break
+    if end_idx is None:
+        return {}, text
+    meta = {}
+    for line in lines[1:end_idx]:
+        line = line.rstrip()
+        if not line or ':' not in line:
+            continue
+        key, _, value = line.partition(':')
+        key = key.strip()
+        value = value.strip()
+        # 处理 [a, b, c] 数组
+        if value.startswith('[') and value.endswith(']'):
+            inner = value[1:-1].strip()
+            if inner:
+                meta[key] = [v.strip() for v in inner.split(',')]
+            else:
+                meta[key] = []
+        # 数字
+        elif value.isdigit() or (value.startswith('-') and value[1:].isdigit()):
+            meta[key] = int(value)
+        # 布尔
+        elif value.lower() == 'true':
+            meta[key] = True
+        elif value.lower() == 'false':
+            meta[key] = False
+        # 字符串
+        else:
+            # 去掉首尾引号
+            if (value.startswith('"') and value.endswith('"')) or \
+               (value.startswith("'") and value.endswith("'")):
+                value = value[1:-1]
+            meta[key] = value
+    body = '\n'.join(lines[end_idx + 1:]).lstrip('\n')
+    return meta, body
+
+
+def _build_yaml_front_matter(meta):
+    """根据字典生成 YAML front matter 字符串"""
+    lines = ['---']
+    for key, value in meta.items():
+        if isinstance(value, list):
+            lines.append(key + ': [' + ', '.join(str(v) for v in value) + ']')
+        else:
+            lines.append(key + ': ' + str(value))
+    lines.append('---')
+    return '\n'.join(lines)
+
+
+def _parse_study_tip_md(md_path):
+    """解析单个做题技巧 md 文件，返回 tip 字典"""
+    text = md_path.read_text(encoding='utf-8')
+    meta, body = _parse_yaml_front_matter(text)
+    if not meta.get('id'):
+        # 没有 id 就用文件名（去掉 .md）
+        meta['id'] = md_path.stem
+    # 确保 content 是正文
+    tip = dict(meta)
+    tip['content'] = body
+    # 类型转换
+    if 'importance' in tip and tip['importance']:
+        try:
+            tip['importance'] = int(tip['importance'])
+        except (ValueError, TypeError):
+            tip['importance'] = 3
+    else:
+        tip['importance'] = 3
+    if 'tags' not in tip or not tip['tags']:
+        tip['tags'] = []
+    if 'examples' not in tip or not tip['examples']:
+        tip['examples'] = []
+    if 'mastery' not in tip or not tip['mastery']:
+        tip['mastery'] = 'unknown'
+    if 'category' not in tip or not tip['category']:
+        tip['category'] = '未分类'
+    # 没有 title 就从正文提取第一个一级标题，再不行就用文件名
+    if 'title' not in tip or not tip['title']:
+        extracted = None
+        for line in body.split('\n'):
+            line = line.strip()
+            if line.startswith('# ') and len(line) > 2:
+                extracted = line[2:].strip()
+                break
+        if extracted:
+            tip['title'] = extracted
+        else:
+            tip['title'] = md_path.stem
+        if 'summary' not in tip or not tip['summary']:
+            # 从正文提取前 50 字作为摘要
+            clean = body.replace('#', '').replace('*', '').replace('`', '').strip()
+            first_line = clean.split('\n')[0].strip()
+            tip['summary'] = first_line[:50] if first_line else ''
+    # 用文件修改时间作为 updatedAt（如果没指定）
+    if 'updatedAt' not in tip or not tip['updatedAt']:
+        import datetime
+        mtime = datetime.datetime.fromtimestamp(md_path.stat().st_mtime)
+        tip['updatedAt'] = mtime.isoformat()
+    if 'createdAt' not in tip or not tip['createdAt']:
+        import datetime
+        tip['createdAt'] = tip['updatedAt']
+    return tip
+
+
+def _write_study_tip_md(md_path, tip):
+    """将 tip 字典写回 md 文件（YAML front matter + Markdown 正文）"""
+    import datetime
+    meta = {}
+    meta_keys = ['id', 'title', 'category', 'chapter', 'importance',
+                 'mastery', 'tags', 'examples', 'source', 'summary',
+                 'createdAt', 'updatedAt']
+    for k in meta_keys:
+        if k in tip:
+            meta[k] = tip[k]
+    # 确保 updatedAt 存在
+    if 'updatedAt' not in meta or not meta['updatedAt']:
+        meta['updatedAt'] = datetime.datetime.now().isoformat()
+    fm = _build_yaml_front_matter(meta)
+    content = tip.get('content', '')
+    full_text = fm + '\n' + content
+    md_path.write_text(full_text, encoding='utf-8')
+
+
+def _find_tip_file(tips_dir, tip_id):
+    """根据 tip id 找到对应的 md 文件路径，找不到返回 None"""
+    if not tip_id:
+        return None
+    # 先试直接匹配文件名
+    direct = tips_dir / (tip_id + '.md')
+    if direct.exists():
+        return direct
+    # 试 tip-xxx → xxx.md
+    if tip_id.startswith('tip-'):
+        short = tips_dir / (tip_id[4:] + '.md')
+        if short.exists():
+            return short
+    # 试 xxx → tip-xxx.md
+    long_name = tips_dir / ('tip-' + tip_id + '.md')
+    if long_name.exists():
+        return long_name
+    # 扫描所有 md 文件，按 id 字段匹配
+    for md_file in tips_dir.glob('*.md'):
+        try:
+            tip = _parse_study_tip_md(md_file)
+            if tip.get('id') == tip_id:
+                return md_file
+        except Exception:
+            continue
+    return None
+
+
+def _delete_study_tip_md(tips_dir, tip_id):
+    """删除指定 id 的 tip 对应的 md 文件，返回是否成功"""
+    md_file = _find_tip_file(tips_dir, tip_id)
+    if md_file and md_file.exists():
+        md_file.unlink()
+        return True
+    return False
+
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
@@ -176,6 +348,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_save_wrong_solved()
         elif self.path == '/api/wrong-marked':
             self._handle_save_wrong_marked()
+        elif self.path == '/api/wrong-tips':
+            self._handle_save_wrong_tips()
         elif self.path == '/api/quiz-ai':
             self._handle_save_quiz('ai')
         elif self.path == '/api/ai-plan':
@@ -202,10 +376,16 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.send_header('Content-Length', '0')
         self.end_headers()
+
+    def do_DELETE(self):
+        if self.path.startswith('/api/knowledge'):
+            self._handle_delete_knowledge()
+        else:
+            self.send_error(404, 'Not Found')
 
     def do_GET(self):
         for h in ('If-Modified-Since', 'If-None-Match'):
@@ -229,6 +409,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
             self._handle_load_wrong_solved()
         elif self.path.startswith('/api/wrong-marked'):
             self._handle_load_wrong_marked()
+        elif self.path.startswith('/api/wrong-tips'):
+            self._handle_load_wrong_tips()
         elif self.path.startswith('/api/quiz-ai-help'):
             self._handle_load_quiz_ai_help()
         elif self.path.startswith('/api/exam-ai-help'):
@@ -367,15 +549,17 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         self._send_json(200, {'status': 'ok'})
 
     def _handle_load_study_tips(self):
-        """GET /api/study-tips?subject=13015 → 加载做题技巧"""
+        """GET /api/study-tips?subject=13015 → 加载做题技巧（扫描 md 文件目录）"""
         from urllib.parse import urlparse, parse_qs
+        from datetime import datetime
         query = parse_qs(urlparse(self.path).query)
         subject = query.get('subject', [''])[0]
         if not subject:
             self._send_json(400, {'error': 'Missing subject'})
             return
-        path = ROOT / 'data' / 'study-tips' / f'study-tips-{subject}.json'
-        if not path.exists():
+
+        tips_dir = ROOT / 'data' / 'study-tips' / subject
+        if not tips_dir.exists():
             self._send_json(200, {
                 'subject': subject,
                 'total': 0,
@@ -384,10 +568,36 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 'updatedAt': None,
             })
             return
-        store = _load_json_backup_on_corrupt(path, default={
-            'subject': subject, 'total': 0, 'categories': [], 'tips': [], 'updatedAt': None
-        })
-        body = json.dumps(store, ensure_ascii=False).encode('utf-8')
+
+        tips = []
+        categories = set()
+        latest_mtime = None
+
+        for md_file in sorted(tips_dir.glob('*.md')):
+            try:
+                tip = _parse_study_tip_md(md_file)
+                if tip:
+                    tips.append(tip)
+                    if tip.get('category'):
+                        categories.add(tip['category'])
+                    mtime = datetime.fromtimestamp(md_file.stat().st_mtime)
+                    if latest_mtime is None or mtime > latest_mtime:
+                        latest_mtime = mtime
+            except Exception as e:
+                print(f"[study-tips] 解析 {md_file.name} 失败: {e}")
+
+        # 按重要度倒序 + 更新时间倒序
+        tips.sort(key=lambda t: t.get('updatedAt', ''), reverse=True)
+        tips.sort(key=lambda t: t.get('importance', 3), reverse=True)
+
+        result = {
+            'subject': subject,
+            'total': len(tips),
+            'categories': sorted(list(categories)),
+            'tips': tips,
+            'updatedAt': latest_mtime.isoformat() if latest_mtime else None,
+        }
+        body = json.dumps(result, ensure_ascii=False).encode('utf-8')
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(body)))
@@ -395,7 +605,8 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         self.wfile.write(body)
 
     def _handle_save_study_tips(self):
-        """POST /api/study-tips → 保存做题技巧（整体覆盖或单条更新/删除）"""
+        """POST /api/study-tips → 保存做题技巧（写回 md 文件）"""
+        from datetime import datetime
         content_length = int(self.headers.get('Content-Length', 0))
         body = self.rfile.read(content_length)
         try:
@@ -407,93 +618,89 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         if not subject:
             self._send_json(400, {'error': 'Missing subject'})
             return
-        path = ROOT / 'data' / 'study-tips' / f'study-tips-{subject}.json'
-        path.parent.mkdir(parents=True, exist_ok=True)
+
+        tips_dir = ROOT / 'data' / 'study-tips' / subject
+        tips_dir.mkdir(parents=True, exist_ok=True)
 
         with _file_lock:
-            now = __import__('datetime').datetime.now().isoformat()
-            # 单条更新模式
-            tip = data.get('tip')
-            action = data.get('action', 'upsert')  # upsert / delete / add-example / remove-example
-            if tip or action in ('delete', 'add-example', 'remove-example'):
-                store = _load_json_backup_on_corrupt(path, default={
-                    'subject': subject, 'total': 0, 'categories': [], 'tips': [], 'updatedAt': None
-                })
-                tips = store.get('tips', [])
-                categories = set(store.get('categories', []))
+            now = datetime.now().isoformat()
+            action = data.get('action', 'upsert')
+            tip_data = data.get('tip')
 
-                if action == 'delete':
-                    tip_id = data.get('tipId', '')
-                    tips = [t for t in tips if t.get('id') != tip_id]
-                elif action == 'add-example':
-                    tip_id = data.get('tipId', '')
-                    qid = data.get('questionId', '')
-                    for t in tips:
-                        if t.get('id') == tip_id:
-                            examples = t.get('examples', [])
-                            if qid not in examples:
-                                examples.append(qid)
-                                t['examples'] = examples
-                                t['updatedAt'] = now
-                            break
-                elif action == 'remove-example':
-                    tip_id = data.get('tipId', '')
-                    qid = data.get('questionId', '')
-                    for t in tips:
-                        if t.get('id') == tip_id:
-                            t['examples'] = [e for e in t.get('examples', []) if e != qid]
-                            t['updatedAt'] = now
-                            break
-                elif tip:
-                    tip_id = tip.get('id', '')
-                    found = False
-                    for i, existing in enumerate(tips):
-                        if existing.get('id') == tip_id:
-                            # 保留例题列表
-                            tip['examples'] = tip.get('examples', existing.get('examples', []))
-                            tips[i] = tip
-                            found = True
-                            break
-                    if not found:
-                        if 'examples' not in tip:
-                            tip['examples'] = []
-                        tips.append(tip)
-                    # 更新分类
-                    cat = tip.get('category', '')
-                    if cat:
-                        categories.add(cat)
-
-                store['tips'] = tips
-                store['total'] = len(tips)
-                store['categories'] = sorted(list(categories))
-                store['updatedAt'] = now
-                try:
-                    atomic_write_json(path, store)
-                except OSError as e:
-                    self._send_json(500, {'error': f'Cannot write: {e}'})
-                    return
-                self._send_json(200, {'status': 'ok', 'total': len(tips)})
+            if action == 'delete':
+                tip_id = data.get('tipId', '')
+                deleted = _delete_study_tip_md(tips_dir, tip_id)
+                self._send_json(200, {'status': 'ok', 'deleted': deleted})
                 return
 
-            # 整体覆盖模式
-            if 'tips' in data:
-                store = {
-                    'subject': subject,
-                    'subjectName': data.get('subjectName', ''),
-                    'total': len(data['tips']),
-                    'categories': data.get('categories', []),
-                    'tips': data['tips'],
-                    'updatedAt': now,
-                }
-                try:
-                    atomic_write_json(path, store)
-                except OSError as e:
-                    self._send_json(500, {'error': f'Cannot write: {e}'})
+            elif action == 'add-example':
+                tip_id = data.get('tipId', '')
+                qid = data.get('questionId', '')
+                md_file = _find_tip_file(tips_dir, tip_id)
+                if not md_file:
+                    self._send_json(404, {'error': 'Tip not found'})
                     return
-                self._send_json(200, {'status': 'ok', 'total': len(data['tips'])})
+                tip = _parse_study_tip_md(md_file)
+                if not tip:
+                    self._send_json(500, {'error': 'Failed to parse tip'})
+                    return
+                examples = tip.get('examples', [])
+                if qid not in examples:
+                    examples.append(qid)
+                    tip['examples'] = examples
+                    tip['updatedAt'] = now
+                    _write_study_tip_md(md_file, tip)
+                self._send_json(200, {'status': 'ok'})
                 return
 
-            self._send_json(400, {'error': 'Missing tips or tip'})
+            elif action == 'remove-example':
+                tip_id = data.get('tipId', '')
+                qid = data.get('questionId', '')
+                md_file = _find_tip_file(tips_dir, tip_id)
+                if not md_file:
+                    self._send_json(404, {'error': 'Tip not found'})
+                    return
+                tip = _parse_study_tip_md(md_file)
+                if not tip:
+                    self._send_json(500, {'error': 'Failed to parse tip'})
+                    return
+                tip['examples'] = [e for e in tip.get('examples', []) if e != qid]
+                tip['updatedAt'] = now
+                _write_study_tip_md(md_file, tip)
+                self._send_json(200, {'status': 'ok'})
+                return
+
+            elif tip_data:
+                # upsert 模式
+                tip_id = tip_data.get('id', '')
+                if not tip_id:
+                    self._send_json(400, {'error': 'Missing tip id'})
+                    return
+
+                md_file = _find_tip_file(tips_dir, tip_id)
+                if md_file and md_file.exists():
+                    # 更新：读取旧数据，保留未修改字段
+                    old_tip = _parse_study_tip_md(md_file) or {}
+                    for k, v in tip_data.items():
+                        old_tip[k] = v
+                    old_tip['updatedAt'] = now
+                    _write_study_tip_md(md_file, old_tip)
+                else:
+                    # 新增：根据 id 生成文件名
+                    filename = tip_id.replace('tip-', '') + '.md' if not tip_id.startswith('tip-') else tip_id[4:] + '.md'
+                    if not tip_id.startswith('tip-'):
+                        filename = tip_id + '.md'
+                    else:
+                        filename = tip_id[4:] + '.md'
+                    md_file = tips_dir / filename
+                    tip_data['updatedAt'] = now
+                    tip_data['createdAt'] = now
+                    _write_study_tip_md(md_file, tip_data)
+
+                self._send_json(200, {'status': 'ok'})
+                return
+
+            self._send_json(400, {'error': 'Missing tip or invalid action'})
 
     def _handle_load_recite_mastery(self):
         """加载背诵卡掌握程度（{question: mastery} 扁平结构）"""
@@ -723,6 +930,56 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def _handle_load_wrong_tips(self):
+        """加载错题-技巧手动关联"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        if not subject:
+            self._send_json(400, {'error': 'Missing subject'})
+            return
+        path = ROOT / 'data' / f'wrong-tips-{subject}.json'
+        store = _load_json_backup_on_corrupt(path, default={})
+        if not isinstance(store, dict):
+            store = {}
+        body = json.dumps(store, ensure_ascii=False).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _handle_save_wrong_tips(self):
+        """保存错题-技巧手动关联"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._send_json(400, {'error': 'Invalid JSON body'})
+            return
+        subject = data.get('subject', '')
+        question_id = data.get('questionId', '')
+        tip_ids = data.get('tipIds', [])
+        if not subject or not question_id:
+            self._send_json(400, {'error': 'Missing subject or questionId'})
+            return
+        path = ROOT / 'data' / f'wrong-tips-{subject}.json'
+        with _file_lock:
+            store = _load_json_backup_on_corrupt(path, default={})
+            if not isinstance(store, dict):
+                store = {}
+            if tip_ids and len(tip_ids) > 0:
+                store[question_id] = list(tip_ids)
+            elif question_id in store:
+                del store[question_id]
+            try:
+                atomic_write_json(path, store)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
+        self._send_json(200, {'status': 'ok'})
 
     def _handle_save_quiz_photo(self):
         """保存拍照答案到服务端（跨设备同步）"""
@@ -1089,6 +1346,48 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
                 return
 
             self._send_json(400, {'error': 'Missing items or item'})
+
+    def _handle_delete_knowledge(self):
+        """DELETE /api/knowledge?subject=13015&id=xxx → 删除单条知识点"""
+        from urllib.parse import urlparse, parse_qs
+        query = parse_qs(urlparse(self.path).query)
+        subject = query.get('subject', [''])[0]
+        item_id = query.get('id', [''])[0]
+        if not subject or not item_id:
+            self._send_json(400, {'error': 'Missing subject or id'})
+            return
+        path = ROOT / 'data' / 'knowledge' / f'knowledge-bank-{subject}.json'
+        if not path.exists():
+            self._send_json(404, {'error': 'Knowledge bank not found'})
+            return
+
+        with _file_lock:
+            store = _load_json_backup_on_corrupt(path, default={
+                'subject': subject, 'total': 0, 'sources': [], 'items': [], 'updatedAt': None
+            })
+            items = store.get('items', [])
+            new_items = [it for it in items if it.get('id') != item_id]
+            removed = len(items) - len(new_items)
+            if removed == 0:
+                self._send_json(404, {'error': 'Item not found'})
+                return
+
+            # 更新 sources（如果删的是某个来源的最后一条）
+            sources_used = set()
+            for it in new_items:
+                s = it.get('source', '')
+                if s:
+                    sources_used.add(s)
+            store['items'] = new_items
+            store['total'] = len(new_items)
+            store['sources'] = list(sources_used)
+            store['updatedAt'] = __import__('datetime').datetime.now().isoformat()
+            try:
+                atomic_write_json(path, store)
+            except OSError as e:
+                self._send_json(500, {'error': f'Cannot write: {e}'})
+                return
+            self._send_json(200, {'status': 'ok', 'total': len(new_items), 'removed': removed})
 
     def _handle_save_ai_conv(self):
         content_length = int(self.headers.get('Content-Length', 0))

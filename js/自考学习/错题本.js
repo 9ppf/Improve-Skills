@@ -28,7 +28,13 @@
   var expandedSet = {};        /* questionId → true（展开答案） */
   var markedMap = {};          /* questionId → true（手动加入错题库） */
 
-  var filters = { source: '', chapter: '', type: '', status: '' };
+  var studyTips = [];          /* 做题技巧列表 */
+  var tipMap = {};             /* tipId → tip 对象 */
+  var questionTipMap = {};     /* questionId → [tipId, tipId] 题目关联的技巧（自动+手动） */
+  var manualTipMap = {};       /* questionId → [tipId] 手动关联的技巧（单独存） */
+
+  var filters = { source: '', chapter: '', type: '', status: '', tip: '' };
+  var currentView = 'list';  // list / tip
 
   /* ====== 数据加载 ====== */
   function loadAllData() {
@@ -85,11 +91,32 @@
         .then(function (data) { solvedMap = data || {}; })
         .catch(function () { solvedMap = {}; })
     );
+    /* 手动加入错题库标记 */
     promises.push(
       fetch(apiUrl('/api/wrong-marked?subject=' + currentSubject), { cache: 'no-cache' })
         .then(function (r) { return r.json(); })
         .then(function (data) { markedMap = data || {}; })
         .catch(function () { markedMap = {}; })
+    );
+
+    /* 做题技巧 */
+    promises.push(
+      fetch(apiUrl('/api/study-tips?subject=' + currentSubject), { cache: 'no-cache' })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          studyTips = (data && data.tips) || [];
+          tipMap = {};
+          studyTips.forEach(function (t) { tipMap[t.id] = t; });
+        })
+        .catch(function () { studyTips = []; tipMap = {}; })
+    );
+
+    /* 手动技巧关联 */
+    promises.push(
+      fetch(apiUrl('/api/wrong-tips?subject=' + currentSubject), { cache: 'no-cache' })
+        .then(function (r) { return r.json(); })
+        .then(function (data) { manualTipMap = data || {}; })
+        .catch(function () { manualTipMap = {}; })
     );
 
     return Promise.all(promises).then(buildWrongList);
@@ -132,7 +159,32 @@
       return tb.localeCompare(ta);
     });
 
+    /* 构建题目-技巧关联（自动+手动） */
+    questionTipMap = {};
+    // 自动关联：技巧的 examples 里的题目
+    studyTips.forEach(function (tip) {
+      if (tip.examples && tip.examples.length) {
+        tip.examples.forEach(function (qid) {
+          if (!questionTipMap[qid]) questionTipMap[qid] = [];
+          if (questionTipMap[qid].indexOf(tip.id) === -1) {
+            questionTipMap[qid].push(tip.id);
+          }
+        });
+      }
+    });
+    // 手动关联
+    Object.keys(manualTipMap).forEach(function (qid) {
+      var tipIds = manualTipMap[qid] || [];
+      if (!questionTipMap[qid]) questionTipMap[qid] = [];
+      tipIds.forEach(function (tid) {
+        if (questionTipMap[qid].indexOf(tid) === -1) {
+          questionTipMap[qid].push(tid);
+        }
+      });
+    });
+
     fillChapterFilter();
+    fillTipFilter();
     renderStats();
     renderList();
   }
@@ -151,6 +203,32 @@
     Object.keys(chapters).sort().forEach(function (ch) {
       html += '<option value="' + ch + '"' + (ch === current ? ' selected' : '') + '>' + ch + '</option>';
     });
+    sel.innerHTML = html;
+  }
+
+  /* ====== 填充技巧筛选 ====== */
+  function fillTipFilter() {
+    var sel = document.getElementById('filterTip');
+    if (!sel) return;
+    var current = sel.value;
+    var html = '<option value="">全部技巧</option>';
+    // 只显示有错题关联的技巧
+    var tipsWithWrong = {};
+    wrongRecords.forEach(function (item) {
+      var tipIds = questionTipMap[item.q.id] || [];
+      tipIds.forEach(function (tid) { tipsWithWrong[tid] = true; });
+    });
+    // 按重要度排序
+    var sortedTips = studyTips
+      .filter(function (t) { return tipsWithWrong[t.id]; })
+      .sort(function (a, b) { return (b.importance || 0) - (a.importance || 0); });
+    sortedTips.forEach(function (t) {
+      html += '<option value="' + t.id + '"' + (t.id === current ? ' selected' : '') + '>';
+      html += '★'.repeat(t.importance || 0) + ' ' + t.title;
+      html += '</option>';
+    });
+    // 未关联的选项
+    html += '<option value="__none__"'+ ('__none__' === current ? ' selected' : '') + '>未关联技巧</option>';
     sel.innerHTML = html;
   }
 
@@ -173,18 +251,26 @@
       var q = item.q;
       var r = item.r;
       if (filters.source) {
-        var src = r.source || '';
-        if (!src) {
-          if (r.session === 'exam-training' || r.session === 'exam') src = 'exam';
-          else if (r.session === 'ai-practice' || r.session === 'ai') src = 'ai';
-          else src = 'practice';
-        }
+        /* 根据题目ID前缀判断来源，比 session/source 字段更可靠 */
+        var qid = String(q.id || '');
+        var src;
+        if (qid.indexOf('exam-') === 0) src = 'exam';
+        else if (qid.indexOf('ai-') === 0) src = 'ai';
+        else src = 'practice';
         if (src !== filters.source) return false;
       }
       if (filters.chapter && (q.chapter || '未分类') !== filters.chapter) return false;
       if (filters.type && q.type !== filters.type) return false;
       if (filters.status === 'solved' && !solvedMap[q.id]) return false;
       if (filters.status === 'pending' && solvedMap[q.id]) return false;
+      if (filters.tip) {
+        var tipIds = questionTipMap[q.id] || [];
+        if (filters.tip === '__none__') {
+          if (tipIds.length > 0) return false;
+        } else {
+          if (tipIds.indexOf(filters.tip) === -1) return false;
+        }
+      }
       return true;
     });
   }
@@ -202,8 +288,16 @@
       return;
     }
 
-    list.innerHTML = filtered.map(function (item) {
-      var q = item.q;
+    if (currentView === 'tip') {
+      renderTipGroupedList(list, filtered);
+    } else {
+      list.innerHTML = filtered.map(renderWrongCard).join('');
+    }
+  }
+
+  /* 渲染单张错题卡片 */
+  function renderWrongCard(item) {
+    var q = item.q;
       var r = item.r;
       var isPending = !!pendingAssess[q.id];
 
@@ -218,6 +312,22 @@
 
       var isSolved = !!solvedMap[q.id];
       var html = '<div class="wrong-card-wrapper' + (isSolved ? ' is-solved' : '') + '">';
+
+      /* 技巧标签行 */
+      var tipIds = questionTipMap[q.id] || [];
+      if (tipIds.length > 0) {
+        html += '<div class="wrong-tip-bar">';
+        html += '<span class="wrong-tip-label">关联技巧：</span>';
+        tipIds.forEach(function (tid) {
+          var tip = tipMap[tid];
+          if (!tip) return;
+          var url = '做题技巧.html?subject=' + currentSubject + '&tip=' + tid;
+          html += '<a class="wrong-tip-tag" href="' + url + '" target="_blank">' +
+            '💡 ' + tip.title + '</a>';
+        });
+        html += '</div>';
+      }
+
       html += H.renderCard(q, renderRecord, {
         selected: selectedOption[q.id] || '',
         showYear: !!q.year,
@@ -230,15 +340,72 @@
         history: allRecords.filter(function(rec) { return rec.questionId === q.id; })
       });
 
-      /* 已解决按钮 */
+      /* 操作行：标记已解决 + 关联技巧 */
       html += '<div class="exam-q-actions wrong-solve-row">' +
         '<span class="exam-link-btn exam-link-solved" data-action="toggle-solved" data-id="' + q.id + '">' +
         (isSolved ? '取消标记' : '标记已解决') + '</span>' +
+        '<span class="exam-link-btn exam-link-tip" data-action="link-tip" data-id="' + q.id + '">' +
+        '🔗 关联技巧' + (tipIds.length > 0 ? '(' + tipIds.length + ')' : '') + '</span>' +
         '</div>';
 
       html += '</div>';
       return html;
-    }).join('');
+  }
+
+  /* 按技巧分组渲染 */
+  function renderTipGroupedList(list, items) {
+    // 按技巧分组
+    var groups = {};
+    var ungrouped = [];
+    items.forEach(function (item) {
+      var tipIds = questionTipMap[item.q.id] || [];
+      if (tipIds.length === 0) {
+        ungrouped.push(item);
+      } else {
+        tipIds.forEach(function (tid) {
+          if (!groups[tid]) groups[tid] = [];
+          groups[tid].push(item);
+        });
+      }
+    });
+
+    // 按重要度排序技巧
+    var sortedTipIds = Object.keys(groups).sort(function (a, b) {
+      var ta = tipMap[a] || {};
+      var tb = tipMap[b] || {};
+      return (tb.importance || 0) - (ta.importance || 0);
+    });
+
+    var html = '';
+    sortedTipIds.forEach(function (tid) {
+      var tip = tipMap[tid] || { title: tid, importance: 0 };
+      var groupItems = groups[tid] || [];
+      var tipUrl = '做题技巧.html?subject=' + currentSubject + '&tip=' + tid;
+      html += '<div class="wrong-tip-group">';
+      html += '<div class="wrong-tip-group-header">';
+      html += '<span class="wrong-tip-group-stars">★'.repeat(tip.importance || 0) + '</span>';
+      html += '<a class="wrong-tip-group-title" href="' + tipUrl + '" target="_blank">💡 ' + tip.title + '</a>';
+      html += '<span class="wrong-tip-group-count">' + groupItems.length + ' 题</span>';
+      html += '</div>';
+      html += '<div class="wrong-tip-group-body">';
+      html += groupItems.map(renderWrongCard).join('');
+      html += '</div>';
+      html += '</div>';
+    });
+
+    if (ungrouped.length > 0) {
+      html += '<div class="wrong-tip-group">';
+      html += '<div class="wrong-tip-group-header">';
+      html += '<span class="wrong-tip-group-title" style="color: var(--muted);">📌 未关联技巧</span>';
+      html += '<span class="wrong-tip-group-count">' + ungrouped.length + ' 题</span>';
+      html += '</div>';
+      html += '<div class="wrong-tip-group-body">';
+      html += ungrouped.map(renderWrongCard).join('');
+      html += '</div>';
+      html += '</div>';
+    }
+
+    list.innerHTML = html;
   }
 
   /* ====== 拍照加载 ====== */
@@ -416,8 +583,85 @@
       if (wrEditor2) wrEditor2.style.display = 'none';
     } else if (action === 'ai-help') {
       if (typeof AIChat !== 'undefined' && AIChat.toggle) AIChat.toggle(qid);
+    } else if (action === 'link-tip') {
+      openTipLinker(qid);
     }
   });
+
+  /* ====== 关联技巧弹窗 ====== */
+  function openTipLinker(qid) {
+    var currentTips = questionTipMap[qid] || [];
+    var manualTips = manualTipMap[qid] || [];
+    var html = '<div class="tip-linker-mask" id="tipLinkerMask">' +
+      '<div class="tip-linker-dialog">' +
+      '<div class="tip-linker-title">选择关联的做题技巧</div>' +
+      '<div class="tip-linker-list">';
+    studyTips.forEach(function (tip) {
+      var isLinked = currentTips.indexOf(tip.id) !== -1;
+      var isAuto = isLinked && manualTips.indexOf(tip.id) === -1;
+      html += '<label class="tip-linker-item">' +
+        '<input type="checkbox" value="' + tip.id + '"' + (isLinked ? ' checked' : '') + '/>' +
+        '<span class="tip-linker-stars">★'.repeat(tip.importance || 0) + '</span>' +
+        '<span class="tip-linker-name">' + tip.title + '</span>' +
+        (isAuto ? '<span class="tip-linker-tag">自动关联</span>' : '') +
+        '</label>';
+    });
+    if (studyTips.length === 0) {
+      html += '<div class="exam-empty">暂无做题技巧，先去创建吧~</div>';
+    }
+    html += '</div>' +
+      '<div class="tip-linker-actions">' +
+      '<span class="exam-link-btn" data-action="cancel-tip-link">取消</span>' +
+      '<span class="exam-link-btn exam-link-submit" data-action="save-tip-link" data-id="' + qid + '">保存</span>' +
+      '</div>' +
+      '</div></div>';
+    document.body.insertAdjacentHTML('beforeend', html);
+
+    // 绑定取消
+    var mask = document.getElementById('tipLinkerMask');
+    mask.querySelector('[data-action="cancel-tip-link"]').onclick = function () {
+      mask.remove();
+    };
+    mask.onclick = function (e) {
+      if (e.target === mask) mask.remove();
+    };
+    // 绑定保存
+    mask.querySelector('[data-action="save-tip-link"]').onclick = function () {
+      var checked = [];
+      mask.querySelectorAll('.tip-linker-item input:checked').forEach(function (cb) {
+        checked.push(cb.value);
+      });
+      saveTipLink(qid, checked);
+      mask.remove();
+    };
+  }
+
+  function saveTipLink(qid, tipIds) {
+    // 过滤掉自动关联的（在 examples 里的），只存手动的
+    var autoIds = {};
+    studyTips.forEach(function (tip) {
+      if (tip.examples && tip.examples.indexOf(qid) !== -1) {
+        autoIds[tip.id] = true;
+      }
+    });
+    var manual = tipIds.filter(function (tid) { return !autoIds[tid]; });
+    if (manual.length === 0) {
+      delete manualTipMap[qid];
+    } else {
+      manualTipMap[qid] = manual;
+    }
+    // 保存到后端
+    fetch(apiUrl('/api/wrong-tips'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subject: currentSubject, questionId: qid, tipIds: manual })
+    }).catch(function () {});
+
+    // 重建 questionTipMap
+    questionTipMap[qid] = tipIds;
+    fillTipFilter();
+    renderList();
+  }
 
   /* ====== 保存错因 ====== */
   function saveWrongReason(qid, reason) {
@@ -448,13 +692,27 @@
   });
 
   /* ====== 筛选事件 ====== */
-  ['filterSource', 'filterChapter', 'filterType', 'filterStatus'].forEach(function (id) {
+  ['filterSource', 'filterChapter', 'filterType', 'filterStatus', 'filterTip'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el) el.addEventListener('change', function () {
       filters.source = document.getElementById('filterSource').value;
       filters.chapter = document.getElementById('filterChapter').value;
       filters.type = document.getElementById('filterType').value;
       filters.status = document.getElementById('filterStatus').value;
+      filters.tip = document.getElementById('filterTip').value;
+      renderList();
+    });
+  });
+
+  /* ====== 视图切换 ====== */
+  document.querySelectorAll('.wrong-view-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var view = btn.dataset.view;
+      if (!view || view === currentView) return;
+      currentView = view;
+      document.querySelectorAll('.wrong-view-btn').forEach(function (b) {
+        b.classList.toggle('active', b.dataset.view === view);
+      });
       renderList();
     });
   });
