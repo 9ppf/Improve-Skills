@@ -13,6 +13,7 @@ Usage:
 """
 
 import argparse
+import gzip
 import json
 import os
 import socket
@@ -25,6 +26,20 @@ import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
+
+# 可压缩的 MIME 类型
+_GZIP_TYPES = {
+    'text/html', 'text/css', 'text/javascript', 'application/javascript',
+    'application/json', 'image/svg+xml', 'application/xml', 'text/xml',
+    'text/plain', 'text/csv',
+}
+
+# 可长缓存的文件后缀（静态资源，文件名带 hash 更好，但我们没有构建 hash，所以用中等时长）
+_CACHE_LONG_EXT = {'.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot', '.mp3', '.wav'}
+_CACHE_LONG_SECONDS = 7 * 24 * 60 * 60  # 7天
+
+# HTML 文件短缓存（因为入口页面可能更新）
+_CACHE_HTML_SECONDS = 5 * 60  # 5分钟
 
 
 def atomic_write_json(path, data):
@@ -319,14 +334,40 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
     """HTTP handler: serves static files + proxies /api/chat to DeepSeek."""
 
     protocol_version = 'HTTP/1.1'
+    prod_mode = False  # 生产模式：启用 gzip 压缩和缓存
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
+    def _accepts_gzip(self) -> bool:
+        """检查客户端是否支持 gzip 解压。"""
+        enc = self.headers.get('Accept-Encoding', '')
+        return 'gzip' in enc
+
+    def _get_cache_control(self, content_type: str) -> str:
+        """根据内容类型返回合适的 Cache-Control。"""
+        if not self.prod_mode:
+            return 'no-store, no-cache, must-revalidate, max-age=0'
+        # API 接口不缓存
+        if self.path.startswith('/api/'):
+            return 'no-cache, max-age=0'
+        # 静态资源长缓存
+        path_lower = self.path.lower()
+        for ext in _CACHE_LONG_EXT:
+            if path_lower.endswith(ext):
+                return f'public, max-age={_CACHE_LONG_SECONDS}'
+        # HTML 短缓存
+        if 'text/html' in content_type:
+            return f'public, max-age={_CACHE_HTML_SECONDS}'
+        # 其他默认不缓存
+        return 'no-cache, max-age=0'
+
     def end_headers(self):
-        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-        self.send_header('Pragma', 'no-cache')
-        self.send_header('Expires', '0')
+        # 生产模式下才发缓存头，开发模式保持禁用缓存
+        if not self.prod_mode:
+            self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
         super().end_headers()
 
     def do_POST(self):
@@ -434,7 +475,70 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         elif self.path.startswith('/api/study-tips'):
             self._handle_load_study_tips()
         else:
+            self._serve_static_file()
+
+    def _serve_static_file(self):
+        """静态文件服务，生产模式下支持 gzip 压缩和缓存。"""
+        # 开发模式直接走默认实现（无缓存，方便调试）
+        if not self.prod_mode:
             super().do_GET()
+            return
+
+        from urllib.parse import unquote, urlparse
+        import mimetypes
+
+        # 解析路径，去掉查询参数
+        parsed = urlparse(self.path)
+        path = unquote(parsed.path)
+
+        # 安全检查：防止路径穿越
+        if '..' in path:
+            self.send_error(403, 'Forbidden')
+            return
+
+        # 解析为本地文件路径
+        fs_path = Path(str(ROOT)) / path.lstrip('/')
+        # 如果是目录，默认找 index.html
+        if fs_path.is_dir():
+            fs_path = fs_path / 'index.html'
+
+        if not fs_path.is_file():
+            self.send_error(404, 'Not Found')
+            return
+
+        # 猜测 MIME 类型
+        ctype, _ = mimetypes.guess_type(str(fs_path))
+        if ctype is None:
+            ctype = 'application/octet-stream'
+
+        # 读取文件内容
+        try:
+            with open(fs_path, 'rb') as f:
+                body = f.read()
+        except OSError:
+            self.send_error(500, 'Internal Server Error')
+            return
+
+        # 判断是否应该 gzip 压缩
+        should_gzip = (
+            self._accepts_gzip()
+            and ctype in _GZIP_TYPES
+            and len(body) > 1024  # 太小的文件没必要压缩
+        )
+
+        if should_gzip:
+            body = gzip.compress(body)
+
+        # 发送响应
+        self.send_response(200)
+        self.send_header('Content-Type', ctype)
+        self.send_header('Content-Length', str(len(body)))
+        if should_gzip:
+            self.send_header('Content-Encoding', 'gzip')
+            self.send_header('Vary', 'Accept-Encoding')
+        self.send_header('Cache-Control', self._get_cache_control(ctype))
+        self.end_headers()
+        self.wfile.write(body)
 
     def _handle_health(self):
         api_key = _load_api_key()
@@ -1493,7 +1597,13 @@ class WorkbenchHandler(SimpleHTTPRequestHandler):
         self.send_response(code)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.send_header('Access-Control-Allow-Origin', '*')
+        # 生产模式 + 客户端支持 gzip → 压缩
+        if self.prod_mode and self._accepts_gzip():
+            body = gzip.compress(body)
+            self.send_header('Content-Encoding', 'gzip')
+            self.send_header('Vary', 'Accept-Encoding')
         self.send_header('Content-Length', str(len(body)))
+        self.send_header('Cache-Control', self._get_cache_control('application/json'))
         self.end_headers()
         self.wfile.write(body)
 
@@ -1568,8 +1678,9 @@ def _get_lan_ip() -> str:
         return ''
 
 
-def _start_http_server(host: str, port: int) -> ThreadingHTTPServer:
+def _start_http_server(host: str, port: int, prod_mode: bool = False) -> ThreadingHTTPServer:
     """Start a custom HTTP server that serves static files and proxies AI API calls."""
+    WorkbenchHandler.prod_mode = prod_mode
     server = ThreadingHTTPServer((host, port), WorkbenchHandler)
     server.daemon_threads = True
     thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -1585,7 +1696,13 @@ def main() -> int:
     parser.add_argument('--no-build', action='store_true', help='Skip the initial build')
     parser.add_argument('--no-watch', action='store_true',
                         help='Disable file watcher (production mode, e.g. Render)')
+    parser.add_argument('--prod', action='store_true',
+                        help='Production mode: enable gzip compression and HTTP caching')
     args = parser.parse_args()
+
+    # 生产模式自动启用 no-watch（生产环境不需要文件监听）
+    if args.prod and not args.no_watch:
+        args.no_watch = True
 
     # 启动时先执行一次完整构建
     if not args.no_build:
@@ -1610,11 +1727,14 @@ def main() -> int:
     else:
         print('[dev] file watcher disabled (--no-watch mode)')
 
-    server = _start_http_server(args.host, args.port)
+    server = _start_http_server(args.host, args.port, prod_mode=args.prod)
 
     encoded_name = '%E6%AD%A4%E5%88%BB%E4%BE%BF%E6%98%AF%E6%98%A5%E5%A4%A9.html'
     lan_ip = _get_lan_ip()
-    print(f'[dev] serving at http://localhost:{args.port}/Workbench/{encoded_name}')
+    mode_label = ' [PROD]' if args.prod else ''
+    print(f'[dev] serving at http://localhost:{args.port}/Workbench/{encoded_name}{mode_label}')
+    if args.prod:
+        print('[prod] gzip compression and HTTP caching enabled')
     if args.host == '0.0.0.0' and lan_ip:
         print(f'[dev] LAN access: http://{lan_ip}:{args.port}/Workbench/{encoded_name}')
     print('[dev] press Ctrl+C to stop')
