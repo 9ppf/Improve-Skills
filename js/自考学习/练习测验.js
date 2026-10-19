@@ -1010,11 +1010,12 @@ function renderSourceFilter() {
     chapter: { icon: '📝', label: '章节' },
     review: { icon: '📋', label: '复习' },
     ai: { icon: '🤖', label: 'AI' },
-    '老师总结': { icon: '👨‍🏫', label: '老师总结' }
+    '老师总结': { icon: '👨‍🏫', label: '老师总结' },
+    exam: { icon: '📄', label: '真题' }
   };
   var total = source.length;
   var html = '<option value="all"'+(currentSourceFilter==='all'?' selected':'')+'>📦 来源：全部 ('+total+')</option>';
-  ['textbook', 'chapter', 'review', 'ai', '老师总结'].forEach(function(s) {
+  ['textbook', 'chapter', 'review', 'ai', '老师总结', 'exam'].forEach(function(s) {
     if (srcMap[s]) {
       var meta = SRC_META[s];
       html += '<option value="'+s+'"'+(currentSourceFilter===s?' selected':'')+'>'+meta.icon+' '+meta.label+' ('+srcMap[s]+')</option>';
