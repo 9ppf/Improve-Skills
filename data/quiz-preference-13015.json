@@ -2,8 +2,8 @@
   "subject": "13015",
   "mode": "today",
   "chapter": "all",
-  "type": "fill",
+  "type": "calculate",
   "status": "all",
-  "source": "ai",
-  "keyword": "地址"
+  "source": "all",
+  "keyword": "all"
 }

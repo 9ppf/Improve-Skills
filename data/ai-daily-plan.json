@@ -1,88 +1,56 @@
 {
-  "week": "第3周",
+  "week": "第5周",
   "days": [
     {
-      "date": "9/8",
+      "date": "9/22",
       "weekday": "周一",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第4章",
-          "topic": "C程序编译流程、ELF格式、符号解析与重定位、静态与动态链接、程序与进程、异常与中断、指令流水线",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "存储器层次结构、局部性原理、SRAM和DRAM、cache映射方式、cache写策略、虚拟存储、TLB、cache平均访问时间",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "CPU数据通路 + 流水线 + 指令系统 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第6章",
-          "topic": "代数系统、半群、子群、同态和同构",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "格、分配格、布尔代数",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "谓词逻辑推理 + 格与布尔代数 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
-          "topic": "图的基本术语、图的邻接矩阵和邻接表、DFS和BFS、最小生成树的Prim和Kruskal算法、Dijkstra和Floyd算法、拓扑排序、关键路径",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "树/图综合应用 + 排序/查找综合 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第5章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第7章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
@@ -96,16 +64,16 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP4",
-          "topic": "三引号/字符串格式化/JSON",
+          "chapter": "",
+          "topic": "AI工程化复习",
           "hours": 1,
           "done": false
         },
         {
           "tag": "ai",
           "subject": "AI学习",
-          "chapter": "Stage1",
-          "topic": "MVP项目搭建",
+          "chapter": "Stage2",
+          "topic": "API对接",
           "hours": 1,
           "done": false
         },
@@ -128,87 +96,55 @@
       ]
     },
     {
-      "date": "9/9",
+      "date": "9/23",
       "weekday": "周二",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第4章",
-          "topic": "C程序编译流程、ELF格式、符号解析与重定位、静态与动态链接、程序与进程、异常与中断、指令流水线",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "存储器层次结构、局部性原理、SRAM和DRAM、cache映射方式、cache写策略、虚拟存储、TLB、cache平均访问时间",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "CPU数据通路 + 流水线 + 指令系统 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第6章",
-          "topic": "代数系统、半群、子群、同态和同构",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "格、分配格、布尔代数",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "谓词逻辑推理 + 格与布尔代数 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
-          "topic": "图的基本术语、图的邻接矩阵和邻接表、DFS和BFS、最小生成树的Prim和Kruskal算法、Dijkstra和Floyd算法、拓扑排序、关键路径",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "树/图综合应用 + 排序/查找综合 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第5章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第7章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
@@ -222,16 +158,16 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP4",
-          "topic": "三引号/字符串格式化/JSON",
+          "chapter": "",
+          "topic": "AI工程化复习",
           "hours": 1,
           "done": false
         },
         {
           "tag": "ai",
           "subject": "AI学习",
-          "chapter": "Stage1",
-          "topic": "MVP项目搭建",
+          "chapter": "Stage2",
+          "topic": "API对接",
           "hours": 1,
           "done": false
         },
@@ -254,87 +190,55 @@
       ]
     },
     {
-      "date": "9/10",
+      "date": "9/24",
       "weekday": "周三",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第4章",
-          "topic": "C程序编译流程、ELF格式、符号解析与重定位、静态与动态链接、程序与进程、异常与中断、指令流水线",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "存储器层次结构、局部性原理、SRAM和DRAM、cache映射方式、cache写策略、虚拟存储、TLB、cache平均访问时间",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "CPU数据通路 + 流水线 + 指令系统 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第6章",
-          "topic": "代数系统、半群、子群、同态和同构",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "格、分配格、布尔代数",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "谓词逻辑推理 + 格与布尔代数 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
-          "topic": "图的基本术语、图的邻接矩阵和邻接表、DFS和BFS、最小生成树的Prim和Kruskal算法、Dijkstra和Floyd算法、拓扑排序、关键路径",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "树/图综合应用 + 排序/查找综合 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第5章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第7章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
@@ -348,16 +252,16 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP4",
-          "topic": "三引号/字符串格式化/JSON",
+          "chapter": "",
+          "topic": "AI工程化复习",
           "hours": 1,
           "done": false
         },
         {
           "tag": "ai",
           "subject": "AI学习",
-          "chapter": "Stage1",
-          "topic": "MVP项目搭建",
+          "chapter": "Stage2",
+          "topic": "API对接",
           "hours": 1,
           "done": false
         },
@@ -380,87 +284,55 @@
       ]
     },
     {
-      "date": "9/11",
+      "date": "9/25",
       "weekday": "周四",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第4章",
-          "topic": "C程序编译流程、ELF格式、符号解析与重定位、静态与动态链接、程序与进程、异常与中断、指令流水线",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "存储器层次结构、局部性原理、SRAM和DRAM、cache映射方式、cache写策略、虚拟存储、TLB、cache平均访问时间",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "CPU数据通路 + 流水线 + 指令系统 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第6章",
-          "topic": "代数系统、半群、子群、同态和同构",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "格、分配格、布尔代数",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "谓词逻辑推理 + 格与布尔代数 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
-          "topic": "图的基本术语、图的邻接矩阵和邻接表、DFS和BFS、最小生成树的Prim和Kruskal算法、Dijkstra和Floyd算法、拓扑排序、关键路径",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "树/图综合应用 + 排序/查找综合 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第5章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第7章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
@@ -474,16 +346,16 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP4",
-          "topic": "三引号/字符串格式化/JSON",
+          "chapter": "",
+          "topic": "AI工程化复习",
           "hours": 1,
           "done": false
         },
         {
           "tag": "ai",
           "subject": "AI学习",
-          "chapter": "Stage1",
-          "topic": "MVP项目搭建",
+          "chapter": "Stage2",
+          "topic": "API对接",
           "hours": 1,
           "done": false
         },
@@ -506,87 +378,55 @@
       ]
     },
     {
-      "date": "9/12",
+      "date": "9/26",
       "weekday": "周五",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第4章",
-          "topic": "C程序编译流程、ELF格式、符号解析与重定位、静态与动态链接、程序与进程、异常与中断、指令流水线",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "存储器层次结构、局部性原理、SRAM和DRAM、cache映射方式、cache写策略、虚拟存储、TLB、cache平均访问时间",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "CPU数据通路 + 流水线 + 指令系统 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第6章",
-          "topic": "代数系统、半群、子群、同态和同构",
-          "hours": 0.56,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "格、分配格、布尔代数",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "谓词逻辑推理 + 格与布尔代数 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
-          "topic": "图的基本术语、图的邻接矩阵和邻接表、DFS和BFS、最小生成树的Prim和Kruskal算法、Dijkstra和Floyd算法、拓扑排序、关键路径",
-          "hours": 0.56,
+          "chapter": "重难点突破",
+          "topic": "树/图综合应用 + 排序/查找综合 + 真题2套",
+          "hours": 0.93,
           "done": false
         },
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第5章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第7章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
+          "chapter": "重难点突破",
           "topic": "课后练习 30min",
-          "hours": 0.3,
+          "hours": 0.5,
           "done": false
         },
         {
@@ -600,16 +440,16 @@
         {
           "tag": "py",
           "subject": "AI工程",
-          "chapter": "KP4",
-          "topic": "三引号/字符串格式化/JSON",
+          "chapter": "",
+          "topic": "AI工程化复习",
           "hours": 1,
           "done": false
         },
         {
           "tag": "ai",
           "subject": "AI学习",
-          "chapter": "Stage1",
-          "topic": "MVP项目搭建",
+          "chapter": "Stage2",
+          "topic": "API对接",
           "hours": 1,
           "done": false
         },
@@ -632,46 +472,30 @@
       ]
     },
     {
-      "date": "9/13",
+      "date": "9/27",
       "weekday": "周六",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第4章",
-          "topic": "C程序编译流程、ELF格式、符号解析与重定位、静态与动态链接、程序与进程、异常与中断、指令流水线",
-          "hours": 0.5,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "存储器层次结构、局部性原理、SRAM和DRAM、cache映射方式、cache写策略、虚拟存储、TLB、cache平均访问时间",
+          "chapter": "重难点突破",
+          "topic": "CPU数据通路 + 流水线 + 指令系统 + 真题2套",
           "hours": 0.5,
           "done": false
         },
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第6章",
-          "topic": "代数系统、半群、子群、同态和同构",
-          "hours": 0.5,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "格、分配格、布尔代数",
+          "chapter": "重难点突破",
+          "topic": "谓词逻辑推理 + 格与布尔代数 + 真题2套",
           "hours": 0.5,
           "done": false
         },
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
-          "topic": "图的基本术语、图的邻接矩阵和邻接表、DFS和BFS、最小生成树的Prim和Kruskal算法、Dijkstra和Floyd算法、拓扑排序、关键路径",
+          "chapter": "重难点突破",
+          "topic": "树/图综合应用 + 排序/查找综合 + 真题2套",
           "hours": 0.5,
           "done": false
         },
@@ -686,8 +510,8 @@
         {
           "tag": "ai",
           "subject": "AI学习",
-          "chapter": "Stage1",
-          "topic": "MVP项目搭建",
+          "chapter": "Stage2",
+          "topic": "API对接",
           "hours": 1,
           "done": false
         },
@@ -710,21 +534,13 @@
       ]
     },
     {
-      "date": "9/14",
+      "date": "9/28",
       "weekday": "周日",
       "tasks": [
         {
           "tag": "core",
           "subject": "系统原理",
-          "chapter": "第5章",
-          "topic": "半休：间隔复习 + 错题重做",
-          "hours": 0.5,
-          "done": false
-        },
-        {
-          "tag": "core",
-          "subject": "系统原理",
-          "chapter": "第5章",
+          "chapter": "重难点突破",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
           "done": false
@@ -732,15 +548,7 @@
         {
           "tag": "core2",
           "subject": "离散数学",
-          "chapter": "第7章",
-          "topic": "半休：间隔复习 + 错题重做",
-          "hours": 0.5,
-          "done": false
-        },
-        {
-          "tag": "core2",
-          "subject": "离散数学",
-          "chapter": "第7章",
+          "chapter": "重难点突破",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
           "done": false
@@ -748,7 +556,7 @@
         {
           "tag": "key",
           "subject": "数据结构",
-          "chapter": "第6章",
+          "chapter": "重难点突破",
           "topic": "半休：间隔复习 + 错题重做",
           "hours": 0.5,
           "done": false

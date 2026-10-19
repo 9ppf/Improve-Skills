@@ -124,6 +124,29 @@ function renderMarkdown(text) {
     var trimmed = line.trim();
     var indent = getIndent(line);
 
+    // 围栏代码块 ```
+    if (/^```/.test(trimmed)) {
+      flushPara();
+      closeAllLists();
+      if (inTable) { html += '</table>'; inTable = false; }
+      // 收集代码内容直到遇到下一个 ```
+      var codeLines = [];
+      var lang = trimmed.replace(/^```/, '').trim();
+      i++;
+      while (i < lines.length && !/^```/.test(lines[i].trim())) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      // 转义 HTML 特殊字符
+      var codeText = codeLines.join('\n')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      var langClass = lang ? ' class="lang-' + lang + '"' : '';
+      html += '<pre class="tips-md-code"><code' + langClass + '>' + codeText + '</code></pre>';
+      continue;
+    }
+
     // 表格
     if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
       flushPara();
@@ -197,6 +220,31 @@ function renderMarkdown(text) {
     if (olMatch) {
       flushPara();
       processListItem('ol', indent, olMatch[1]);
+      continue;
+    }
+
+    // 引用块
+    var quoteMatch = trimmed.match(/^>\s?(.+)/);
+    if (quoteMatch) {
+      flushPara();
+      closeAllLists();
+      // 收集连续的引用行
+      var quoteLines = [quoteMatch[1]];
+      var j = i + 1;
+      while (j < lines.length) {
+        var qLine = lines[j].trim();
+        var qMatch = qLine.match(/^>\s?(.+)/);
+        if (qMatch) {
+          quoteLines.push(qMatch[1]);
+          j++;
+        } else if (qLine === '') {
+          break;
+        } else {
+          break;
+        }
+      }
+      html += '<blockquote class="tips-md-quote">' + renderInline(quoteLines.join(' ')) + '</blockquote>';
+      i = j - 1;
       continue;
     }
 

@@ -845,15 +845,16 @@
   },
   {
     "questionId": "q-13015-048",
-    "timestamp": "2026-08-31T07:13:42.179Z",
+    "timestamp": "2026-09-22T08:39:30.735Z",
     "type": "choice",
     "chapter": "第3章 程序的转换及机器级表示",
-    "userAnswer": "A",
-    "isCorrect": false,
-    "score": 0,
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
     "total": 1,
-    "level": "unknown",
-    "session": "today-task"
+    "level": "mastered",
+    "session": "today-task",
+    "source": "practice"
   },
   {
     "questionId": "q-13015-049",
@@ -3071,5 +3072,691 @@
     "total": 2,
     "level": "unknown",
     "session": "today-task"
+  },
+  {
+    "questionId": "exam-13015-14",
+    "timestamp": "2026-09-22T07:03:56.817Z",
+    "type": "fill",
+    "chapter": "第六章·程序设计基础",
+    "userAnswer": "while | switch-case",
+    "isCorrect": false,
+    "score": 0,
+    "total": 2,
+    "level": "unknown",
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-16",
+    "timestamp": "2026-09-22T07:04:59.385Z",
+    "type": "fill",
+    "chapter": "第二章·数据通路",
+    "userAnswer": "逻辑运算 | ALU",
+    "isCorrect": false,
+    "score": 1,
+    "total": 2,
+    "level": "unsure",
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "q-13015-059",
+    "timestamp": "2026-09-22T07:33:00.025Z",
+    "type": "fill",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "userAnswer": "返回地址",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13015-061",
+    "timestamp": "2026-09-22T07:42:07.793Z",
+    "type": "fill",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "userAnswer": "低",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task",
+    "wrongReason": "没有仔细看题"
+  },
+  {
+    "questionId": "q-13015-065",
+    "timestamp": "2026-09-22T08:20:06.655Z",
+    "type": "fill",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "userAnswer": "取 | 传送",
+    "isCorrect": false,
+    "score": 0,
+    "total": 2,
+    "level": "unknown",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "exam-13015-1",
+    "timestamp": "2026-09-22T08:40:16.535Z",
+    "type": "choice",
+    "chapter": "第一章·计算机系统概述",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "D",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-2",
+    "timestamp": "2026-09-22T08:40:22.910Z",
+    "type": "choice",
+    "chapter": "第一章·计算机系统概述",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-4",
+    "timestamp": "2026-09-22T08:40:33.342Z",
+    "type": "choice",
+    "chapter": "第二章·数据表示与编码",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-5",
+    "timestamp": "2026-09-22T08:40:40.486Z",
+    "type": "choice",
+    "chapter": "第六章·程序设计基础",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "A",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-6",
+    "timestamp": "2026-09-22T08:40:56.126Z",
+    "type": "choice",
+    "chapter": "第六章·程序设计基础",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "C",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-7",
+    "timestamp": "2026-09-22T08:41:05.833Z",
+    "type": "choice",
+    "chapter": "第五章·操作系统基础",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "A",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-8",
+    "timestamp": "2026-09-22T08:41:18.294Z",
+    "type": "choice",
+    "chapter": "第三章·存储系统",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-9",
+    "timestamp": "2026-09-22T08:41:29.832Z",
+    "type": "choice",
+    "chapter": "第四章·输入输出系统",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "D",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-10",
+    "timestamp": "2026-09-22T08:41:52.449Z",
+    "type": "choice",
+    "chapter": "第四章·输入输出系统",
+    "userAnswer": "B",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "B",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-91",
+    "timestamp": "2026-09-23T07:15:45.810Z",
+    "type": "choice",
+    "chapter": "第一章·计算机系统概述",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "A",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-92",
+    "timestamp": "2026-09-23T07:16:14.747Z",
+    "type": "choice",
+    "chapter": "第二章·数据表示与编码",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "A",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-93",
+    "timestamp": "2026-09-23T07:16:31.810Z",
+    "type": "choice",
+    "chapter": "第一章·计算机系统概述",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "B",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-94",
+    "timestamp": "2026-09-23T07:16:41.043Z",
+    "type": "choice",
+    "chapter": "第三章·存储系统",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "A",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-95",
+    "timestamp": "2026-09-23T07:16:57.040Z",
+    "type": "choice",
+    "chapter": "第二章·指令系统",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "B",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-96",
+    "timestamp": "2026-09-23T07:17:12.992Z",
+    "type": "choice",
+    "chapter": "第三章·存储系统",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-97",
+    "timestamp": "2026-09-23T07:17:22.978Z",
+    "type": "choice",
+    "chapter": "第六章·程序设计基础",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "C",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-98",
+    "timestamp": "2026-09-23T07:17:32.480Z",
+    "type": "choice",
+    "chapter": "第二章·数据表示与运算",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "B",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-99",
+    "timestamp": "2026-09-23T07:17:49.668Z",
+    "type": "choice",
+    "chapter": "第四章·输入输出系统",
+    "userAnswer": "D",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "D",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-100",
+    "timestamp": "2026-09-23T07:18:03.393Z",
+    "type": "choice",
+    "chapter": "第三章·存储系统",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "B",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-101",
+    "timestamp": "2026-09-23T07:18:18.780Z",
+    "type": "fill",
+    "chapter": "第一章·计算机系统概述",
+    "userAnswer": "存储",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "存储",
+          "correctAnswer": "存储程序",
+          "matched": false
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-102",
+    "timestamp": "2026-09-23T07:18:32.409Z",
+    "type": "fill",
+    "chapter": "第一章·计算机系统概述",
+    "userAnswer": "控制器",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "控制器",
+          "correctAnswer": "控制器",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-103",
+    "timestamp": "2026-09-23T07:18:40.057Z",
+    "type": "fill",
+    "chapter": "第二章·数据表示与编码",
+    "userAnswer": "8",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "8",
+          "correctAnswer": "8",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-104",
+    "timestamp": "2026-09-23T07:18:47.785Z",
+    "type": "fill",
+    "chapter": "第二章·数据表示与编码",
+    "userAnswer": "二进制",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "二进制",
+          "correctAnswer": "二进制",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-105",
+    "timestamp": "2026-09-23T07:19:16.354Z",
+    "type": "fill",
+    "chapter": "第一章·总线",
+    "userAnswer": "传输总线",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "传输总线",
+          "correctAnswer": "数据总线",
+          "matched": false
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-106",
+    "timestamp": "2026-09-23T07:19:29.923Z",
+    "type": "fill",
+    "chapter": "第二章·指令系统",
+    "userAnswer": "指令",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "指令",
+          "correctAnswer": "指令",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-107",
+    "timestamp": "2026-09-23T07:19:45.493Z",
+    "type": "fill",
+    "chapter": "第三章·存储系统",
+    "userAnswer": "数据交换",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "数据交换",
+          "correctAnswer": "速度不匹配",
+          "matched": false
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-108",
+    "timestamp": "2026-09-23T07:20:43.729Z",
+    "type": "fill",
+    "chapter": "第四章·输入输出系统",
+    "userAnswer": "终止程序",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "终止程序",
+          "correctAnswer": "中断服务程序入口地址",
+          "matched": false
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-109",
+    "timestamp": "2026-09-23T07:21:09.237Z",
+    "type": "fill",
+    "chapter": "第五章·数据结构基础",
+    "userAnswer": "先进后出",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "先进后出",
+          "correctAnswer": "先进后出（FILO）",
+          "matched": false
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-110",
+    "timestamp": "2026-09-23T07:23:14.427Z",
+    "type": "fill",
+    "chapter": "第五章·操作系统基础",
+    "userAnswer": "文件",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "文件",
+          "correctAnswer": "文件",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-58",
+    "timestamp": "2026-09-24T10:32:39.809Z",
+    "type": "calculate",
+    "chapter": "第三章·存储系统",
+    "userAnswer": "1",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-88",
+    "timestamp": "2026-09-24T10:32:50.157Z",
+    "type": "calculate",
+    "chapter": "第三章·存储系统",
+    "userAnswer": "1",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13015-118",
+    "timestamp": "2026-09-24T10:32:56.309Z",
+    "type": "calculate",
+    "chapter": "第三章·存储系统",
+    "userAnswer": "1",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true
+    },
+    "source": "exam",
+    "session": "exam-training"
   }
 ]

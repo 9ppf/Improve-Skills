@@ -429,7 +429,7 @@
     {
       "id": "exam-13003-28",
       "year": "2025年4月",
-      "type": "shortAnswer",
+      "type": "calculate",
       "chapter": "第四章·数组、广义表和串",
       "question": "设二维数组A[5][6]的每个元素占4个字节，已知数组首地址为1000，A共占多少个字节？分别按行和列优先存储时，A[2][5]的起始地址分别为多少？",
       "answer": "已知：每个元素占4字节，首地址LOC(A[0][0])=1000，数组为5行6列。\n\n(1) 数组A总占用字节数：\n总元素数 = 5×6 = 30，总字节数 = 30×4 = 120\n\n(2) 行优先存储的A[2][5]起始地址：\n行优先公式：LOC(A[i][j]) = LOC(A[0][0]) + (i×列数 + j)×每个元素字节数\n代入：i=2, j=5, 列数=6\nLOC = 1000 + (2×6+5)×4 = 1000 + 17×4 = 1068\n\n(3) 列优先存储的A[2][5]起始地址：\n列优先公式：LOC(A[i][j]) = LOC(A[0][0]) + (j×行数 + i)×每个元素字节数\n代入：i=2, j=5, 行数=5\nLOC = 1000 + (5×5+2)×4 = 1000 + 27×4 = 1108",
@@ -479,7 +479,7 @@
     {
       "id": "exam-13003-33",
       "year": "2025年4月",
-      "type": "shortAnswer",
+      "type": "calculate",
       "chapter": "第七章·内部排序",
       "question": "下面程序实现折半插入排序算法，请在空白处填上适当内容以将算法补充完整。\n\ntypedef struct {\n    int key;\n    Info otherinfo;\n} SeqList;\n\nvoid InsertSort(SeqList R[], int n)\n{\n    SeqList x;\n    int j, k, lo, hi, mi;\n    for (int i = 2; i <= n; i++)\n    {\n        ①____;\n        lo = 1; hi = i - 1;\n        while (lo <= hi)\n        {\n            mi = (lo + hi) / 2;\n            if (②____) break;\n            if (R[mi].key > x.key)\n                hi = mi - 1;\n            else\n                lo = ③____;\n        }\n        if (mi <= lo)\n            k = ④____;\n        else\n            k = mi - 1;\n        for (j = 0; j < k; j--)\n            ⑥____;\n        R[k] = x;\n    }\n}",
       "answer": "各空填写如下：\n  ① x = R[i]          —— 将待插入元素暂存到 x 中\n  ② R[mi].key == x.key —— 折半查找找到相等元素，直接跳出循环\n  ③ mi + 1            —— 待插入元素比中间元素大，在右半区继续查找\n  ④ mi                —— 确定插入位置（循环结束时 lo 为插入点）\n  ⑤ i                 —— 从 i 位置开始向前移动元素\n  ⑥ R[j] = R[j-1]     —— 将元素后移一位，为插入腾出位置",
@@ -489,7 +489,7 @@
     {
       "id": "exam-13003-34",
       "year": "2025年4月",
-      "type": "shortAnswer",
+      "type": "calculate",
       "chapter": "第六章·图结构",
       "question": "无向图 G 采用邻接矩阵存储，存储定义如下：\n\n#define MAXV 50   // 最大顶点个数\ntypedef struct {\n    int arcs[MAXV][MAXV];  // 邻接矩阵，顶点关系 (0 或 1)\n    int vexnum, arcnum;    // 顶点数, 边数\n    VertexType vexs[MAXV]; // 存放顶点信息\n} MGraph;\n\n设计算法求图 G 中顶点度的最大值。\n(1) 给出算法的基本设计思想。（4 分）\n(2) 根据设计思想，采用 C 或 C++ 语言描述算法，关键之处给出注释。（6 分）",
       "answer": "(1) 算法基本设计思想：\n  ① 无向图的邻接矩阵为对称矩阵，顶点 vi 的度等于邻接矩阵中第 i 行（或第 i 列）值为 1 的元素个数；\n  ② 初始化最大度 max_degree 为 0，遍历邻接矩阵的每一个顶点（每一行）；\n  ③ 对每个顶点 vi，统计其所在行中 1 的个数，记为 cur_degree（当前顶点的度）；\n  ④ 若 cur_degree > max_degree，则更新 max_degree = cur_degree；\n  ⑤ 遍历完所有顶点后，max_degree 即为图 G 中顶点度的最大值。\n\n(2) C 语言描述算法：\nint MaxVertexDegree(MGraph G)\n{\n    int max_degree = 0;        // 初始化最大度为 0\n    int i, j;\n    for (i = 0; i < G.vexnum; i++)       // 遍历每个顶点\n    {\n        int cur_degree = 0;    // 当前顶点的度\n        for (j = 0; j < G.vexnum; j++)   // 统计第 i 行 1 的个数\n        {\n            if (G.arcs[i][j] == 1)\n                cur_degree++;\n        }\n        if (cur_degree > max_degree)     // 更新最大度\n            max_degree = cur_degree;\n    }\n    return max_degree;         // 返回顶点度的最大值\n}\n\n复杂度分析：时间复杂度 O(n²)（n 为顶点数，双层循环遍历邻接矩阵），空间复杂度 O(1)（仅使用常数个辅助变量）。",

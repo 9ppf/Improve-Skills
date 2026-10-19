@@ -317,6 +317,41 @@
   color: var(--accent2);
 }
 
+/* Markdown 引用块 */
+.tips-md-quote {
+  margin: 0.8rem 0;
+  padding: 0.7rem 1rem;
+  border-left: 4px solid var(--accent);
+  background: var(--bg2);
+  color: var(--muted);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.tips-md-quote strong {
+  color: var(--ink);
+}
+
+/* Markdown 代码块 */
+.tips-md-code {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0.8rem 0;
+  overflow-x: auto;
+  font-family: var(--mono, 'Consolas', 'Courier New', monospace);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.tips-md-code code {
+  font-family: inherit;
+  background: none;
+  padding: 0;
+  white-space: pre;
+}
+
 /* 例题区 */
 .tips-detail-section {
   margin-top: 1.2rem;
