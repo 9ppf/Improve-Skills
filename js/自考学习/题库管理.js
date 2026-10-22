@@ -281,6 +281,7 @@
       }
       return true;
     });
+    bankCache.lastFiltered = filtered;
 
     var listHtml;
     if (!filtered.length) {
@@ -304,6 +305,63 @@
     if (ftEl) ftEl.addEventListener('change', function() { bankCache.filterType = ftEl.value; renderBank(); });
     if (fsEl) fsEl.addEventListener('change', function() { bankCache.filterStatus = fsEl.value; renderBank(); });
     if (fsrcEl) fsrcEl.addEventListener('change', function() { bankCache.filterSource = fsrcEl.value; renderBank(); });
+
+    renderBankNav();
+  }
+
+  /* ====== 题目快速选择面板（同真题练习导航面板） ====== */
+  function renderBankNav() {
+    var panel = document.getElementById('bankNavPanel');
+    if (!panel || panel.classList.contains('collapsed')) return;
+
+    var filtered = bankCache.lastFiltered || bankCache.data || [];
+    if (filtered.length === 0) {
+      panel.innerHTML = '<div class="exam-nav-header"><span class="exam-nav-count">无题目</span>' +
+        '<button class="exam-nav-toggle" data-action="toggle-bank-nav">▾</button></div>';
+      return;
+    }
+
+    var recordMap = bankCache.recordMap || {};
+    var answered = 0;
+    var items = filtered.map(function(q, i) {
+      var rec = recordMap[q.id];
+      var cls = 'pending';
+      if (rec) {
+        if (rec.isCorrect) { cls = 'correct'; answered++; }
+        else { cls = 'wrong'; answered++; }
+      }
+      var m = TYPE_META[q.type] || { label: q.type || '' };
+      var title = (m.label || '') + ' · ' + (q.chapter || '未分类');
+      return '<div class="exam-nav-item ' + cls + '" data-action="bank-nav-jump" data-id="' + esc(q.id || '') + '" title="' + esc(title) + '">' + (i + 1) + '</div>';
+    }).join('');
+
+    panel.innerHTML =
+      '<div class="exam-nav-header">' +
+        '<span class="exam-nav-count">已答 ' + answered + '/' + filtered.length + '</span>' +
+        '<button class="exam-nav-toggle" data-action="toggle-bank-nav">▾</button>' +
+      '</div>' +
+      '<div class="exam-nav-grid">' + items + '</div>';
+  }
+
+  function toggleBankNav() {
+    var panel = document.getElementById('bankNavPanel');
+    if (!panel) return;
+    panel.classList.toggle('collapsed');
+    if (!panel.classList.contains('collapsed')) {
+      renderBankNav();
+    } else {
+      panel.innerHTML = '<button class="exam-nav-collapsed-btn" data-action="toggle-bank-nav">📋</button>';
+    }
+  }
+
+  function bankNavJump(qid) {
+    var card = document.querySelector('[data-qid="' + qid + '"]');
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.style.transition = 'box-shadow 0.3s';
+      card.style.boxShadow = '0 0 0 3px var(--accent)';
+      setTimeout(function() { card.style.boxShadow = ''; }, 1000);
+    }
   }
 
   /* ====== 题目卡片渲染 — 委托 H.renderCard ====== */
@@ -359,8 +417,19 @@
     var el = e.target.closest('[data-action]');
     if (!el) return;
     var action = el.dataset.action;
+
+    if (action === 'toggle-bank-nav') {
+      toggleBankNav();
+      return;
+    }
+
     var qid = el.dataset.id || el.dataset.qid;
     if (!qid) return;
+
+    if (action === 'bank-nav-jump') {
+      bankNavJump(qid);
+      return;
+    }
 
     if (action === 'bank-delete') {
       var q = findQuestion(qid);

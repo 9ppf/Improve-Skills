@@ -407,6 +407,12 @@ function renderTipDetail(id) {
     (tip.source ? '<span class="tip-badge">📌 ' + escapeHtml(tip.source) + '</span>' : '') +
     '</div>' +
     (tip.summary ? '<div class="tips-detail-summary">' + escapeHtml(tip.summary) + '</div>' : '') +
+    '<div class="tips-detail-searchbar">' +
+    '<input type="text" id="detailSearchInput" placeholder="🔍 页内搜索（如：补码、RISC、Cache）...">' +
+    '<span class="tips-detail-search-count" id="detailSearchCount"></span>' +
+    '<button class="tips-link-btn tips-link-sm" data-action="search-prev">↑</button>' +
+    '<button class="tips-link-btn tips-link-sm" data-action="search-next">↓</button>' +
+    '</div>' +
     '<div class="tips-detail-body">' + renderMarkdown(tip.content || '') + '</div>' +
     examplesHTML +
     '<div class="tips-detail-actions">' +
@@ -416,9 +422,104 @@ function renderTipDetail(id) {
     '</div>' +
     '</div>';
 
+  // 初始化页内搜索
+  initDetailSearch();
+
   // 加载例题
   if (examples.length > 0) {
     loadExampleQuestions(examples);
+  }
+}
+
+/* ====== 详情页内搜索 ===== */
+var detailSearchState = { hits: [], current: -1, rawHtml: '' };
+
+function initDetailSearch() {
+  var input = document.getElementById('detailSearchInput');
+  var body = document.querySelector('.tips-detail-body');
+  if (!input || !body) return;
+  detailSearchState.rawHtml = body.innerHTML;
+  detailSearchState.hits = [];
+  detailSearchState.current = -1;
+  input.value = '';
+  document.getElementById('detailSearchCount').textContent = '';
+
+  input.addEventListener('input', function() { performDetailSearch(this.value.trim()); });
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') navigateDetailSearch(e.shiftKey ? -1 : 1);
+  });
+
+  var bar = input.closest('.tips-detail-searchbar');
+  bar.querySelector('[data-action="search-prev"]').addEventListener('click', function() { navigateDetailSearch(-1); });
+  bar.querySelector('[data-action="search-next"]').addEventListener('click', function() { navigateDetailSearch(1); });
+}
+
+function performDetailSearch(keyword) {
+  var body = document.querySelector('.tips-detail-body');
+  var countEl = document.getElementById('detailSearchCount');
+  if (!body || !countEl) return;
+
+  // 恢复原始内容，清除旧高亮
+  body.innerHTML = detailSearchState.rawHtml;
+  detailSearchState.hits = [];
+  detailSearchState.current = -1;
+  if (!keyword) { countEl.textContent = ''; return; }
+
+  var kw = keyword.toLowerCase();
+  var walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, {
+    acceptNode: function(node) {
+      if (!node.nodeValue || node.nodeValue.trim() === '') return NodeFilter.FILTER_REJECT;
+      if (node.parentElement && /^(SCRIPT|STYLE)$/.test(node.parentElement.tagName)) return NodeFilter.FILTER_REJECT;
+      return node.nodeValue.toLowerCase().indexOf(kw) >= 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+
+  var nodes = [];
+  var node;
+  while ((node = walker.nextNode())) nodes.push(node);
+
+  nodes.forEach(function(textNode) {
+    var text = textNode.nodeValue;
+    var lower = text.toLowerCase();
+    var frag = document.createDocumentFragment();
+    var lastIdx = 0;
+    var idx;
+    while ((idx = lower.indexOf(kw, lastIdx)) >= 0) {
+      if (idx > lastIdx) frag.appendChild(document.createTextNode(text.substring(lastIdx, idx)));
+      var mark = document.createElement('mark');
+      mark.className = 'tips-search-hit';
+      mark.textContent = text.substring(idx, idx + keyword.length);
+      frag.appendChild(mark);
+      detailSearchState.hits.push(mark);
+      lastIdx = idx + keyword.length;
+    }
+    if (lastIdx < text.length) frag.appendChild(document.createTextNode(text.substring(lastIdx)));
+    textNode.parentNode.replaceChild(frag, textNode);
+  });
+
+  if (detailSearchState.hits.length > 0) {
+    detailSearchState.current = 0;
+    highlightCurrentHit();
+    countEl.textContent = '1/' + detailSearchState.hits.length;
+  } else {
+    countEl.textContent = '无结果';
+  }
+}
+
+function navigateDetailSearch(dir) {
+  var hits = detailSearchState.hits;
+  if (hits.length === 0) return;
+  detailSearchState.current = (detailSearchState.current + dir + hits.length) % hits.length;
+  highlightCurrentHit();
+  document.getElementById('detailSearchCount').textContent = (detailSearchState.current + 1) + '/' + hits.length;
+}
+
+function highlightCurrentHit() {
+  detailSearchState.hits.forEach(function(h) { h.classList.remove('current'); });
+  var cur = detailSearchState.hits[detailSearchState.current];
+  if (cur) {
+    cur.classList.add('current');
+    cur.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
 

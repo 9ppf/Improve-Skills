@@ -999,5 +999,823 @@
     "total": 1,
     "level": "mastered",
     "session": "today-task"
+  },
+  {
+    "questionId": "exam-13003-1",
+    "timestamp": "2026-10-20T03:01:31.751Z",
+    "type": "choice",
+    "chapter": "第一章·绪论",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "C",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-2",
+    "timestamp": "2026-10-20T03:01:37.998Z",
+    "type": "choice",
+    "chapter": "第一章·绪论",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-3",
+    "timestamp": "2026-10-20T03:01:56.023Z",
+    "type": "choice",
+    "chapter": "第一章·绪论",
+    "userAnswer": "C",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "C",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-4",
+    "timestamp": "2026-10-20T03:32:18.183Z",
+    "type": "choice",
+    "chapter": "第二章·线性表",
+    "userAnswer": "B",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "B",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-5",
+    "timestamp": "2026-10-20T05:48:36.716Z",
+    "type": "choice",
+    "chapter": "第二章·线性表",
+    "userAnswer": "B",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "B",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-6",
+    "timestamp": "2026-10-20T05:49:21.067Z",
+    "type": "choice",
+    "chapter": "第三章·栈和队列",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "B",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-7",
+    "timestamp": "2026-10-20T05:50:35.236Z",
+    "type": "choice",
+    "chapter": "第三章·栈和队列",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "C",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-8",
+    "timestamp": "2026-10-20T05:51:22.978Z",
+    "type": "choice",
+    "chapter": "第三章·栈和队列",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "B",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-9",
+    "timestamp": "2026-10-20T05:51:34.411Z",
+    "type": "choice",
+    "chapter": "第四章·数组、广义表和串",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "D",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-10",
+    "timestamp": "2026-10-20T05:58:42.940Z",
+    "type": "choice",
+    "chapter": "第四章·数组、广义表和串",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-11",
+    "timestamp": "2026-10-20T06:11:39.981Z",
+    "type": "choice",
+    "chapter": "第五章·树与二叉树",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "B",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-12",
+    "timestamp": "2026-10-20T06:11:59.307Z",
+    "type": "choice",
+    "chapter": "第六章·图结构",
+    "userAnswer": "D",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "D",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-13",
+    "timestamp": "2026-10-20T06:17:36.269Z",
+    "type": "choice",
+    "chapter": "第七章·内部排序",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "C",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-14",
+    "timestamp": "2026-10-20T06:24:12.253Z",
+    "type": "choice",
+    "chapter": "第八章·查找",
+    "userAnswer": "A",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "A",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-15",
+    "timestamp": "2026-10-20T06:45:26.078Z",
+    "type": "choice",
+    "chapter": "第七章·内部排序",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "D",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-35",
+    "timestamp": "2026-10-20T06:49:11.393Z",
+    "type": "choice",
+    "chapter": "第一章·绪论",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "C",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-36",
+    "timestamp": "2026-10-20T06:49:32.262Z",
+    "type": "choice",
+    "chapter": "第一章·绪论",
+    "userAnswer": "D",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "D",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-37",
+    "timestamp": "2026-10-20T07:04:28.776Z",
+    "type": "choice",
+    "chapter": "第二章·线性表",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "D",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-38",
+    "timestamp": "2026-10-20T07:19:24.174Z",
+    "type": "choice",
+    "chapter": "第三章·栈和队列",
+    "userAnswer": "D",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "D",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-39",
+    "timestamp": "2026-10-20T07:32:43.423Z",
+    "type": "choice",
+    "chapter": "第三章·栈和队列",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-40",
+    "timestamp": "2026-10-20T09:04:16.433Z",
+    "type": "choice",
+    "chapter": "第三章·栈和队列",
+    "userAnswer": "B",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "B",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-41",
+    "timestamp": "2026-10-20T09:42:35.491Z",
+    "type": "choice",
+    "chapter": "第四章·数组、广义表和串",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "D",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-42",
+    "timestamp": "2026-10-20T09:47:55.460Z",
+    "type": "choice",
+    "chapter": "第四章·数组、广义表和串",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "D",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-43",
+    "timestamp": "2026-10-20T09:48:19.107Z",
+    "type": "choice",
+    "chapter": "第二章·线性表",
+    "userAnswer": "D",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "D",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-44",
+    "timestamp": "2026-10-20T10:10:22.751Z",
+    "type": "choice",
+    "chapter": "第四章·数组、广义表和串",
+    "userAnswer": "D",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "isCorrect": false,
+      "userAnswer": "D",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-45",
+    "timestamp": "2026-10-20T10:32:44.477Z",
+    "type": "choice",
+    "chapter": "第八章·查找",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-46",
+    "timestamp": "2026-10-20T10:47:22.892Z",
+    "type": "choice",
+    "chapter": "第五章·树与二叉树",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "A",
+      "correctAnswer": "A"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-47",
+    "timestamp": "2026-10-20T10:52:12.025Z",
+    "type": "choice",
+    "chapter": "第六章·图结构",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "C",
+      "correctAnswer": "C"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-48",
+    "timestamp": "2026-10-20T10:52:38.013Z",
+    "type": "choice",
+    "chapter": "第八章·查找",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "B",
+      "correctAnswer": "B"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-49",
+    "timestamp": "2026-10-20T10:57:01.006Z",
+    "type": "choice",
+    "chapter": "第七章·内部排序",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "isCorrect": true,
+      "userAnswer": "D",
+      "correctAnswer": "D"
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-19",
+    "timestamp": "2026-10-21T05:55:36.931Z",
+    "type": "fill",
+    "chapter": "第六章·图结构",
+    "userAnswer": "n（n-1）/2",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "n（n-1）/2",
+          "correctAnswer": "n(n-1)/2",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-20",
+    "timestamp": "2026-10-21T05:55:44.570Z",
+    "type": "fill",
+    "chapter": "第五章·树与二叉树",
+    "userAnswer": "7",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "7",
+          "correctAnswer": "7",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-17",
+    "timestamp": "2026-10-21T05:56:29.722Z",
+    "type": "fill",
+    "chapter": "第一章·绪论",
+    "userAnswer": "可行性",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "可行性",
+          "correctAnswer": "可行性",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-18",
+    "timestamp": "2026-10-21T05:57:11.147Z",
+    "type": "fill",
+    "chapter": "第二章·线性表",
+    "userAnswer": "顺序性",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "顺序性",
+          "correctAnswer": "存储结构",
+          "matched": false
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-21",
+    "timestamp": "2026-10-21T05:57:29.043Z",
+    "type": "fill",
+    "chapter": "第八章·查找",
+    "userAnswer": "3",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "3",
+          "correctAnswer": "3",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-22",
+    "timestamp": "2026-10-21T05:57:45.434Z",
+    "type": "fill",
+    "chapter": "第七章·内部排序",
+    "userAnswer": "对比",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "对比",
+          "correctAnswer": "比较",
+          "matched": false
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "exam-13003-23",
+    "timestamp": "2026-10-21T05:57:57.146Z",
+    "type": "fill",
+    "chapter": "第四章·数组、广义表和串",
+    "userAnswer": "存储空间",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "details": {
+      "hits": [
+        {
+          "idx": 0,
+          "userAnswer": "存储空间",
+          "correctAnswer": "存储空间",
+          "matched": true
+        }
+      ]
+    },
+    "source": "exam",
+    "session": "exam-training"
+  },
+  {
+    "questionId": "q-13003-exam-001",
+    "timestamp": "2026-10-21T06:01:20.099Z",
+    "type": "choice",
+    "chapter": "第1章 绪论",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-exam-002",
+    "timestamp": "2026-10-21T06:01:32.403Z",
+    "type": "choice",
+    "chapter": "第1章 绪论",
+    "userAnswer": "C",
+    "isCorrect": false,
+    "score": 0,
+    "total": 1,
+    "level": "unknown",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-exam-003",
+    "timestamp": "2026-10-21T06:01:53.723Z",
+    "type": "choice",
+    "chapter": "第1章 绪论",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-exam-004",
+    "timestamp": "2026-10-21T06:02:04.507Z",
+    "type": "choice",
+    "chapter": "第1章 绪论",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-exam-005",
+    "timestamp": "2026-10-21T06:02:11.787Z",
+    "type": "choice",
+    "chapter": "第1章 绪论",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-exam-006",
+    "timestamp": "2026-10-21T06:02:33.220Z",
+    "type": "choice",
+    "chapter": "第1章 绪论",
+    "userAnswer": "C",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-exam-007",
+    "timestamp": "2026-10-21T06:03:12.220Z",
+    "type": "choice",
+    "chapter": "第2章 线性表",
+    "userAnswer": "A",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-exam-008",
+    "timestamp": "2026-10-21T06:42:59.004Z",
+    "type": "choice",
+    "chapter": "第2章 线性表",
+    "userAnswer": "D",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
+  },
+  {
+    "questionId": "q-13003-exam-009",
+    "timestamp": "2026-10-21T06:47:42.221Z",
+    "type": "choice",
+    "chapter": "第2章 线性表",
+    "userAnswer": "B",
+    "isCorrect": true,
+    "score": 1,
+    "total": 1,
+    "level": "mastered",
+    "source": "practice",
+    "session": "today-task"
   }
 ]

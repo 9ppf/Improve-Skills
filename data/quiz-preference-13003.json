@@ -1,8 +1,9 @@
 {
   "subject": "13003",
   "mode": "today",
-  "chapter": "第4章 数组、广义表和串",
-  "type": "choice",
+  "chapter": "all",
+  "type": "all",
   "status": "all",
-  "source": "all"
+  "source": "exam",
+  "keyword": "all"
 }

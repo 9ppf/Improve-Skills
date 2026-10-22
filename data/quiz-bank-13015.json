@@ -13779,5 +13779,2584 @@
     "chapter": "第5章 程序的存储访问",
     "cardId": "",
     "src": "老师总结"
+  },
+  {
+    "id": "q-13015-933",
+    "question": "构成冯·诺依曼结构计算机的五个基本部件是（　）",
+    "type": "choice",
+    "options": [
+      "A. 寄存器，运算器，存储器，加法器，控制器",
+      "B. 运算器，控制器，存储器，输入设备，输出设备",
+      "C. 加法器，控制器，存储器，输入设备，输出设备",
+      "D. 运算器，控制器，内存，外存，打印机"
+    ],
+    "answer": "B",
+    "explanation": "五大部件：运算器、控制器、存储器、输入设备、输出设备。",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-934",
+    "question": "关于 C 语言编译过程，下列排序中正确的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 编译、预处理、汇编和链接",
+      "B. 预处理、汇编、编译和链接",
+      "C. 汇编、预处理、编译和链接",
+      "D. 预处理、编译、汇编和链接"
+    ],
+    "answer": "D",
+    "explanation": "预处理 → 编译 → 汇编 → 链接。",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-935",
+    "question": "下列计算机系统性能评价的描述中正确的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 程序 MIPS 值越高，计算机的性能越高",
+      "B. 程序的 CPI 值越低，计算机的性能越高",
+      "C. 主频高的机器性能一定高",
+      "D. 同一程序在不同机器的 MIPS 不一定相同"
+    ],
+    "answer": "D",
+    "explanation": "MIPS 依赖于指令集与程序，同一程序在不同机器上 MIPS 不一定相同，不能跨机器直接比较。",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-936",
+    "question": "在 IEEE 754 浮点数标准中规定（　）",
+    "type": "choice",
+    "options": [
+      "A. 尾数为原码，阶码为补码",
+      "B. 尾数为原码，阶码为移码",
+      "C. 尾数为补码，阶码为移码",
+      "D. 尾数为补码，阶码为补码"
+    ],
+    "answer": "B",
+    "explanation": "尾数用原码（符号—数值），阶码用移码（偏置常数 127 / 1023）。",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-937",
+    "question": "通常是指 CPU 内部用于整数运算的数据通路的宽度是（　）",
+    "type": "choice",
+    "options": [
+      "A. 字节　B 字长　C 主频　D 容量",
+      "A. 12H, 34H, 56H　B 34H, 12H, 56H　C 56H, 34H, 12H　D 56H, 12H, 34H"
+    ],
+    "answer": "A",
+    "explanation": "大端方式：高位字节存低地址（LSB 从大地址开始存放）。",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-938",
+    "question": "下列关于指令系统的说法正确的是（　）",
+    "type": "choice",
+    "options": [
+      "A. RISC 指令系统比 CISC 指令系统复杂，指令条数多",
+      "B. CISC 指令系统指令周期比 RISC 指令系统指令周期短",
+      "C. RISC 指令系统中指令的长度一致",
+      "D. CISC 指令系统计算机采用硬连线控制器"
+    ],
+    "answer": "C",
+    "explanation": "RISC 特点：指令条数少、格式规整（定长指令字）、只有 Load/Store 访存、大量通用寄存器。",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-939",
+    "question": "不属于 ISA 的内容的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 操作数所能存放的存储空间的大小和编址方式",
+      "B. 可执行的指令的集合",
+      "C. 可以接受的操作数的类型",
+      "D. 网络传输使用的协议"
+    ],
+    "answer": "D",
+    "explanation": "网络协议属于网络范畴，与 ISA 无关。",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-940",
+    "question": "编译的模块代码之间必须遵循一些调用接口约定，这些约定称为调用约定，由（　）定义",
+    "type": "choice",
+    "options": [
+      "A. TCP/IP　B CPU　C ISA　D ABI",
+      "A. CALL　B RET　C MOV　D CMP"
+    ],
+    "answer": "B",
+    "explanation": "RET 为返回指令。",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-941",
+    "question": "程序计数器是指（　）",
+    "type": "choice",
+    "options": [
+      "A. 可存放指令的寄存器",
+      "B. 可存放程序状态字的寄存器",
+      "C. 本身具有计数逻辑与移位逻辑的寄存器",
+      "D. 存放下一条指令地址的寄存器"
+    ],
+    "answer": "D",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-942",
+    "question": "下列关于动态链接库和静态链接库的优缺点描述**错误**的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 静态库的代码装载速度比动态库快",
+      "B. 启动使用相同动态库的多个应用程序时，动态库需要装载多次",
+      "C. 静态库被多个应用程序使用时，会被装载多次，浪费内存",
+      "D. 动态链接库可以共享，即多个应用程序可以使用同一个动态库"
+    ],
+    "answer": "B",
+    "explanation": "多个应用使用同一动态库时，只需装入内存一次。",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-943",
+    "question": "关于进程和程序的说法**不正确**的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 进程就是运行的程序",
+      "B. 一个程序可以对应多个进程",
+      "C. 进程有生命周期",
+      "D. 一个程序只能对应一个进程"
+    ],
+    "answer": "D",
+    "explanation": "一个程序可对应多个进程。",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-944",
+    "question": "在常用磁盘的各磁道中（　）",
+    "type": "choice",
+    "options": [
+      "A. 最外圈磁道的位密度最大",
+      "B. 最内圈磁道的位密度最大",
+      "C. 中间磁道的位密度最大",
+      "D. 所有磁道的位密度一样大"
+    ],
+    "answer": "B",
+    "explanation": "各磁道存储容量相同，周长越小 → 位密度越大。",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-945",
+    "question": "存储器的随机访问方式是指（　）",
+    "type": "choice",
+    "options": [
+      "A. 可随意访问存储器",
+      "B. 按随机文件访问存储器",
+      "C. 可对存储器进行读出与写入",
+      "D. 可按地址访问存储器任一编址单元，其访问时间相同且与地址无关"
+    ],
+    "answer": "D",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-946",
+    "question": "往内存传送读/写命令，使用的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 数据总线　B 地址总线　C 控制总线　D 系统总线",
+      "A. 硬盘　B 高速缓存　C 主存　D ROM"
+    ],
+    "answer": "A",
+    "explanation": "硬盘在不同盘面、磁道，存取时间不一样。",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-947",
+    "question": "在一个计算机系统中，下列说法正确的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 主存容量远大于 Cache，主存速度比 Cache 快",
+      "B. 主存容量远小于 Cache，主存速度比 Cache 快",
+      "C. 主存容量远大于 Cache，主存速度比 Cache 慢",
+      "D. 主存容量远小于 Cache，主存速度比 Cache 慢"
+    ],
+    "answer": "C",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-948",
+    "question": "在计算机的层次化存储器结构中，虚拟存储器是指（　）",
+    "type": "choice",
+    "options": [
+      "A. 将主存储器当作高速缓存使用",
+      "B. 将高速缓存当作主存储器使用",
+      "C. 将辅助存储器当作主存储器使用",
+      "D. 将主存储器当作辅助存储器使用"
+    ],
+    "answer": "C",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-949",
+    "question": "下列关于页式虚拟存储器的说法，正确的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 页面设置很小，则主存存放页面数多，缺页频率低，换页次数少",
+      "B. 可以将整个运行的程序全部装入内存",
+      "C. 可以从逻辑上极大地扩充内存容量，并提高内存的利用率和灵活性",
+      "D. 页面大小由程序的模块划分确定"
+    ],
+    "answer": "C",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-950",
+    "question": "下列关于虚拟地址的说法正确的是（　）",
+    "type": "choice",
+    "options": [
+      "A. 访问内存时实际使用的地址",
+      "B. 程序中使用的地址",
+      "C. 虚拟地址空间比物理地址空间小",
+      "D. 某个虚拟地址可能对应多个物理地址"
+    ],
+    "answer": "B",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-951",
+    "question": "中断屏蔽字的作用是（　）",
+    "type": "choice",
+    "options": [
+      "A. 暂停外设对主存的访问",
+      "B. 暂停对某些中断的响应",
+      "C. 暂停对一切中断的响应",
+      "D. 暂停 CPU 对主存的访问"
+    ],
+    "answer": "B",
+    "explanation": "屏蔽（暂停）对**某些**中断的响应。",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-952",
+    "question": "在 DMA 方式的数据传送期间（　）",
+    "type": "choice",
+    "options": [
+      "A. 不需 CPU 干预，也不需软件介入",
+      "B. 不需 CPU 干预，但需软件介入",
+      "C. 需 CPU 干预，但不需软件介入",
+      "D. 需 CPU 干预，又需软件介入"
+    ],
+    "answer": "A",
+    "explanation": "DMA 控制器接管总线，数据传送期间不需要 CPU 和软件介入。",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-953",
+    "question": "计算机由 ___、___、___、___ 和 ___ 五个基本部件组成",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "运算器",
+        "synonyms": []
+      },
+      {
+        "answer": "控制器",
+        "synonyms": []
+      },
+      {
+        "answer": "存储器",
+        "synonyms": []
+      },
+      {
+        "answer": "输入设备",
+        "synonyms": []
+      },
+      {
+        "answer": "输出设备",
+        "synonyms": []
+      }
+    ],
+    "answer": "运算器; 控制器; 存储器; 输入设备; 输出设备",
+    "explanation": "正确答案：运算器; 控制器; 存储器; 输入设备; 输出设备",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-954",
+    "question": "存储器不仅能存放 ___，而且也能存放 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "数据",
+        "synonyms": []
+      },
+      {
+        "answer": "指令",
+        "synonyms": []
+      }
+    ],
+    "answer": "数据; 指令",
+    "explanation": "正确答案：数据; 指令",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-955",
+    "question": "计算机内部以 ___ 形式表示 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "二进制",
+        "synonyms": []
+      },
+      {
+        "answer": "指令和数据",
+        "synonyms": []
+      }
+    ],
+    "answer": "二进制; 指令和数据",
+    "explanation": "正确答案：二进制; 指令和数据",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-956",
+    "question": "在计算机系统中，从层次结构上可以将存储器分为 ___、___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "寄存器",
+        "synonyms": []
+      },
+      {
+        "answer": "高速缓存",
+        "synonyms": []
+      },
+      {
+        "answer": "主存",
+        "synonyms": []
+      },
+      {
+        "answer": "辅存",
+        "synonyms": []
+      }
+    ],
+    "answer": "寄存器; 高速缓存; 主存; 辅存",
+    "explanation": "正确答案：寄存器; 高速缓存; 主存; 辅存",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-957",
+    "question": "存储器分为内存和外存，内存包括 ___ 和 ___，外存包括 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "主存",
+        "synonyms": []
+      },
+      {
+        "answer": "高速缓存",
+        "synonyms": []
+      },
+      {
+        "answer": "辅存",
+        "synonyms": []
+      },
+      {
+        "answer": "海量后备存储器",
+        "synonyms": []
+      }
+    ],
+    "answer": "主存; 高速缓存; 辅存; 海量后备存储器",
+    "explanation": "正确答案：主存; 高速缓存; 辅存; 海量后备存储器",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-958",
+    "question": "按照在计算机上完成任务的不同，可以把使用计算机的用户分成 ___、___、___、___ 四类",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "系统程序员",
+        "synonyms": []
+      },
+      {
+        "answer": "应用程序员",
+        "synonyms": []
+      },
+      {
+        "answer": "最终用户",
+        "synonyms": []
+      },
+      {
+        "answer": "系统管理员",
+        "synonyms": []
+      }
+    ],
+    "answer": "系统程序员; 应用程序员; 最终用户; 系统管理员",
+    "explanation": "正确答案：系统程序员; 应用程序员; 最终用户; 系统管理员",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-959",
+    "question": "源程序文件到可执行目标文件的转换过程：___、___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "预处理阶段",
+        "synonyms": []
+      },
+      {
+        "answer": "编译阶段",
+        "synonyms": []
+      },
+      {
+        "answer": "汇编阶段",
+        "synonyms": []
+      },
+      {
+        "answer": "链接阶段",
+        "synonyms": []
+      }
+    ],
+    "answer": "预处理阶段; 编译阶段; 汇编阶段; 链接阶段",
+    "explanation": "正确答案：预处理阶段; 编译阶段; 汇编阶段; 链接阶段",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-960",
+    "question": "机器代码与汇编表示之间可以进行转换：从汇编表示转换为机器代码的过程称为 ___，从机器代码转换为汇编表示的过程称为 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "汇编",
+        "synonyms": []
+      },
+      {
+        "answer": "反汇编",
+        "synonyms": []
+      }
+    ],
+    "answer": "汇编; 反汇编",
+    "explanation": "正确答案：汇编; 反汇编",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-961",
+    "question": "系统总线通常由 ___、___ 和 ___ 三组线构成",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "数据线",
+        "synonyms": []
+      },
+      {
+        "answer": "地址线",
+        "synonyms": []
+      },
+      {
+        "answer": "控制线",
+        "synonyms": []
+      }
+    ],
+    "answer": "数据线; 地址线; 控制线",
+    "explanation": "正确答案：数据线; 地址线; 控制线",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-962",
+    "question": "通常把控制部件、运算部件和各类寄存器互联组成的电路称为 ___",
+    "type": "fill",
+    "answer": "中央处理器（CPU）",
+    "explanation": "正确答案：中央处理器（CPU）",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-963",
+    "question": "CPU 送到地址线的主存地址应先存放在 ___ 中，发送或从数据线取来的信息存放在 ___ 中",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "主存地址寄存器（MAR）",
+        "synonyms": []
+      },
+      {
+        "answer": "主存数据寄存器（MDR）",
+        "synonyms": []
+      }
+    ],
+    "answer": "主存地址寄存器（MAR）; 主存数据寄存器（MDR）",
+    "explanation": "正确答案：主存地址寄存器（MAR）; 主存数据寄存器（MDR）",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-964",
+    "question": "___ 是用 0 和 1 表示的一串 0/1 序列，用来表示 CPU 完成一个特定的 ___ 操作",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "指令",
+        "synonyms": []
+      },
+      {
+        "answer": "原子",
+        "synonyms": []
+      }
+    ],
+    "answer": "指令; 原子",
+    "explanation": "正确答案：指令; 原子",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-965",
+    "question": "___ 和 ___ 都属于低级语言，它们统称为 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "汇编语言",
+        "synonyms": []
+      },
+      {
+        "answer": "机器语言",
+        "synonyms": []
+      },
+      {
+        "answer": "机器级语言",
+        "synonyms": []
+      }
+    ],
+    "answer": "汇编语言; 机器语言; 机器级语言",
+    "explanation": "正确答案：汇编语言; 机器语言; 机器级语言",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-966",
+    "question": "被翻译的语言和程序分别称为 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "源语言",
+        "synonyms": []
+      },
+      {
+        "answer": "源程序",
+        "synonyms": []
+      }
+    ],
+    "answer": "源语言; 源程序",
+    "explanation": "正确答案：源语言; 源程序",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-967",
+    "question": "翻译生成的语言和程序分别称为 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "目标语言",
+        "synonyms": []
+      },
+      {
+        "answer": "目标程序",
+        "synonyms": []
+      }
+    ],
+    "answer": "目标语言; 目标程序",
+    "explanation": "正确答案：目标语言; 目标程序",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-968",
+    "question": "翻译程序有以下 3 类：___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "汇编程序",
+        "synonyms": []
+      },
+      {
+        "answer": "解释程序",
+        "synonyms": []
+      },
+      {
+        "answer": "编译程序",
+        "synonyms": []
+      }
+    ],
+    "answer": "汇编程序; 解释程序; 编译程序",
+    "explanation": "正确答案：汇编程序; 解释程序; 编译程序",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-969",
+    "question": "ISA 层下面是 ___ 部分，上面是 ___ 部分",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "硬件",
+        "synonyms": []
+      },
+      {
+        "answer": "软件",
+        "synonyms": []
+      }
+    ],
+    "answer": "硬件; 软件",
+    "explanation": "正确答案：硬件; 软件",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-970",
+    "question": "IEEE 754 单精度浮点数用二进制表示时，阶码长度为 ___ 位，尾数长度为 ___ 位，阶码的移码偏置常数为 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "8",
+        "synonyms": []
+      },
+      {
+        "answer": "23",
+        "synonyms": []
+      },
+      {
+        "answer": "127",
+        "synonyms": []
+      }
+    ],
+    "answer": "8; 23; 127",
+    "explanation": "正确答案：8; 23; 127",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-971",
+    "question": "CPU 内部的 ALU 部件的基本功能是实现 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "算术运算",
+        "synonyms": []
+      },
+      {
+        "answer": "逻辑运算",
+        "synonyms": []
+      }
+    ],
+    "answer": "算术运算; 逻辑运算",
+    "explanation": "正确答案：算术运算; 逻辑运算",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-972",
+    "question": "在计算机系统中，常用的进位记数制有 ___、___、___、___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "二进制",
+        "synonyms": []
+      },
+      {
+        "answer": "八进制",
+        "synonyms": []
+      },
+      {
+        "answer": "十进制",
+        "synonyms": []
+      },
+      {
+        "answer": "十六进制",
+        "synonyms": []
+      }
+    ],
+    "answer": "二进制; 八进制; 十进制; 十六进制",
+    "explanation": "正确答案：二进制; 八进制; 十进制; 十六进制",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-973",
+    "question": "根据不同的控制描述方式，控制器分为 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "硬连线控制器",
+        "synonyms": []
+      },
+      {
+        "answer": "微程序控制器",
+        "synonyms": []
+      }
+    ],
+    "answer": "硬连线控制器; 微程序控制器",
+    "explanation": "正确答案：硬连线控制器; 微程序控制器",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-974",
+    "question": "定点数编码表示方法主要有以下 4 种：___、___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "原码",
+        "synonyms": []
+      },
+      {
+        "answer": "补码",
+        "synonyms": []
+      },
+      {
+        "answer": "反码",
+        "synonyms": []
+      },
+      {
+        "answer": "移码",
+        "synonyms": []
+      }
+    ],
+    "answer": "原码; 补码; 反码; 移码",
+    "explanation": "正确答案：原码; 补码; 反码; 移码",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-975",
+    "question": "运算部件的组成主要由 ___、___ 和 ___ 三部分构成",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "加法器",
+        "synonyms": []
+      },
+      {
+        "answer": "ALU",
+        "synonyms": []
+      },
+      {
+        "answer": "移位器",
+        "synonyms": []
+      }
+    ],
+    "answer": "加法器; ALU; 移位器",
+    "explanation": "正确答案：加法器; ALU; 移位器",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-976",
+    "question": "将计算机五大部件连接起来，成为它们之间相互传递信息的公共通路，这种公共通路称为 ___",
+    "type": "fill",
+    "answer": "总线",
+    "explanation": "正确答案：总线",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-977",
+    "question": "指令所处理的基本数据类型分为 ___ 和 ___ 两种",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "数值数据",
+        "synonyms": []
+      },
+      {
+        "answer": "非数值数据",
+        "synonyms": []
+      }
+    ],
+    "answer": "数值数据; 非数值数据",
+    "explanation": "正确答案：数值数据; 非数值数据",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-978",
+    "question": "___、___ 等数据都是非数值数据",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "逻辑值",
+        "synonyms": []
+      },
+      {
+        "answer": "字符",
+        "synonyms": []
+      }
+    ],
+    "answer": "逻辑值; 字符",
+    "explanation": "正确答案：逻辑值; 字符",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-979",
+    "question": "汉字系统必须处理以下几种汉字代码：___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "输入码",
+        "synonyms": []
+      },
+      {
+        "answer": "内码",
+        "synonyms": []
+      },
+      {
+        "answer": "字形码",
+        "synonyms": []
+      }
+    ],
+    "answer": "输入码; 内码; 字形码",
+    "explanation": "正确答案：输入码; 内码; 字形码",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-980",
+    "question": "汉字的字形主要有两种描述方法：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "字模点阵描述",
+        "synonyms": []
+      },
+      {
+        "answer": "轮廓描述",
+        "synonyms": []
+      }
+    ],
+    "answer": "字模点阵描述; 轮廓描述",
+    "explanation": "正确答案：字模点阵描述; 轮廓描述",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-981",
+    "question": "使用通用寄存器来存放运算过程中所用的临时数据。指令的操作数有三种：___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "立即数",
+        "synonyms": []
+      },
+      {
+        "answer": "寄存器",
+        "synonyms": []
+      },
+      {
+        "answer": "存储单元",
+        "synonyms": []
+      }
+    ],
+    "answer": "立即数; 寄存器; 存储单元",
+    "explanation": "正确答案：立即数; 寄存器; 存储单元",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-982",
+    "question": "按指令格式的复杂度，指令系统可分为 ___ 与 ___ 两种类型",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "CISC",
+        "synonyms": []
+      },
+      {
+        "answer": "RISC",
+        "synonyms": []
+      }
+    ],
+    "answer": "CISC; RISC",
+    "explanation": "正确答案：CISC; RISC",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-983",
+    "question": "机器指令以什么方式提供操作数或操作数地址，称为 ___",
+    "type": "fill",
+    "answer": "寻址方式",
+    "explanation": "正确答案：寻址方式",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-984",
+    "question": "寻址方式有以下三种：___、___ 和 ___；其他寻址包含两种模式：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "立即寻址",
+        "synonyms": []
+      },
+      {
+        "answer": "寄存器寻址",
+        "synonyms": []
+      },
+      {
+        "answer": "其他寻址",
+        "synonyms": []
+      },
+      {
+        "answer": "实地址模式",
+        "synonyms": []
+      },
+      {
+        "answer": "保护模式",
+        "synonyms": []
+      }
+    ],
+    "answer": "立即寻址; 寄存器寻址; 其他寻址; 实地址模式; 保护模式",
+    "explanation": "正确答案：立即寻址; 寄存器寻址; 其他寻址; 实地址模式; 保护模式",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-985",
+    "question": "C 语言在调用函数时，可以采用按 ___ 和按 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "值传递",
+        "synonyms": []
+      },
+      {
+        "answer": "地址传递",
+        "synonyms": []
+      }
+    ],
+    "answer": "值传递; 地址传递",
+    "explanation": "正确答案：值传递; 地址传递",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-986",
+    "question": "用若干个 ___ 表示的与机器指令对应的指令称为 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "助记符",
+        "synonyms": []
+      },
+      {
+        "answer": "汇编指令",
+        "synonyms": []
+      }
+    ],
+    "answer": "助记符; 汇编指令",
+    "explanation": "正确答案：助记符; 汇编指令",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-987",
+    "question": "用来将汇编语言源程序中的汇编指令翻译成机器指令的程序称为 ___，而将机器指令反过来翻译成汇编指令的程序称为 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "汇编程序",
+        "synonyms": []
+      },
+      {
+        "answer": "反汇编程序",
+        "synonyms": []
+      }
+    ],
+    "answer": "汇编程序; 反汇编程序",
+    "explanation": "正确答案：汇编程序; 反汇编程序",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-988",
+    "question": "两个专用寄存器分别是 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "指令指针寄存器 EIP",
+        "synonyms": []
+      },
+      {
+        "answer": "标志寄存器 EFLAGS",
+        "synonyms": []
+      }
+    ],
+    "answer": "指令指针寄存器 EIP; 标志寄存器 EFLAGS",
+    "explanation": "正确答案：指令指针寄存器 EIP; 标志寄存器 EFLAGS",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-989",
+    "question": "指令包括 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "操作码",
+        "synonyms": []
+      },
+      {
+        "answer": "地址码",
+        "synonyms": []
+      }
+    ],
+    "answer": "操作码; 地址码",
+    "explanation": "正确答案：操作码; 地址码",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-990",
+    "question": "条件标志包括 ___、___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "溢出标志（OF）",
+        "synonyms": []
+      },
+      {
+        "answer": "进/借位标志（CF）",
+        "synonyms": []
+      },
+      {
+        "answer": "符号标志（SF）",
+        "synonyms": []
+      },
+      {
+        "answer": "零标志（ZF）",
+        "synonyms": []
+      }
+    ],
+    "answer": "溢出标志（OF）; 进/借位标志（CF）; 符号标志（SF）; 零标志（ZF）",
+    "explanation": "正确答案：溢出标志（OF）; 进/借位标志（CF）; 符号标志（SF）; 零标志（ZF）",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-991",
+    "question": "控制标志包括 ___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "方向标志（DF）",
+        "synonyms": []
+      },
+      {
+        "answer": "中断允许标志（IF）",
+        "synonyms": []
+      },
+      {
+        "answer": "陷阱标志（TF）",
+        "synonyms": []
+      }
+    ],
+    "answer": "方向标志（DF）; 中断允许标志（IF）; 陷阱标志（TF）",
+    "explanation": "正确答案：方向标志（DF）; 中断允许标志（IF）; 陷阱标志（TF）",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-992",
+    "question": "___ 节用来存入已初始化且初值不为 0 的全局变量和静态变量",
+    "type": "fill",
+    "answer": ".data",
+    "explanation": "正确答案：.data",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-993",
+    "question": "___ 节用来存放目标代码部分",
+    "type": "fill",
+    "answer": ".text",
+    "explanation": "正确答案：.text",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-994",
+    "question": "可重定位文件中的代码区和数据区都是从地址 ___ 开始的",
+    "type": "fill",
+    "answer": "0",
+    "explanation": "正确答案：0",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-995",
+    "question": "___ 的目的是将每个符号的引用与一个确定的符号定义建立关联",
+    "type": "fill",
+    "answer": "符号解析",
+    "explanation": "正确答案：符号解析",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-996",
+    "question": "链接器在将多个可重定位文件组合成一个可执行文件时，主要完成 ___ 和 ___ 两个任务",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "符号解析",
+        "synonyms": []
+      },
+      {
+        "answer": "重定位",
+        "synonyms": []
+      }
+    ],
+    "answer": "符号解析; 重定位",
+    "explanation": "正确答案：符号解析; 重定位",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-997",
+    "question": "打断程序正常执行的事件分为两大类：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "内部异常",
+        "synonyms": []
+      },
+      {
+        "answer": "外部中断",
+        "synonyms": []
+      }
+    ],
+    "answer": "内部异常; 外部中断",
+    "explanation": "正确答案：内部异常; 外部中断",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-998",
+    "question": "ELF 目标文件的两种视图包括：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "链接视图",
+        "synonyms": []
+      },
+      {
+        "answer": "执行视图",
+        "synonyms": []
+      }
+    ],
+    "answer": "链接视图; 执行视图",
+    "explanation": "正确答案：链接视图; 执行视图",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-999",
+    "question": "ELF 可重定位文件由 ___、___ 以及各个不同的节组成",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "ELF 头",
+        "synonyms": []
+      },
+      {
+        "answer": "节头表",
+        "synonyms": []
+      }
+    ],
+    "answer": "ELF 头; 节头表",
+    "explanation": "正确答案：ELF 头; 节头表",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1000",
+    "question": "包含在符号表中的符号有三种不同类型：___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "全局符号",
+        "synonyms": []
+      },
+      {
+        "answer": "外部符号",
+        "synonyms": []
+      },
+      {
+        "answer": "本地符号",
+        "synonyms": []
+      }
+    ],
+    "answer": "全局符号; 外部符号; 本地符号",
+    "explanation": "正确答案：全局符号; 外部符号; 本地符号",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1001",
+    "question": "符号类型可以是 ___、___、___、___ 等",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "未指定",
+        "synonyms": []
+      },
+      {
+        "answer": "变量",
+        "synonyms": []
+      },
+      {
+        "answer": "函数",
+        "synonyms": []
+      },
+      {
+        "answer": "节",
+        "synonyms": []
+      }
+    ],
+    "answer": "未指定; 变量; 函数; 节",
+    "explanation": "正确答案：未指定; 变量; 函数; 节",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1002",
+    "question": "绑定属性可以是 ___、___、___ 等",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "本地",
+        "synonyms": []
+      },
+      {
+        "answer": "全局",
+        "synonyms": []
+      },
+      {
+        "answer": "弱",
+        "synonyms": []
+      }
+    ],
+    "answer": "本地; 全局; 弱",
+    "explanation": "正确答案：本地; 全局; 弱",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1003",
+    "question": "CPU 最基本的部件是 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "数据通路",
+        "synonyms": []
+      },
+      {
+        "answer": "控制部件",
+        "synonyms": []
+      }
+    ],
+    "answer": "数据通路; 控制部件",
+    "explanation": "正确答案：数据通路; 控制部件",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1004",
+    "question": "CPU 对异常和中断的响应过程可分为三个步骤：___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "保护断点和程序状态",
+        "synonyms": []
+      },
+      {
+        "answer": "关中断",
+        "synonyms": []
+      },
+      {
+        "answer": "识别异常和中断事件并转相应处理程序",
+        "synonyms": []
+      }
+    ],
+    "answer": "保护断点和程序状态; 关中断; 识别异常和中断事件并转相应处理程序",
+    "explanation": "正确答案：保护断点和程序状态; 关中断; 识别异常和中断事件并转相应处理程序",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1005",
+    "question": "指令执行过程主要包括 ___、___、___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "取指",
+        "synonyms": []
+      },
+      {
+        "answer": "译码",
+        "synonyms": []
+      },
+      {
+        "answer": "取数",
+        "synonyms": []
+      },
+      {
+        "answer": "运算",
+        "synonyms": []
+      },
+      {
+        "answer": "存结果",
+        "synonyms": []
+      }
+    ],
+    "answer": "取指; 译码; 取数; 运算; 存结果",
+    "explanation": "正确答案：取指; 译码; 取数; 运算; 存结果",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1006",
+    "question": "打断程序正常执行的事件包括 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "非法操作码、页故障、运算结果溢出或除 0 错误等",
+        "synonyms": []
+      },
+      {
+        "answer": "CPU 收到外部中断请求信号",
+        "synonyms": []
+      }
+    ],
+    "answer": "非法操作码、页故障、运算结果溢出或除 0 错误等; CPU 收到外部中断请求信号",
+    "explanation": "正确答案：非法操作码、页故障、运算结果溢出或除 0 错误等; CPU 收到外部中断请求信号",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1007",
+    "question": "按信息的可更改性，将存储器分为 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "读写存储器",
+        "synonyms": []
+      },
+      {
+        "answer": "只读存储器",
+        "synonyms": []
+      }
+    ],
+    "answer": "读写存储器; 只读存储器",
+    "explanation": "正确答案：读写存储器; 只读存储器",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1008",
+    "question": "按断电后信息的可保存性，将存储器分为 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "非易失性存储器",
+        "synonyms": []
+      },
+      {
+        "answer": "易失性存储器",
+        "synonyms": []
+      }
+    ],
+    "answer": "非易失性存储器; 易失性存储器",
+    "explanation": "正确答案：非易失性存储器; 易失性存储器",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1009",
+    "question": "按照存取方式分类，存储器分为 ___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "随机存取存储器",
+        "synonyms": []
+      },
+      {
+        "answer": "顺序存取存储器",
+        "synonyms": []
+      },
+      {
+        "answer": "直接存取存储器",
+        "synonyms": []
+      }
+    ],
+    "answer": "随机存取存储器; 顺序存取存储器; 直接存取存储器",
+    "explanation": "正确答案：随机存取存储器; 顺序存取存储器; 直接存取存储器",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1010",
+    "question": "程序访问的局部性包括：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "时间局部性",
+        "synonyms": []
+      },
+      {
+        "answer": "空间局部性",
+        "synonyms": []
+      }
+    ],
+    "answer": "时间局部性; 空间局部性",
+    "explanation": "正确答案：时间局部性; 空间局部性",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1011",
+    "question": "Cache 是一种高速缓冲存储器，是为了解决 CPU 和主存之间 ___ 不匹配而采用的一项重要技术",
+    "type": "fill",
+    "answer": "速度",
+    "explanation": "正确答案：速度",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1012",
+    "question": "主存与 Cache 的地址映射方式有 ___、___ 和 ___ 三种方式",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "直接映射",
+        "synonyms": []
+      },
+      {
+        "answer": "全相联映射",
+        "synonyms": []
+      },
+      {
+        "answer": "组相联映射",
+        "synonyms": []
+      }
+    ],
+    "answer": "直接映射; 全相联映射; 组相联映射",
+    "explanation": "正确答案：直接映射; 全相联映射; 组相联映射",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1013",
+    "question": "解决 cache 与主存一致性问题的 cache 写操作一般有 ___ 和 ___ 两种",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "通写法",
+        "synonyms": []
+      },
+      {
+        "answer": "回写法",
+        "synonyms": []
+      }
+    ],
+    "answer": "通写法; 回写法",
+    "explanation": "正确答案：通写法; 回写法",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1014",
+    "question": "磁盘存储器的平均存取时间主要包括 ___、___ 和 ___ 三个部分",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "寻道时间",
+        "synonyms": []
+      },
+      {
+        "answer": "旋转等待时间",
+        "synonyms": []
+      },
+      {
+        "answer": "数据传输时间",
+        "synonyms": []
+      }
+    ],
+    "answer": "寻道时间; 旋转等待时间; 数据传输时间",
+    "explanation": "正确答案：寻道时间; 旋转等待时间; 数据传输时间",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1015",
+    "question": "访存指令主要有两类：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "取数指令",
+        "synonyms": []
+      },
+      {
+        "answer": "存数指令",
+        "synonyms": []
+      }
+    ],
+    "answer": "取数指令; 存数指令",
+    "explanation": "正确答案：取数指令; 存数指令",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1016",
+    "question": "常用的替换算法有 ___、___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "先进先出（FIFO）",
+        "synonyms": []
+      },
+      {
+        "answer": "最近最少用（LRU）",
+        "synonyms": []
+      },
+      {
+        "answer": "最不经常使用（LFU）",
+        "synonyms": []
+      },
+      {
+        "answer": "随机替换算法",
+        "synonyms": []
+      }
+    ],
+    "answer": "先进先出（FIFO）; 最近最少用（LRU）; 最不经常使用（LFU）; 随机替换算法",
+    "explanation": "正确答案：先进先出（FIFO）; 最近最少用（LRU）; 最不经常使用（LFU）; 随机替换算法",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1017",
+    "question": "I/O 子系统包含以下两大部分：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "I/O 软件",
+        "synonyms": []
+      },
+      {
+        "answer": "I/O 硬件",
+        "synonyms": []
+      }
+    ],
+    "answer": "I/O 软件; I/O 硬件",
+    "explanation": "正确答案：I/O 软件; I/O 硬件",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1018",
+    "question": "I/O 子系统三大特性包含：___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "共享性",
+        "synonyms": []
+      },
+      {
+        "answer": "复杂性",
+        "synonyms": []
+      },
+      {
+        "answer": "异步性",
+        "synonyms": []
+      }
+    ],
+    "answer": "共享性; 复杂性; 异步性",
+    "explanation": "正确答案：共享性; 复杂性; 异步性",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1019",
+    "question": "文件分成 ___ 和 ___ 两类",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "ASCII 文件",
+        "synonyms": []
+      },
+      {
+        "answer": "二进制文件",
+        "synonyms": []
+      }
+    ],
+    "answer": "ASCII 文件; 二进制文件",
+    "explanation": "正确答案：ASCII 文件; 二进制文件",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1020",
+    "question": "输出缓存区的属性有三种：___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "全缓冲",
+        "synonyms": []
+      },
+      {
+        "answer": "行缓冲",
+        "synonyms": []
+      },
+      {
+        "answer": "非缓冲",
+        "synonyms": []
+      }
+    ],
+    "answer": "全缓冲; 行缓冲; 非缓冲",
+    "explanation": "正确答案：全缓冲; 行缓冲; 非缓冲",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1021",
+    "question": "常见的输入/输出传输控制方式有 ___ 方式、___ 方式和 ___ 方式",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "程序直接控制",
+        "synonyms": []
+      },
+      {
+        "answer": "中断控制",
+        "synonyms": []
+      },
+      {
+        "answer": "DMA 控制",
+        "synonyms": []
+      }
+    ],
+    "answer": "程序直接控制; 中断控制; DMA 控制",
+    "explanation": "正确答案：程序直接控制; 中断控制; DMA 控制",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1022",
+    "question": "I/O 接口是介于 ___ 和 ___ 之间的硬件部分",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "I/O 总线",
+        "synonyms": []
+      },
+      {
+        "answer": "外设",
+        "synonyms": []
+      }
+    ],
+    "answer": "I/O 总线; 外设",
+    "explanation": "正确答案：I/O 总线; 外设",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1023",
+    "question": "通常将 I/O 设备分成两种：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "字符设备",
+        "synonyms": []
+      },
+      {
+        "answer": "块设备",
+        "synonyms": []
+      }
+    ],
+    "answer": "字符设备; 块设备",
+    "explanation": "正确答案：字符设备; 块设备",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1024",
+    "question": "通常将总线分成三种：___、___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "处理器总线",
+        "synonyms": []
+      },
+      {
+        "answer": "存储器总线",
+        "synonyms": []
+      },
+      {
+        "answer": "I/O 总线",
+        "synonyms": []
+      }
+    ],
+    "answer": "处理器总线; 存储器总线; I/O 总线",
+    "explanation": "正确答案：处理器总线; 存储器总线; I/O 总线",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1025",
+    "question": "对 I/O 接口中可访问的寄存器编址，其方式有 ___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "统一编址",
+        "synonyms": []
+      },
+      {
+        "answer": "独立编址",
+        "synonyms": []
+      }
+    ],
+    "answer": "统一编址; 独立编址",
+    "explanation": "正确答案：统一编址; 独立编址",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1026",
+    "question": "I/O 接口的功能主要包括 ___、___、___、___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "数据缓冲",
+        "synonyms": []
+      },
+      {
+        "answer": "错误或状态监测",
+        "synonyms": []
+      },
+      {
+        "answer": "控制和定时",
+        "synonyms": []
+      },
+      {
+        "answer": "数据格式转换",
+        "synonyms": []
+      }
+    ],
+    "answer": "数据缓冲; 错误或状态监测; 控制和定时; 数据格式转换",
+    "explanation": "正确答案：数据缓冲; 错误或状态监测; 控制和定时; 数据格式转换",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1027",
+    "question": "在 Intel 处理器中将外部中断分为 ___ 和 ___ 两类",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "可屏蔽中断",
+        "synonyms": []
+      },
+      {
+        "answer": "不可屏蔽中断",
+        "synonyms": []
+      }
+    ],
+    "answer": "可屏蔽中断; 不可屏蔽中断",
+    "explanation": "正确答案：可屏蔽中断; 不可屏蔽中断",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1028",
+    "question": "程序直接控制 I/O 方式的基本思想是：直接通过 ___ 来控制主机与外设的 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "查询程序",
+        "synonyms": []
+      },
+      {
+        "answer": "数据交换",
+        "synonyms": []
+      }
+    ],
+    "answer": "查询程序; 数据交换",
+    "explanation": "正确答案：查询程序; 数据交换",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1029",
+    "question": "中断控制 I/O 方式的基本思想是：外设完成 I/O 操作后，向 CPU 发送一个 ___，CPU 检测到该信号后，则进行上下文切换，调出相应的中断服务程序执行",
+    "type": "fill",
+    "answer": "中断请求信号",
+    "explanation": "正确答案：中断请求信号",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1030",
+    "question": "直接存储器访问（DMA）控制 I/O 方式使用专门的 ___ 直接控制在外设和主存之间交换数据，此时数据不经过 ___。通常把该接口硬件称为 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "DMA 接口硬件",
+        "synonyms": []
+      },
+      {
+        "answer": "CPU",
+        "synonyms": []
+      },
+      {
+        "answer": "DMA 控制器",
+        "synonyms": []
+      }
+    ],
+    "answer": "DMA 接口硬件; CPU; DMA 控制器",
+    "explanation": "正确答案：DMA 接口硬件; CPU; DMA 控制器",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1031",
+    "question": "中断系统中存在两种中断优先级：___ 和 ___",
+    "type": "fill",
+    "blanks": [
+      {
+        "answer": "中断响应优先级",
+        "synonyms": []
+      },
+      {
+        "answer": "中断处理优先级",
+        "synonyms": []
+      }
+    ],
+    "answer": "中断响应优先级; 中断处理优先级",
+    "explanation": "正确答案：中断响应优先级; 中断处理优先级",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1032",
+    "question": "冯·诺依曼计算机由哪几部分组成？各部分的功能是什么？",
+    "type": "shortAnswer",
+    "answer": "冯·诺依曼计算机主要由五大部分组成：输入设备、输出设备、运算器、控制器和存储器。 - **输入设备**：接收用户输入的数据和指令，如键盘、鼠标等。 - **输出设备**：展示计算机处理后的结果，如显示器、打印机等。 - **运算器**：执行各种算术和逻辑运算。 - **控制器**：控制各部件协同工作，负责指令的读取、解释和执行。 - **存储器**：存储数据和程序，包括内存和外存。",
+    "referenceAnswer": "冯·诺依曼计算机主要由五大部分组成：输入设备、输出设备、运算器、控制器和存储器。 - **输入设备**：接收用户输入的数据和指令，如键盘、鼠标等。 - **输出设备**：展示计算机处理后的结果，如显示器、打印机等。 - **运算器**：执行各种算术和逻辑运算。 - **控制器**：控制各部件协同工作，负责指令的读取、解释和执行。 - **存储器**：存储数据和程序，包括内存和外存。",
+    "explanation": "",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1033",
+    "question": "什么是\"存储程序\"工作方式？",
+    "type": "shortAnswer",
+    "answer": "将程序和数据以二进制代码形式预先存放在存储器中，计算机运行时从存储器中取出指令并加以执行。这种方式使计算机能自动、连续地执行程序，大大提高了工作效率。",
+    "referenceAnswer": "将程序和数据以二进制代码形式预先存放在存储器中，计算机运行时从存储器中取出指令并加以执行。这种方式使计算机能自动、连续地执行程序，大大提高了工作效率。",
+    "explanation": "",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1034",
+    "question": "一条指令的执行过程包含哪几个阶段？",
+    "type": "shortAnswer",
+    "answer": "① 取指令：从存储器中取出指令；② 分析指令：对指令译码，确定其操作性质；③ 执行指令：按要求进行具体操作（数据运算、地址计算等）；④ 存储结果：将执行结果存回存储器。",
+    "referenceAnswer": "① 取指令：从存储器中取出指令；② 分析指令：对指令译码，确定其操作性质；③ 执行指令：按要求进行具体操作（数据运算、地址计算等）；④ 存储结果：将执行结果存回存储器。",
+    "explanation": "",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1035",
+    "question": "计算机系统的层次结构如何划分？",
+    "type": "shortAnswer",
+    "answer": "- 微程序机器层（与硬件直接相关，由微指令和微程序组成） - 机器语言机器层（由机器指令组成） - 操作系统机器层（通过系统调用提供汇编、编译、连接、编辑等软件） - 汇编语言机器层 - 高级语言机器层",
+    "referenceAnswer": "- 微程序机器层（与硬件直接相关，由微指令和微程序组成） - 机器语言机器层（由机器指令组成） - 操作系统机器层（通过系统调用提供汇编、编译、连接、编辑等软件） - 汇编语言机器层 - 高级语言机器层",
+    "explanation": "",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1036",
+    "question": "计算机系统的用户可分为哪几类？每类用户工作在哪个层次？",
+    "type": "shortAnswer",
+    "answer": "- **高级用户 / 最终用户**：工作在应用层，使用高级语言进行编程和应用开发。 - **系统程序员**：工作在系统层，负责设计、开发和维护操作系统、编译器等系统软件。 - **机器语言程序员**：直接工作在机器语言层，使用机器语言或汇编语言编写程序。",
+    "referenceAnswer": "- **高级用户 / 最终用户**：工作在应用层，使用高级语言进行编程和应用开发。 - **系统程序员**：工作在系统层，负责设计、开发和维护操作系统、编译器等系统软件。 - **机器语言程序员**：直接工作在机器语言层，使用机器语言或汇编语言编写程序。",
+    "explanation": "",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1037",
+    "question": "程序的 CPI 与哪些因素有关？",
+    "type": "shortAnswer",
+    "answer": "① 指令类型（不同指令执行时间不同）；② 指令的执行顺序（影响流水线效率）；③ 数据的存取方式（内存访问延迟、cache 命中率）；④ 程序的优化程度。",
+    "referenceAnswer": "① 指令类型（不同指令执行时间不同）；② 指令的执行顺序（影响流水线效率）；③ 数据的存取方式（内存访问延迟、cache 命中率）；④ 程序的优化程度。",
+    "explanation": "",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1038",
+    "question": "为什么说性能指标 MIPS 不能很好地反映计算机的性能？",
+    "type": "shortAnswer",
+    "answer": "① MIPS 只考虑指令执行速度，不考虑指令类型和复杂性，而不同指令执行时间相差很大；② 忽略了内存访问、I/O 操作等重要因素；③ 是理论指标，实际运行受操作系统调度、并发执行等影响。因此还需结合响应时间、吞吐量、功耗等综合评价。",
+    "referenceAnswer": "① MIPS 只考虑指令执行速度，不考虑指令类型和复杂性，而不同指令执行时间相差很大；② 忽略了内存访问、I/O 操作等重要因素；③ 是理论指标，实际运行受操作系统调度、并发执行等影响。因此还需结合响应时间、吞吐量、功耗等综合评价。",
+    "explanation": "",
+    "chapter": "第1章 计算机系统概述",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1039",
+    "question": "为什么计算机内部采用二进制表示信息？",
+    "type": "shortAnswer",
+    "answer": "① 二进制只有 0 和 1 两种状态，与逻辑电路的开关状态一致，表示和计算直接简单；② 运算规则简单，运算更高效；③ 只涉及两种状态，抗干扰能力强，对噪声和干扰容忍度高。",
+    "referenceAnswer": "① 二进制只有 0 和 1 两种状态，与逻辑电路的开关状态一致，表示和计算直接简单；② 运算规则简单，运算更高效；③ 只涉及两种状态，抗干扰能力强，对噪声和干扰容忍度高。",
+    "explanation": "",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1040",
+    "question": "既然计算机内部所有信息都用二进制表示，为什么还要用到十六进制或八进制数？",
+    "type": "shortAnswer",
+    "answer": "为了方便人类理解和操作。十六进制（每 1 位对应 4 个二进制位）、八进制（每 1 位对应 3 位）在表示较长的二进制数时更加简洁，便于阅读和书写；在程序设计和调试中更便于查看和操作内存地址与数据。",
+    "referenceAnswer": "为了方便人类理解和操作。十六进制（每 1 位对应 4 个二进制位）、八进制（每 1 位对应 3 位）在表示较长的二进制数时更加简洁，便于阅读和书写；在程序设计和调试中更便于查看和操作内存地址与数据。",
+    "explanation": "",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1041",
+    "question": "在浮点数的基数和总位数一定的情况下，浮点数的表示范围和精度分别由什么决定？",
+    "type": "shortAnswer",
+    "answer": "由**阶码**和**尾数**决定：阶码决定浮点数的表示范围（最大、最小数值）；尾数决定浮点数的精度（数值的精确度）。",
+    "referenceAnswer": "由**阶码**和**尾数**决定：阶码决定浮点数的表示范围（最大、最小数值）；尾数决定浮点数的精度（数值的精确度）。",
+    "explanation": "",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1042",
+    "question": "为什么要对浮点数进行规格化？有哪两种规格化操作？",
+    "type": "shortAnswer",
+    "answer": "规格化是为了提高浮点数的精度和运算效率。两种操作： - **右规**：尾数绝对值小于规定最小值时，尾数小数点右移，阶码增加； - **左规**：尾数绝对值大于规定最大值时，尾数小数点左移，阶码减小。 规格化确保尾数满足一定条件（如最高位为 1），从而提高表示范围和精度。",
+    "referenceAnswer": "规格化是为了提高浮点数的精度和运算效率。两种操作： - **右规**：尾数绝对值小于规定最小值时，尾数小数点右移，阶码增加； - **左规**：尾数绝对值大于规定最大值时，尾数小数点左移，阶码减小。 规格化确保尾数满足一定条件（如最高位为 1），从而提高表示范围和精度。",
+    "explanation": "",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1043",
+    "question": "为什么计算机处理汉字时会涉及不同的编码（输入码、内码、字模码）？哪些用二进制编码，哪些不用？",
+    "type": "shortAnswer",
+    "answer": "汉字数量庞大，需要有效的编码方式来存储、传输和显示。 - **输入码**（拼音码、五笔码等）：**不用**二进制编码，它是为方便用户输入而设计的，有特定的输入规则和逻辑； - **内码**：**用**二进制编码，是计算机内部存储和传输汉字的唯一标识码，需保证唯一性和识别准确性； - **字模码**：**用**二进制编码，用于显示汉字字形，通常以二进制图像或点阵形式表示。",
+    "referenceAnswer": "汉字数量庞大，需要有效的编码方式来存储、传输和显示。 - **输入码**（拼音码、五笔码等）：**不用**二进制编码，它是为方便用户输入而设计的，有特定的输入规则和逻辑； - **内码**：**用**二进制编码，是计算机内部存储和传输汉字的唯一标识码，需保证唯一性和识别准确性； - **字模码**：**用**二进制编码，用于显示汉字字形，通常以二进制图像或点阵形式表示。",
+    "explanation": "",
+    "chapter": "第2章 数据的表示和运算",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1044",
+    "question": "一条机器指令通常由哪些字段组成？各字段的含义分别是什么？",
+    "type": "shortAnswer",
+    "answer": "① 操作码：指示操作类型（加、乘等）；② 操作数：指令要操作的数据或数据的存储地址；③ 寻址方式：指定如何获取操作数地址；④ 操作数长度：指定操作数的长度（位/字节）。",
+    "referenceAnswer": "① 操作码：指示操作类型（加、乘等）；② 操作数：指令要操作的数据或数据的存储地址；③ 寻址方式：指定如何获取操作数地址；④ 操作数长度：指定操作数的长度（位/字节）。",
+    "explanation": "",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1045",
+    "question": "将一个高级语言源程序转换成计算机能直接执行的机器代码通常需要哪几个步骤？",
+    "type": "shortAnswer",
+    "answer": "词法分析（分割为词法单元）→ 语法分析（组合成语法结构）→ 语义分析（检查是否符合语言规范）→ 代码生成（翻译为目标机器代码）→ 代码优化（提高执行效率）。",
+    "referenceAnswer": "词法分析（分割为词法单元）→ 语法分析（组合成语法结构）→ 语义分析（检查是否符合语言规范）→ 代码生成（翻译为目标机器代码）→ 代码优化（提高执行效率）。",
+    "explanation": "",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1046",
+    "question": "IA-32 中的逻辑运算指令如何生成条件标志？移位指令可能会改变哪些条件标志？",
+    "type": "shortAnswer",
+    "answer": "逻辑运算指令（AND、OR、XOR）会根据运算结果生成条件标志（如 ZF、CF 等）；移位指令（SHL、SHR）可能改变零标志 ZF、进位标志 CF 和溢出标志 OF。",
+    "referenceAnswer": "逻辑运算指令（AND、OR、XOR）会根据运算结果生成条件标志（如 ZF、CF 等）；移位指令（SHL、SHR）可能改变零标志 ZF、进位标志 CF 和溢出标志 OF。",
+    "explanation": "",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1047",
+    "question": "执行条件跳转指令时所用到的条件标志信息从何而来？请举例说明。",
+    "type": "shortAnswer",
+    "answer": "来自**上一条影响条件标志的指令**。例如执行 JZ（零标志为 1 则跳转）时，需要根据上一条指令的执行结果确定是否跳转。",
+    "referenceAnswer": "来自**上一条影响条件标志的指令**。例如执行 JZ（零标志为 1 则跳转）时，需要根据上一条指令的执行结果确定是否跳转。",
+    "explanation": "",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1048",
+    "question": "无条件跳转指令和调用指令的相同点和不同点是什么？",
+    "type": "shortAnswer",
+    "answer": "相同点：都能改变程序执行流程，跳转到指定地址执行。不同点：无条件跳转只是改变 PC 的值；调用指令还会把当前的程序状态（如返回地址）**保存到栈中**，以便后续返回。",
+    "referenceAnswer": "相同点：都能改变程序执行流程，跳转到指定地址执行。不同点：无条件跳转只是改变 PC 的值；调用指令还会把当前的程序状态（如返回地址）**保存到栈中**，以便后续返回。",
+    "explanation": "",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1049",
+    "question": "按值传递参数和按地址传递参数两种方式有哪些不同点？",
+    "type": "shortAnswer",
+    "answer": "按值传递：把参数的值复制给形式参数，函数内部对形参的修改**不影响**实参； 按地址传递：把参数的地址传给函数，函数内部对形参的修改**会影响**实参。",
+    "referenceAnswer": "按值传递：把参数的值复制给形式参数，函数内部对形参的修改**不影响**实参； 按地址传递：把参数的地址传给函数，函数内部对形参的修改**会影响**实参。",
+    "explanation": "",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1050",
+    "question": "为什么在递归深度较深时递归调用的时间开销和空间开销都会较大？",
+    "type": "shortAnswer",
+    "answer": "每次递归调用都会占用额外的栈空间（空间开销），频繁的函数调用和返回又增加了时间开销。",
+    "referenceAnswer": "每次递归调用都会占用额外的栈空间（空间开销），频繁的函数调用和返回又增加了时间开销。",
+    "explanation": "",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1051",
+    "question": "为什么数据在存储器中最好按地址对齐方式存放？",
+    "type": "shortAnswer",
+    "answer": "许多计算机体系结构对数据访问有地址对齐要求。若数据未按正确对齐方式存放，可能导致额外的内存访问，降低访问效率。",
+    "referenceAnswer": "许多计算机体系结构对数据访问有地址对齐要求。若数据未按正确对齐方式存放，可能导致额外的内存访问，降低访问效率。",
+    "explanation": "",
+    "chapter": "第3章 程序的转换及机器级表示",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1052",
+    "question": "如何将多个 C 程序模块组合生成可执行文件？简述从源程序到可执行文件的转换过程。",
+    "type": "shortAnswer",
+    "answer": "主要包括**编译、汇编、链接**三个阶段： - 编译阶段：对每个 C 模块编译，生成对应的目标文件（含汇编代码，尚未分配地址）； - 汇编阶段：汇编器将汇编代码转换为机器语言代码，生成可重定位文件； - 链接阶段：将所有可重定位文件及所需库文件链接，解析符号引用并进行地址重定位，生成最终的可执行文件。",
+    "referenceAnswer": "主要包括**编译、汇编、链接**三个阶段： - 编译阶段：对每个 C 模块编译，生成对应的目标文件（含汇编代码，尚未分配地址）； - 汇编阶段：汇编器将汇编代码转换为机器语言代码，生成可重定位文件； - 链接阶段：将所有可重定位文件及所需库文件链接，解析符号引用并进行地址重定位，生成最终的可执行文件。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1053",
+    "question": "可重定位目标文件和可执行目标文件的主要差别是什么？",
+    "type": "shortAnswer",
+    "answer": "可重定位目标文件是经编译和汇编但**尚未链接**的文件，地址还未确定；可执行目标文件经编译、汇编和链接，**地址已最终确定**，可直接在操作系统上执行。",
+    "referenceAnswer": "可重定位目标文件是经编译和汇编但**尚未链接**的文件，地址还未确定；可执行目标文件经编译、汇编和链接，**地址已最终确定**，可直接在操作系统上执行。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1054",
+    "question": "链接器主要完成哪两方面的工作？",
+    "type": "shortAnswer",
+    "answer": "① **符号解析**：解析各模块间的符号引用，确定符号对应的地址；② **重定位**：将各模块的地址关联起来，生成最终的可执行文件。",
+    "referenceAnswer": "① **符号解析**：解析各模块间的符号引用，确定符号对应的地址；② **重定位**：将各模块的地址关联起来，生成最终的可执行文件。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1055",
+    "question": "可重定位文件的 .text、.rodata、.data、.bss 节中分别主要包含什么信息？",
+    "type": "shortAnswer",
+    "answer": "- **.text**：存放程序的代码 - **.rodata**：存放只读数据，如常量字符串等 - **.data**：存放已初始化的全局和静态变量 - **.bss**：存放未初始化的全局和静态变量",
+    "referenceAnswer": "- **.text**：存放程序的代码 - **.rodata**：存放只读数据，如常量字符串等 - **.data**：存放已初始化的全局和静态变量 - **.bss**：存放未初始化的全局和静态变量",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1056",
+    "question": "可执行目标中有哪两种可装入段？哪些节组合成只读代码段？哪些节组合成可读/写数据段？",
+    "type": "shortAnswer",
+    "answer": "两种可装入段：**只读代码段**和**可读/写数据段**。 - 只读代码段 = .text 节 + .rodata 节 - 可读/写数据段 = .data 节 + .bss 节",
+    "referenceAnswer": "两种可装入段：**只读代码段**和**可读/写数据段**。 - 只读代码段 = .text 节 + .rodata 节 - 可读/写数据段 = .data 节 + .bss 节",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1057",
+    "question": "加载可执行文件时，加载器根据其中哪个表的信息对可装入段进行映射？",
+    "type": "shortAnswer",
+    "answer": "根据**程序头表**（段头表）中的信息对可装入段进行映射。",
+    "referenceAnswer": "根据**程序头表**（段头表）中的信息对可装入段进行映射。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1058",
+    "question": "静态链接和动态链接的差别是什么？",
+    "type": "shortAnswer",
+    "answer": "静态链接在**编译时**就把所有库文件链接进可执行文件，所有符号引用在编译时已确定；动态链接是在**程序运行时**将共享库链接到内存中，允许多个程序共享同一库文件，需要动态链接器在运行时解析符号引用。",
+    "referenceAnswer": "静态链接在**编译时**就把所有库文件链接进可执行文件，所有符号引用在编译时已确定；动态链接是在**程序运行时**将共享库链接到内存中，允许多个程序共享同一库文件，需要动态链接器在运行时解析符号引用。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1059",
+    "question": "在可执行文件中将可装入段映射到虚拟地址空间，以形成每个进程独立的虚拟地址空间，这种做法有什么好处？",
+    "type": "shortAnswer",
+    "answer": "可以形成每个进程独立的虚拟地址空间，避免进程间的地址冲突，提高系统的安全性和稳定性。",
+    "referenceAnswer": "可以形成每个进程独立的虚拟地址空间，避免进程间的地址冲突，提高系统的安全性和稳定性。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1060",
+    "question": "简述通过 shell 命令行解释程序进行程序加载的过程。",
+    "type": "shortAnswer",
+    "answer": "① 用户输入命令行；② shell 解释命令行，识别要执行的程序；③ shell 创建一个新的进程来执行该程序；④ 加载器把可执行文件加载到内存中；⑤ 加载器执行程序入口点。",
+    "referenceAnswer": "① 用户输入命令行；② shell 解释命令行，识别要执行的程序；③ shell 创建一个新的进程来执行该程序；④ 加载器把可执行文件加载到内存中；⑤ 加载器执行程序入口点。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1061",
+    "question": "CPU 的基本组成和基本功能各是什么？",
+    "type": "shortAnswer",
+    "answer": "基本组成：算术逻辑单元（ALU）、控制单元（CU）、寄存器组。基本功能：执行指令、进行算术和逻辑运算、控制程序执行流程。",
+    "referenceAnswer": "基本组成：算术逻辑单元（ALU）、控制单元（CU）、寄存器组。基本功能：执行指令、进行算术和逻辑运算、控制程序执行流程。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1062",
+    "question": "如何控制一条指令执行结束后能够接着另一条指令执行？",
+    "type": "shortAnswer",
+    "answer": "通过**程序计数器（PC）的自增**实现：每执行一条指令，PC 自动加 1，指向下一条指令的地址。",
+    "referenceAnswer": "通过**程序计数器（PC）的自增**实现：每执行一条指令，PC 自动加 1，指向下一条指令的地址。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1063",
+    "question": "通常一条指令的执行要经过哪些步骤？每条指令的执行步骤都一样吗？",
+    "type": "shortAnswer",
+    "answer": "通常经过取指令、译码、执行、访存、写回几个步骤。每条指令的执行步骤**并不完全相同**，不同指令可能有不同执行路径和需要访问的数据。",
+    "referenceAnswer": "通常经过取指令、译码、执行、访存、写回几个步骤。每条指令的执行步骤**并不完全相同**，不同指令可能有不同执行路径和需要访问的数据。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1064",
+    "question": "流水线方式下，一条指令的执行时间缩短了还是加长了？程序的执行时间缩短了还是加长了？",
+    "type": "shortAnswer",
+    "answer": "流水线方式下**单条指令的执行时间**（从开始到结束的绝对时间）并未缩短（甚至因寄存器延迟略有加长），但由于多条指令并行执行，整体上**程序的执行时间缩短**；不过若存在数据相关或控制相关导致流水线停顿/冒险，则会影响效率。",
+    "referenceAnswer": "流水线方式下**单条指令的执行时间**（从开始到结束的绝对时间）并未缩短（甚至因寄存器延迟略有加长），但由于多条指令并行执行，整体上**程序的执行时间缩短**；不过若存在数据相关或控制相关导致流水线停顿/冒险，则会影响效率。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1065",
+    "question": "具有什么特征的指令系统易于实现指令流水线？",
+    "type": "shortAnswer",
+    "answer": "指令长度固定、指令之间无数据相关性、指令之间无控制相关性、指令执行步骤相对简单等（即 RISC 风格）。",
+    "referenceAnswer": "指令长度固定、指令之间无数据相关性、指令之间无控制相关性、指令执行步骤相对简单等（即 RISC 风格）。",
+    "explanation": "",
+    "chapter": "第4章 可执行文件的生成和加载执行",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1066",
+    "question": "计算机内部为何要采用层次结构存储体系？层次结构存储体系如何构成？",
+    "type": "shortAnswer",
+    "answer": "原因：① 解决快速 CPU 与慢速主存之间的速度差异；② 解决主存容量不足的问题。 构成：由多个存储设备按逻辑关系排列组合而成，主要包括**缓存层**（高速缓存、RAM，最快，用于加快访问）、**磁盘层**（硬盘、SSD，用于存储数据）、**磁带库层**（备份数据）、**云存储层**（海量数据）。",
+    "referenceAnswer": "原因：① 解决快速 CPU 与慢速主存之间的速度差异；② 解决主存容量不足的问题。 构成：由多个存储设备按逻辑关系排列组合而成，主要包括**缓存层**（高速缓存、RAM，最快，用于加快访问）、**磁盘层**（硬盘、SSD，用于存储数据）、**磁带库层**（备份数据）、**云存储层**（海量数据）。",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1067",
+    "question": "为什么采用地址对齐方式能减少访问 DRAM 中数据的时间？",
+    "type": "shortAnswer",
+    "answer": "DRAM 的访问以块为单位，若数据跨越多个块就需要多次访问。地址对齐可保证数据按块大小组织，从而一次访问即可取得所需数据，减少访问次数、提高效率。",
+    "referenceAnswer": "DRAM 的访问以块为单位，若数据跨越多个块就需要多次访问。地址对齐可保证数据按块大小组织，从而一次访问即可取得所需数据，减少访问次数、提高效率。",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1068",
+    "question": "为什么在 CPU 和主存之间引入 cache 能提高 CPU 的访存效率？",
+    "type": "shortAnswer",
+    "answer": "cache 存取速度快，能快速响应 CPU 的数据请求。CPU 需要访问主存时可先在 cache 中查找，命中则直接从 cache 读取，避免了对慢速主存的访问（利用了程序访问的局部性）。",
+    "referenceAnswer": "cache 存取速度快，能快速响应 CPU 的数据请求。CPU 需要访问主存时可先在 cache 中查找，命中则直接从 cache 读取，避免了对慢速主存的访问（利用了程序访问的局部性）。",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1069",
+    "question": "为什么直接映射方式不需要考虑替换策略？",
+    "type": "shortAnswer",
+    "answer": "直接映射下每个主存块只映射到 cache 中的固定行，新块调入时直接覆盖该固定行，无需选择替换哪一行，因而不存在替换策略问题。",
+    "referenceAnswer": "直接映射下每个主存块只映射到 cache 中的固定行，新块调入时直接覆盖该固定行，无需选择替换哪一行，因而不存在替换策略问题。",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1070",
+    "question": "为什么要考虑 cache 的写策略问题？",
+    "type": "shortAnswer",
+    "answer": "CPU 对主存的访问与修改会引发 cache 内容变化。若不加以控制，cache 与主存内容会不一致。为保证数据一致性，需要采用适当的写策略（**写回法**或**写通法**）决定何时以及如何将 cache 数据写回主存。",
+    "referenceAnswer": "CPU 对主存的访问与修改会引发 cache 内容变化。若不加以控制，cache 与主存内容会不一致。为保证数据一致性，需要采用适当的写策略（**写回法**或**写通法**）决定何时以及如何将 cache 数据写回主存。",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1071",
+    "question": "什么是物理地址？什么是逻辑地址？地址转换由硬件还是软件实现？为什么？",
+    "type": "shortAnswer",
+    "answer": "- **物理地址**：内存中各存储单元的编号，是存储单元的真实地址，可识别、可寻址并实际存在，CPU 访问内存时使用。 - **逻辑地址**：用户程序经编译或汇编形成的目标代码中的地址，通常采用相对地址形式。 - 地址转换通常由**硬件**实现（如 CPU 中的 MMU 地址映射机制），因为硬件转换速度更快，能满足 CPU 快速访存的需求；软件也可实现，但速度较慢，一般用于更复杂的地址管理任务。",
+    "referenceAnswer": "- **物理地址**：内存中各存储单元的编号，是存储单元的真实地址，可识别、可寻址并实际存在，CPU 访问内存时使用。 - **逻辑地址**：用户程序经编译或汇编形成的目标代码中的地址，通常采用相对地址形式。 - 地址转换通常由**硬件**实现（如 CPU 中的 MMU 地址映射机制），因为硬件转换速度更快，能满足 CPU 快速访存的需求；软件也可实现，但速度较慢，一般用于更复杂的地址管理任务。",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1072",
+    "question": "在存储器层次化结构中，\"cache—主存\"\"主存—外存\"这两个层次有哪些不同？",
+    "type": "shortAnswer",
+    "answer": "- **cache—主存**：主要解决主存**速度不够快**的问题，用高速缓存提高访问速度； - **主存—外存**：主要解决主存**容量不足**的问题，用外存扩展存储容量。 另外在访问频率和数据重要性上也有差异：cache 中多为频繁访问的热点数据，外存中多为长期保存但访问频率较低的数据。",
+    "referenceAnswer": "- **cache—主存**：主要解决主存**速度不够快**的问题，用高速缓存提高访问速度； - **主存—外存**：主要解决主存**容量不足**的问题，用外存扩展存储容量。 另外在访问频率和数据重要性上也有差异：cache 中多为频繁访问的热点数据，外存中多为长期保存但访问频率较低的数据。",
+    "explanation": "",
+    "chapter": "第5章 程序的存储访问",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1073",
+    "question": "I/O 子系统的层次结构是怎样的？",
+    "type": "shortAnswer",
+    "answer": "从上至下依次为：**用户层 I/O 软件 → 设备独立性软件 → 设备驱动软件 → 中断处理软件 → 硬件**（包括机械部件和电子部件）。这种层次结构使 I/O 操作更加模块化和抽象化，便于软件开发和维护。",
+    "referenceAnswer": "从上至下依次为：**用户层 I/O 软件 → 设备独立性软件 → 设备驱动软件 → 中断处理软件 → 硬件**（包括机械部件和电子部件）。这种层次结构使 I/O 操作更加模块化和抽象化，便于软件开发和维护。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1074",
+    "question": "系统调用封装函数对应的机器级代码结构是怎样的？",
+    "type": "shortAnswer",
+    "answer": "通常包括**若干条传送指令后跟一条陷阱指令**。传送指令用于传递系统调用的参数，陷阱指令（如 `int $0x80`）用于使 CPU 陷入内核进行处理。",
+    "referenceAnswer": "通常包括**若干条传送指令后跟一条陷阱指令**。传送指令用于传递系统调用的参数，陷阱指令（如 `int $0x80`）用于使 CPU 陷入内核进行处理。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1075",
+    "question": "为什么系统调用的开销很大？",
+    "type": "shortAnswer",
+    "answer": "系统调用涉及从**用户态切换到内核态**，需要时间进行上下文切换；内核态执行时 CPU 工作在管理员模式，涉及特殊的堆栈和内存环境，需要在系统调用开始时建立并在结束后恢复，运行环境的切换以及对资源的访问控制都增加了开销。",
+    "referenceAnswer": "系统调用涉及从**用户态切换到内核态**，需要时间进行上下文切换；内核态执行时 CPU 工作在管理员模式，涉及特殊的堆栈和内存环境，需要在系统调用开始时建立并在结束后恢复，运行环境的切换以及对资源的访问控制都增加了开销。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1076",
+    "question": "C 标准 I/O 库函数是在用户态执行还是在内核态执行？",
+    "type": "shortAnswer",
+    "answer": "**用户态**执行。printf、scanf 等库函数提供用户程序与 I/O 设备之间的接口，但实际的 I/O 操作由内核在内核态完成，用户程序通过系统调用请求内核执行。",
+    "referenceAnswer": "**用户态**执行。printf、scanf 等库函数提供用户程序与 I/O 设备之间的接口，但实际的 I/O 操作由内核在内核态完成，用户程序通过系统调用请求内核执行。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1077",
+    "question": "与 I/O 操作相关的系统调用封装函数是在用户态执行还是内核态执行？",
+    "type": "shortAnswer",
+    "answer": "**内核态**执行。用户程序通过系统调用接口请求内核执行 I/O 操作，内核切换到内核态执行相应的服务例程，完成后再返回用户态。",
+    "referenceAnswer": "**内核态**执行。用户程序通过系统调用接口请求内核执行 I/O 操作，内核切换到内核态执行相应的服务例程，完成后再返回用户态。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1078",
+    "question": "什么是程序直接控制 I/O 方式？说明其工作原理。",
+    "type": "shortAnswer",
+    "answer": "CPU 直接通过 I/O 指令对 I/O 设备进行操作：CPU 向设备发送控制命令和数据，然后等待设备完成操作并返回状态信息。缺点是 CPU 需频繁查询设备状态，效率降低。",
+    "referenceAnswer": "CPU 直接通过 I/O 指令对 I/O 设备进行操作：CPU 向设备发送控制命令和数据，然后等待设备完成操作并返回状态信息。缺点是 CPU 需频繁查询设备状态，效率降低。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1079",
+    "question": "为什么在保护现场和恢复现场的过程中，CPU 必须关中断？",
+    "type": "shortAnswer",
+    "answer": "中断会打断当前执行流程。若在保护/恢复现场期间允许中断发生，可能干扰正在处理的信息，导致恢复现场时状态不一致甚至出错。关中断可确保恢复现场之前不会有其他中断打断处理过程。",
+    "referenceAnswer": "中断会打断当前执行流程。若在保护/恢复现场期间允许中断发生，可能干扰正在处理的信息，导致恢复现场时状态不一致甚至出错。关中断可确保恢复现场之前不会有其他中断打断处理过程。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1080",
+    "question": "什么是中断控制 I/O 方式？说明其工作原理。",
+    "type": "shortAnswer",
+    "answer": "当 I/O 设备准备好数据传输时，向 CPU 发送中断信号；CPU 收到后暂停当前任务，转去执行中断处理程序完成 I/O。该方式可实现 CPU 与设备的**并行操作**，提高系统效率。",
+    "referenceAnswer": "当 I/O 设备准备好数据传输时，向 CPU 发送中断信号；CPU 收到后暂停当前任务，转去执行中断处理程序完成 I/O。该方式可实现 CPU 与设备的**并行操作**，提高系统效率。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1081",
+    "question": "DMA 方式能够提高成批数据交换效率的主要原因何在？",
+    "type": "shortAnswer",
+    "answer": "DMA 允许数据直接在内存和设备之间传输而无需 CPU 介入，减少了 CPU 开销，使 CPU 可执行其他任务；同时还能实现高速数据传输，从而提高成批数据交换效率。",
+    "referenceAnswer": "DMA 允许数据直接在内存和设备之间传输而无需 CPU 介入，减少了 CPU 开销，使 CPU 可执行其他任务；同时还能实现高速数据传输，从而提高成批数据交换效率。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1082",
+    "question": "DMA 控制器在什么情况下发出中断请求信号？",
+    "type": "shortAnswer",
+    "answer": "在**数据块传输完毕时**发出中断请求信号，通知 CPU 进行后续处理或启动新的数据传输任务。",
+    "referenceAnswer": "在**数据块传输完毕时**发出中断请求信号，通知 CPU 进行后续处理或启动新的数据传输任务。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1083",
+    "question": "I/O 端口的编址方式有哪两种？各有何特点？",
+    "type": "shortAnswer",
+    "answer": "- **独立编址**：I/O 端口地址与内存地址相互独立，使用不同地址空间，互不干扰。 - **统一编址（存储器映射 I/O）**：I/O 端口地址与内存地址统一编址、使用同一地址空间，简化访问方式，但可能浪费内存空间。",
+    "referenceAnswer": "- **独立编址**：I/O 端口地址与内存地址相互独立，使用不同地址空间，互不干扰。 - **统一编址（存储器映射 I/O）**：I/O 端口地址与内存地址统一编址、使用同一地址空间，简化访问方式，但可能浪费内存空间。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
+  },
+  {
+    "id": "q-13015-1084",
+    "question": "为什么中断控制器把中断类型号放在 I/O 总线的数据线上而不是放在地址线上？",
+    "type": "shortAnswer",
+    "answer": "中断类型号标识发生中断的具体原因或来源，本质是要**传送给 CPU 的数据**，放在数据线上可确保传输的准确性和可靠性；而地址线用于在内存或 I/O 设备中定位特定存储单元或端口，与中断处理不直接相关。因此放在数据线上更合理。",
+    "referenceAnswer": "中断类型号标识发生中断的具体原因或来源，本质是要**传送给 CPU 的数据**，放在数据线上可确保传输的准确性和可靠性；而地址线用于在内存或 I/O 设备中定位特定存储单元或端口，与中断处理不直接相关。因此放在数据线上更合理。",
+    "explanation": "",
+    "chapter": "第6章 I/O操作实现",
+    "cardId": "",
+    "src": "总结资料"
   }
 ]
