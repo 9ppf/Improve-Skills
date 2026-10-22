@@ -93,9 +93,6 @@
   gap: 1rem;
   align-items: start;
 }
-@media (max-width: 768px) {
-  .tips-main { grid-template-columns: 1fr; }
-}
 
 /* ===== 左侧列表 ===== */
 .tips-list {
@@ -580,3 +577,14 @@ mark.tips-search-hit.current {
   gap: 0.8rem;
 }
 .tips-form-row-2 > div { margin-bottom: 0; }
+
+/* ===== 移动端适配（放文件末尾，保证覆盖基础规则） ===== */
+@media (max-width: 768px) {
+  .tips-main { grid-template-columns: 1fr; }
+  /* 移动端隐藏左侧列表，靠「题目筛选」下拉框选笔记 */
+  .tips-list { display: none; }
+  .tips-detail { max-height: none; }
+  /* 移动端只留题目筛选 + 搜索框，隐藏分类/重要度/掌握度下拉 */
+  #filterCategory, #filterImportance, #filterMastery { display: none; }
+  #filterTitle { flex: 1; min-width: 0; }
+}

@@ -290,6 +290,15 @@ function loadTips() {
 
 /* ====== 筛选器 ====== */
 function initFilters() {
+  // 题目筛选下拉：列出全部笔记标题（按标题排序，方便查找），选中直接打开详情
+  var titleSelect = document.getElementById('filterTitle');
+  titleSelect.innerHTML = '<option value="">选择题目</option>';
+  allTips.slice().sort(function(a, b) {
+    return (a.title || '').localeCompare(b.title || '', 'zh');
+  }).forEach(function(tip) {
+    titleSelect.innerHTML += '<option value="' + escapeHtml(tip.id) + '">' + escapeHtml(tip.title || '未命名') + '</option>';
+  });
+
   var catSelect = document.getElementById('filterCategory');
   var currentVal = catSelect.value;
   catSelect.innerHTML = '<option value="">全部分类</option>';
@@ -368,6 +377,8 @@ function renderTipList() {
 /* ====== 渲染详情 ====== */
 function selectTip(id) {
   currentTipId = id;
+  var titleSelect = document.getElementById('filterTitle');
+  if (titleSelect && titleSelect.value !== id) titleSelect.value = id;
   renderTipList();
   renderTipDetail(id);
 }
@@ -697,6 +708,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  document.getElementById('filterTitle').addEventListener('change', function() {
+    var id = this.value;
+    if (id) selectTip(id);
+  });
   document.getElementById('filterCategory').addEventListener('change', function() { renderTipList(); });
   document.getElementById('filterImportance').addEventListener('change', function() { renderTipList(); });
   document.getElementById('filterMastery').addEventListener('change', function() { renderTipList(); });
